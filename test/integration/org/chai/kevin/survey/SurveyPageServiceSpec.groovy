@@ -3,7 +3,10 @@ package org.chai.kevin.survey
 import org.chai.kevin.LanguageService
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.location.DataLocationType
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
+import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
@@ -23,13 +26,39 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		surveyPageService.languageService = languageService
 	}
 	
+	def "test submit survey"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])		
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		
+		when:
+		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), v("1"))
+		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(KIVUYE), false, true);
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(KIVUYE), false, true);
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(KIVUYE), false, true, false);
+		def submitted = surveyPageService.submitAll(DataLocation.findByCode(KIVUYE), null, survey, null)
+		
+		then:
+		submitted == true
+		SurveyEnteredProgram.list()[0].closed == true
+		RawDataElementValue.count() == 1
+		RawDataElementValue.list()[0].value.equals(v("1"))
+	}
+	
 	def "test submit program"() {
 		setup:
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
+		
 		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
 		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
@@ -40,12 +69,253 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(KIVUYE), false, true)
 		newSurveyEnteredSection(section, period, DataLocation.findByCode(KIVUYE), false, true)
 		newSurveyEnteredProgram(program, period, DataLocation.findByCode(KIVUYE), false, true, false)
+		def submitted = surveyPageService.submitAll(DataLocation.findByCode(KIVUYE), null, null, program)
 				
 		then:
-		surveyPageService.submit(DataLocation.findByCode(KIVUYE), program) == true
+		submitted == true
+		SurveyEnteredProgram.list()[0].closed == true
+		RawDataElementValue.count() == 1
+		RawDataElementValue.list()[0].value.equals(v("1"))
 	}
 	
-	def "test submit program with skipped elemment"() {
+	def "test submit all survey"(){
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))				
+		
+		when:
+		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), v("1"))
+		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(KIVUYE), false, true, false)
+				
+		newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("1"))
+		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(BUTARO), false, true)
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(BUTARO), false, true)
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(BUTARO), false, true, false)
+		
+		then:
+		SurveyEnteredProgram.list()[0].closed == false
+		SurveyEnteredProgram.list()[1].closed == false
+		
+		when:
+		def submitAll = surveyPageService.submitAll(Location.findByCode(BURERA), null, survey, null)
+		
+		then:
+		submitAll == true
+		
+		SurveyEnteredProgram.count() == 2		
+		SurveyEnteredProgram.list()[0].closed == true
+		SurveyEnteredProgram.list()[1].closed == true
+		SurveyEnteredProgram.list().collect { it.dataLocation }.equals([DataLocation.findByCode(KIVUYE), DataLocation.findByCode(BUTARO)])
+		
+		RawDataElementValue.count() == 2
+		RawDataElementValue.list()[0].value.numberValue == 1
+		RawDataElementValue.list()[1].value.numberValue == 1
+		RawDataElementValue.list().collect { it.location }.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
+	}
+	
+	def "test submit all program"(){
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))				
+		
+		when:
+		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), v("1"))
+		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(KIVUYE), false, true, false)
+				
+		newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("1"))
+		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(BUTARO), false, true)
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(BUTARO), false, true)
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(BUTARO), false, true, false)
+		
+		then:
+		SurveyEnteredProgram.list()[0].closed == false
+		SurveyEnteredProgram.list()[1].closed == false
+		
+		when:
+		def submitAll = surveyPageService.submitAll(Location.findByCode(BURERA), null, null, program)
+		
+		then:
+		submitAll == true
+		
+		SurveyEnteredProgram.count() == 2
+		SurveyEnteredProgram.list()[0].closed == true
+		SurveyEnteredProgram.list()[1].closed == true
+		SurveyEnteredProgram.list().collect { it.dataLocation }.equals([DataLocation.findByCode(KIVUYE), DataLocation.findByCode(BUTARO)])
+		
+		RawDataElementValue.count() == 2
+		RawDataElementValue.list()[0].value.numberValue == 1
+		RawDataElementValue.list()[1].value.numberValue == 1
+		RawDataElementValue.list().collect { it.location }.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
+	}
+	
+	def "test submit all survey with warning and invalid values"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), v("1"))
+		
+		def rule1 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
+		def rule2 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 100")		
+		
+		when:
+		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5"])
+		def submitAll = surveyPageService.submitAll(Location.findByCode(BURERA), null, survey, null)		
+		
+		then:
+		submitAll == true
+		SurveyEnteredProgram.list()[0].closed == true		
+		RawDataElementValue.count() == 1
+		RawDataElementValue.list()[0].value.numberValue == 5
+		RawDataElementValue.list()[0].value.getAttribute("invalid").contains(rule1.id+"")
+		RawDataElementValue.list()[0].value.getAttribute("invalid").contains(rule2.id+"")
+	}
+	
+	def "test submit all program with warning and invalid values"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), v("1"))
+		
+		def rule1 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
+		def rule2 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 100")
+		
+		when:
+		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5"])
+		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		def submitAll = surveyPageService.submitAll(Location.findByCode(BURERA), null, null, program)
+		
+		then:
+		submitAll == true
+		SurveyEnteredProgram.list()[0].closed == true
+		RawDataElementValue.count() == 1
+		RawDataElementValue.list()[0].value.numberValue == 5
+		RawDataElementValue.list()[0].value.getAttribute("invalid").contains(rule1.id+"")
+		RawDataElementValue.list()[0].value.getAttribute("invalid").contains(rule2.id+"")
+	}
+	
+	def "test submit all survey with types"(){		
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))				
+		
+		when:
+		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), v("1"))
+		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(KIVUYE), false, true, false)
+				
+		newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("1"))
+		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(BUTARO), false, true)
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(BUTARO), false, true)
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(BUTARO), false, true, false)
+		
+		then:
+		SurveyEnteredProgram.list()[0].closed == false
+		SurveyEnteredProgram.list()[1].closed == false
+		
+		when:
+		def types = new HashSet([DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		def submitAll = surveyPageService.submitAll(Location.findByCode(BURERA), types, survey, null)
+		
+		then:
+		submitAll == true
+		
+		SurveyEnteredProgram.count() == 2
+		SurveyEnteredProgram.list()[0].closed == true
+		SurveyEnteredProgram.list()[1].closed == false		
+		SurveyEnteredProgram.list().collect { it.dataLocation }.equals([DataLocation.findByCode(KIVUYE), DataLocation.findByCode(BUTARO)])
+		
+		RawDataElementValue.count() == 1
+		RawDataElementValue.list()[0].value.numberValue == 1
+		RawDataElementValue.list()[0].location.equals(DataLocation.findByCode(KIVUYE))
+	}
+	
+	def "test submit all program with types"(){
+			setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))				
+		
+		when:
+		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), v("1"))
+		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(KIVUYE), false, true, false)
+				
+		newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("1"))
+		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(BUTARO), false, true)
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(BUTARO), false, true)
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(BUTARO), false, true, false)
+		
+		then:
+		SurveyEnteredProgram.list()[0].closed == false
+		SurveyEnteredProgram.list()[1].closed == false
+		
+		when:
+		def types = new HashSet([DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		def submitAll = surveyPageService.submitAll(Location.findByCode(BURERA), types, null, program)
+		
+		then:
+		submitAll == true
+		
+		SurveyEnteredProgram.count() == 2
+		SurveyEnteredProgram.list()[0].closed == true
+		SurveyEnteredProgram.list()[1].closed == false		
+		SurveyEnteredProgram.list().collect { it.dataLocation }.equals([DataLocation.findByCode(KIVUYE), DataLocation.findByCode(BUTARO)])
+		
+		RawDataElementValue.count() == 1
+		RawDataElementValue.list()[0].value.numberValue == 1
+		RawDataElementValue.list()[0].location.equals(DataLocation.findByCode(KIVUYE))
+	}
+	
+	def "test submit program with skipped element"() {
 		setup:
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
@@ -64,9 +334,31 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		newSurveyEnteredProgram(program, period, DataLocation.findByCode(KIVUYE), false, true, false)
 				
 		then:
-		surveyPageService.submit(DataLocation.findByCode(KIVUYE), program) == true
+		surveyPageService.submitAll(DataLocation.findByCode(KIVUYE), null, null, program) == true
 		RawDataElementValue.count() == 1
 	}
+	
+	def "get survey skip levels"(){
+		setup:
+		setupLocationTree()
+		
+		//survey location filter skip levels
+		when:
+		def locationSkipLevels = surveyPageService.getSkipLocationLevels()
+		
+		then:
+		locationSkipLevels.size() == 1
+		locationSkipLevels.contains(LocationLevel.findByCode(SECTOR))
+		
+		//survey and program submit skip levels
+		when:
+		def submitSkipLevels = surveyPageService.getSkipSubmitLevels()
+		
+		then:
+		submitSkipLevels.size() == 2
+		submitSkipLevels.contains(LocationLevel.findByCode(NATIONAL))
+		submitSkipLevels.contains(LocationLevel.findByCode(PROVINCE))
+	}	
 	
 	def "test modify"() {
 		setup:
@@ -112,7 +404,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		FormEnteredValue.count() == 1
 		FormEnteredValue.list()[0].value.numberValue == 1
 		SurveyEnteredQuestion.count() == 2
-		SurveyEnteredQuestion.list()[1].getSkippedRules().equals(new HashSet([skipRule]))
+		SurveyEnteredQuestion.list().find {it.question.equals(question2)}.skippedRules.equals(new HashSet([skipRule]))
 	}
 	
 	def "test modify with skipped question referring to non existing element"() {
@@ -139,34 +431,6 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		FormEnteredValue.list()[0].value.numberValue == 1
 		FormEnteredValue.list()[1].validatable.isSkipped("") == true
 		SurveyEnteredQuestion.count() == 2
-	}
-	
-	
-	def "test submit"() {
-		setup:
-		setupLocationTree()
-		setupSecurityManager(newUser('test', 'uuid'))
-		def period = newPeriod()
-		def survey = newSurvey(period)
-		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		
-		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
-		
-		when:
-		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), v("1"))
-		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(KIVUYE), false, true);
-		newSurveyEnteredSection(section, period, DataLocation.findByCode(KIVUYE), false, true);
-		newSurveyEnteredProgram(program, period, DataLocation.findByCode(KIVUYE), false, true, false);
-		def submitted = surveyPageService.submit(DataLocation.findByCode(KIVUYE), program)
-		
-		then:
-		submitted == true
-		SurveyEnteredProgram.list()[0].closed == true
-		RawDataElementValue.count() == 1
-		RawDataElementValue.list()[0].value.equals(v("1"))
 	}
 	
 	def "test warning"() {
@@ -373,5 +637,5 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		then:
 		surveyPage.getOptions(question).equals([option2, option1])
 	}
-	
+			
 }

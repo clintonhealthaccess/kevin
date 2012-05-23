@@ -210,4 +210,18 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 		
 	}
 	
+	def testValueWithExistingEnumAndExistingOptionAndNoEnums() {
+		def enume = IntegrationTests.newEnume('code')
+		IntegrationTests.newEnumOption(IntegrationTests.j(['en':'VALUE_EN']), enume, 'value')
+			
+		assertEquals applyTemplate(
+			'<g:value value="${value}" type="${type}" enums="${enums}"/>',
+			[
+				'value': new Value("{\"value\":\"value\"}"),
+				'type': Type.TYPE_ENUM("code")
+			]
+		), 'VALUE_EN'
+		
+	}
+	
 }

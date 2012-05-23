@@ -4,6 +4,7 @@
 			<th/>
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="planning.planningtype.rawdataelement.label"/></th>
+			<th><g:message code="planning.planningtype.maxnumber.label"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'planning.planningcost.label')]"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
@@ -27,6 +28,7 @@
 				</td>
 				<td><g:i18n field="${planningType.names}"/></td>
 				<td><g:i18n field="${planningType.formElement.dataElement.names}"/></td>
+				<td>${planningType.maxNumber}</td>
 				<td>${planningType.costs.size()}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 

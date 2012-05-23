@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -38,9 +39,9 @@ public class PlanningType {
 	private Planning planning;
 	private Translation names = new Translation();
 	private Translation namesPlural = new Translation();
-	private String discriminator;
 	private String fixedHeader;
-	
+
+	private Integer maxNumber;
 	private Map<String, Translation> sectionDescriptions = new HashMap<String, Translation>();
 	
 	// TODO have that be the elements of the first MAP inside the LIST	 
@@ -104,6 +105,7 @@ public class PlanningType {
 	}
 	
 	@OneToMany(mappedBy="planningType", targetEntity=PlanningCost.class)
+	@OrderBy("order")
 	public List<PlanningCost> getCosts() {
 		return costs;
 	}
@@ -122,12 +124,12 @@ public class PlanningType {
 	}
 	
 	@Basic
-	public String getDiscriminator() {
-		return discriminator;
+	public Integer getMaxNumber() {
+		return maxNumber;
 	}
 	
-	public void setDiscriminator(String discriminator) {
-		this.discriminator = discriminator;
+	public void setMaxNumber(Integer maxNumber) {
+		this.maxNumber = maxNumber;
 	}
 	
 	@Basic
@@ -145,27 +147,17 @@ public class PlanningType {
 	}
 	
 	@Transient
-	public Type getDiscriminatorType() {
-		return getType(getDiscriminator());
-	}
-	
-	@Transient
 	public Type getFixedHeaderType() {
 		return getType(getFixedHeader());
 	}
 	
 	@Transient
 	public Type getType(String section) {
-		return formElement.getDataElement().getType().getType(section);
-	}
-	
-	@Transient
-	public List<PlanningCost> getPlanningCosts(String discriminatorValue) {
-		List<PlanningCost> result = new ArrayList<PlanningCost>();
-		for (PlanningCost planningCost : getCosts()) {
-			if (planningCost.getDiscriminatorValues().contains(discriminatorValue)) result.add(planningCost);
+		try {
+			return formElement.getDataElement().getType().getType(section);
+		} catch (IllegalArgumentException e) {
+			return null;
 		}
-		return result;
 	}
 	
 	/**
@@ -184,7 +176,6 @@ public class PlanningType {
 		// we get rid of the discriminator
 		// TODO how do we handle lists
 		result.remove(getFixedHeader());
-		result.remove(getDiscriminator());
 		return result;
 	}
 	

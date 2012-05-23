@@ -3,6 +3,7 @@
 		<tr>
 			<th/>
 			<th><g:message code="entity.name.label"/></th>
+			<th><g:message code="entity.datalocationtype.label"/></th>
 			<th><g:message code="planning.active.label"/></th>
 			<th><g:message code="period.label"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'planning.planningtype.label')]"/></th>
@@ -27,6 +28,7 @@
 					</ul>
 				</td>
 				<td><g:i18n field="${planning.names}" /></td>
+				<td>${planning.typeCodeString}</td>
 				<td>${planning?.active?'\u2713':''}</td>
 				<td>[${planning.period.startDate} - ${planning.period.startDate}]</td>
 				<td>${planning.planningTypes.size()}</td>

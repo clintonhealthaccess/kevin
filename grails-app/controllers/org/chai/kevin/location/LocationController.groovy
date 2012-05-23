@@ -1,10 +1,33 @@
 package org.chai.kevin.location;
 
 import org.chai.kevin.AbstractEntityController;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.AbstractController;
+import org.chai.kevin.LanguageService;
+import org.chai.kevin.LocationService;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
+import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.value.DataValue;
+import org.chai.kevin.util.Utils
+import org.supercsv.io.CsvListWriter;
+import org.supercsv.io.ICsvListWriter;
+import org.supercsv.prefs.CsvPreference;
 
 class LocationController extends AbstractEntityController {
 
 	def locationService
+	def languageService;
+	def calculationLocationService
+	def surveyExportService;
 	
 	def bindParams(def entity) {
 		entity.properties = params
@@ -65,14 +88,29 @@ class LocationController extends AbstractEntityController {
 	}
 	
 	def getAjaxData = {
-		def locations = locationService.searchLocation(Location.class, params['term'], [:])
-		
+		def locations = locationService.searchLocation(Location.class, params['term'], [:])		
 		render(contentType:"text/json") {
 			elements = array {
 				locations.each { location ->
 					elem (
 						key: location.id,
 						value: i18n(field:location.names)
+					)
+				}
+			}
+		}
+	}
+	
+	def getCalculationLocationAjaxData ={
+		def calculationLocations = locationService.searchLocation(Location.class, params['term'], [:])
+		calculationLocations.addAll(locationService.searchLocation(DataLocation.class, params['term'], [:]))
+		
+		render(contentType:"text/json") {
+			elements = array {
+				calculationLocations.each { location ->
+					elem (
+						key: location.id,
+						value: '['+location.class.simpleName+'] '+i18n(field:location.names)
 					)
 				}
 			}

@@ -24,6 +24,9 @@ class SecurityFilters {
 				if (controllerName == 'editSurvey') {
 					if (SecurityUtils.subject.isPermitted("editSurvey:"+actionName+":"+params.location)) return true;
 				}
+				if (controllerName == 'editPlanning') {
+					if (SecurityUtils.subject.isPermitted("editPlanning:"+actionName+":"+params.location)) return true;
+				}
 				
 				accessControl()
 			}

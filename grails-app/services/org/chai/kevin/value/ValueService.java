@@ -57,29 +57,16 @@ public class ValueService {
 
 	private static final Log log = LogFactory.getLog(ValueService.class);
 	
-	private DataService dataService;
 	private SessionFactory sessionFactory;
 	
 	@Transactional(readOnly=false)
 	public <T extends StoredValue> T save(T value) {
 		log.debug("save(value="+value+")");
 		
-		// set timestamp of all referencing data
-		// if saving value of RawDataElement
-		// TODO replace by a messaging system i.e. RabbitMQ
-		if (value instanceof RawDataElementValue) {
-			for (NormalizedDataElement normalizedDataElement : dataService.getReferencingNormalizedDataElements(value.getData())) {
-				normalizedDataElement.setTimestamp(new Date());
-				dataService.save(normalizedDataElement);
-			}
-			for (Calculation<?> calculation : dataService.getReferencingCalculations(value.getData())) {
-				calculation.setTimestamp(new Date());
-				dataService.save(calculation);
-			}
-		}
-		
 		value.setTimestamp(new Date());
 		sessionFactory.getCurrentSession().saveOrUpdate(value);
+		
+		setLastValueChanged(value.getData());
 		return value;
 	}
 	
@@ -90,6 +77,8 @@ public class ValueService {
 		T result = null;
 		if (values.size() > 0) result = values.get(0);
 		if (log.isDebugEnabled()) log.debug("getDataElementValue(...)="+result);
+		
+		sessionFactory.getCurrentSession().evict(result);
 		return result;
 	}
 	
@@ -178,14 +167,17 @@ public class ValueService {
 		if (location != null) query.setParameter("location", location);
 		if (period != null) query.setParameter("period", period);
 		query.executeUpdate();
+		
+		setLastValueChanged(data);
+	}
+	
+	private void setLastValueChanged(Data<?> data) {
+		data.setLastValueChanged(new Date());
+		sessionFactory.getCurrentSession().save(data);
 	}
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	
-	public void setDataService(DataService dataService) {
-		this.dataService = dataService;
-	}
-
 }

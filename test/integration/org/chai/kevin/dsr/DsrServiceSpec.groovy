@@ -17,7 +17,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(CODE(1))
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(3), 1, dataElement, [DISTRICT_HOSPITAL_GROUP], program)		
+		def target = newDsrTarget(CODE(3), 1, dataElement, program)		
 		
 		when:
 		def location = Location.findByCode(BURERA)
@@ -42,9 +42,9 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
 		def dataElement1 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def target1 = newDsrTarget(CODE(3), 1, dataElement1, [DISTRICT_HOSPITAL_GROUP], program)
+		def target1 = newDsrTarget(CODE(3), 1, dataElement1, program)
 		def dataElement2 = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
-		def target2 = newDsrTarget(CODE(5), 2, dataElement2, [DISTRICT_HOSPITAL_GROUP], program)
+		def target2 = newDsrTarget(CODE(5), 2, dataElement2, program)
 		refresh()
 		
 		when:
@@ -73,10 +73,10 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def program = newReportProgram(ROOT)
 		def cat1 = newDsrTargetCategory(CODE(2), 1)
 		def dataElement1 = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target1 = newDsrTarget(CODE(4), 1, dataElement1, [DISTRICT_HOSPITAL_GROUP], program, cat1)
+		def target1 = newDsrTarget(CODE(4), 1, dataElement1, program, cat1)
 		def cat2 = newDsrTargetCategory(CODE(5), 2)
 		def dataElement2 = newRawDataElement(CODE(6), Type.TYPE_NUMBER())
-		def target2 = newDsrTarget(CODE(7), 2, dataElement2, [DISTRICT_HOSPITAL_GROUP], program, cat2)
+		def target2 = newDsrTarget(CODE(7), 2, dataElement2, program, cat2)
 		refresh()
 		
 		when:
@@ -104,7 +104,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
 		def program = newReportProgram(CODE(2))
-		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, [DISTRICT_HOSPITAL_GROUP], program)	
+		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, program)	
 		refreshNormalizedDataElement()
 		def location = Location.findByCode(BURERA)
 		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
@@ -114,7 +114,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		
 		then:
 		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target).getNumberValue() == 10d	
-		dsrTable.getReportValue(DataLocation.findByCode(KIVUYE), target) == null
+		dsrTable.getReportValue(DataLocation.findByCode(KIVUYE), target).getNumberValue() == 10d
 		
 	}
 	
@@ -124,7 +124,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10"]]))
 		def program = newReportProgram(CODE(2))
-		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, program)
 		refreshNormalizedDataElement()
 		def location = Location.findByCode(BURERA)
 		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])

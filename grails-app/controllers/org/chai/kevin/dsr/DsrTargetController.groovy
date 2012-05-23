@@ -65,7 +65,6 @@ class DsrTargetController extends AbstractEntityController {
 		[
 			target: entity,
 			programs: ReportProgram.list(),
-			types: DataLocationType.list([cache: true]),
 			categories: DsrTargetCategory.list(),
 			dataElements: entity.dataElement!=null?[entity.dataElement]:[]
 		]
@@ -80,8 +79,6 @@ class DsrTargetController extends AbstractEntityController {
 			entity.category.targets.remove(entity)
 			entity.category.save()
 		}
-		entity.program.targets.remove(entity)
-		entity.program.save()
 		entity.delete()
 	}
 
@@ -98,10 +95,10 @@ class DsrTargetController extends AbstractEntityController {
 	def list = {
 		adaptParamsForList()
 		
-		List<DsrTarget> programs = DsrTarget.list(params);
+		List<DsrTarget> targets = DsrTarget.list(params);
 		
 		render (view: '/entity/list', model:[
-			entities: programs,
+			entities: targets,
 			template: "dsr/targetList",
 			code: getLabel(),
 			entityCount: DsrTarget.count(),

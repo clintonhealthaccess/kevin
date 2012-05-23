@@ -26,7 +26,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		def questionSummary
 		
 		when:
-		summaryPage = summaryService.getSurveySummaryPage(Location.findByCode(RWANDA), survey)
+		summaryPage = summaryService.getSurveySummaryPage(Location.findByCode(RWANDA), null, survey)
 		questionSummary = summaryPage.getQuestionSummary(DataLocation.findByCode(KIVUYE))
 		
 		then:
@@ -34,7 +34,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		questionSummary.completedQuestions == 0
 		
 		when:
-		summaryPage = summaryService.getProgramSummaryPage(Location.findByCode(RWANDA), program)
+		summaryPage = summaryService.getProgramSummaryPage(Location.findByCode(RWANDA), null, program)
 		questionSummary = summaryPage.getQuestionSummary(DataLocation.findByCode(KIVUYE))
 		
 		then:
@@ -42,7 +42,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		questionSummary.completedQuestions == 0
 		
 		when:
-		summaryPage = summaryService.getSectionSummaryPage(Location.findByCode(RWANDA), section)
+		summaryPage = summaryService.getSectionSummaryPage(Location.findByCode(RWANDA), null, section)
 		questionSummary = summaryPage.getQuestionSummary(DataLocation.findByCode(KIVUYE))
 		
 		then:
@@ -50,7 +50,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		questionSummary.completedQuestions == 0
 		
 		when:
-		summaryPage = summaryService.getSurveySummaryPage(Location.findByCode(RWANDA), survey)
+		summaryPage = summaryService.getSurveySummaryPage(Location.findByCode(RWANDA), null, survey)
 		summaryPage.sort(SurveySummaryPage.LOCATION_SORT, 'desc', 'en')
 		questionSummary = summaryPage.getQuestionSummary(DataLocation.findByCode(KIVUYE))
 		
@@ -60,7 +60,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		summaryPage.locations.equals([DataLocation.findByCode(KIVUYE), DataLocation.findByCode(BUTARO)])
 		
 		when:
-		summaryPage = summaryService.getSurveySummaryPage(Location.findByCode(RWANDA), survey)
+		summaryPage = summaryService.getSurveySummaryPage(Location.findByCode(RWANDA), null, survey)
 		summaryPage.sort(SurveySummaryPage.LOCATION_SORT, 'asc', 'en')
 		questionSummary = summaryPage.getQuestionSummary(DataLocation.findByCode(KIVUYE))
 		
@@ -71,7 +71,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		newSurveyEnteredQuestion(question1, period, DataLocation.findByCode(KIVUYE), false, true)
-		summaryPage = summaryService.getSurveySummaryPage(Location.findByCode(RWANDA), survey)
+		summaryPage = summaryService.getSurveySummaryPage(Location.findByCode(RWANDA), null, survey)
 		summaryPage.sort(SurveySummaryPage.PROGRESS_SORT, 'asc', 'en')
 		questionSummary = summaryPage.getQuestionSummary(DataLocation.findByCode(KIVUYE))
 		
@@ -81,6 +81,56 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		summaryPage.locations.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
 	}
 	
+	def "test program summary page with types"(){
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
+		def element2 = newSurveyElement(question2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()))		
+		
+		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])				
+		
+		when:
+		def burera = Location.findByCode(BURERA)
+		def summaryPage = summaryService.getProgramSummaryPage(burera, types, program)
+		def dataLocations = burera.collectDataLocations(null, types);
+		
+		then:
+		dataLocations.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])			
+		!dataLocations.equals(summaryPage.locations)
+		summaryPage.locations.equals([DataLocation.findByCode(KIVUYE)])
+	}
+
+	def "test section summary page with types"(){
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
+		def element2 = newSurveyElement(question2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()))		
+		
+		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])				
+		
+		when:
+		def burera = Location.findByCode(BURERA)
+		def summaryPage = summaryService.getSectionSummaryPage(burera, types, section)
+		def dataLocations = burera.collectDataLocations(null, types);
+		
+		then:
+		dataLocations.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])			
+		!dataLocations.equals(summaryPage.locations)
+		summaryPage.locations.equals([DataLocation.findByCode(KIVUYE)])
+	}
+		
 	def "test counted questions does not apply to group"() {
 		setup:
 		setupLocationTree()
@@ -93,7 +143,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		newSurveyEnteredQuestion(question1, period, DataLocation.findByCode(BUTARO), false, true)
-		def summaryPage = summaryService.getSurveySummaryPage(Location.findByCode(RWANDA), survey)
+		def summaryPage = summaryService.getSurveySummaryPage(Location.findByCode(RWANDA), null, survey)
 		def questionSummary = summaryPage.getQuestionSummary(DataLocation.findByCode(BUTARO))
 		
 		then:
@@ -109,11 +159,10 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		def survey = newSurvey(period)
 		
 		when:
-		def summaryPage = summaryService.getSurveySummaryPage(Location.findByCode(RWANDA), survey)
+		def summaryPage = summaryService.getSurveySummaryPage(Location.findByCode(RWANDA), null, survey)
 		
 		then:
 		s(summaryPage.locations*.code).equals(s([BUTARO, KIVUYE, "DP"]))
 		
 	}
-	
 }

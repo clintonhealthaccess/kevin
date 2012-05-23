@@ -46,7 +46,15 @@
 					        						<g:each in="${planningList.getLatestEntries(5)}" var="entry">
 														<li>
 															<a href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}">
-																<g:value value="${entry.fixedHeaderValue}" type="${entry.type.fixedHeaderType}" nullText="${message(code:'planning.none.entered')}"/>
+																<g:if test="${planningList.planningType.fixedHeader != null && !planningList.planningType.fixedHeader.empty}">
+																	<g:value value="${entry.fixedHeaderValue}" type="${entry.type.fixedHeaderType}" nullText="${message(code:'planning.none.entered')}"/>
+																</g:if>
+																<g:else>
+																	<g:i18n field="${planningList.planningType.names}"/>
+																	<g:if test="${planningList.planningType.maxNumber != 1}">
+																		${entry.lineNumber + 1}
+																	</g:if>
+																</g:else>
 															</a>
 															<span class="overview-manage right">
 																<a class="edit-link" href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}"><g:message code="default.link.edit.label"/></a>
@@ -63,11 +71,13 @@
 					        						</a>
 				        						</p>
 				        					</g:else>
-				        					<p class="overview-new">
-				        						<a class="next gray medium" href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:planningList.nextLineNumber])}">
-				        							<g:message code="planning.createnew" args="[i18n(field: planningList.planningType.names)]"/>
-				        						</a>
-				        					</p>
+				        					<g:if test="${planningList.planningType.maxNumber == null || planningList.nextLineNumber < planningList.planningType.maxNumber}">
+					        					<p class="overview-new">
+					        						<a class="next gray medium" href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:planningList.nextLineNumber])}">
+					        							<g:message code="planning.createnew" args="[i18n(field: planningList.planningType.names)]"/>
+					        						</a>
+					        					</p>
+				        					</g:if>
 				        				</li>
 				        			</g:each>
 				        		</ul>

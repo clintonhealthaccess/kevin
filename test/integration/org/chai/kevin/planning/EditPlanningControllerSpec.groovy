@@ -20,11 +20,11 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		// we create 2 form elements so they don't have the same ID as the type
 		def formElement1 = newFormElement(dataElement)
 		def formElement2 = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement2, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement2, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		
 		when:
@@ -41,12 +41,11 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		FormEnteredValue.count() == 1
 		FormEnteredValue.list()[0].value.listValue[0].mapValue['key1'].numberValue == 123d
 		FormEnteredValue.list()[0].value.listValue[0].getAttribute('uuid') != null
-		FormEnteredValue.list()[0].value.listValue[0].getAttribute('budget_updated') == 'false'
+		FormEnteredValue.list()[0].value.getAttribute('submitted') == "false"
 		jsonResult.id == planningType.id
 		jsonResult.lineNumber == 0
 		jsonResult.complete == false
 		jsonResult.valid == true
-		jsonResult.budgetUpdated == false
 	}
 	
 	def "validation works when false"() {
@@ -55,10 +54,10 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def formValidationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		def jsonResult
 		
@@ -85,10 +84,10 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def formValidationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		def jsonResult
 		
@@ -114,10 +113,10 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def skipRule = newFormSkipRule("\$"+formElement.id+"[_].key1 == 1", [(formElement):"[_].key1"])
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		def jsonResult
 		
@@ -144,11 +143,11 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		// we create 2 form elements so they don't have the same ID as the type
 		def formElement1 = newFormElement(dataElement)
 		def formElement2 = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement2, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement2, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		
 		when:
@@ -179,7 +178,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
-		def planning = newPlanning(period, true)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], true)
 		planningController = new EditPlanningController()
 		
 		when:
@@ -207,9 +206,9 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		
 		when:
@@ -233,16 +232,15 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO),
 			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		)
 		planningController = new EditPlanningController()
 		
 		when:
-		elementValue.value.listValue[0].setAttribute("submitted", "true")
 		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planning = planning.id
 		planningController.budget()
@@ -262,9 +260,9 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		value.listValue[0].setAttribute('budget_updated', 'true')
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), value)
@@ -277,12 +275,10 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		
 		then:
 		planningController.response.redirectedUrl == null
-		planningController.modelAndView.model.planningLists.find {it.budgetUpdated} != null
 		
 	}
 	
 	def "access budget page when no data displays budget without redirect"() {
-		setup:
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -290,9 +286,9 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		
 		when:
@@ -307,7 +303,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		
 	}
 	
-	def "update budget sets budget updated to true and redirects to budget - with planning"() {
+	def "overview with active planning"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -315,30 +311,20 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
-		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
-		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
-			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
-		)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP])
 		planningController = new EditPlanningController()
 		
 		when:
-		elementValue.value.listValue[0].setAttribute("submitted", "true")
 		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planning = planning.id
-		planningController.updateBudget()
+		planningController.overview()
 		
 		then:
-		planningController.response.redirectedUrl == '/editPlanning/budget/'+DataLocation.findByCode(BUTARO).id+'?planning='+planning.id
-		RawDataElementValue.count() == 1
-		FormEnteredValue.count() == 1
-		RawDataElementValue.list()[0].value.listValue[0].mapValue['key1'].numberValue == 10d
-		FormEnteredValue.list()[0].value.listValue[0].getAttribute("budget_updated") == 'true'
-		
+		planningController.modelAndView.model.planning.equals(planning)
+		planningController.modelAndView.model.location.equals(DataLocation.findByCode(BUTARO))
 	}
 	
-	def "udpate budget sets budget updated to true and redirects to budget - with planning type"() {
+	def "overview with non active planning for type returns 404"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -346,29 +332,19 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
-		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
-		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
-			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
-		)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP])
 		planningController = new EditPlanningController()
 		
 		when:
-		elementValue.value.listValue[0].setAttribute("submitted", "true")
-		planningController.params.location = DataLocation.findByCode(BUTARO).id
-		planningController.params.planningType = planningType.id
-		planningController.updateBudget()
+		planningController.params.location = DataLocation.findByCode(KIVUYE).id
+		planningController.params.planning = planning.id
+		planningController.overview()
 		
 		then:
-		planningController.response.redirectedUrl == '/editPlanning/budget/'+DataLocation.findByCode(BUTARO).id+'?planning='+planning.id
-		RawDataElementValue.count() == 1
-		FormEnteredValue.count() == 1
-		RawDataElementValue.list()[0].value.listValue[0].mapValue['key1'].numberValue == 10d
-		FormEnteredValue.list()[0].value.listValue[0].getAttribute("budget_updated") == 'true'
+		planningController.modelAndView == null
 	}
 	
-	def "submit sets submitted flag to true and redirects to targetURI"() {
+	def "planning list with non active planning for type returns 404"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -376,63 +352,114 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
-		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
-			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
-		)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		
 		when:
-		planningController.params.targetURI = '/test'
+		planningController.params.location = DataLocation.findByCode(KIVUYE).id
+		planningController.params.planningType = planningType.id
+		planningController.planningList()
+		
+		then:
+		planningController.modelAndView == null
+	}
+	
+	def "budget with non active planning for type returns 404"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def enume = newEnume(CODE(1))
+		newEnumOption(enume, "value")
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP])
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(KIVUYE).id
+		planningController.params.planning = planning.id
+		planningController.budget()
+		
+		then:
+		planningController.modelAndView == null
+	}
+	
+	def "summary page only shows active location types"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def enume = newEnume(CODE(1))
+		newEnumOption(enume, "value")
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP])
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = Location.findByCode(RWANDA).id
+		planningController.params.planning = planning.id
+		planningController.summaryPage()
+		
+		then:
+		planningController.modelAndView.model.summaryPage.dataLocations.equals([DataLocation.findByCode(BUTARO)])
+	}
+	
+	def "save when survey invalid stays on same page and does not submit"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def formElement = newFormElement(dataElement)
+		def formValidationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
+		planningController = new EditPlanningController()
+		
+		when:
 		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planningType = planningType.id
+		planningController.params.element = formElement.id
 		planningController.params.lineNumber = 0
-		planningController.submit()
+		planningController.params.suffix = '[0].key1'
+		planningController.params['elements['+formElement.id+'].value[0].key1'] = '123'
+		planningController.save()
 		
 		then:
-		planningController.response.redirectedUrl == '/test'
-		RawDataElementValue.count() == 1
-		RawDataElementValue.list()[0].value.listValue[0].getAttribute("budget_updated") == null
-		RawDataElementValue.list()[0].value.listValue[0].getAttribute("submitted") == null
-		FormEnteredValue.list()[0].value.listValue[0].getAttribute("budget_updated") == 'true'
-		FormEnteredValue.list()[0].value.listValue[0].getAttribute("submitted") == 'true'
+		planningController.modelAndView.model.planningType.equals(planningType)
+		FormEnteredValue.count() == 1
+		FormEnteredValue.list()[0].value.getAttribute('submitted') == "false"
+		
 	}
 	
-	
-	def "unsubmit sets submitted flag to false and redirects to targetURI"() {
+	def "save when valid submits and goes to target"() {
 		setup:
 		setupLocationTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
-		def enume = newEnume(CODE(1))
-		newEnumOption(enume, "value")
-		def dataElement = newRawDataElement(CODE(2),
-			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
-		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
-			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
-		)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		
 		when:
-		elementValue.value.listValue[0].setAttribute("submitted", "true")
-		elementValue.value.listValue[0].setAttribute("budget_updated", "true")
-		planningController.params.targetURI = '/test'
+		planningController.params.targetURI = '/editPlanning/overview'
 		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planningType = planningType.id
+		planningController.params.element = formElement.id
 		planningController.params.lineNumber = 0
-		planningController.unsubmit()
+		planningController.params.suffix = '[0].key1'
+		planningController.params['elements['+formElement.id+'].value[0].key1'] = '123'
+		planningController.save()
 		
 		then:
-		planningController.response.redirectedUrl == '/test'
-		RawDataElementValue.count() == 1
-		RawDataElementValue.list()[0].value.listValue[0].getAttribute("budget_updated") == null
-		RawDataElementValue.list()[0].value.listValue[0].getAttribute("submitted") == null
-		FormEnteredValue.list()[0].value.listValue[0].getAttribute("budget_updated") == 'true'
-		FormEnteredValue.list()[0].value.listValue[0].getAttribute("submitted") == 'false'
+		planningController.modelAndView == null
+		planningController.response.redirectedUrl == '/editPlanning/overview'
+		FormEnteredValue.count() == 1
+		FormEnteredValue.list()[0].value.getAttribute('submitted') == "true"
 	}
 	
 }

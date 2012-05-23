@@ -1,8 +1,6 @@
 <% if (levels == null) levels = new java.util.Stack() %>
 
-<g:if test="${showHints}">
-	<div class="admin-hint">Element: ${element.id} - Prefix: ${suffix}</div>
-</g:if>
+<g:render template="/survey/element/hints"/>
 
 <!-- Value type question -->
 <ul id="element-${element.id}-${suffix}" class="adv-form adv-form-${levels.size()} horizontal element element-map-level-${levels.size()} element-map ${validatable?.isSkipped(suffix)?'skipped':''} ${(validatable==null || validatable?.isValid(suffix))?'':'errors'}" data-element="${element.id}" data-suffix="${suffix}">

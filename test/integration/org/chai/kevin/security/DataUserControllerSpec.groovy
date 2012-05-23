@@ -28,6 +28,7 @@
 package org.chai.kevin.security
 
 import org.apache.shiro.crypto.hash.Sha256Hash
+import org.chai.kevin.HomeController;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.location.DataLocation;
 
@@ -35,7 +36,7 @@ import org.chai.kevin.location.DataLocation;
  * @author Jean Kahigiso M.
  *
  */
-class SurveyUserControllerSpec extends IntegrationTests{
+class DataUserControllerSpec extends IntegrationTests{
 	
 	def userController
 	
@@ -44,7 +45,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		setup:
 		setupLocationTree()
 		def dataLocation = DataLocation.findByCode(KIVUYE);
-		userController = new SurveyUserController();
+		userController = new DataUserController();
 		
 		when: 
 		userController.params.email="exemple@exemple.com";
@@ -52,15 +53,16 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		userController.params.password = "exemple";
 		userController.params.repeat = "exemple";
 		userController.params.permissionString = "*";
+		userController.params.landingPage = HomeController.SURVEY_LANDING_PAGE;
 		userController.params.dataLocationId=dataLocation.id;
 		userController.params.confirmed = true
 		userController.params.active = true
 		userController.save()
 		
 		then:
-		SurveyUser.count() == 1;
-		SurveyUser.findByUsername("exemple").username.equals("exemple");
-		SurveyUser.findByUsername("exemple").passwordHash.equals(new Sha256Hash("exemple").toHex());
+		DataUser.count() == 1;
+		DataUser.findByUsername("exemple").username.equals("exemple");
+		DataUser.findByUsername("exemple").passwordHash.equals(new Sha256Hash("exemple").toHex());
 		
 	}
 	
@@ -69,7 +71,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		setup:
 		setupLocationTree()
 		def dataLocation = DataLocation.findByCode(KIVUYE);
-		userController = new SurveyUserController();
+		userController = new DataUserController();
 		
 		when:
 		userController.params.email="exemple@exemple.com";
@@ -83,8 +85,8 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		userController.save()
 		
 		then:
-		SurveyUser.count() == 0;
-		SurveyUser.findByUsername("exemple")==null;
+		DataUser.count() == 0;
+		DataUser.findByUsername("exemple")==null;
 		
 	}
 	
@@ -93,7 +95,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		setup:
 		setupLocationTree()
 		def dataLocation = DataLocation.findByCode(KIVUYE);
-		userController = new SurveyUserController();
+		userController = new DataUserController();
 		def user = newSurveyUser("myuser1",UUID.randomUUID().toString(),dataLocation.id);
 
 		when:
@@ -105,11 +107,11 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		userController.save();
 		
 		then:
-		SurveyUser.count() == 1;
-		SurveyUser.findByUsername("myuser1")==null;
-		SurveyUser.findByUsername("exemple1")!=null;
-		SurveyUser.findByUsername("exemple1").email.equals("exemple@exemple.com");
-		SurveyUser.findByUsername("exemple1").passwordHash.equals("");
+		DataUser.count() == 1;
+		DataUser.findByUsername("myuser1")==null;
+		DataUser.findByUsername("exemple1")!=null;
+		DataUser.findByUsername("exemple1").email.equals("exemple@exemple.com");
+		DataUser.findByUsername("exemple1").passwordHash.equals("");
 				
 	}
 	def "edit user with password change"(){
@@ -117,7 +119,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		setup:
 		setupLocationTree()
 		def dataLocation = DataLocation.findByCode(KIVUYE);
-		userController = new SurveyUserController();
+		userController = new DataUserController();
 		def user = newSurveyUser("myuser2",UUID.randomUUID().toString(),dataLocation.id);
 		
 		when:
@@ -131,11 +133,11 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		userController.save();
 		
 		then:
-		SurveyUser.count() == 1;
-		SurveyUser.findByUsername("myuser2")==null;
-		SurveyUser.findByUsername("exemple2")!=null;
-		SurveyUser.findByUsername("exemple2").email.equals("ex@exemple.com");
-		SurveyUser.findByUsername("exemple2").passwordHash.equals(new Sha256Hash("exemple2").toHex());
+		DataUser.count() == 1;
+		DataUser.findByUsername("myuser2")==null;
+		DataUser.findByUsername("exemple2")!=null;
+		DataUser.findByUsername("exemple2").email.equals("ex@exemple.com");
+		DataUser.findByUsername("exemple2").passwordHash.equals(new Sha256Hash("exemple2").toHex());
 		
 	}
 	
@@ -143,7 +145,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		setup:
 		setupLocationTree()
 		def dataLocation = DataLocation.findByCode(KIVUYE);
-		userController = new SurveyUserController();
+		userController = new DataUserController();
 		def uuid = UUID.randomUUID().toString();
 		def user = newSurveyUser("myuser1",uuid,dataLocation.id);
 
@@ -153,16 +155,16 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		userController.save();
 		
 		then:
-		SurveyUser.count() == 1;
-		SurveyUser.findByUsername("myuser1")!=null;
-		SurveyUser.findByUsername("myuser1").uuid == uuid;
+		DataUser.count() == 1;
+		DataUser.findByUsername("myuser1")!=null;
+		DataUser.findByUsername("myuser1").uuid == uuid;
 	}
 	
 	def "cannot change password hash"(){
 		setup:
 		setupLocationTree()
 		def dataLocation = DataLocation.findByCode(KIVUYE);
-		userController = new SurveyUserController();
+		userController = new DataUserController();
 		def user = newSurveyUser("myuser1",UUID.randomUUID().toString(),dataLocation.id);
 
 		when:
@@ -171,9 +173,9 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		userController.save();
 		
 		then:
-		SurveyUser.count() == 1;
-		SurveyUser.findByUsername("myuser1")!=null;
-		SurveyUser.findByUsername("myuser1").passwordHash == '';
+		DataUser.count() == 1;
+		DataUser.findByUsername("myuser1")!=null;
+		DataUser.findByUsername("myuser1").passwordHash == '';
 	}
 
 }

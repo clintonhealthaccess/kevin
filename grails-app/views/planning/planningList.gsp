@@ -19,9 +19,11 @@
         
 						<ul class="clearfix" id="questions">
 							<li class="question push-20">
-								<a href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[planningType: planningType.id, location: location.id, lineNumber: planningList.nextLineNumber])}" class="next medium gray right">
-									<g:message code="planning.createnew" args="[i18n(field: planningType.names)]"/>
-								</a>
+								<g:if test="${planningList.planningType.maxNumber == null || planningList.nextLineNumber < planningList.planningType.maxNumber}">
+									<a href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[planningType: planningType.id, location: location.id, lineNumber: planningList.nextLineNumber])}" class="next medium gray right">
+										<g:message code="planning.createnew" args="[i18n(field: planningType.names)]"/>
+									</a>
+								</g:if>
 								<h4 class="section-title">
 									<span class="question-default">
 										<r:img uri="/images/icons/star_small.png"/>
@@ -49,10 +51,18 @@
 											<tbody>
 												<g:each in="${planningList.planningEntries}" var="entry">
 													<tr>
-														<td class="status ${entry.submitted?'pos':'neg'}"></td>
+														<td class="status ${!entry.invalidSections.empty?'invalid':!entry.incompleteSections.empty?'incomplete':'complete'}"></td>
 														<td>
 															<a href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:entry.lineNumber])}">
-																<g:value value="${entry.fixedHeaderValue}" type="${entry.type.fixedHeaderType}" nullText="none entered"/>
+																<g:if test="${planningType.fixedHeader != null && !planningType.fixedHeader.empty}">
+																	<g:value value="${entry.fixedHeaderValue}" type="${entry.type.fixedHeaderType}" nullText="none entered"/>
+																</g:if>
+																<g:else>
+																	<g:i18n field="${planningType.names}"/>
+																	<g:if test="${planningType.maxNumber != 1}">
+																		${entry.lineNumber + 1}
+																	</g:if>
+																</g:else>
 															</a>
 														</td>
 														<td>

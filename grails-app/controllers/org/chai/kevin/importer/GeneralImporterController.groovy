@@ -81,7 +81,7 @@ class GeneralImporterCommand {
 //			boolean valid = true;
 //			if(val != null)
 //				if(!val.contentType.equals(FILE_TYPE))
-//					return valid=false;
+//					valid=false;
 //			return valid;
 //		})
 	}

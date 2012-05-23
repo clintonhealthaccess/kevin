@@ -4,9 +4,9 @@
 			<th/>
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="planning.planningcost.type.label"/></th>
-			<th><g:message code="planning.planningcost.discriminatorvalue.label"/></th>
-			<th><g:message code="planning.planningcost.groupsection.label"/></th>
 			<th><g:message code="planning.planningcost.dataelement.label"/></th>
+			<th><g:message code="planning.planningcost.hideifzero.label"/></th>
+			<th><g:message code="entity.order.label"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -28,9 +28,9 @@
 				</td>
 				<td><g:i18n field="${planningCost.names}"/></td>
 				<td>${planningCost.type}</td>
-				<td>${planningCost.discriminatorValueString}</td>
-				<td>${planningCost.groupSection}</td>
 				<td><g:i18n field="${planningCost.dataElement.names}"/>[${planningCost.dataElement.id}]</td>
+				<td>${planningCost?.hideIfZero?'\u2713':''}</td>
+				<td>${planningCost.order}</td>
 			</tr>
 		</g:each>
 	</tbody>

@@ -1,6 +1,7 @@
 package org.chai.kevin.value;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,6 +56,11 @@ public class AggregationValue extends CalculationValue<AggregationPartialValue> 
 	@Override
 	public String toString() {
 		return "AggregationValue [getValue()=" + getValue() + "]";
+	}
+
+	@Override
+	public Date getTimestamp() {
+		return null;
 	}
 	
 }

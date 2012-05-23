@@ -1,4 +1,5 @@
 import org.chai.kevin.Period;
+import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.RawDataElement;
 
 class ExpressionMapValidConstraint {
@@ -9,7 +10,13 @@ class ExpressionMapValidConstraint {
 		def invalidExpressions = []
 		val.each { period, groupMap ->
 			groupMap.each { group, expression ->
-				if (expression.trim() != '' && !expressionService.expressionIsValid(expression, RawDataElement.class)) {
+				def valid = false
+				try {
+					valid = expressionService.expressionIsValid(expression, DataElement.class)
+				} catch (IllegalArgumentException e) {
+					valid = false
+				}
+				if (expression.trim() != '' && !valid) {
 					invalidExpressions << expression
 					errors.rejectValue('expressionMap', 'normalizeddataelement.expression.invalid', [expression, Period.get(period), group] as Object[], 'Expression {0} is invalid for period {1} and group {2}.')
 				}

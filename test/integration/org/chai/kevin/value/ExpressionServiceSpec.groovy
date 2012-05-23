@@ -82,7 +82,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 				
 		then:
 		result.value == Value.NULL_INSTANCE()
-		result.status == Status.DOES_NOT_APPLY
+		result.status == Status.MISSING_EXPRESSION
 		
 		when: "everything is fine"
 		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), v("40"))
@@ -101,6 +101,23 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		then:
 		result.value == Value.NULL_INSTANCE()
 		result.status == Status.VALID
+	}
+	
+	def "test normalized data elements expression empty expressions treated as missing"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(10), Type.TYPE_NUMBER())
+		def normalizedDataElement = null
+		def result = null
+		
+		when: "data element is missing"
+		normalizedDataElement = new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):""]])).save(validate: false)
+		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
+		
+		then:
+		result.value == Value.NULL_INSTANCE()
+		result.status == Status.MISSING_EXPRESSION
 	}
 	
 	def "test normalized data element with typing errors"() {
@@ -159,6 +176,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def burera = Location.findByCode(BURERA)
 		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
 		newDataLocation("dummy", burera, dh)
+		normalizedDataElement.timestamp = new Date()
+		normalizedDataElement.save(failOnError: true)
 		refreshNormalizedDataElement()
 		result = expressionService.calculatePartialValues(sum, Location.findByCode(BURERA), period)
 		
@@ -201,6 +220,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def burera = Location.findByCode(BURERA)
 		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
 		newDataLocation("dummy", burera, dh)
+		normalizedDataElement.timestamp = new Date()
+		normalizedDataElement.save(failOnError: true)
 		refreshNormalizedDataElement()
 		result = expressionService.calculatePartialValues(sum, Location.findByCode(BURERA), period)
 		
@@ -243,6 +264,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def burera = Location.findByCode(BURERA)
 		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
 		newDataLocation("dummy", burera, dh)
+		normalizedDataElement.timestamp = new Date()
+		normalizedDataElement.save(failOnError: true)
 		refreshNormalizedDataElement()
 		result = expressionService.calculatePartialValues(average, Location.findByCode(BURERA), period)
 		
@@ -507,15 +530,17 @@ public class ExpressionServiceSpec extends IntegrationTests {
 				
 		when:
 		formula = "(1"
+		expressionService.expressionIsValid(formula, Data.class)
 		
 		then:
-		!expressionService.expressionIsValid(formula, Data.class)
+		thrown IllegalArgumentException
 		
 		when:
 		formula = "if((10,1,0)"
+		expressionService.expressionIsValid(formula, Data.class)
 		
 		then:
-		!expressionService.expressionIsValid(formula, Data.class)
+		thrown IllegalArgumentException
 		
 		when:
 		formula = "123"

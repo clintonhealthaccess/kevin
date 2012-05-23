@@ -36,4 +36,20 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 		
 	}
 	
+	
+	def "delete target" () {
+		setup:
+		setupLocationTree()
+		def program = newReportProgram(CODE(1))
+		def target = newFctTarget(CODE(1), [], program)
+		fctTargetController = new FctTargetController()
+		
+		when:
+		fctTargetController.params.id = target.id
+		fctTargetController.delete()
+		
+		then:
+		FctTarget.count() == 0
+	}
+	
 }

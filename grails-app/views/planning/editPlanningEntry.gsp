@@ -15,12 +15,11 @@
 					<li><a class="${selected=='undertakings'?'selected':''}" href="${createLink(controller:'editPlanning', action:'overview', params:[planning: planningType.planning.id, location: location.id])}"><g:message code="planning.tabs.undertakings"/></a></li>
 					<li><a class="selected" href="#"><g:message code="planning.tabs.new" args="[i18n(field:planningType.names)]"/></a></li>
 					<li><a class="${selected=='budget'?'selected':''}" href="${createLink(controller:'editPlanning', action:'budget', params:[planning: planningType.planning.id, location: location.id])}"><g:message code="planning.tabs.budget"/></a></li>
-					<li class="settings"><a href="#"><g:message code="planning.tabs.settings"/></a></li>
 				</ul>
 		    	<g:render template="/templates/help" model="[content: message(code:'planning.new.help')]"/>
 					
 				<div id="questions">
-					<g:form url="[controller:'editPlanning', action:'submit', params: [location: location.id, planningType: planningType.id, targetURI: targetURI]]">
+					<g:form url="[controller:'editPlanning', action:'save', params: [location: location.id, planningType: planningType.id, targetURI: targetURI]]">
 		  				<input class="js_always-send" type="hidden" name="lineNumber" value="${planningEntry.lineNumber}"/>
 		
 						<div id="element-${planningType.formElement.id}">
@@ -57,12 +56,7 @@
 						<ul class=" form-actions clearfix">
 							<li>
     		  					<button type="submit" class="loading-disabled">
-    		  						<g:if test="${!planningEntry.submitted}">
-    		  							<g:message code="planning.new.acceptinbudget"/>
-    		  						</g:if>
-    		  						<g:else>
-    		  							<g:message code="planning.new.updatebudget"/>
-    		  						</g:else>
+    		  						<g:message code="planning.new.save"/>
     		  					</button>
   		  					</li>
   		  					<li>
@@ -77,14 +71,6 @@
     		  				</li>
 		  				</div>
 		  				<br />
-		  				<g:if test="${planningEntry.submitted}">
-							<p class="context-message warning">
-								<g:message code="planning.new.removefrombudget.help"/>
-								<a class="next gray medium right pull-7" href="${createLink(controller:'editPlanning', action:'unsubmit', params: [location: location.id, planningType: planningType.id, lineNumber: planningEntry.lineNumber, targetURI: targetURI])}">
-									<g:message code="planning.new.removefrombudget"/>
-								</a>
-							</p>
-						</g:if>
 	  				</g:form>
 				</div>
 			</div>

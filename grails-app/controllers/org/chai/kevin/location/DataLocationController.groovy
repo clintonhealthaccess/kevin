@@ -73,7 +73,7 @@ class DataLocationController extends AbstractEntityController {
 				dataLocations.each { dataLocation ->
 					elem (
 						key: dataLocation.id,
-						value: i18n(field:dataLocation.names)
+						value: i18n(field:dataLocation.location.names)+" - "+i18n(field:dataLocation.names)
 					)
 				}
 			}

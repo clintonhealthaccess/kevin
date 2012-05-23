@@ -11,6 +11,9 @@
 		<g:selectFromList name="period.id" label="${message(code:'planning.period.label')}" bean="${planning}" field="period"
 			from="${periods}" value="${planning.period?.id}" values="${periods.collect{it.startDate.toString()+' - '+it.endDate.toString()}}" optionKey="id" multiple="false"/>
 	
+		<g:selectFromList name="typeCodes" label="${message(code:'entity.datalocationtype.label')}" bean="${planning}" field="typeCodeString" 
+			from="${types}" value="${planning.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
+	
 		<div class="row">
 			<label><g:message code="planning.active.label"/></label>
 			<g:checkBox name="active" value="${planning.active}" />

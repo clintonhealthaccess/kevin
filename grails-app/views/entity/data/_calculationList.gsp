@@ -9,7 +9,8 @@
   			<g:sortableColumn property="code" title="${message(code: 'entity.code.label')}" />
   			<th><g:message code="calculation.expression.label"/></th>
   			<th><g:message code="calculation.lastrefreshed.label"/></th>
-  			<th><g:message code="calculation.uptodate.label"/></th>
+  			<th><g:message code="calculation.lastvaluechanged.label"/></th>
+  			<th><g:message code="entity.list.manage.label"/></th>
   		</tr>
   	</thead>
   	<tbody>
@@ -34,8 +35,27 @@
   				<td data-data="${calculation.id}"><g:i18n field="${calculation.names}" /></td>
   				<td>${calculation.code}</td>
   				<td>${calculation.expression}</td>
-  				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${calculation.calculated}"/></td>
-  				<td>${calculation.needsRefresh()?'':'\u2713'}</td>
+  				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${calculation.refreshed}"/></td>
+  				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${calculation.lastValueChanged}"/></td>
+  				<td>
+					<div class="js_dropdown dropdown"> 
+						<a class="selected manage-btn" href="#"><g:message code="entity.list.manage.label"/></a>
+						<div class="hidden manage-list dropdown-list js_dropdown-list">
+							<ul>
+  								<li>
+  									<a href="${createLinkWithTargetURI(controller:'data', action:'calculateValues', params:[data:calculation.id])}">
+  										<g:message code="dataelement.calculatevalues.label"/>
+  									</a>
+  								</li>
+  								<li>
+  									<a href="${createLinkWithTargetURI(controller:'data', action:'deleteValues', params:[data:calculation.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
+  										<g:message code="data.deletevalues.label"/>
+  									</a>
+  								</li>
+  							</ul>
+  						</div>
+  					</div>
+  				</td>
   			</tr>
   		</g:each>
   	</tbody>

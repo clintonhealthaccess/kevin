@@ -1,3 +1,4 @@
+<%@page import="org.chai.kevin.util.Utils"%>
 <table class="listing">
 	<thead>
 		<tr>
@@ -22,8 +23,8 @@
 						
 					</ul>
 				</td>
-				<td>${period.startDate}</td>
-				<td>${period.endDate}</td>
+				<td>${Utils.formatDate(period.startDate)}</td>
+				<td>${Utils.formatDate(period.endDate)}</td>
 			</tr>
 		</g:each>
 	</tbody>

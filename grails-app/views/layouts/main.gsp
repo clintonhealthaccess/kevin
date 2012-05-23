@@ -81,7 +81,7 @@
 				<shiro:hasPermission permission="menu:survey">
 					<li><a class="${controllerName=='editSurvey'||controllerName=='summary'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey"/></a></li>
 				</shiro:hasPermission>
-				<shiro:hasPermission permission="menu:admin">
+				<shiro:hasPermission permission="menu:planning">
 					<li><a class="${controllerName=='editPlanning'?'active':''}" href="${createLink(controller: 'editPlanning', action:'view')}"><g:message code="header.navigation.planning"/></a></li>
 				</shiro:hasPermission>
 				<shiro:hasPermission permission="menu:reports">
@@ -95,6 +95,7 @@
 	  						<li><a class="${controllerName=='calculation'?'active':''}" href="${createLink(controller: 'calculation', action:'list')}"><g:message code="calculation.label"/></a></li>
 	  						<li><a class="${controllerName=='enum'?'active':''}" href="${createLink(controller: 'enum', action:'list')}"><g:message code="enum.label"/></a></li>
 	  						<li><a class="${controllerName=='period'?'active':''}" href="${createLink(controller: 'period', action:'list')}"><g:message code="period.label"/></a></li>
+	  						<li><a class="${controllerName=='reportProgram'?'active':''}" href="${createLink(controller: 'reportProgram', action:'list')}"><g:message code="reports.program.label"/></a></li>
 	  						<li><a class="${controllerName=='dashboardProgram'?'active':''}" href="${createLink(controller: 'dashboardProgram', action:'list')}"><g:message code="dashboard.program.label"/></a></li>
 	  						<li><a class="${controllerName=='dashboardTarget'?'active':''}" href="${createLink(controller: 'dashboardTarget', action:'list')}"><g:message code="dashboard.target.label"/></a></li>
 	  						<li><a class="${controllerName=='dsrTarget'?'active':''}" href="${createLink(controller: 'dsrTarget', action:'list')}"><g:message code="dsr.target.label"/></a></li>
@@ -111,6 +112,8 @@
 							<li><a class="${controllerName=='expression'?'active':''}" href="${createLink(controller: 'expression', action:'test')}"><g:message code="expression.test.label"/></a></li>
 							<li><a class="${controllerName=='generalImporter'?'active':''}" href="${createLink(controller: 'generalImporter', action:'importer')}"><g:message code="import.general.data.label" /></a></li>
 							<li><a class="${controllerName=='normalizedImporter'?'active':''}" href="${createLink(controller: 'normalizedImporter', action:'importer')}"><g:message code="import.normalized.data.label" /></a></li>
+							<li><a class="${controllerName=='exporter'?'active':''}" href="${createLink(controller: 'exporter', action:'list')}"><g:message code="export.label" /></a></li>
+	  					
 	  					</ul>
 	  				</li>
 	  			</shiro:hasPermission>

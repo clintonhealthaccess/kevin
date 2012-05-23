@@ -75,13 +75,16 @@ public class PlanningList {
 	}
 	
 	public PlanningEntry getOrCreatePlanningEntry(Integer lineNumber) {
+		if (planningType.getMaxNumber() != null && planningType.getMaxNumber() <= lineNumber) 
+			throw new IllegalArgumentException("lineNumber is bigger than the maximum allowed number of lines");
+		
 		PlanningEntry result = null;
 		if (lineNumber >= getPlanningEntries().size()) {
 			result = new PlanningEntry(dataLocation, planningType, formEnteredValue.getValidatable(), lineNumber, enums);
 			result.mergeValues(new HashMap<String, Object>());
-			result.setUuid(UUID.randomUUID().toString());
 		}
 		else result = getPlanningEntries().get(lineNumber);
+		if (result.getUuid() == null) result.setUuid(UUID.randomUUID().toString());
 		return result;
 	}
 	
@@ -92,13 +95,6 @@ public class PlanningList {
 	
 	public Integer getNextLineNumber() {
 		return getPlanningEntries().size();
-	}
-	
-	public boolean isBudgetUpdated() {
-		for (PlanningEntry planningEntry : getPlanningEntries()) {
-			if (!planningEntry.isBudgetUpdated() && planningEntry.isSubmitted()) return false;
-		}
-		return true;
 	}
 	
 	public boolean isEmpty() {

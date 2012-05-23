@@ -54,6 +54,7 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
+import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 public class ExpressionService {
@@ -114,7 +115,7 @@ public class ExpressionService {
 		
 		String expression = normalizedDataElement.getExpression(period, dataLocation.getType().getCode());
 		
-		StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, normalizedDataElement.getType(), period, dataLocation, RawDataElement.class);
+		StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, normalizedDataElement.getType(), period, dataLocation, DataElement.class);
 		NormalizedDataElementValue expressionValue = new NormalizedDataElementValue(statusValuePair.value, statusValuePair.status, dataLocation, normalizedDataElement, period);
 		
 		if (log.isDebugEnabled()) log.debug("getValue()="+expressionValue);
@@ -126,8 +127,8 @@ public class ExpressionService {
 		if (expressionLog.isInfoEnabled()) expressionLog.info("getting expression status-value for: expression={"+expression+"}, type={"+type+"}, period={"+period+"}, dataLocation={"+dataLocation+"}");
 		
 		StatusValuePair statusValuePair = new StatusValuePair();
-		if (expression == null) {
-			statusValuePair.status = Status.DOES_NOT_APPLY;
+		if (expression == null || expression.trim().isEmpty()) {
+			statusValuePair.status = Status.MISSING_EXPRESSION;
 			statusValuePair.value = Value.NULL_INSTANCE();
 		}
 		else {
@@ -146,7 +147,7 @@ public class ExpressionService {
 					valueMap.put(entry.getValue().getId().toString(), dataValue==null?null:dataValue.getValue());
 					typeMap.put(entry.getValue().getId().toString(), entry.getValue().getType());
 				}
-				if (expressionLog.isDebugEnabled()) expressionLog.debug("values and types: valueMap={"+valueMap+"}, typeMap={"+typeMap+"}");
+//				if (expressionLog.isDebugEnabled()) expressionLog.debug("values and types: valueMap={"+valueMap+"}", typeMap={"+typeMap+"}");
 				
 				if (hasNullValues(valueMap.values())) {
 					if (expressionLog.isInfoEnabled()) expressionLog.info("found null values");
@@ -174,7 +175,7 @@ public class ExpressionService {
 
 	// TODO do this for validation rules
 	@Transactional(readOnly=true)
-	public <T extends Data<?>> boolean expressionIsValid(String formula, Class<T> allowedClazz) {
+	public <T extends Data<?>> boolean expressionIsValid(String formula, Class<T> allowedClazz) throws IllegalArgumentException {
 		Map<String, T> variables = getDataInExpression(formula, allowedClazz);
 		
 		if (hasNullValues(variables.values())) return false;
@@ -185,11 +186,7 @@ public class ExpressionService {
 			jaqlVariables.put(variable.getKey(), type.getJaqlValue(type.getPlaceHolderValue()));
 		}
 		
-		try {
-			jaqlService.getJsonValue(formula, jaqlVariables);	
-		} catch (IllegalArgumentException e) {
-			return false;
-		}
+		jaqlService.getJsonValue(formula, jaqlVariables);
 		return true;
     }
 	
@@ -262,4 +259,5 @@ public class ExpressionService {
 	public void setJaqlService(JaqlService jaqlService) {
 		this.jaqlService = jaqlService;
 	}
+	
 }

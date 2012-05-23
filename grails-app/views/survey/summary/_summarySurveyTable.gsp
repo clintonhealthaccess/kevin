@@ -8,12 +8,15 @@
 			<g:sortableColumn property="${SurveySummaryPage.LOCATION_SORT}" title="${message(code: 'location.label')}" params="${params}" defaultOrder="asc"/>
 			<th><g:message code="survey.summary.programsubmitted.label" /></th>
 			<g:sortableColumn property="${SurveySummaryPage.PROGRESS_SORT}" title="${message(code: 'survey.summary.progress')}" params="${params}" defaultOrder="desc"/>
-			<th></th>
+			<th>				
+			</th>
 		</thead>
 		<tbody>
+			<g:set var="surveysClosed" value="${true}"/>
 			<g:each in="${summaryPage.locations}" var="location">
 				<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(location)}" />
 				<g:set var="programSummary" value="${summaryPage.getProgramSummary(location)}" />
+				<g:set var="surveyClosed" value="${programSummary.submittedPrograms == programSummary.programs}" />
 				<tr>
 					<td class="program-table-link" data-location="${location.id}">
 						<a href="${createLink(controller: 'surveySummary', action: 'programTable', params: [survey: currentSurvey.id, location: location.id])}"><g:i18n field="${location.names}"/></a>
@@ -48,6 +51,16 @@
 									</a>
 								</li>
 							</shiro:hasPermission>
+							<shiro:hasPermission permission="surveySummary:submitAll">
+								<g:if test="${!surveyClosed}">
+									<g:set var="surveysClosed" value="${false}"/>
+									<li>
+										<a href="${createLink(controller: 'surveySummary', action: 'submitAll', params: [survey: currentSurvey?.id, location: currentLocation.id, submitLocation: location.id])}">
+											<g:message code="survey.summary.submitsurvey.label" />
+										</a>
+									</li>														
+								</g:if>
+							</shiro:hasPermission>
 						</ul>
 					</td>
 				</tr>			
@@ -57,6 +70,19 @@
 					</td>
 				</tr>
 			</g:each>
+			<shiro:hasPermission permission="surveySummary:submitAll">
+				<g:if test="${!submitSkipLevels.contains(currentLocation.level) && !surveysClosed}">
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td><a
+							href="${createLink(controller: 'surveySummary', action: 'submitAll', params: params << [survey: currentSurvey?.id, submitLocation: currentLocation.id])}">
+								<g:message code="survey.summary.submitallsurvey.label" />
+						</a></td>
+					</tr>
+				</g:if>
+			</shiro:hasPermission>			
 		</tbody>
 	</table>
 </div>

@@ -59,7 +59,6 @@ public class DsrTarget extends AbstractReportTarget implements Exportable, Impor
 	private DataElement<StoredValue> dataElement;
 	private DsrTargetCategory category;
 	private String format;
-	private String typeCodeString;  //comma-separated list of location type ids
 	
 	@Id
 	@GeneratedValue
@@ -96,24 +95,6 @@ public class DsrTarget extends AbstractReportTarget implements Exportable, Impor
 	public void setFormat(String format) {
 		this.format = format;
 	}
-
-	@Lob
-	public String getTypeCodeString() {
-		return typeCodeString;
-	}
-
-	public void setTypeCodeString(String typeCodeString) {
-		this.typeCodeString = typeCodeString;
-	}
-	
-	@Transient
-	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString);
-	}
-	
-	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes);
-	}	
 	
 	@Override
 	public String toExportString() {

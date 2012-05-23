@@ -216,8 +216,8 @@ public class Type extends JSONValue {
 		case DATE:
 			throw new IllegalArgumentException();
 		case LIST:
-			if (!prefix.startsWith("[_]")) throw new IllegalArgumentException("Prefix "+prefix+" not found in type: "+this);
-			return getListType().getType(prefix.substring(3));
+			if (!prefix.matches("^\\[(\\d*|_)\\].*")) throw new IllegalArgumentException("Prefix "+prefix+" not found in type: "+this);
+			return getListType().getType(prefix.replaceAll("^\\[(\\d*|_)\\]", ""));
 		case MAP:
 			boolean found = false;
 			for (Entry<String, Type> entry : getElementMap().entrySet()) {
@@ -554,10 +554,12 @@ public class Type extends JSONValue {
 				case MAP:
 					result.append("{");
 					for (Entry<String, Value> entry : value.getMapValue().entrySet()) {
-						result.append("\""+entry.getKey()+"\"");
-						result.append(":");
-						result.append(getElementMap().get(entry.getKey()).getJaqlValue(entry.getValue()));
-						result.append(",");
+						if (getElementMap().containsKey(entry.getKey())) {
+							result.append("\""+entry.getKey()+"\"");
+							result.append(":");
+							result.append(getElementMap().get(entry.getKey()).getJaqlValue(entry.getValue()));
+							result.append(",");
+						}
 					}
 					result.append("}");
 					break;
@@ -683,7 +685,8 @@ public class Type extends JSONValue {
 						
 						Map<String, Value> mapValues = currentValue.getMapValue();
 						for (Entry<String, Value> entry : mapValues.entrySet()) {
-							changed = changed | typeMap.get(entry.getKey()).transformValue(entry.getValue(), currentPrefix+"."+entry.getKey(), predicate);
+							Type type = typeMap.get(entry.getKey());
+							if (type != null) changed = changed | typeMap.get(entry.getKey()).transformValue(entry.getValue(), currentPrefix+"."+entry.getKey(), predicate);
 						}
 						
 						if (changed) {

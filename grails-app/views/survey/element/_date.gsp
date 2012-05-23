@@ -10,9 +10,7 @@
 
 	<input id="date-${element.id}-${suffix}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} type="text" value="${Utils.formatDate(value?.dateValue)}" name="elements[${element.id}].value${suffix}" class="${tooltipValue!=null?'tooltip':''} idle-field input ${!readonly?'loading-disabled':''}" disabled="disabled"/>
 
-	<g:if test="${showHints}">
-		<div class="admin-hint">Element: ${element.id} - Prefix: ${suffix}</div>
-	</g:if>
+	<g:render template="/survey/element/hints"/>
 
 	<div class="error-list">
 		<g:renderUserErrors element="${element}" validatable="${validatable}" suffix="${suffix}" location="${location}"/>

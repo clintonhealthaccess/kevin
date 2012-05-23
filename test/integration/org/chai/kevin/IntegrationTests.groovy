@@ -49,6 +49,7 @@ import org.chai.kevin.data.ExpressionMap;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
+import org.chai.kevin.export.Exporter;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormSkipRule;
@@ -67,7 +68,7 @@ import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram
-import org.chai.kevin.security.SurveyUser;
+import org.chai.kevin.security.DataUser;
 import org.chai.kevin.security.User;
 
 abstract class IntegrationTests extends IntegrationSpec {
@@ -153,6 +154,10 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static def newDataLocationType(def names, def code) {
 		return new DataLocationType(names: names, code: code).save(failOnError: true)
 	}
+	
+	static def newExporter(def descriptions,def periods, def locationType, def locations, def data){
+		return new Exporter(descriptions:descriptions,periods:periods,typeCodeString:locationType,locations:locations,data:data,date:new Date()).save(failOnError: true);
+	}
 		
 	static def newDataLocation(def code, def location, def type) {
 		return newDataLocation([:], code, location, type)
@@ -199,7 +204,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newSurveyUser(def username, def uuid, def dataLocationId) {
-		return new SurveyUser(username: username, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId).save(failOnError: true)
+		return new DataUser(username: username, landingPage: HomeController.SURVEY_LANDING_PAGE, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId).save(failOnError: true)
+	}
+	
+	static def newPlanningUser(def username, def uuid, def dataLocationId) {
+		return new DataUser(username: username, landingPage: HomeController.PLANNING_LANDING_PAGE, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId).save(failOnError: true)
 	}
 	
 	static def newReportProgram(def code) {
@@ -275,22 +284,14 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return newAggregation([:], expression, code)
 	}
 
-	static def newAverage(def names, String expression, def code, def calculated) {
-		return new Average(names: names, expression: expression, code: code, calculated: calculated).save(failOnError: true)
-	}
-
-	static def newAverage(def names, String expression, String code) {
-		return newAverage(names, expression, code, null)
+	static def newAverage(def names, String expression, def code) {
+		return new Average(names: names, expression: expression, code: code).save(failOnError: true)
 	}
 
 	static def newAverage(String expression, def code) {
-		return newAverage([:], expression, code, null)
+		return newAverage([:], expression, code)
 	}
 	
-	static def newAverage(String expression, def code, Date calculated) {
-		return newAverage([:], expression, code, calculated)
-	}
-
 	static Sum newSum(def names, def expression, def code) {
 		return new Sum(names: names, expression: expression, code: code).save(failOnError: true, flush: true)
 	}
@@ -414,6 +415,12 @@ abstract class IntegrationTests extends IntegrationSpec {
 			result.add(DataLocation.findByCode(code))
 		}
 		return result
+	}
+	static def getDataLocationTypes(def codes){
+		def result=[]
+		for(String code: codes)
+			result.add(DataLocationType.findByCode(code));
+		return result;
 	}
 	
 	static s(def list) {

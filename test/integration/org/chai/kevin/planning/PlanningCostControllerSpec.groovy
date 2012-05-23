@@ -10,10 +10,10 @@ class PlanningCostControllerSpec extends PlanningIntegrationTests {
 	def "planning cost list"() {
 		setup:
 		def period = newPeriod()
-		def planning = newPlanning(period)
-		def planningType = newPlanningType(newFormElement(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))), "[_].key", "[_].key", planning)
+		def planning = newPlanning(period, [])
+		def planningType = newPlanningType(newFormElement(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))), "[_].key", planning)
 		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
-		def planningCost = newPlanningCost(PlanningCostType.INCOMING, dataElement, "[_].key", "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.INCOMING, dataElement, planningType)
 		planningCostController = new PlanningCostController()
 		
 		when:
@@ -38,15 +38,14 @@ class PlanningCostControllerSpec extends PlanningIntegrationTests {
 	def "create planning type works ok"() {
 		setup:
 		def period = newPeriod()
-		def planning = newPlanning(period)
-		def planningType = newPlanningType(newFormElement(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))), "[_].key", "[_].key", planning)
+		def planning = newPlanning(period, [])
+		def planningType = newPlanningType(newFormElement(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))), "[_].key", planning)
 		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
 		planningCostController = new PlanningCostController()
 		
 		when:
 		planningCostController.params['planningType.id'] = planningType.id
 		planningCostController.params['dataElement.id'] = dataElement.id
-		planningCostController.params['discriminatorValues'] = 'value'
 		planningCostController.params['type'] = 'INCOMING'
 		planningCostController.params['section'] = '[_].key'
 		planningCostController.saveWithoutTokenCheck()
@@ -54,7 +53,6 @@ class PlanningCostControllerSpec extends PlanningIntegrationTests {
 		then:
 		PlanningCost.count() == 1
 		PlanningCost.list()[0].planningType.equals(planningType)
-		PlanningCost.list()[0].discriminatorValueString.equals("value")
 		PlanningCost.list()[0].dataElement.equals(dataElement)
 	}
 	

@@ -24,7 +24,7 @@
 								<g:message code="planning.budget.budget"/>: <g:i18n field="${location.names}"/>
 							</h4>
 							<div class="budget">
-								<p id="js_budget-warning" class="context-message warning ${planningLists.find {!it.budgetUpdated}?'':'hidden'}">
+								<p id="js_budget-warning" class="context-message warning ${budgetNeedsUpdate?'':'hidden'}">
 									<g:message code="planning.budget.update"/> <a href="${createLink(controller:'editPlanning', action:'updateBudget', params:[location:location.id, planning:planning.id])}"><g:message code="planning.budget.update.link"/></a>.
 								</p>
 								<g:if test="${!planningLists.find {!it.planningEntryBudgetList.empty}}">
@@ -38,10 +38,9 @@
 											<thead>
 												<tr>
 													<th></th>
-													<th><g:message code="planning.budget.table.incoming"/></th>
 													<th><g:message code="planning.budget.table.outgoing"/></th>
+													<th><g:message code="planning.budget.table.incoming"/></th>
 													<th><g:message code="planning.budget.table.difference"/></th>
-													<th><g:message code="planning.budget.table.generalfund"/></th>
 													<th class="status"></th>
 												</tr>
 											</thead>
@@ -59,70 +58,66 @@
 																	<g:i18n field="${planningTypeBudget.planningType.namesPlural}"/>
 																</span>
 															</td>
-															<td>(${planningTypeBudget.outgoing})</td>
-															<td>${planningTypeBudget.incoming}</td>
-															<td>${planningTypeBudget.difference}</td>
-															<td></td>
+															<td><g:formatNumber number="${planningTypeBudget.outgoing}" format="#,###"/></td>
+															<td><g:formatNumber number="${planningTypeBudget.incoming}" format="#,###"/></td>
+															<td><g:formatNumber number="${planningTypeBudget.difference}" format="#,###"/></td>
 															<td class="status"></td>
 														</tr>
 														<tr class="sub-tree js_foldable-container hidden">
-															<td colspan="7" class="bucket">
-														    <table>
-																	<tbody>
-																		
-																		<!-- 
-																			Each INDIVIDUAL UNDERTAKINGS, this is always
-																			displayed because we assume there's costing for each undertaking,
-																			either OUTGOING or INCOMING or both
-																		-->
-																		<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
-																			<tr id="planning-${planningType.id}-${budgetPlanningEntry.lineNumber}" class="tree-sign js_foldable">
-																				<td class="js_foldable-toggle">
-																					<span style="margin-left: 20px;">
-																						<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
-																							<g:value value="${budgetPlanningEntry.fixedHeaderValue}" type="${budgetPlanningEntry.type.fixedHeaderType}" nullText="none entered"/>
-																						</a>
-																					</span>
-																				</td>
-																				<td>(${budgetPlanningEntry.outgoing})</td>
-																				<td>${budgetPlanningEntry.incoming}</td>
-																				<td>${budgetPlanningEntry.difference}</td>
-																				<td><input type="checkbox" disabled="disabled"></td>
-																				<td class="status 
-																					${!budgetPlanningEntry.invalidSections.empty?'invalid':''} 
-																					${!budgetPlanningEntry.incompleteSections.empty?'incomplete':''}
-																					${(!budgetPlanningEntry.incompleteSections.empty || !budgetPlanningEntry.incompleteSections.empty)?'tooltip-TODO':''}
-																					" title=""></td>
-																			</tr>
-																			<tr class="sub-tree js_foldable-container hidden">
-																				<td colspan="7" class="bucket">
-																					<table>
-																						<tbody>
-																							<!--
-																								OUTGOING costing formulas, only displayed if not empty
-																							-->
-																							<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, costType: PlanningCostType.OUTGOING]"/>
-																							<!--
-																								INCOMING costing formulas, only displayed if not empty
-																							-->
-																							<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, costType: PlanningCostType.INCOMING]"/>
-																						</tbody>
-																					</table>
-																				</td>
-																			</tr>
-																		</g:each>
-																	</tbody>
-																</table>
-															</td>
+															<g:if test="${planningType.maxNumber != 1}">
+																<td colspan="7" class="bucket">
+															    	<table>
+																		<tbody>
+																			<!-- 
+																				Each INDIVIDUAL UNDERTAKINGS, this is always
+																				displayed because we assume there's costing for each undertaking,
+																				either OUTGOING or INCOMING or both
+																			-->
+																			<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
+																				<tr id="planning-${planningType.id}-${budgetPlanningEntry.lineNumber}" class="tree-sign js_foldable budget-entry">
+																					<td>
+																						<span class="js_foldable-toggle" style="margin-left: 20px;"> <a href="#">&zwnj;</a> </span>
+																						<span>
+																							<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.lineNumber])}">
+																								<g:if test="${planningType.fixedHeader != null && !planningType.fixedHeader.empty}">
+																									<g:value value="${budgetPlanningEntry.fixedHeaderValue}" type="${budgetPlanningEntry.type.fixedHeaderType}" nullText="none entered"/>
+																								</g:if>
+																								<g:else>
+																									<g:i18n field="${planningType.names}"/> ${budgetPlanningEntry.lineNumber + 1}
+																								</g:else>
+																							</a>
+																						</span>
+																					</td>
+																					<td><g:formatNumber number="${budgetPlanningEntry.outgoing}" format="#,###"/></td>
+																					<td><g:formatNumber number="${budgetPlanningEntry.incoming}" format="#,###"/></td>
+																					<td><g:formatNumber number="${budgetPlanningEntry.difference}" format="#,###"/></td>
+																					<td class="status ${!budgetPlanningEntry.invalidSections.empty?'invalid':!budgetPlanningEntry.incompleteSections.empty?'incomplete':'complete'}" title=""></td>
+																				</tr>
+																				<tr class="sub-tree js_foldable-container hidden">
+																					<td colspan="7" class="bucket">
+																						<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, margin: 40]"/>
+																					</td>
+																				</tr>
+																			</g:each>
+																		</tbody>
+																	</table>
+																</td>
+															</g:if>
+															<g:else>
+																<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
+																	<td colspan="7" class="bucket">
+																		<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, margin: 20]"/>
+																	</td>
+																</g:each>
+															</g:else>
 														</tr>
 													</g:if>
 												</g:each>
 												<tr class="total">
 													<td><g:message code="planning.budget.table.total"/>:</td>
-													<td>${outgoing}</td>
-													<td>${incoming}</td>
-													<td>${difference}</td>
-													<td></td>
+													<td><g:formatNumber number="${outgoing}" format="#,###"/></td>
+													<td><g:formatNumber number="${incoming}" format="#,###"/></td>
+													<td><g:formatNumber number="${difference}" format="#,###"/></td>
 													<td class="status"></td>
 												</tr>
 											</tbody>
@@ -130,16 +125,6 @@
 										<br />
 									</div>
 								
-									<div class="right table-aside">
-										<p class="context-message success push-20"><g:message code="planning.budget.balance" args="['xx']"/></p>
-										<div class="diff context-message hidden" id="js_budget-section-edit">
-											<div class="js_content">
-											</div>
-											<span class="hidden js_warning-message">
-												<g:message code="planning.budget.panel.error"/>
-											</span>
-										</div>
-									</div>
 								</g:else>
 							</div>
 						</div>
@@ -147,82 +132,5 @@
 				</div>
 			</div>
 		</div>
-		<r:script>
-			$(document).ready(function() {
-				${render(template:'/templates/messages')}
-
-				var dataEntry = new DataEntry({
-					element: $('#js_budget-section-edit'),
-					callback: function(dataEntry, data, element) {
-						if (data.complete) $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').removeClass('incomplete')
-						else $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').addClass('incomplete')
-						if (data.valid) $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').removeClass('invalid')
-						else $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').addClass('invalid')
-						
-						if ($(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').hasClass('incomplete')) $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').addClass('tooltip');
-						if ($(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').hasClass('invalid')) $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').addClass('tooltip');
-						
-						if (data.budgetUpdated) $('#js_budget-warning').hide();
-						else $('#js_budget-warning').show();
-					},
-					url: "${createLink(controller:'editPlanning', action:'saveValue', params: [location: location.id])}", 
-					messages: messages,
-					trackEvent: ${grails.util.Environment.current==grails.util.Environment.PRODUCTION}
-				});
-
-				var queueName = 'queue'+Math.floor(Math.random()*11);
-				var rightPaneQueue = $.manageAjax.create(queueName, {
-					type : 'POST',
-					dataType: 'json',
-					queue: 'clear',
-					cacheResponse: false,
-					maxRequests: 1,
-					abortOld: true
-				});			
-		
-				$('.js_budget-section-link').bind('click', function(){
-					var row = $(this).parents('tr').first();
-					
-					rightPaneQueue.abort();
-					rightPaneQueue.clear();
-				
-					$.manageAjax.add(queueName, {
-						url: $(this).attr('href'),
-						beforeSend: function() {
-							$('.active-row').removeClass('active-row');
-							$('#js_budget-section-edit').show();
-							$('#js_budget-section-edit').removeClass('warning');
-							$('#js_budget-section-edit .js_warning-message').hide();
-							$('#js_budget-section-edit').addClass('loading');
-							$('#js_budget-section-edit .js_content').html('');
-						},
-						success: function(data) {
-							if (data.status == 'success') {
-								$('#js_budget-section-edit .js_content').html(data.html);
-								$('#js_budget-section-edit').removeClass('loading');
-								$('#js_budget-section-edit').removeClass('warning');
-								$('#js_budget-section-edit .js_warning-message').hide();
-								
-								dataEntry.enableAfterLoading();
-							}
-							else {
-								$('#js_budget-section-edit').removeClass('loading');
-								$('#js_budget-section-edit').addClass('warning');
-								$('#js_budget-section-edit .js_warning-message').show();
-							}
-							row.addClass('active-row');
-						},
-						error: function() {
-							$('#js_budget-section-edit').removeClass('loading');
-							$('#js_budget-section-edit').addClass('warning');
-							$('#js_budget-section-edit .js_warning-message').show();
-							row.addClass('active-row');
-						}
-					});
-					
-					return false;
-				});
-			});
-		</r:script>
 	</body>
 </html>

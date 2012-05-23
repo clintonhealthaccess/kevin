@@ -1,4 +1,3 @@
-
 /**
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -26,66 +25,46 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.chai.kevin.dsr
+package org.chai.kevin.security
+
 /**
-* @author Jean Kahigiso M.
-*
-*/
-import grails.plugin.springcache.annotations.CacheFlush
+ * @author Jean Kahigiso M.
+ *
+ */
 
-import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.reports.ReportProgram
+import org.chai.kevin.location.DataLocation;
 
-class DsrProgramController extends AbstractEntityController{
-	
-	def locationService
-	
+class DataUserController  extends UserAbstractController {
+
 	def getEntity(def id) {
-		return ReportProgram.get(id)
+		return DataUser.get(id)
 	}
-	
+
 	def createEntity() {
-		return new ReportProgram()
+		return new DataUser()
 	}
-	
+
 	def getLabel() {
-		return "dsr.program.label"
+		return 'datauser.label'
 	}
 	
 	def getTemplate() {
-		return "/dsr/createProgram"
+		return "/entity/user/createDataUser"
 	}
 	
 	def getModel(def entity) {
-		[ program: entity ]
-	}
-	
-	def getEntityClass(){
-		return ReportProgram.class;
-	}
-	
-	@CacheFlush("dsrCache")
-	def edit = {
-		super.edit()
-	}
-	
-	@CacheFlush("dsrCache")
-	def save = {
-		super.save()
-	}
-	
-	@CacheFlush("dsrCache")
-	def delete = {
-		super.delete()
-	}
-	
-	def bindParams(def entity) {
-		entity.properties = params	
-	
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
+		def dataLocations = []
+		if (entity.dataLocation != null) dataLocations << entity.dataLocation
+		[
+			user:entity, 
+			roles: Role.list(), 
+			dataLocations: dataLocations ,
+			cmd: params['cmd']
+		]
 	}
 
+	def getEntityClass(){
+		return DataUser.class;
+	}
 }
+

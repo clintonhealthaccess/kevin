@@ -1,15 +1,17 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractController;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.survey.summary.SurveySummaryPage;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class SurveySummaryController extends AbstractController {
-
+	
 	def summaryService
 	def languageService
+	def surveyPageService
 	
 	def index = {
 		redirect (action: 'summaryPage', params: params)
@@ -17,8 +19,9 @@ class SurveySummaryController extends AbstractController {
 	
 	// TODO refactor into several actions for survey/program/section
 	def summaryPage = {
-		Location entity = Location.get(params.int('location'))
-
+		Location location = Location.get(params.int('location'))
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()
+		
 		SurveySection section = SurveySection.get(params.int('section'))
 		SurveyProgram program = SurveyProgram.get(params.int('program'))
 		Survey survey = Survey.get(params.int('survey'))
@@ -27,29 +30,35 @@ class SurveySummaryController extends AbstractController {
 		SurveySummaryPage summaryPage = null;
 		
 		// TODO build different classes for this and refactor into several actions
-		if (section != null && entity != null) {
-			summaryPage = summaryService.getSectionSummaryPage(entity, section)
+		if (section != null && location != null) {
+			summaryPage = summaryService.getSectionSummaryPage(location, dataLocationTypes, section)
 			template = '/survey/summary/summarySectionTable'
 		}
-		else if (program != null && entity != null) {
-			summaryPage = summaryService.getProgramSummaryPage(entity, program)
+		else if (program != null && location != null) {
+			summaryPage = summaryService.getProgramSummaryPage(location, dataLocationTypes, program)
 			template = '/survey/summary/summaryProgramTable'
 		}
-		else if (survey != null && entity != null) {
-			summaryPage = summaryService.getSurveySummaryPage(entity, survey);
+		else if (survey != null && location != null) {
+			summaryPage = summaryService.getSurveySummaryPage(location, dataLocationTypes, survey);
 			template = '/survey/summary/summarySurveyTable'
 		}
 
+		def locationSkipLevels = surveyPageService.getSkipLocationLevels()
+		def submitSkipLevels = surveyPageService.getSkipSubmitLevels()
+		
 		if (summaryPage != null) summaryPage.sort(params.sort, params.order, languageService.currentLanguage)
 			
 		render (view: '/survey/summary/summaryPage', model: [
 			currentSurvey: survey,
 			currentProgram: program,
 			currentSection: section,
-			currentLocation: entity,
+			currentLocation: location,
+			currentLocationTypes: dataLocationTypes,
 			summaryPage: summaryPage,
 			surveys: Survey.list(),
-			template: template
+			template: template,
+			locationSkipLevels: locationSkipLevels,
+			submitSkipLevels: submitSkipLevels
 		])
 	}
 
@@ -77,4 +86,35 @@ class SurveySummaryController extends AbstractController {
 		])
 	}
 	
+	def submitAll = {
+		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
+
+		SurveyProgram program = SurveyProgram.get(params.int('program'))
+		Survey survey = Survey.get(params.int('survey'))
+		
+		Location location = Location.get(params.int('location'))		
+		def submitLocation = Location.get(params.int('submitLocation'))
+		if(submitLocation == null) submitLocation = DataLocation.get(params.int('submitLocation'))						
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()
+		
+		boolean success = false
+		if (submitLocation != null && dataLocationTypes != null && (survey != null || program != null)) {
+			success = surveyPageService.submitAll(submitLocation, dataLocationTypes, survey, program);
+		}
+
+		if (success) {
+			flash.message = message(code: "survey.all.submitted", default: "Thanks for submitting.");
+		}
+		else{
+			if(program != null) flash.message = message(code: "program.all.review", default: "The programs could not be submitted.");
+			else flash.message = message(code: "survey.all.review", default: "The surveys could not be submitted.");
+		}		
+		
+		redirect(action: 'summaryPage', params: [
+			location: location.id, 
+			survey: survey?.id, 
+			program: program?.id, 
+			dataLocationTypes: dataLocationTypes.collect { it.getId() }
+		])
+	}
 }

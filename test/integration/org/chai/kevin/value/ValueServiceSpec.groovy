@@ -34,6 +34,7 @@ import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -309,7 +310,21 @@ class ValueServiceSpec extends IntegrationTests {
 		RawDataElementValue.count() == 1
 	}
 	
-	def "save raw data element value sets date"() {
+	def "test delete data element sets last value changed date"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		
+		when:
+		def date = rawDataElement.getLastValueChanged()
+		valueService.deleteValues(rawDataElement, null, period1)
+		
+		then:
+		RawDataElement.list()[0].lastValueChanged.after(date)
+	}
+	
+	def "save raw data element value sets last value changed date"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -317,14 +332,14 @@ class ValueServiceSpec extends IntegrationTests {
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+""):[DISTRICT_HOSPITAL_GROUP:"\$"+rawDataElement.id]]))
 		
 		when:
-		def date = normalizedDataElement.timestamp
+		def date = rawDataElement.lastValueChanged
 		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), v("40"))
 		valueService.save(rawDataElementValue);
 		
 		then:
-		NormalizedDataElement.list()[0].timestamp.after(date)
+		RawDataElement.list()[0].lastValueChanged.after(date)
 	}
-		
+	
 	def "test delete calculation values"() {
 		setup:
 		setupLocationTree()

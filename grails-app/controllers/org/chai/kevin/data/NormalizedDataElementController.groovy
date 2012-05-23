@@ -135,7 +135,8 @@ class NormalizedDataElementController extends AbstractEntityController {
 			entityCount: NormalizedDataElement.count(),
 			template: 'data/normalizedDataElementList',
 			code: getLabel(),
-			entityClass: getEntityClass()
+			entityClass: getEntityClass(),
+			targetURI: getTargetURI()
 		])
 	}
 	

@@ -3,7 +3,10 @@ package org.chai.kevin;
 import java.text.ParseException;
 
 import grails.plugin.spock.UnitSpec
+
+import org.chai.kevin.data.Type;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.Value;
 
 public class UtilUnitSpec extends UnitSpec {
 
@@ -76,5 +79,37 @@ public class UtilUnitSpec extends UnitSpec {
 		then:
 		thrown ParseException
 		
+	}
+	def "test getStringValue"(){
+		setup:
+		boolean boolValue= true;
+		def nowDate = new Date();
+		
+		def typeString = Type.TYPE_STRING();
+		def typeDate = Type.TYPE_DATE();
+		def typeNumber = Type.TYPE_NUMBER();
+		def typeBool = Type.TYPE_BOOL();
+		def typeEnum = Type.TYPE_ENUM();
+	
+		def valueBool = Value.VALUE_BOOL(boolValue);
+		def valueString = Value.VALUE_STRING("Value Text");
+		def valueNumber = Value.VALUE_NUMBER(100);
+		def valueDate = Value.VALUE_DATE(nowDate);
+		
+		when:
+		def string = Utils.getValueString(typeString,valueString);
+		def number = Utils.getValueString(typeString,valueNumber);
+		def date = Utils.getValueString(typeString,valueDate);
+		def bool = Utils.getValueString(typeString,valueBool);
+		def enumValue= Utils.getValueString(typeEnum,valueString);
+		
+		then:
+		string.equals("Value Text");
+		number.equals("100");
+		bool.equals(boolValue.toString());
+		enumValue.equals("Value Text")
+		date.equals(Utils.formatDate(nowDate));	
+		
+			
 	}
 }

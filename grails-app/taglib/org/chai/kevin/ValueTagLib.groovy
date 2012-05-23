@@ -144,7 +144,11 @@ class ValueTagLib {
 		if (value != null && !value.isNull()) {
 			switch (type.type) {
 				case (ValueType.ENUM):
-					def enume = enums?.get(type.enumCode)
+					def enume = null
+					 
+					if (enums == null) enume = dataService.findEnumByCode(type.enumCode);
+					else enume = enums?.get(type.enumCode)
+					
 					if (enume == null) result = value.enumValue
 					else {
 						def option = enume?.getOptionForValue(value.enumValue)

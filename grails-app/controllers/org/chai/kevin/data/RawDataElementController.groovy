@@ -40,6 +40,7 @@ import org.chai.kevin.survey.SurveyService
 import org.chai.kevin.survey.SurveyValueService;
 import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.hibernate.SessionFactory;
 
 
 class RawDataElementController extends AbstractEntityController {
@@ -49,6 +50,7 @@ class RawDataElementController extends AbstractEntityController {
 	LocationService locationService;
 	SurveyService surveyService;
 	SurveyValueService surveyValueService;
+	SessionFactory sessionFactory;
 	
 	def getEntity(def id) {
 		return RawDataElement.get(id)
@@ -104,10 +106,12 @@ class RawDataElementController extends AbstractEntityController {
 	
 	def deleteEntity(def entity) {
 		// delete all survey elements and survey entered values
-		surveyService.getSurveyElements(entity, null).each { 
+		surveyService.getSurveyElements(entity, null).each {
 			surveyValueService.deleteEnteredValues(it)
+			
 			it.surveyQuestion.removeSurveyElement(it)
-			it.surveyQuestion.save()
+			sessionFactory.currentSession.save(it.surveyQuestion)
+			
 			it.delete() 
 		}
 		
@@ -120,7 +124,7 @@ class RawDataElementController extends AbstractEntityController {
 			flash.message = message(code: "rawdataelement.delete.hasreferencingdata", default: "Could not delete element, some other data still reference this element.")
 		}
 		else {
-			entity.delete(flush: true)
+			dataService.delete(entity);
 		}
 	}
 

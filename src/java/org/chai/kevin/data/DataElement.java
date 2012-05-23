@@ -14,12 +14,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.value.DataValue;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+
 
 @Entity(name="DataElement")
 @Table(name="dhsst_data_element")
@@ -83,5 +82,4 @@ public abstract class DataElement<T extends DataValue> extends Data<T> {
 		return result;
 	}
 
-	public abstract String toString();
 }

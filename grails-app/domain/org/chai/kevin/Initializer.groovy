@@ -62,12 +62,13 @@ import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 import org.chai.kevin.planning.PlanningSkipRule;
 import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.reports.ReportProgram
-import org.chai.kevin.security.SurveyUser;
+import org.chai.kevin.security.DataUser;
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
+import org.chai.kevin.export.Exporter;
 import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
 import org.chai.kevin.form.FormElement;
@@ -115,10 +116,16 @@ class Initializer {
 		admin.addToPermissions("*")
 		admin.save(failOnError: true)
 
-		def kivuye = new SurveyUser(username: "kivuye", dataLocationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
-		kivuye.addToPermissions("editSurvey:view")
-		kivuye.addToPermissions("editSurvey:*:"+DataLocation.findByCode("Kivuye HC").id)
-		kivuye.addToPermissions("menu:survey")
+		def butaro = new DataUser(username: "butaro", landingPage: HomeController.SURVEY_LANDING_PAGE, dataLocationId: DataLocation.findByCode("Butaro DH").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'butaro_uuid')
+		butaro.addToPermissions("editSurvey:view")
+		butaro.addToPermissions("editSurvey:*:"+DataLocation.findByCode("Butaro DH").id)
+		butaro.addToPermissions("menu:survey")
+		butaro.save(failOnError: true)
+		
+		def kivuye = new DataUser(username: "kivuye", landingPage: HomeController.PLANNING_LANDING_PAGE, dataLocationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
+		kivuye.addToPermissions("editPlanning:view")
+		kivuye.addToPermissions("editPlanning:*:"+DataLocation.findByCode("Kivuye HC").id)
+		kivuye.addToPermissions("menu:planning")
 		kivuye.save(failOnError: true)
 	}
 
@@ -311,7 +318,8 @@ class Initializer {
 						"area": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
 						"instances": Type.TYPE_NUMBER(),
 						"responsible": Type.TYPE_STRING(),
-						"new_structure": Type.TYPE_BOOL()
+						"new_structure": Type.TYPE_BOOL(),
+						"test": Type.TYPE_LIST(Type.TYPE_NUMBER()),
 					]),
 					"staffing": Type.TYPE_MAP([
 						"nurse": Type.TYPE_MAP([
@@ -883,7 +891,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 8,
-					typeCodeString: "Health Center",
 					code: "Accountant"
 					).save(failOnError:true)
 
@@ -892,7 +899,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 1,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Days Of Nurse Training"
 					).save(failOnError:true)
 
@@ -901,7 +907,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("TRUE"),
 					order: 2,
-					typeCodeString: "Health Center",
 					code: "A1"
 					).save(failOnError:true)
 
@@ -910,7 +915,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("FALSE"),
 					order: 5,
-					typeCodeString: "District Hospital,Health Center",
 					code:"A2"
 					).save(failOnError:true)
 
@@ -919,7 +923,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
-					typeCodeString: "District Hospital,Health Center",
 					code: "A3"
 					).save(failOnError:true)
 
@@ -928,7 +931,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 4,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Testing Category Human Resource"
 					).save(failOnError:true)
 
@@ -937,7 +939,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 6,
-					typeCodeString: "District Hospital,Health Center",
 					code: "In-Facility Birth Ratio"
 					).save(failOnError:true)
 
@@ -946,7 +947,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 11,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Mental Health Service"
 					).save(failOnError:true)
 
@@ -955,7 +955,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 7,
-					typeCodeString: "Health Center",
 					code: "Malaria Rapid Test"
 					).save(failOnError:true)
 
@@ -964,7 +963,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 9,
-					typeCodeString: "District Hospital,Health Center",
 					code: "HIV Rapid Test"
 					).save(failOnError:true)
 
@@ -973,7 +971,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 10,
-					typeCodeString: "Health Center",
 					code: "TB Stain Test"
 					).save(failOnError:true)
 
@@ -982,7 +979,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 12,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Catchment Population per CHW"
 					).save(failOnError:true)
 
@@ -991,7 +987,6 @@ class Initializer {
 					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 1,
-					typeCodeString: "Health Center",
 					code: "Consultation Room"
 					).save(failOnError:true)
 
@@ -1000,7 +995,6 @@ class Initializer {
 					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Facility Water Status"
 					).save(failOnError:true)
 
@@ -1009,7 +1003,6 @@ class Initializer {
 					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 2,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Incinerator Availability"
 					).save(failOnError:true)
 
@@ -1017,7 +1010,6 @@ class Initializer {
 					names:j(["en":"Facility Power Status"]), descriptions:j(["en":"Facility Power Status"]),
 					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
-					typeCodeString: "District Hospital,Health Center",
 					code: "Facility Power Status"
 					).save(failOnError:true)
 
@@ -1126,6 +1118,7 @@ class Initializer {
 		def planning = new Planning(
 			period: Period.list([cache: true])[0],
 			names: j(["en":"Planning 2011"]),
+			typeCodeString: "Health Center",
 			active: true
 		).save(failOnError: true)
 		
@@ -1214,7 +1207,6 @@ class Initializer {
 				"[_].funding_sources": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."])
 			],
 			formElement: formElement,
-			discriminator: '[_].basic.activity',
 			fixedHeader: '[_].basic.description',
 			planning: planning
 		).save(failOnError: true);
@@ -1230,10 +1222,7 @@ class Initializer {
 		def planningCost1 = new PlanningCost(
 			planningType: planningType,
 			type: PlanningCostType.INCOMING,
-			discriminatorValueString: 'value1',
 			dataElement: planningElement1,
-			section: '[_].staffing',
-			groupSection: '[_].staffing',
 			names: j(["en":"Salaries"])
 		).save(failOnError: true)
 	
@@ -1246,9 +1235,7 @@ class Initializer {
 		def planningCost2 = new PlanningCost(
 			planningType: planningType,
 			type: PlanningCostType.OUTGOING,
-			discriminatorValueString: 'value1',
 			dataElement: planningElement2,
-			section: '[_].consumables',
 			names: j(["en":"Patient"])
 		).save(failOnError: true)
 		
@@ -1256,20 +1243,83 @@ class Initializer {
 		planningType.costs << planningCost2
 		planningType.save(failOnError: true)
 		
-//		new FormEnteredValue(
-//			formElement: formElement,
-//			dataLocation: DataLocation.findByCode("Kivuye HC"),
-//			value: Value.VALUE_LIST([
-//				Value.VALUE_MAP([
-//					"basic": Value.VALUE_MAP([
-//						"activity": Value.VALUE_STRING("value1"), 
-//						"instances": Value.VALUE_NUMBER(10)
-//					])
-//				])
-//			]),
-//			timestamp: new Date()
-//		).save(failOnError: true)
+		new FormEnteredValue(
+			formElement: formElement,
+			dataLocation: DataLocation.findByCode("Kivuye HC"),
+			value: Value.VALUE_LIST([
+				Value.VALUE_MAP([
+					"basic": Value.VALUE_MAP([
+						"activity": Value.VALUE_STRING("value1"), 
+						"instances": Value.VALUE_NUMBER(10)
+					])
+				])
+			]),
+			timestamp: new Date()
+		).save(failOnError: true)
 	}
+	
+	
+	static def createExporter(){
+		if(!Exporter.count()){
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
+			def periodOne = Period.list()[0];
+			def periodTwo = Period.list()[1];
+			def dEtwo = RawDataElement.findByCode("CODE2");
+			def dEthree = RawDataElement.findByCode("CODE3");
+			def dEfour = RawDataElement.findByCode("CODE4");
+			def dEfive = RawDataElement.findByCode("CODE11");
+			def dEsix = RawDataElement.findByCode("CODE12");
+			def dMap = RawDataElement.findByCode("LISTMAP1");
+			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
+			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
+			def burera = Location.findByCode("Burera");
+			def est = Location.findByCode("East");
+			def south = Location.findByCode("South");
+			
+			
+			def exporterThree = new Exporter(
+				descriptions: j(["en":"Exporter Raw Data Element Three"]),
+				date: new Date(),
+				typeCodeString:"Health Center",
+				locations:[south,dataLocationTwo],
+				data:[dMap,dEtwo,dEthree,dEfive,dEsix],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+			
+			def exporterTwo = new Exporter(
+				descriptions: j(["en":"Exporter Raw Data Element Two"]),
+				date: new Date(),
+				typeCodeString:"Health Center",
+				locations:[south,burera],
+				data:[dEtwo,dEthree,dMap],
+				periods: [periodOne]
+				).save(failOnError: true)
+				
+			def exporterOne = new Exporter(
+				descriptions: j(["en":"Exporter Raw Data Element One"]),
+				date: new Date(),
+				locations:[est,burera,south],
+				typeCodeString:"District Hospital,Health Center",
+				data:[dMap,dEtwo,dEthree,dEfour,dEfive,dEsix],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+				
+			def exporterFour = new Exporter(
+				descriptions: j(["en":"Exporter Raw Data Element Four"]),
+				date: new Date(),
+				typeCodeString:"District Hospital",
+				locations:[est,dataLocationOne],
+				data:[dMap,dEtwo,dEfour,dEfive,dEsix],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+			
+			
+				
+		}
+	}
+	
+	
 	
 	static def createQuestionaire(){
 		if(!Survey.count()){

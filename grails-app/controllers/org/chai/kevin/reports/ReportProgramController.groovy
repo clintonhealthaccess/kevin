@@ -1,3 +1,4 @@
+
 /**
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -25,46 +26,62 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.chai.kevin.security
-
+package org.chai.kevin.reports
 /**
- * @author Jean Kahigiso M.
- *
- */
+* @author Jean Kahigiso M.
+*
+*/
+import grails.plugin.springcache.annotations.CacheFlush
 
-import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.reports.ReportProgram
 
-class SurveyUserController  extends UserAbstractController {
 
+class ReportProgramController extends AbstractEntityController{
+	
 	def getEntity(def id) {
-		return SurveyUser.get(id)
+		return ReportProgram.get(id)
 	}
-
+	
 	def createEntity() {
-		return new SurveyUser()
+		return new ReportProgram()
 	}
-
+	
 	def getLabel() {
-		return 'surveyuser.label'
+		return "reports.program.label"
 	}
 	
 	def getTemplate() {
-		return "/entity/user/createSurveyUser"
+		return "/entity/reports/createProgram"
 	}
 	
 	def getModel(def entity) {
-		def dataLocations = []
-		if (entity.dataLocation != null) dataLocations << entity.dataLocation
-		[
-			user:entity, 
-			roles: Role.list(), 
-			dataLocations: dataLocations ,
-			cmd: params['cmd']
-		]
+		[ program: entity, programs: ReportProgram.list() ]
+	}
+	
+	def getEntityClass(){
+		return ReportProgram.class;
+	}
+	
+	def bindParams(def entity) {
+		entity.properties = params	
+	
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		if (params.names!=null) entity.names = params.names
+		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 
-	def getEntityClass(){
-		return SurveyUser.class;
+	def list = {
+		adaptParamsForList()
+		
+		List<ReportProgram> programs = ReportProgram.list(params);
+		
+		render (view: '/entity/list', model:[
+			entities: programs,
+			template: "reports/programList",
+			code: getLabel(),
+			entityCount: ReportProgram.count()
+		])
 	}
 }
-
