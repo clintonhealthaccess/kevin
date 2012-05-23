@@ -38,8 +38,8 @@
 											<thead>
 												<tr>
 													<th></th>
-													<th><g:message code="planning.budget.table.outgoing"/></th>
 													<th><g:message code="planning.budget.table.incoming"/></th>
+													<th><g:message code="planning.budget.table.outgoing"/></th>
 													<th><g:message code="planning.budget.table.difference"/></th>
 													<th class="status"></th>
 												</tr>
@@ -58,8 +58,8 @@
 																	<g:i18n field="${planningTypeBudget.planningType.namesPlural}"/>
 																</span>
 															</td>
-															<td><g:formatNumber number="${planningTypeBudget.outgoing}" format="#,###"/></td>
 															<td><g:formatNumber number="${planningTypeBudget.incoming}" format="#,###"/></td>
+															<td><g:formatNumber number="${planningTypeBudget.outgoing}" format="#,###"/></td>
 															<td><g:formatNumber number="${planningTypeBudget.difference}" format="#,###"/></td>
 															<td class="status"></td>
 														</tr>
@@ -88,8 +88,8 @@
 																							</a>
 																						</span>
 																					</td>
-																					<td><g:formatNumber number="${budgetPlanningEntry.outgoing}" format="#,###"/></td>
 																					<td><g:formatNumber number="${budgetPlanningEntry.incoming}" format="#,###"/></td>
+																					<td><g:formatNumber number="${budgetPlanningEntry.outgoing}" format="#,###"/></td>
 																					<td><g:formatNumber number="${budgetPlanningEntry.difference}" format="#,###"/></td>
 																					<td class="status ${!budgetPlanningEntry.invalidSections.empty?'invalid':!budgetPlanningEntry.incompleteSections.empty?'incomplete':'complete'}" title=""></td>
 																				</tr>
@@ -115,9 +115,9 @@
 												</g:each>
 												<tr class="total">
 													<td><g:message code="planning.budget.table.total"/>:</td>
-													<td><g:formatNumber number="${outgoing}" format="#,###"/></td>
 													<td><g:formatNumber number="${incoming}" format="#,###"/></td>
-													<td><g:formatNumber number="${difference}" format="#,###"/></td>
+													<td><g:formatNumber number="${outgoing}" format="#,###"/></td>
+													<td class="${difference < 0?'red':''}"><g:formatNumber number="${difference}" format="#,###"/></td>
 													<td class="status"></td>
 												</tr>
 											</tbody>
