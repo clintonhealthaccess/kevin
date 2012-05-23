@@ -151,28 +151,6 @@ public class Utils {
 		return "";
 	}
 	
-	public static boolean isValidZip(File file) {
-		ZipFile zipFile = null;
-		try {
-			zipFile = new ZipFile(file.getName());
-			return true;
-		} catch (ZipException e) {
-			return false;
-		} catch (IOException e) {
-			return false;
-		} finally {
-			try {
-				if (zipFile != null) {
-					zipFile.close();
-					zipFile = null;
-				}
-			} catch (IOException e) {
-				// TODO Display something meaningfully here
-			}
-		}
-
-	}
-	
 	public static File getZipFile(File file, String filename) throws IOException {		
 		
 		File zipFile = File.createTempFile(filename, ZIP_FILE_EXTENSION);
