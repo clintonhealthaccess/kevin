@@ -40,7 +40,8 @@ class FormTagLib {
 		if (attrs["rows"] == null) attrs["rows"] = '4'
 		if (attrs["width"] == null) attrs["width"] = '300'
 		attrs["locales"] = languageService.getAvailableLanguages();
-		out << render(template:"/tags/form/i18nRichTextarea", model: attrs)
+		// TODO find a good rich text editor or get rid of this altogether
+		out << render(template:"/tags/form/i18nTextarea", model: attrs)
 	}
 	
 	def selectFromEnum = { attrs, body ->
