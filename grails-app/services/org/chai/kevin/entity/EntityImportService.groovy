@@ -3,9 +3,12 @@ package org.chai.kevin.entity;
 import java.lang.annotation.Annotation
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.entity.export.EntityHeaderSorter;
@@ -15,6 +18,7 @@ import org.chai.kevin.Translation
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.importer.ImporterError
 import org.chai.kevin.importer.ImporterErrorManager
+import org.chai.kevin.json.JSONMap
 import org.chai.kevin.util.Utils
 import org.hibernate.SessionFactory
 import org.supercsv.io.CsvMapReader
@@ -103,7 +107,7 @@ public class EntityImportService {
 					}
 					
 					if(entity == null){
-						manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),ID_HEADER,"entity is null"));
+						manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),ID_HEADER,"import.error.message.entitynull"));
 						manager.incrementNumberOfUnsavedRows();
 						continue;
 					}									
@@ -117,10 +121,9 @@ public class EntityImportService {
 					
 					if (sanitizer.getNumberOfErrorInRows() > 0)
 						manager.incrementNumberOfRowsSavedWithError(1);
-					manager.incrementNumberOfSavedRows();
 					
 					if(!entity.validate()){
-						manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),"blank","entity is invalid"));
+						manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),"blank","import.error.message.entityinvalid"));
 						manager.incrementNumberOfUnsavedRows();
 					}
 					else{
@@ -167,6 +170,7 @@ public class EntityImportService {
 					Class<?> clazz = null;
 					clazz = field.getType();
 					Class<?> innerClazz = null;
+					//value is a list
 					if(clazz.equals(List.class)){
 						ParameterizedType type = (ParameterizedType) field.getGenericType();
 						innerClazz = (Class) type.getActualTypeArguments()[0];
@@ -187,7 +191,7 @@ public class EntityImportService {
 		return entity;
 	}	
 
-	private class EntityImportSanitizer {
+	public class EntityImportSanitizer {
 		
 		private List<ImporterError> errors;
 		private List<String> headers;
@@ -222,122 +226,108 @@ public class EntityImportService {
 				errors.add(new ImporterError(lineNumber, header, "import.error.message.unknown.header"));
 				return importValue;
 			}			
-															
-			boolean isAssignable = Importable.class.isAssignableFrom(valueClazz);
-			Class<?>[] clazzInterfaces = valueClazz.getInterfaces();			
-			Class<?> importableClazz = valueClazz;
-			
-			boolean isList = false;
-			if(valueClazz.equals(List.class)){
-				isAssignable = Importable.class.isAssignableFrom(innerClazz);
-				clazzInterfaces = innerClazz.getInterfaces();
-				importableClazz = innerClazz;
-				isList = true;
-			}
-			
-			Importable importable = null;
-			boolean isImportable = false;			
-			if(isAssignable && Arrays.asList(clazzInterfaces).contains(Importable.class)){
-				importable = (Importable) importableClazz.newInstance();
-				isImportable = true;
-			}
-			
+																								
 			if(value != null && !value.isEmpty()){
+			
+				//value is not a list
+				boolean isAssignable = Importable.class.isAssignableFrom(valueClazz);
+				Class<?>[] clazzInterfaces = valueClazz.getInterfaces();
+				Class<?> importableClazz = valueClazz;
 				
-				if(isImportable && importable != null){
+				//value is a list
+				if(innerClazz != null){
+					isAssignable = Importable.class.isAssignableFrom(innerClazz);
+					clazzInterfaces = innerClazz.getInterfaces();
+					importableClazz = innerClazz;
+				}
+				
+				//value is importable
+				Importable importable = null;												
+				if(isAssignable && Arrays.asList(clazzInterfaces).contains(Importable.class)){
+					importable = (Importable) importableClazz.newInstance();
+				}
+				
+				//value is a primitive or 'wrapper to primitive' type
+				boolean isPrimitiveOrWrapped = false;
+				if(importableClazz.isPrimitive() || ClassUtils.wrapperToPrimitive(importableClazz) != null){
+					isPrimitiveOrWrapped = true;
+				}
 					
-					if(importable instanceof Translation){
-						importValue = Utils.getImportValue(importable, value);
+				//value is importable
+				if(importable != null){
+
+					//value is a map
+					if(importable instanceof JSONMap){
+						importValue = getImportValue(importable, value);
 					}
-					
-					List<?> importEntities = new ArrayList<?>();
-					String codePattern = Utils.CODE_PATTERN;
-					Pattern pattern = Pattern.compile(codePattern);
-					Matcher matcher = pattern.matcher(value);
-					while(matcher.find()){
-						String entityId = matcher.group();
-						if(entityId != null && !entityId.isEmpty()){
-							entityId = entityId.replaceAll(Utils.CODE_DELIMITER, "");
-							//TODO use code
-							Object importEntity = findEntityById(entityId, importableClazz);
-							if(importEntity != null){
-								importEntity = Utils.getImportValue(importable, importEntity);
-								importEntities.add(importEntity);
-							}
-							else{
-								this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-								errors.add(new ImporterError(lineNumber, header,"import.error.message.importentitynull"));
-								break;
-							}
+					else{																		
+						
+						List<?> importEntities = new ArrayList<?>();
+						
+						//value is a list
+						if(innerClazz != null){
+							importEntities = getImportValues(importable, value, importableClazz, header);
+							importValue = importEntities;
+						}						
+						//value is not a list
+						else if(importEntities.size() == 1){
+							importValue = importEntities.get(0);
 						}
-					}					
-					if(isList)
-						importValue = importEntities;
-					else if(importEntities.size() > 1){
-						this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-						errors.add(new ImporterError(lineNumber, header,"import.error.message.importentitiestoomany"));
-					}
-					else if(importEntities.size() == 1){
-						importValue = importEntities.get(0);
-					}
-					else{
-						//TODO is this good?
-					}
+						else{
+							this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
+							errors.add(new ImporterError(lineNumber, header,"import.error.message.importentitiesinvalid"));
+						}
+					}										
 					
 				}
-				else {
+				//value is a primitive or 'wrapper to primitive' type
+				else if(isPrimitiveOrWrapped){
 					importValue = value;
 				}
-			}
-					
-//			switch(clazz){
-//				case List.class:
-//					value = validateImportList(header, importValue, innerClazz)
-//					break;
-//				case Translation.class:
-//					value = validateImportTranslation(header, importValue, clazz)
-//					break;
-//				default:
-//					value = importValue;
-//			}
+				//value is not importable or a primitive type
+				else {
+					this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
+					if(importable == null)
+						errors.add(new ImporterError(lineNumber, header,"import.error.message.classnotimportable"));
+					else if(!isPrimitiveOrWrapped)
+						errors.add(new ImporterError(lineNumber, header,"import.error.message.classnotprimitive"));
+					else
+						errors.add(new ImporterError(lineNumber, header,"import.error.message.classunknown"));
+				}
+			}					
 			
 			return importValue;
 		}		
 		
-//		private Translation validateImportTranslation(String header, Object value, Class<T> clazz){
-//			Translation translation = new Translation();
-//			translation.setJsonText(value);
-//			if(translation == null){
-//				this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-//				errors.add(new ImporterError(lineNumber, header,"import.error.message.translation"));
-//			}
-//			return translation;
-//		}
+		private Object getImportValue(Importable importable, Object value){
+			Object result = importable.fromExportString(value);
+			return result;
+		}
 		
-//		//TODO use code
-//		private <T> List<T> validateImportList(String header, Object value, Class<T> clazz){
-//			List<T> result = new ArrayList<T>();
-//			//TODO check that its not some SQL injection attack ;)
-//			String codePattern = Utils.CODE_PATTERN;
-//			Pattern pattern = Pattern.compile(codePattern)
-//			Matcher matcher = pattern.matcher(value);
-//			while(matcher.find()){
-//				String entityId = matcher.group();
-//				if(entityId != null && !entityId.isEmpty()){
-//					entityId = entityId.substring(1);
-//					T entity = findEntityById(entityId, clazz)
-//					if(entity != null){
-//						result.add(entity)
-//					}
-//					else{
-//						this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-//						errors.add(new ImporterError(lineNumber, header,"import.error.message.list"));
-//						break;
-//					}
-//				}
-//			}
-//			return result;
-//		}
+		private List<?> getImportValues(Importable importable, Object value, Class<?> importableClazz, String header){
+			List<?> importEntities = new ArrayList<?>();
+			String codePattern = Utils.CODE_PATTERN;
+			Pattern pattern = Pattern.compile(codePattern);
+			Matcher matcher = pattern.matcher(value);
+			while(matcher.find()){
+				String entityId = matcher.group();
+				if(entityId != null && !entityId.isEmpty()){
+					entityId = entityId.replaceAll(Utils.CODE_DELIMITER, "");
+					//TODO use code
+					Object importEntity = findEntityById(entityId, importableClazz);
+					if(importEntity != null){
+						importEntity = getImportValue(importable, importEntity);
+						importEntities.add(importEntity);
+					}
+					else{
+						this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
+						errors.add(new ImporterError(lineNumber, header,"import.error.message.importentitynull"));
+						break;
+					}
+				}
+			}
+			return importEntities;
+		}		
 	}
 	
 	public <T extends Object> T findEntityById(String id, Class<T> clazz) {

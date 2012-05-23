@@ -31,8 +31,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,18 +40,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.chai.kevin.entity.export.Exportable;
-import org.chai.kevin.entity.export.Importable;
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.data.Enum;
-import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.EnumService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationType;
@@ -190,28 +182,5 @@ public class Utils {
 		
 	public static String formatExportCode(String code){
 		return CODE_DELIMITER + code + CODE_DELIMITER;
-	}
-	
-	public static Object getImportValue(Importable importable, Object value){
-		Object result = importable.fromExportString(value);
-		return result;
-	}
-	
-	public static String getExportValue(Exportable exportable){
-		String result = exportable.toExportString();
-		return result;
-	}
-	
-	public static String getExportValues(List<Object> values){
-		List<String> exportValues = new ArrayList<String>();
-		for(Object value : values){
-			if(value instanceof Exportable){
-				Exportable exportableValue = (Exportable) value;
-				String exportValue = Utils.getExportValue(exportableValue);
-				exportValues.add(exportValue);
-			}
-		}
-		String result = "[" + StringUtils.join(exportValues, ", ") + "]";
-		return result;
-	}			
+	}	
 }

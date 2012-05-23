@@ -55,13 +55,13 @@ public class Translation extends JSONMap<String> implements Exportable, Importab
 
 	@Override
 	public String toExportString() {
-		return getJsonText();
+		return super.toExportString();
 	}
 
 	@Override
 	public Translation fromExportString(Object value) {
-		Translation translation = new Translation();		
-		translation.setJsonText(value.toString());		
+		JSONMap jsonMap = super.fromExportString(value);
+		Translation translation = new Translation(jsonMap);
 		return translation;
 	}
 

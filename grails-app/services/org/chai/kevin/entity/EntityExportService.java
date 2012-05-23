@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.ClassUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
@@ -122,18 +123,16 @@ public class EntityExportService {
 				value = field.get(entity);				
 				
 				Class<?> valueClazz = field.getType();
-				Class<?> innerClazz = null;
-				
+				Class<?> innerClazz = null;				
 				boolean isAssignable = Exportable.class.isAssignableFrom(valueClazz);				
 				Class<?>[] clazzInterfaces = valueClazz.getInterfaces();
 				
-				List<Object> exportValues = null;
+				List<Object> listValues = null;
+				
 				if(valueClazz.equals(List.class)){
-					exportValues = (List<Object>) value;
-					
+					listValues = (List<Object>) value;					
 					ParameterizedType type = (ParameterizedType) field.getGenericType();
-					innerClazz = (Class) type.getActualTypeArguments()[0];
-					
+					innerClazz = (Class) type.getActualTypeArguments()[0];					
 					isAssignable = Exportable.class.isAssignableFrom(innerClazz);
 					clazzInterfaces = innerClazz.getInterfaces();	
 				}
@@ -143,23 +142,32 @@ public class EntityExportService {
 					isExportable = true;
 				}
 				
-				String exportValue = "null";				
+				Exportable exportableValue = null;
+				String exportValue = "null";	
+				
 				if(value != null){
+					
+					//value is not a primitive or 'wrapper to primitive' type
 					if(isExportable){
-						if(exportValues != null){
-							exportValue = Utils.getExportValues(exportValues);
+						
+						//value is a list
+						if(listValues != null){
+							exportValue = getExportValues(listValues);
 						}
+						//value is not a list
 						else{
 							if(value instanceof Exportable){
-								Exportable exportableValue = (Exportable) value;
-								exportValue = Utils.getExportValue(exportableValue);	
+								exportableValue = (Exportable) value;
+								exportValue = getExportValue(exportableValue);	
 							}						
 						}		
-					}					
+					}
+					//value is a primitive or 'wrapper to primitive' type
 					else {
 						exportValue = value.toString();
 					}
 				}
+				
 				entityData.add(exportValue);
 				
 				if(isNotAccessible)
@@ -173,4 +181,21 @@ public class EntityExportService {
 		return entityData;
 	}
 
+	public String getExportValue(Exportable exportable){
+		String result = exportable.toExportString();
+		return result;
+	}
+	
+	public String getExportValues(List<Object> values){
+		List<String> exportValues = new ArrayList<String>();
+		for(Object value : values){
+			if(value instanceof Exportable){
+				Exportable exportableValue = (Exportable) value;
+				String exportValue = getExportValue(exportableValue);
+				exportValues.add(exportValue);
+			}
+		}
+		String result = "[" + StringUtils.join(exportValues, ", ") + "]";
+		return result;
+	}
 }
