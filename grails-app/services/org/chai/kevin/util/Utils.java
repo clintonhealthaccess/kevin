@@ -48,6 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.Value;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author Jean Kahigiso M.
@@ -153,7 +154,7 @@ public class Utils {
 	public static boolean isValidZip(File file) {
 		ZipFile zipFile = null;
 		try {
-			zipFile = new ZipFile(file);
+			zipFile = new ZipFile(file.getName());
 			return true;
 		} catch (ZipException e) {
 			return false;

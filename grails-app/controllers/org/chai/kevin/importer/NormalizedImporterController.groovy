@@ -39,6 +39,8 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValueService;
+import org.hibernate.SessionFactory;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 
@@ -48,9 +50,13 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile
  *
  */
 class NormalizedImporterController extends AbstractController {
+	
 	LocationService locationService;
 	ValueService valueService;
 	DataService dataService;
+	SessionFactory sessionFactory;
+	PlatformTransactionManager transactionManager;
+	
 	final String IMPORT_FORM = "normalizedImport";
 	final String IMPORT_OUTPUT = "importOutput";
 	
@@ -60,11 +66,24 @@ class NormalizedImporterController extends AbstractController {
 	
 	def uploader = { NormalizedImporterCommand cmd ->
 		ImporterErrorManager errorManager = new ImporterErrorManager();
+		errorManager.setNumberOfSavedRows(0)
+		errorManager.setNumberOfUnsavedRows(0)
+		errorManager.setNumberOfRowsSavedWithError(0)
 		if (!cmd.hasErrors()) {
 			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",period="+cmd.period+",dataElement="+cmd.dataElement+")")
-			NormalizedDataImporter importer = new NormalizedDataImporter(locationService,valueService,valueService,errorManager, cmd.dataElement, cmd.period);
-			importer.importUnzipFile(cmd.file);
-			this.getModel(cmd,errorManager,IMPORT_FORM);
+			
+			NormalizedDataImporter importer = new NormalizedDataImporter(
+				locationService, valueService, dataService,
+				sessionFactory, transactionManager,
+				errorManager, cmd.dataElement, cmd.period
+			);
+			if(cmd.file.getContentType().equals(FILE_TYPE_ZIP))
+				importer.importZipFiles(cmd.file.getInputStream())
+			if(cmd.file.getContentType().equals(FILE_TYPE_CSV))
+				importer.importCsvFile(cmd.file.getName(),cmd.file.getInputStream())
+			cmd.file.getInputStream().close();
+			
+			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 		}else{
 			this.getModel(cmd,errorManager,IMPORT_FORM);
 		}	

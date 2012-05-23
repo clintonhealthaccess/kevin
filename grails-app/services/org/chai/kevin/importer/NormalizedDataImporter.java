@@ -45,6 +45,13 @@ import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.supercsv.io.CsvMapReader;
 import org.supercsv.io.ICsvMapReader;
 import org.supercsv.prefs.CsvPreference;
@@ -53,125 +60,203 @@ import org.supercsv.prefs.CsvPreference;
  * @author Jean Kahigiso M.
  *
  */
-public class NormalizedDataImporter extends Importer{
+public class NormalizedDataImporter extends Importer {
 	
+	private static final Integer NUMBER_OF_LINES_TO_IMPORT = 200;
 	private static final Log log = LogFactory.getLog(NormalizedDataImporter.class);
+	
 	private LocationService locationService;
-	private ValueService valueService;	
 	private DataService dataService;
+	private PlatformTransactionManager transactionManager;
+	private SessionFactory sessionFactory;
+	
 	private ImporterErrorManager manager;
 	private RawDataElement rawDataElement;
 	private Period period;
 	
+	private TransactionTemplate transactionTemplate;
+	
+	private TransactionTemplate getTransactionTemplate() {
+		if (transactionTemplate == null) {
+			transactionTemplate = new TransactionTemplate(transactionManager);
+			transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+		}
+		return transactionTemplate;
+	}
+	
 	public NormalizedDataImporter(LocationService locationService,
-			ValueService valueService, DataService dataService,
+			ValueService valueService, DataService dataService, 
+			SessionFactory sessionFactory, PlatformTransactionManager transactionManager,
 			ImporterErrorManager manager, RawDataElement rawDataElement,
 			Period period) {
-		super();
+		super(valueService);
 		this.locationService = locationService;
-		this.valueService = valueService;
 		this.dataService = dataService;
+		this.sessionFactory = sessionFactory;
+		this.transactionManager = transactionManager;
 		this.manager = manager;
 		this.rawDataElement = rawDataElement;
 		this.period = period;
-
 	}
 
-	@Override
-	public void importData(Reader reader) throws IOException {
-		
-		if (log.isDebugEnabled()) log.debug("importGeneralData(Reader:" + reader + ")");
-		ICsvMapReader readFileAsMap = new CsvMapReader(reader, CsvPreference.EXCEL_PREFERENCE);
-		
-		try{			
-			final String[] headers = readFileAsMap.getCSVHeader(true);
-			String code=null;
-			Map<String,Integer> positions = new HashMap<String,Integer>();
-			Map<String,String> values = readFileAsMap.read(headers);
-			Map<String,Type> types = new HashMap<String,Type>();
-		
-			for (String header : headers)  { 
-				try {
-					if(!header.equals(CODE_HEADER))
-						types.put("[_]."+header,rawDataElement.getType().getType("[_]."+header));
-				} catch(IllegalArgumentException e){
-					if(log.isWarnEnabled()) log.warn("Column type not found for header"+header, e);
-					manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),header,"import.error.message.unknowm.column.type"));
-				}
-			}
-			Value value = null;
-			DataLocation dataLocation=null;
-			RawDataElementValue rawDataElementValue= null;			
-			manager.setNumberOfSavedRows(0);
-			manager.setNumberOfUnsavedRows(0);
-			manager.setNumberOfRowsSavedWithError(0);
+	
+	/**
+	 * Imports numberLinesToImport lines and then returns. Returns true when file has been read entirely.
+	 * 
+	 * @param fileName
+	 * @param reader
+	 * @param numberOfLinesToImport
+	 * @param sanitizer
+	 * @param readFileAsMap
+	 * @param headers
+	 * @param positions
+	 * @throws IOException
+	 */
+	private boolean importData(String fileName, Reader reader, Integer numberOfLinesToImport, ImportSanitizer sanitizer, ICsvMapReader readFileAsMap, String[] headers, Map<String, Integer> positions) throws IOException {
 
-			ImportSanitizer sanitizer = new ImportSanitizer(manager.getErrors(), types, dataService);
+		DataLocation dataLocation=null;
+		RawDataElementValue rawDataElementValue= null;	
+		String code=null;
+		
+		Map<String,Object> positionsValueMap = new HashMap<String, Object>();
+		Map<String,String> values = readFileAsMap.read(headers);
+		
+		int importedLines = 0;
+		while (values != null && importedLines < numberOfLinesToImport) {
+			if (log.isInfoEnabled()) log.info("starting import of line with values: "+values);
 			
-			while (values != null) {
-				Map <String,Object> map = new HashMap<String,Object>();
-				Set<String> attributes = new HashSet<String>();
-				sanitizer.setLineNumber(readFileAsMap.getLineNumber());
-				sanitizer.setNumberOfErrorInRows(0);
+			sanitizer.setLineNumber(readFileAsMap.getLineNumber());
+			sanitizer.setNumberOfErrorInRows(0);
+			
+			if(log.isDebugEnabled()) log.debug("current facility code: "+values.get(CODE_HEADER));
+			
+			if (values.get(CODE_HEADER)!=null && !values.get(CODE_HEADER).equals(code)) {
+				// either we are reading the first line and there is no current location
+				// or we change location
 				
-				if(log.isWarnEnabled()) log.warn("Current facility code: "+values.get(CODE_HEADER));
+				// first we save the data of the preceding lines
+				if (dataLocation != null) {
+					// we merge and save the current data
+					saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, positions, code, sanitizer);
+					
+					// clear the value map since we are reading a line for a new location
+					positionsValueMap.clear();
+				}
 				
-				if(values.get(CODE_HEADER)!=null && !values.get(CODE_HEADER).equals(code)){
-					// The location changes, we need to update the code, location, position, rawDataElementValue
-					// 1 update the code
-					code = values.get(CODE_HEADER);
-					// 2 update the position	
-					if (positions.get(code) == null) positions.put(code, 0);
-					// 3 update the location
-					dataLocation = locationService.findCalculationLocationByCode(code, DataLocation.class);
-					if(dataLocation==null){
-						manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.unknown.location"));
-					}else{
-						// 4 update the rawDataElementValue
-						rawDataElementValue = valueService.getDataElementValue(rawDataElement, dataLocation, period);
-						if(rawDataElementValue != null) value = rawDataElementValue.getValue();
-						else{
-							value = new Value("");		
-							rawDataElementValue= new RawDataElementValue(rawDataElement,dataLocation,period,value);
-						}
+				// second we get the new location
+				// 1 update the current code
+				code = values.get(CODE_HEADER);
+				// 2 update and save the position	
+				if (positions.get(code) == null) positions.put(code, 0);
+				// 3 update the location
+				dataLocation = locationService.findCalculationLocationByCode(code, DataLocation.class);
+				// if the location is not found, we add an error
+				if (dataLocation == null) {
+					manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.unknown.location"));
+				} 
+				else {
+					// get the value associated to the new location
+					rawDataElementValue = valueService.getDataElementValue(rawDataElement, dataLocation, period);
+					if(rawDataElementValue == null) {
+						rawDataElementValue = new RawDataElementValue(rawDataElement, dataLocation, period, new Value(""));
 					}
 				}
-				
+			}
+			
+			if (dataLocation == null) {
+				manager.incrementNumberOfUnsavedRows();
+			}
+			else {
+				// read values from line and put into valueMap
 				for (String header : headers){
 					if (!header.equals(CODE_HEADER)){
-						map.put("[" + positions.get(code) + "]."+ header, values.get(header));
+						positionsValueMap.put("[" + positions.get(code) + "]."+ header, values.get(header));
 					}		
 				}
-				
-				if(positions.get(code)!=null){
-					map.put("", getLineNumberString(positions.get(code)));
-					positions.put(code, positions.get(code) + 1);	
-				}
-				
-				
-				if (dataLocation == null)
-					manager.incrementNumberOfUnsavedRows();
-				else {
-					
-					if(log.isDebugEnabled()) log.debug("Marging with data from map of header and data "+map+" Value before marge"+value);
-					value = rawDataElement.getType().mergeValueFromMap(value, map, "",attributes, sanitizer);
-					if(log.isDebugEnabled()) log.debug("Value after marge "+value);	
-					rawDataElementValue.setValue(value);
-					valueService.save(rawDataElementValue);
-					if(log.isDebugEnabled()) log.debug("The saved rawDataElementValue: "+rawDataElementValue.getValue());
-					if(sanitizer.getNumberOfErrorInRows()>0)
-						manager.incrementNumberOfRowsSavedWithError(1);
-					manager.incrementNumberOfSavedRows();
-				}
-				values = readFileAsMap.read(headers);				
+				// increment number of lines read for this location
+				positions.put(code, positions.get(code) + 1);
+			
+				if (sanitizer.getNumberOfErrorInRows()>0) manager.incrementNumberOfRowsSavedWithError(1);
+				manager.incrementNumberOfSavedRows();
 			}
+			if (log.isInfoEnabled()) log.info("finished importing line");
+			
+			// we increment the number of imported lines to stop the while loop when it reaches numberOfLinesToImport
+			importedLines++;
+			
+			// read new line
+			if (importedLines < numberOfLinesToImport) values = readFileAsMap.read(headers);
+		}
+		
+		saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, positions, code, sanitizer);
+		return values == null;
+	}
+	
+	private void saveAndMergeIfNotNull(RawDataElementValue rawDataElementValue, Map<String,Object> positionsValueMap, Map<String, Integer> positions, String code, ImportSanitizer sanitizer) {
+		if (rawDataElementValue != null) {
+			positionsValueMap.put("", getLineNumberString(positions.get(code)-1));
+
+			if (log.isDebugEnabled()) log.debug("merging with data from map of header and data "+ positionsValueMap);
+			if (log.isTraceEnabled()) log.trace("value before merge" + rawDataElementValue.getValue());
+			rawDataElementValue.setValue(
+				rawDataElement.getType().mergeValueFromMap(rawDataElementValue.getValue(), positionsValueMap, "", new HashSet<String>(), sanitizer)
+			);
+			if (log.isTraceEnabled()) log.trace("value after merge " + rawDataElementValue.getValue());
+			
+			valueService.save(rawDataElementValue);
+			sessionFactory.getCurrentSession().evict(rawDataElementValue);
+			if (log.isTraceEnabled()) log.trace("saved rawDataElement: "+ rawDataElementValue.getValue());
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.chai.kevin.importer.Importer#importData(java.lang.String, java.io.Reader)
+	 */
+	@Override
+	public void importData(final String fileName, final Reader reader) throws IOException {
+		if (log.isDebugEnabled()) log.debug("importData(FileName:"+fileName+"Reader:" + reader + ")");
+		
+		manager.setCurrentFileName(fileName);
+		
+		final ICsvMapReader readFileAsMap = new CsvMapReader(reader, CsvPreference.EXCEL_PREFERENCE);
+		final String[] headers = readFileAsMap.getCSVHeader(true);
+		
+		Map<String,Type> types = new HashMap<String,Type>();
+		
+		for (String header : headers)  { 
+			try {
+				if(!header.equals(CODE_HEADER))
+					types.put("[_]."+header,rawDataElement.getType().getType("[_]."+header));
+			} catch(IllegalArgumentException e){
+				if(log.isWarnEnabled()) log.warn("Column type not found for header"+header, e);
+				manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(),header,"import.error.message.unknowm.column.type"));
+			}
+		}
+				
+		final ImportSanitizer sanitizer = new ImportSanitizer(fileName,manager.getErrors(), types, dataService);
+		final Map<String,Integer> positions = new HashMap<String,Integer>();
+		
+		boolean readEntirely = false;
+		
+		while (!readEntirely) {
+			readEntirely = (Boolean)getTransactionTemplate().execute(new TransactionCallback() {
+				@Override
+				public Object doInTransaction(TransactionStatus arg0) {
+					sessionFactory.getCurrentSession().refresh(rawDataElement);
+					sessionFactory.getCurrentSession().refresh(period);
 					
-		}catch(IOException ioe){
-			// TODO Please through something meaningful
-			throw ioe;
-		}finally {
-			readFileAsMap.close();
-		}			
+					try {
+						return importData(fileName, reader, NUMBER_OF_LINES_TO_IMPORT, sanitizer, readFileAsMap, headers, positions);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return true;
+					}
+				}
+			});
+			sessionFactory.getCurrentSession().clear();
+		}
+		
 	}
 
 }

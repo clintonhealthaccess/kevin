@@ -66,7 +66,8 @@ public class ExpressionService {
 	private LocationService locationService;
 	private ValueService valueService;
 	private JaqlService jaqlService;
-
+	private SessionFactory sessionFactory;
+	
 	public static class StatusValuePair {
 		public Status status = null;
 		public Value value = null;
@@ -146,6 +147,8 @@ public class ExpressionService {
 					DataValue dataValue = valueService.getDataElementValue(entry.getValue(), dataLocation, period);
 					valueMap.put(entry.getValue().getId().toString(), dataValue==null?null:dataValue.getValue());
 					typeMap.put(entry.getValue().getId().toString(), entry.getValue().getType());
+					
+					sessionFactory.getCurrentSession().evict(dataValue);
 				}
 //				if (expressionLog.isDebugEnabled()) expressionLog.debug("values and types: valueMap={"+valueMap+"}", typeMap={"+typeMap+"}");
 				
@@ -258,6 +261,10 @@ public class ExpressionService {
 	
 	public void setJaqlService(JaqlService jaqlService) {
 		this.jaqlService = jaqlService;
+	}
+	
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 	
 }

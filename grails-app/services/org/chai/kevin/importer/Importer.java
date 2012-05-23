@@ -28,15 +28,14 @@
 package org.chai.kevin.importer;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -49,6 +48,7 @@ import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.Sanitizer;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.ValueService;
 
 /**
  * @author Jean Kahigiso M.
@@ -61,35 +61,40 @@ public abstract class Importer {
 	static final String DATA_ELEMENT_HEADER = "raw_data_element";
 	static final String VALUE_HEADER = "data_value";
 	
+	protected ValueService valueService;
 	
-	public void importUnzipFile(File file) throws IOException{
-		if (Utils.isValidZip(file)) {
-			FileInputStream fileInputStream = null;
-			ZipInputStream zipInputStream = null;
-			try {
-				fileInputStream = new FileInputStream(file.getName());
-				zipInputStream = new ZipInputStream(new BufferedInputStream(fileInputStream));
-				ZipEntry zipEntry;
-				while((zipEntry=zipInputStream.getNextEntry())!=null){
-					if(!zipEntry.isDirectory())
-						importData(new InputStreamReader(zipInputStream));
-				}
-			} catch (FileNotFoundException e) {
-				// TODO throw something meaningful
-			}finally{
-				zipInputStream.close();
-				fileInputStream.close();
-			}
+	public Importer(ValueService valueService) {
+		super();
+		this.valueService = valueService;
+	}
+
+	public void importCsvFile(String fileName, InputStream inputStream) throws IOException{
+		importData(fileName,new InputStreamReader(inputStream));
+	}
+	
+	public void importZipFiles(InputStream inputStream) throws IOException{
+		ZipInputStream zipInputStream = null;
+		zipInputStream = new ZipInputStream(new BufferedInputStream(inputStream));
+		ZipEntry zipEntry;
+		while((zipEntry=zipInputStream.getNextEntry())!=null){
+			if(!zipEntry.isDirectory())
+				importData(zipEntry.getName(),new InputStreamReader(zipInputStream));
+			if (log.isDebugEnabled()) log.debug("zipEntryName " +zipEntry.getName());
 		}
 	}
 		
 	
 	protected class ImportSanitizer implements Sanitizer {
+		private Map<String, Enum> enumMap = new HashMap<String, Enum>();
+		
 		private DataService dataService;
 		private final List<ImporterError> errors;
 		private final Map<String,Type> types;
+		private final String fileName;
 		
-		public ImportSanitizer(List<ImporterError> errors, Map<String,Type> types,DataService dataService) {
+		public ImportSanitizer(String fileName,List<ImporterError> errors, Map<String,Type> types, DataService dataService) {
+			super();
+			this.fileName = fileName;
 			this.errors = errors;
 			this.types = types;
 			this.dataService = dataService;
@@ -97,6 +102,14 @@ public abstract class Importer {
 		
 		private Integer lineNumber;
 		private Integer numberOfErrorInRows;
+		
+		private Enum getAndStoreEnum(String code) {
+			if (!enumMap.containsKey(code)) {
+				Enum enume = dataService.findEnumByCode(code);
+				enumMap.put(code, enume);
+			}
+			return enumMap.get(code);
+		}
 		
 		public void setLineNumber(Integer lineNumber) {
 			this.lineNumber = lineNumber;
@@ -114,79 +127,73 @@ public abstract class Importer {
 		public Object sanitizeValue(Object value, Type type, String prefix,String genericPrefix) {
 			switch (type.getType()) {
 			case ENUM:
-				return validateImportEnum(genericPrefix, value);
+				return validateImportEnum(fileName,genericPrefix, value);
 			case BOOL:
-				return validateImportBool(genericPrefix, value);
+				return validateImportBool(fileName,genericPrefix, value);
 			case NUMBER:
-				return validateImportNumber(genericPrefix, value);
+				return validateImportNumber(fileName,genericPrefix, value);
 			case TEXT:
-				return validateImportString(genericPrefix, value);
+				return validateImportString(fileName,genericPrefix, value);
 			case STRING:
-				return validateImportString(genericPrefix, value);
+				return validateImportString(fileName,genericPrefix, value);
 			case DATE:
-				return validateImportDate(genericPrefix, value);
+				return validateImportDate(fileName,genericPrefix, value);
 			default:
-				errors.add(new ImporterError(lineNumber, prefix, "import.error.message.unknown.type")); 
+				errors.add(new ImporterError(fileName,lineNumber, prefix, "import.error.message.unknown.type")); 
 				return null;
 			}
 		}
 	
-		private String validateImportEnum(String header, Object value) {
-			Enum enumValue = new Enum();
-			List<EnumOption> enumOptions = new ArrayList<EnumOption>();
-			enumValue = dataService.findEnumByCode(types.get(header).getEnumCode());
-			if (enumValue != null) {
-				enumOptions = enumValue.getEnumOptions();
-				for (EnumOption enumOption : enumOptions)
-					if (enumOption.getValue().equals(value))
-						return enumOption.getValue();
-						
+		private String validateImportEnum(String fileName, String header, Object value) {
+			Enum enume = getAndStoreEnum(types.get(header).getEnumCode());
+			if (enume != null) {
+				EnumOption option = enume.getOptionForValue(value.toString());
+				if (option != null) return option.getValue();
 			}
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(lineNumber, header,"import.error.message.enume"));
-			return null;
+			errors.add(new ImporterError(fileName,lineNumber, header,"import.error.message.enume"));
+			return value.toString();
 		}
 
-		private Boolean validateImportBool(String header, Object value){
+		private Boolean validateImportBool(String fileName,String header, Object value){
 			if (((String) value).equals("0") || ((String) value).equals("1"))
 				if (((String) value).equals("1"))
 					return true;
 				else
 					return false;
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows() + 1);
-			errors.add(new ImporterError(lineNumber, header,
-					"error.message.boolean"));
+			errors.add(new ImporterError(fileName,lineNumber, header,"error.message.boolean"));
 			return null;
 		}
 		
-		private Number validateImportNumber(String header, Object value) {
+		private Number validateImportNumber(String fileName,String header, Object value) {
 			try {
 				return Double.parseDouble((String) value);
 			} catch (NumberFormatException e) {
-				if (log.isDebugEnabled()) log.debug("Value in this cell [Line: " + lineNumber+ ",Column: " + header + "] has to be a Number"+ value, e);
+				if (log.isDebugEnabled()) log.debug("value in this cell [Line: " + lineNumber+ ",Column: " + header + "] has to be a Number"+ value, e);
 			}
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(lineNumber, header,"import.error.message.number"));
+			errors.add(new ImporterError(fileName,lineNumber, header,"import.error.message.number"));
 			return null;
 		}
 		
-		private String validateImportString(String header, Object value){
+		private String validateImportString(String fileName,String header, Object value){
 			if(value instanceof String || value.equals(""))
 				return (String) value;
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(lineNumber, header, "import.error.message.string.text")); 
+			errors.add(new ImporterError(fileName,lineNumber, header, "import.error.message.string.text")); 
 			return null;
 		}
 		
-		private Date validateImportDate(String header, Object value){
+		private Date validateImportDate(String fileName,String header, Object value){
 			if(value instanceof String)
 				try {
 					return Utils.parseDate((String)value);
 				} catch (ParseException e) {
-					if (log.isDebugEnabled()) log.debug("Value in this cell [Line: " + lineNumber+ ",Column: " + header + "] has to be a Date (dd-MM-yyyy)"+ value, e);
+					if (log.isDebugEnabled()) log.debug("value in this cell [Line: " + lineNumber+ ",Column: " + header + "] has to be a Date (dd-MM-yyyy)"+ value, e);
 				}
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(lineNumber, header, "import.error.message.date")); 
+			errors.add(new ImporterError(fileName,lineNumber, header, "import.error.message.date")); 
 			return null;
 		}
 		
@@ -200,6 +207,14 @@ public abstract class Importer {
 		return result;
 	}
 
-	public abstract void importData(Reader reader) throws IOException;
+	
+	/**
+	 * Imports one file.
+	 * 
+	 * @param fileName
+	 * @param reader
+	 * @throws IOException
+	 */
+	public abstract void importData(String fileName, Reader reader) throws IOException;
 	
 }
