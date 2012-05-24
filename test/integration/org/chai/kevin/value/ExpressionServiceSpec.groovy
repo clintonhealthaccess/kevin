@@ -125,6 +125,28 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		result.value == Value.VALUE_NUMBER(1);
 	}
 	
+	def "test check for null in formulas with list types"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["test": Type.TYPE_NUMBER()])), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"if (\$"+dataElement.id+" == \"null\") [] else [{\"test\":1}]"]]))
+		def result
+		
+		when: "value is missing"
+		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
+		
+		then:
+		result.value.equals(Value.VALUE_LIST([]));
+		
+		when: "value is null"
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), Value.NULL_INSTANCE())
+		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
+		
+		then:
+		result.value.equals(Value.VALUE_LIST([]));
+	}
+	
 	def "test normalized data elements expression empty expressions treated as missing"() {
 		setup:
 		setupLocationTree()

@@ -280,6 +280,7 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		then:
 		type.getJaqlValue(value) == "{\"key\":\"value\",}"
+		
 	}
 
 	
@@ -458,6 +459,13 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		then:
 		type.getValueFromJaql(jaql).equals(new Value("{\"value\": 1.0E9}"))
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["test": Type.TYPE_NUMBER()]))
+		jaql = "[]"
+		
+		then:
+		type.getValueFromJaql(jaql).equals(Value.VALUE_LIST([]))
 	}
 	
 	def "test null values"() {

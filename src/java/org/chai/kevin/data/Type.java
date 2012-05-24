@@ -497,8 +497,7 @@ public class Type extends JSONValue {
 						String itemJaqlString = array.getString(i);
 						values.add(getListType().getValueFromJaql(itemJaqlString).getJsonObject());
 					}
-					if (values.size() == 0) object.put(Value.VALUE_STRING, JSONNull.getInstance());
-					else object.put(Value.VALUE_STRING, values);
+					object.put(Value.VALUE_STRING, values);
 					break;
 				case MAP:
 					JSONObject jaqlObject = JSONObject.fromObject(jaqlString);
