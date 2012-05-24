@@ -107,6 +107,37 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		jsonResult.elements[0].invalid.size() == 0
 	}
 	
+	def "validation works with outliers"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def formElement = newFormElement(dataElement)
+		def formValidationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", true, [])
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
+		planningController = new EditPlanningController()
+		def jsonResult
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
+		planningController.params.planningType = planningType.id
+		planningController.params.element = formElement.id
+		planningController.params.lineNumber = 0
+		planningController.params.suffix = '[0].key1'
+		planningController.params['elements['+formElement.id+'].value[0].key1'] = '123'
+		planningController.saveValue()
+		jsonResult = JSONUtils.getMapFromJSON(planningController.response.contentAsString)
+		
+		then:
+		jsonResult.valid == false
+		jsonResult.elements[0].id == formElement.id
+		jsonResult.elements[0].invalid.size() == 1
+		jsonResult.elements[0].invalid[0].prefix == '[0].key1'
+	}
+		
+	
 	def "skip works"() {
 		setup:
 		setupLocationTree()
