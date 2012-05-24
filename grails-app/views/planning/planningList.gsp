@@ -39,7 +39,6 @@
 											<thead>
 												<tr>
 													<th></th>
-													<th></th>
 													<th><g:i18n field="${planningType.names}"/></th>
 													<g:each in="${planningType.getValuePrefixes(section)}" var="prefix">
 														<th><g:i18n field="${planningType.formElement.headers[prefix]}"/></th>
@@ -64,9 +63,6 @@
 																	</g:if>
 																</g:else>
 															</a>
-														</td>
-														<td>
-															<g:value value="${entry.discriminatorValue}" type="${planningType.discriminatorType}" enums="${entry.enums}" nullText="none entered"/>
 														</td>
 														<g:each in="${planningType.getValuePrefixes(section)}" var="prefix">
 															<td>
