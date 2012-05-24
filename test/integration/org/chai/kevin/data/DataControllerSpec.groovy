@@ -90,7 +90,7 @@ class DataControllerSpec extends IntegrationTests {
 		dataController.modelAndView.model.entities.equals([(period1):[]])
 		
 		when:
-		def dataElementValue = newNormalizedDataElementValue(dataElement, DataLocation.findByCode(BUTARO), period1, Status.MISSING_VALUE, Value.NULL_INSTANCE())
+		def dataElementValue = newNormalizedDataElementValue(dataElement, DataLocation.findByCode(BUTARO), period1, Status.VALID, Value.NULL_INSTANCE())
 		dataController.dataElementValueList()
 		
 		then:
