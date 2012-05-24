@@ -29,19 +29,14 @@ public class EntityExportService {
 	private static final Log log = LogFactory.getLog(EntityExportService.class);
 	
 	private SessionFactory sessionFactory;
-	private LanguageService languageService;
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
-	}	
-	
-	public void setLanguageService(LanguageService languageService) {
-		this.languageService = languageService;
-	}
+	}		
 	
 	private final static String CSV_FILE_EXTENSION = ".csv";	
 	
-	public String getExportFilename(Class clazz){
+	public String getExportFilename(Class<?> clazz){
 		String exportFilename = clazz.getSimpleName().replaceAll("[^a-zA-Z0-9]", "") + "_";
 		return exportFilename;
 	}
@@ -103,7 +98,7 @@ public class EntityExportService {
 		return csvFile;
 	}	
 	
-	public List<Object> getEntities(Class clazz){
+	public List<Object> getEntities(Class<?> clazz){
 		List<Object> entities = new ArrayList<Object>();
 		entities = (List<Object>) sessionFactory.getCurrentSession().createCriteria(clazz).list();
 		return entities;
@@ -120,35 +115,33 @@ public class EntityExportService {
 					isNotAccessible = true;
 				}
 				
-				value = field.get(entity);				
+				value = field.get(entity);								
 				
-				Class<?> valueClazz = field.getType();
-				Class<?> innerClazz = null;				
-				boolean isAssignable = Exportable.class.isAssignableFrom(valueClazz);				
-				Class<?>[] clazzInterfaces = valueClazz.getInterfaces();
-				
-				List<Object> listValues = null;
-				
-				if(valueClazz.equals(List.class)){
-					listValues = (List<Object>) value;					
-					ParameterizedType type = (ParameterizedType) field.getGenericType();
-					innerClazz = (Class) type.getActualTypeArguments()[0];					
-					isAssignable = Exportable.class.isAssignableFrom(innerClazz);
-					clazzInterfaces = innerClazz.getInterfaces();	
-				}
-				
-				boolean isExportable = false;
-				if(isAssignable && Arrays.asList(clazzInterfaces).contains(Exportable.class)){
-					isExportable = true;
-				}
-				
-				Exportable exportableValue = null;
-				String exportValue = "null";	
+				String exportValue = "";	
 				
 				if(value != null){
 					
-					//value is not a primitive or 'wrapper to primitive' type
-					if(isExportable){
+					Class<?> valueClazz = field.getType();
+					Class<?> innerClazz = null;
+					
+					//value is not a list
+					boolean isAssignable = Exportable.class.isAssignableFrom(valueClazz);				
+					Class<?>[] clazzInterfaces = valueClazz.getInterfaces();
+					Class<?> exportableClazz = valueClazz;					
+					
+					//value is a list
+					List<Object> listValues = null;
+					if(valueClazz.equals(List.class)){
+						listValues = (List<Object>) value;			
+						ParameterizedType type = (ParameterizedType) field.getGenericType();
+						innerClazz = (Class<?>) type.getActualTypeArguments()[0];					
+						isAssignable = Exportable.class.isAssignableFrom(innerClazz);
+						clazzInterfaces = innerClazz.getInterfaces();
+						exportableClazz = innerClazz;
+					}					
+					
+					//value is exportable
+					if(isAssignable && Arrays.asList(clazzInterfaces).contains(Exportable.class)){
 						
 						//value is a list
 						if(listValues != null){
@@ -157,14 +150,19 @@ public class EntityExportService {
 						//value is not a list
 						else{
 							if(value instanceof Exportable){
-								exportableValue = (Exportable) value;
-								exportValue = getExportValue(exportableValue);	
+								Exportable exportable = (Exportable) value;
+								exportValue = getExportValue(exportable);	
 							}						
 						}		
 					}
-					//value is a primitive or 'wrapper to primitive' type
-					else {
+					//value is a primitive or 'wrapper to primitive' or string type
+					else if(exportableClazz.isPrimitive() || ClassUtils.wrapperToPrimitive(exportableClazz) != null || exportableClazz.equals(String.class)){
 						exportValue = value.toString();
+					}
+					//value is not exportable or a primitive type
+					else {
+						//exportValue = value.toString();
+						exportValue = "null";
 					}
 				}
 				

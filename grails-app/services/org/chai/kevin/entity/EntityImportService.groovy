@@ -31,16 +31,11 @@ public class EntityImportService {
 	private static final Log log = LogFactory.getLog(EntityImportService.class);
 
 	private SessionFactory sessionFactory;
-	private LocationService locationService;
 	private static final String ID_HEADER = "id";
 	private static final String CODE_HEADER = "code";
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
-	}
-	
-	public void setLocationService(LocationService locationService) {
-		this.locationService = locationService;
 	}	
 	
 	public void importEntityData(Reader reader, Class<?> clazz, ImporterErrorManager manager) throws IOException {		
@@ -107,6 +102,7 @@ public class EntityImportService {
 					}
 					
 					if(entity == null){
+						//TODO use code
 						manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),ID_HEADER,"import.error.message.entitynull"));
 						manager.incrementNumberOfUnsavedRows();
 						continue;
@@ -159,6 +155,7 @@ public class EntityImportService {
 					isNotAccessible = true;
 				}
 				
+				//TODO use code
 				if(fieldName.equalsIgnoreCase(ID_HEADER)){
 					continue;
 				}
@@ -167,16 +164,19 @@ public class EntityImportService {
 				if(newValue == null || newValue.isEmpty())
 					newValue = "null";
 				else{
+					
 					Class<?> clazz = null;
 					clazz = field.getType();
 					Class<?> innerClazz = null;
+					
 					//value is a list
 					if(clazz.equals(List.class)){
 						ParameterizedType type = (ParameterizedType) field.getGenericType();
 						innerClazz = (Class) type.getActualTypeArguments()[0];
 					}
+					
 					newValue = sanitizer.sanitizeValue(fieldName, newValue, clazz, innerClazz);					
-					field.set(entity, newValue);					
+					field.set(entity, newValue);			
 				}
 				
 				if(isNotAccessible)
@@ -239,23 +239,15 @@ public class EntityImportService {
 					isAssignable = Importable.class.isAssignableFrom(innerClazz);
 					clazzInterfaces = innerClazz.getInterfaces();
 					importableClazz = innerClazz;
-				}
+				}		
+				
+				Importable importable = null;
 				
 				//value is importable
-				Importable importable = null;												
 				if(isAssignable && Arrays.asList(clazzInterfaces).contains(Importable.class)){
-					importable = (Importable) importableClazz.newInstance();
-				}
-				
-				//value is a primitive or 'wrapper to primitive' type
-				boolean isPrimitiveOrWrapped = false;
-				if(importableClazz.isPrimitive() || ClassUtils.wrapperToPrimitive(importableClazz) != null){
-					isPrimitiveOrWrapped = true;
-				}
-					
-				//value is importable
-				if(importable != null){
 
+					importable = (Importable) importableClazz.newInstance();
+					
 					//value is a map
 					if(importable instanceof JSONMap){
 						importValue = getImportValue(importable, value);
@@ -263,10 +255,10 @@ public class EntityImportService {
 					else{																		
 						
 						List<?> importEntities = new ArrayList<?>();
+						importEntities = getImportValues(importable, value, importableClazz, header);
 						
 						//value is a list
-						if(innerClazz != null){
-							importEntities = getImportValues(importable, value, importableClazz, header);
+						if(innerClazz != null){							
 							importValue = importEntities;
 						}						
 						//value is not a list
@@ -280,19 +272,14 @@ public class EntityImportService {
 					}										
 					
 				}
-				//value is a primitive or 'wrapper to primitive' type
-				else if(isPrimitiveOrWrapped){
+				//value is a primitive or 'wrapper to primitive' or string type
+				else if(importableClazz.isPrimitive() || ClassUtils.wrapperToPrimitive(importableClazz) != null || importableClazz.equals(String.class)){
 					importValue = value;
 				}
 				//value is not importable or a primitive type
 				else {
 					this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-					if(importable == null)
-						errors.add(new ImporterError(lineNumber, header,"import.error.message.classnotimportable"));
-					else if(!isPrimitiveOrWrapped)
-						errors.add(new ImporterError(lineNumber, header,"import.error.message.classnotprimitive"));
-					else
-						errors.add(new ImporterError(lineNumber, header,"import.error.message.classunknown"));
+					errors.add(new ImporterError(lineNumber, header,"import.error.message.entitynotimportable"));
 				}
 			}					
 			
