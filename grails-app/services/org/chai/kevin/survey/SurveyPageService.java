@@ -30,7 +30,6 @@ package org.chai.kevin.survey;
  * @author Jean Kahigiso M.
  *
  */
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,8 +53,8 @@ import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormValidationService;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
 import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportService;
@@ -70,14 +69,15 @@ import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
-import org.codehaus.groovy.grails.commons.GrailsApplication;
-import org.hibernate.FlushMode;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 public class SurveyPageService {
 	
@@ -88,12 +88,22 @@ public class SurveyPageService {
 	private ValueService valueService;
 	private DataService dataService;
 	private LocationService locationService;
-	private ReportService reportService;
 	private FormValidationService formValidationService;
 	private SessionFactory sessionFactory;
-	private GrailsApplication grailsApplication;
+	private PlatformTransactionManager transactionManager;
+	
+	private TransactionTemplate transactionTemplate;
+	
 	private Set<String> submitSkipLevels;
 	private Set<String> locationSkipLevels;
+
+	private TransactionTemplate getTransactionTemplate() {
+		if (transactionTemplate == null) {
+			transactionTemplate = new TransactionTemplate(transactionManager);
+			transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+		}
+		return transactionTemplate;
+	}
 	
 	@Transactional(readOnly = true)
 	public Survey getDefaultSurvey() {
@@ -117,7 +127,7 @@ public class SurveyPageService {
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPage(DataLocation dataLocation, SurveyQuestion currentQuestion) {
 		if (log.isDebugEnabled()) log.debug("getSurveyPage(dataLocation="+dataLocation+", currentQuestion="+currentQuestion+")");
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+//		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
 		Map<SurveyElement, FormEnteredValue> elements = new HashMap<SurveyElement, FormEnteredValue>();
 		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
@@ -138,7 +148,7 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPage(DataLocation dataLocation, SurveySection currentSection) {
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+//		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
 		SurveyProgram currentProgram = currentSection.getProgram();
 		Survey survey = currentProgram.getSurvey();
@@ -177,8 +187,6 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPage(DataLocation dataLocation, SurveyProgram currentProgram) {
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		
 		Survey survey = currentProgram.getSurvey();
 		
 		Map<SurveyProgram, SurveyEnteredProgram> programs = new HashMap<SurveyProgram, SurveyEnteredProgram>();
@@ -217,8 +225,6 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPagePrint(DataLocation dataLocation,Survey survey) {
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		
 		DataLocationType dataLocationType = dataLocation.getType();
 		
 		Map<SurveyElement, FormEnteredValue> elements = new LinkedHashMap<SurveyElement, FormEnteredValue>();
@@ -242,8 +248,6 @@ public class SurveyPageService {
 
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPage(DataLocation dataLocation, Survey survey) {
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		
 		Map<SurveyProgram, SurveyEnteredProgram> programs = new HashMap<SurveyProgram, SurveyEnteredProgram>();
 		Map<SurveySection, SurveyEnteredSection> sections = new HashMap<SurveySection, SurveyEnteredSection>();
 		for (SurveyProgram program : survey.getPrograms(dataLocation.getType())) {
@@ -259,29 +263,27 @@ public class SurveyPageService {
 	}
 	
 	@Transactional(readOnly = false)
-	public void refresh(CalculationLocation location, Survey survey, boolean closeIfComplete) {
+	public void refresh(CalculationLocation location, final Survey survey, final boolean closeIfComplete) {
 		List<DataLocation> dataLocations = location.collectDataLocations(null, null);
 		
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-//		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
-		
-		for (DataLocation dataLocation : dataLocations) {
-			survey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
-			dataLocation = (DataLocation)sessionFactory.getCurrentSession().get(DataLocation.class, dataLocation.getId());
+		for (final DataLocation dataLocation : dataLocations) {
+//			survey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
+//			dataLocation = (DataLocation)sessionFactory.getCurrentSession().get(DataLocation.class, dataLocation.getId());
 
-			getMe().refreshSurveyForDataLocationInTransaction(dataLocation, survey, closeIfComplete);
+			getTransactionTemplate().execute(new TransactionCallbackWithoutResult() {
+				@Override
+				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
+					refreshSurveyForDataLocation(dataLocation, survey, closeIfComplete);
+				}
+			});
 			sessionFactory.getCurrentSession().clear();
 		}
 	}
 	
-	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
-	public void refreshSurveyForDataLocationInTransaction(DataLocation dataLocation, Survey survey, boolean closeIfComplete) {
-		refreshSurveyForDataLocation(dataLocation, survey, closeIfComplete);
-	}
-	
 	@Transactional(readOnly = false)
 	public void refreshSurveyForDataLocation(DataLocation dataLocation, Survey survey, boolean closeIfComplete) {
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		if (log.isDebugEnabled()) log.debug("refreshSurveyForDataLocation(dataLocation="+dataLocation+", survey="+survey+", closeIfComplete="+closeIfComplete+")");
+//		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		Set<SurveyProgram> validPrograms = new HashSet<SurveyProgram>(survey.getPrograms(dataLocation.getType()));
@@ -306,7 +308,7 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public void refreshSectionForDataLocation(DataLocation dataLocation, SurveySection section) {
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+//		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		Set<SurveyQuestion> validQuestions = new HashSet<SurveyQuestion>(section.getQuestions(dataLocation.getType()));
@@ -554,10 +556,10 @@ public class SurveyPageService {
 		question.setComplete(complete);
 	}
 	
+	@Transactional(readOnly = false)
 	public boolean submitAll(CalculationLocation location, Set<DataLocationType> types, Survey survey, SurveyProgram program){
-		
-		if (log.isDebugEnabled()) log.debug("submitAll(" + location + ", " + survey + ", " + program + ")");
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		if (log.isDebugEnabled()) log.debug("submitAll(location=" + location + ", survey=" + survey + ", program="+program+")");
+//		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
 		boolean result = false;		
 		List<DataLocation> dataLocations = location.collectDataLocations(null, types);
@@ -565,17 +567,27 @@ public class SurveyPageService {
 		return result;
 	}
 	
-	@Transactional(readOnly = false)
-	public boolean submitAll(List<DataLocation> dataLocations, Survey survey, SurveyProgram program) {		
-				
+	private boolean submitAll(List<DataLocation> dataLocations, Survey survey, SurveyProgram program) {		
+		
 		for (DataLocation dataLocation : dataLocations) {
-			// TODO make this run in a transaction						
 			submitIfNotClosed(dataLocation, survey, program);
 		}
+		
+		// commented do to Hibernate bug https://hibernate.onjira.com/browse/HHH-2763
+//		getTransactionTemplate().execute(new TransactionCallbackWithoutResult() {
+//			@Override
+//			protected void doInTransactionWithoutResult(TransactionStatus arg0) {
+//				Survey newSurvey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
+//				submitIfNotClosed(survey, dataLocation);
+//			}
+//		});
+//		sessionFactory.getCurrentSession().clear();
+		
 		return true;
 	}
 	
 	private void submitIfNotClosed(DataLocation dataLocation, Survey survey, SurveyProgram program) {
+		if (log.isDebugEnabled()) log.debug("submitIfNotClosed(survey=" + survey + ", location=" + dataLocation + ")");
 		
 		List<SurveyProgram> surveyPrograms = new ArrayList<SurveyProgram>();
 		if(program != null){
@@ -648,7 +660,7 @@ public class SurveyPageService {
 		}
 		return enteredSection;
 	}
-	
+
 	private void deleteSurveyEnteredProgram(SurveyProgram program, DataLocation dataLocation) {
 		SurveyEnteredProgram enteredProgram = surveyValueService.getSurveyEnteredProgram(program, dataLocation);
 		if (enteredProgram != null) surveyValueService.delete(enteredProgram); 
@@ -705,20 +717,20 @@ public class SurveyPageService {
 		this.dataService = dataService;
 	}
 	
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
 	public void setLocationService(LocationService locationService) {
 		this.locationService = locationService;
 	}
 	
-	public void setReportService(ReportService reportService) {
-		this.reportService = reportService;
-	}
-	
-	public void setGrailsApplication(GrailsApplication grailsApplication) {
-		this.grailsApplication = grailsApplication;
-	}
-
 	public void setSubmitSkipLevels(Set<String> submitSkipLevels) {
 		this.submitSkipLevels = submitSkipLevels;
+	}
+	
+	public void setLocationSkipLevels(Set<String> locationSkipLevels) {
+		this.locationSkipLevels = locationSkipLevels;
 	}
 	
 	public Set<LocationLevel> getSkipSubmitLevels() {
@@ -729,19 +741,12 @@ public class SurveyPageService {
 		return levels;
 	}
 	
-	public void setLocationSkipLevels(Set<String> locationSkipLevels) {
-		this.locationSkipLevels = locationSkipLevels;
-	}
-	
 	public Set<LocationLevel> getSkipLocationLevels() {
-		Set<LocationLevel> levels = reportService.getSkipLocationLevels(locationSkipLevels);
+		Set<LocationLevel> levels = new HashSet<LocationLevel>();
+		for (String skipLevel : this.locationSkipLevels) {
+			levels.add(locationService.findLocationLevelByCode(skipLevel));
+		}
 		return levels;
 	}
 	
-	// for internal call through transactional proxy
-	private SurveyPageService getMe() {
-		return grailsApplication.getMainContext().getBean(SurveyPageService.class);
-	}
-
-		
 }
