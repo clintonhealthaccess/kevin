@@ -7,7 +7,6 @@
   +pie-clearfix
   &.minimized
     background: $filler
-    margin-bottom: -1px
     padding: 7px 15px
     +linear-gradient(color-stops($filler + #060606, $filler))
     +text-shadow(#fff, 0, 1px, 0)
@@ -15,6 +14,8 @@
     .errors
       display: none
     
+  &.row-errors
+    border-color: red
   
 .adv-form-section
   +pie-clearfix
