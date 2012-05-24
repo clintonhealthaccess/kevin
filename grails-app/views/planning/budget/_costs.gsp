@@ -4,7 +4,7 @@
 	<tbody>
 		<g:each in="${planningType.costs}" var="planningCost">
 			<g:set var="budgetCost" value="${budgetPlanningEntry.getBudgetCost(planningCost)}"/>
-			<g:if test="${!budgetCost.hidden}">
+			<g:if test="${budgetCost == null || !budgetCost.hidden}">
 				<tr>
 					<td>
 						<span style="margin-left: ${margin}px;">
@@ -14,7 +14,14 @@
 					<g:if test="${planningCost.type == PlanningCostType.INCOMING}">
 						<td>-</td>
 					</g:if>
-					<td><g:formatNumber number="${budgetCost?.value}" format="#,###"/></td>
+					<td>
+						<g:if test="${budgetCost != null}">
+							<g:formatNumber number="${budgetCost?.value}" format="#,###"/>
+						</g:if>
+						<g:else>
+							<a href="#" class="tooltip" title="${message(code: 'planning.budget.error.tooltip')}" onclick="return false;">?</a>
+						</g:else>
+					</td>
 					<g:if test="${planningCost.type == PlanningCostType.OUTGOING}">
 						<td>-</td>
 					</g:if>
