@@ -4,13 +4,13 @@
 		<thead>
 			<tr>
 				<th/>
-				<th>Descriptions</th>
-				<th>Locations</th>
-				<th>Periods</th>
-				<th>Data Location Types</th>
-				<th>Data Elements</th>
-				<th>Created On</th>
-				<th></th>
+				<th><g:message code="entity.description.label"/></th>
+				<th><g:message code="exporter.locations"/></th>
+				<th><g:message code="exporter.periods"/></th>
+				<th><g:message code="exporter.location.types"/></th>
+				<th><g:message code="exporter.data.label"/></th>
+				<th><g:message code="exporter.create.on"/></th>
+				<th><g:message code="entity.list.manage.label"/></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -51,7 +51,19 @@
 	  				</td>
 	  				<td>${Utils.formatDateWithTime(export.date)}</td>
 	  				<td>
-  						<a href="${createLinkWithTargetURI(controller:'exporter', action:'export', params:['export.id': export.id, method: method])}">Download</a>
+		  				<div class="js_dropdown dropdown"> 
+							<a class="selected manage-btn" href="#"><g:message code="entity.list.manage.label"/></a>
+							<div class="hidden manage-list dropdown-list js_dropdown-list">
+								<ul>
+									<li>
+		  								<a href="${createLinkWithTargetURI(controller:'exporter', action:'export', params:['export.id': export.id, method: method])}"><g:message code="exporter.download.label" /></a>
+		  							</li>
+		  							<li>
+		  								<a href="${createLinkWithTargetURI(controller:'exporter', action:'clone', params:['export.id': export.id, method: method])}"><g:message code="exporter.clone.label" /></a>
+		  							</li>
+		  						</ul>
+	  						</div>
+	 					</div>
 	  				</td>
 				</tr>
 			</g:each>
