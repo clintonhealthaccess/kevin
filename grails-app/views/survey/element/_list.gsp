@@ -20,7 +20,7 @@
 	</g:if>
 	<g:else>
 		<g:each in="${value?.listValue}" var="item" status="i">
-			<li class="element-list-row adv-form-row" data-index="${i}">
+			<li class="element-list-row adv-form-row ${!validatable?.isTreeValid(suffix+'['+i+']')?'row-errors':''}" data-index="${i}">
 				<ul class="adv-form-actions horizontal right">
 					<li><a class="element-list-minimize ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.minimize.label" /></a></li>
 					<li><a class="element-list-maximize hidden ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.maximize.label" /></a></li>
