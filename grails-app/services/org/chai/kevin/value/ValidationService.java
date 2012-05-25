@@ -28,7 +28,7 @@ public class ValidationService {
 		toCombine.add(expression);
 		toCombine.addAll(prefixes);
 		
-		validatable.getType().getCombinations(validatable.getValue(), toCombine, combinations, "");
+		validatable.getType().getCombinations(validatable.getValue(), toCombine, combinations, "", "");
 		
 		for (List<String> list : combinations) {
 			if (!isWildcard(list)) {
