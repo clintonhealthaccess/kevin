@@ -27,19 +27,21 @@
 		<g:if test="${grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).hasProperty('search')}">
 			<g:searchBox action="search"/>
 		</g:if>
-		<g:if test="${!entities.empty}">
-			<div class="main">
-				<g:render template="${template}"/>
-			</div>
-			<!-- End of template -->
-			<div class="paginateButtons main">
-				<g:if test="${entityCount != null}">
-					<g:paginate total="${entityCount}" params="${params}" action="${actionName}"/>
-				</g:if>
-			</div>
-		</g:if>
-		<g:else>
+		
+		<div class="main">
+			<g:render template="${template}"/>
+		</div>
+		
+		<g:if test="${entities.empty}">
 			<div class="main"><g:message code="entity.list.empty.label" args="[entityName]"/></div>
-		</g:else>				
+		</g:if>
+		
+		<!-- End of template -->
+		<div class="paginateButtons main">
+			<g:if test="${entityCount != null}">
+				<g:paginate total="${entityCount}" params="${params}" action="${actionName}"/>
+			</g:if>
+		</div>
+		
 	</div>
 </div>
