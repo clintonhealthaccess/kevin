@@ -9,12 +9,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="DataLocation")
 @Table(name="dhsst_location_data_location")
-public class DataLocation extends CalculationLocation {
+public class DataLocation extends CalculationLocation implements Exportable {
 
 	private Location location;
 	private DataLocationType type;
@@ -78,5 +80,10 @@ public class DataLocation extends CalculationLocation {
 	@Override
 	public String toString() {
 		return "DataLocation[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 }

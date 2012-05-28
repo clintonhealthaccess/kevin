@@ -32,6 +32,7 @@ package org.chai.kevin.survey
  *
  */
 constraints ={
+	code (nullable: false, blank: false, unique: true)
 	survey(nullable:false)
 	order(nullable:false, blank:false)
 	typeCodeString(nullable:false /*, blank:false*/)

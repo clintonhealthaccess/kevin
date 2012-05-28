@@ -124,4 +124,8 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 		return "SurveySimpleQuestion[getId()=" + getId() + ", getNames()=" + getNames() + "]";
 	}
 
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
+	}
 }

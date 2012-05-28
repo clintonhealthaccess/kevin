@@ -38,9 +38,10 @@ import javax.persistence.MappedSuperclass;
 
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.entity.export.Exportable;
 
 @MappedSuperclass
-public abstract class ReportEntity extends Orderable<Integer> {
+public abstract class ReportEntity extends Orderable<Integer> implements Exportable {
 
 	protected Integer order;
 	protected Translation names = new Translation();

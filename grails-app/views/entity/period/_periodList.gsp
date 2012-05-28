@@ -3,6 +3,7 @@
 	<thead>
 		<tr>
 			<th/>
+			<th><g:message code="entity.code.label" /></th>
 			<th><g:message code="period.startdate.label" /></th>
 			<th><g:message code="period.enddate.label" /></th>
 		</tr>
@@ -23,6 +24,7 @@
 						
 					</ul>
 				</td>
+				<td>${period.code}</td>
 				<td>${Utils.formatDate(period.startDate)}</td>
 				<td>${Utils.formatDate(period.endDate)}</td>
 			</tr>

@@ -8,9 +8,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportProgram;
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -69,6 +71,11 @@ public class DashboardProgram extends DashboardEntity {
 	@Override
 	public String toString() {
 		return "DashboardProgram[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 	
 }

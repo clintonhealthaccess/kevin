@@ -9,15 +9,18 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="Period")
 @Table(name="dhsst_period")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class Period {
+public class Period implements Exportable {
 
 	private Long id;
+	private String code;
 	private Date startDate;
 	private Date endDate;
 
@@ -79,6 +82,19 @@ public class Period {
 	@Override
 	public String toString() {
 		return "Period[getId()=" + getId() + ", getStartDate()=" + getStartDate() + ", getEndDate()=" + getEndDate() + "]";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 }

@@ -2,8 +2,8 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="entity.code.label"/></th>
+			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="location.level.label"/></th>
 			<th><g:message code="location.parent.label"/></th>
 		</tr>
@@ -24,10 +24,10 @@
 						
 					</ul>
 				</td>
+				<td>${location.code}</td>
 				<td>
 					<g:i18n field="${location.names}"/>
 				</td>
-				<td>${location.code}</td>
 				<td>
 					<g:i18n field="${location.level.names}"/>
 				</td>

@@ -31,7 +31,6 @@ public class EntityImportService {
 	private static final Log log = LogFactory.getLog(EntityImportService.class);
 
 	private SessionFactory sessionFactory;
-	private static final String ID_HEADER = "id";
 	private static final String CODE_HEADER = "code";
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -76,18 +75,15 @@ public class EntityImportService {
 				while (row != null) {					
 					Object entity = null;
 					
-//					//TODO use code
-//					String entityCode = row.get(CODE_HEADER);					
-//					if(entityCodes.contains(entityCode)){
-//						manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),CODE_HEADER,"entity code is already in use"));
-//						manager.incrementNumberOfUnsavedRows();
-//						continue;
-//					}
-//					entityCodes.add(entityCode);
-					
-					//TODO use code
-					String entityId = row.get(ID_HEADER);					
-					if(entityId == null || entityId.isEmpty()){
+					String entityCode = row.get(CODE_HEADER);					
+					if(entityCodes.contains(entityCode)){
+						manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.entitycodeduplicate"));
+						manager.incrementNumberOfUnsavedRows();
+						continue;
+					}
+					entityCodes.add(entityCode);
+														
+					if(entityCode == null || entityCode.isEmpty()){
 						try {
 							entity = clazz.newInstance();
 						} catch (InstantiationException e) {
@@ -97,13 +93,11 @@ public class EntityImportService {
 						}
 					}
 					else{
-						//TODO use code
-						entity = findEntityById(entityId, clazz);					
+						entity = findEntityByCode(entityCode, clazz);
 					}
 					
 					if(entity == null){
-						//TODO use code
-						manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),ID_HEADER,"import.error.message.entitynull"));
+						manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.entitynull"));
 						manager.incrementNumberOfUnsavedRows();
 						continue;
 					}									
@@ -146,19 +140,14 @@ public class EntityImportService {
 		for(Field field : fields){
 			String fieldName = field.getName();
 			if (log.isDebugEnabled()) 
-				log.debug("header: " + fieldName + ", field: " + row.get(fieldName));						
-
+				log.debug("header: " + fieldName + ", field: " + row.get(fieldName));
+				
 			try {
 				boolean isNotAccessible = false;
 				if(!field.isAccessible()){ 
 					field.setAccessible(true);
 					isNotAccessible = true;
-				}
-				
-				//TODO use code
-				if(fieldName.equalsIgnoreCase(ID_HEADER)){
-					continue;
-				}
+				}				
 										
 				Object newValue = row.get(fieldName);
 				if(newValue == null || newValue.isEmpty())
@@ -297,11 +286,10 @@ public class EntityImportService {
 			Pattern pattern = Pattern.compile(codePattern);
 			Matcher matcher = pattern.matcher(value);
 			while(matcher.find()){
-				String entityId = matcher.group();
-				if(entityId != null && !entityId.isEmpty()){
-					entityId = entityId.replaceAll(Utils.CODE_DELIMITER, "");
-					//TODO use code
-					Object importEntity = findEntityById(entityId, importableClazz);
+				String entityCode = matcher.group();
+				if(entityCode != null && !entityCode.isEmpty()){
+					entityCode = entityCode.replaceAll(Utils.CODE_DELIMITER, "");
+					Object importEntity = findEntityByCode(entityCode, importableClazz);
 					if(importEntity != null){
 						importEntity = getImportValue(importable, importEntity);
 						importEntities.add(importEntity);

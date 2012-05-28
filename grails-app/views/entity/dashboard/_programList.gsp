@@ -2,6 +2,7 @@
 	<thead>
 		<tr>
 			<th/>
+			<th><g:message code="entity.code.label"/></th>
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="dashboard.program.weight.label"/></th>
 			<th><g:message code="entity.order.label"/></th>
@@ -23,6 +24,7 @@
 						
 					</ul>
 				</td>
+				<td>${program.code}</td>
 				<td>
 					<g:i18n field="${program.reportProgram.names}"/>
 				</td>

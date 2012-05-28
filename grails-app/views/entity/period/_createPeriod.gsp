@@ -6,6 +6,9 @@
 		<g:locales/>
 	</div>
 	<g:form url="[controller:'period', action:'save', params:[targetURI: targetURI]]" useToken="true">
+	
+		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${period}" field="code" />
+		
 		<div class="row">
 			<label><g:message code="period.startdate.label" /></label>
 			<g:datePicker name="startDate" value="${period.startDate}"  precision="day"  years="${Calendar.getInstance().get(Calendar.YEAR)+10..1990}"/>

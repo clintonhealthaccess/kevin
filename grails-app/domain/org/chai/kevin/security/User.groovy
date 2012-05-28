@@ -6,6 +6,7 @@ class User {
 	
 	String email
     String username
+	String code
     String passwordHash = ''
 	String permissionString = ''
 	Boolean confirmed = false
@@ -37,6 +38,7 @@ class User {
     static constraints = {
 		email(email:true, unique: true, nullable: true)
         username(nullable: false, blank: false, unique: true)
+		code(nullable: false, blank: false, unique: true)
 		firstname(nullable: true)
 		lastname(nullable: true)
 		location(nullable: true)

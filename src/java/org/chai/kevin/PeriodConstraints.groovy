@@ -33,6 +33,7 @@ package org.chai.kevin
  *
  */
 constraints =  {
+	code (nullable: false, blank: false, unique: true)
     startDate(nullable: false, blank: false)
 	endDate(nullable: false, blank: false, , validator: { val, obj -> return val.after(obj.startDate)})
 }

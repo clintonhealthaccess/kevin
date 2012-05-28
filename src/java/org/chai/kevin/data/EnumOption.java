@@ -34,6 +34,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -55,6 +56,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class EnumOption extends Orderable<Ordering> implements Exportable, Importable {
 
 	private Long id;
+	private String code;
 	private String value;
 	private Ordering order = new Ordering();
 	private Translation names = new Translation();
@@ -75,6 +77,15 @@ public class EnumOption extends Orderable<Ordering> implements Exportable, Impor
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	@Basic(fetch=FetchType.EAGER)
+	public String getCode() {
+		return code;
+	}
+	
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 	@Embedded

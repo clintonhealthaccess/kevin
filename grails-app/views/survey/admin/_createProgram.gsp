@@ -10,6 +10,8 @@
 		<g:i18nInput name="names" bean="${program}" value="${program?.names}" label="${message(code:'entity.name.label')}" field="names" />
 		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${program}" field="order"/>
 		
+		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${program}" field="code" />
+		
 		<div class="row">
 			<input type="hidden" name="survey.id" value="${program.survey.id}" />
 			<label><g:message code="survey.label"/>:</label> <g:i18n field="${program.survey.names}"/>

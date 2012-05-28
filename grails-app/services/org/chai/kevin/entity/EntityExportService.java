@@ -29,6 +29,7 @@ public class EntityExportService {
 	private static final Log log = LogFactory.getLog(EntityExportService.class);
 	
 	private SessionFactory sessionFactory;
+	private static final String ID_HEADER = "id";
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -68,6 +69,7 @@ public class EntityExportService {
 			Collections.sort(entityFieldHeaders, EntityHeaderSorter.BY_FIELD());			
 			List<String> entityHeaders = new ArrayList<String>();
 			for(Field field : entityFieldHeaders){
+				if(field.getName().equalsIgnoreCase(ID_HEADER)) continue;
 				entityHeaders.add(field.getName());				
 			}
 			
@@ -106,8 +108,10 @@ public class EntityExportService {
 	
 	public List<String> getEntityData(Object entity, List<Field> fields){
 		List<String> entityData = new ArrayList<String>();
-		for(Field field : fields){
+		for(Field field : fields){			
+			if(field.getName().equalsIgnoreCase(ID_HEADER)) continue;			
 			Object value = null;			
+			
 			try {
 				boolean isNotAccessible = false;
 				if(!field.isAccessible()){ 
@@ -116,6 +120,9 @@ public class EntityExportService {
 				}
 				
 				value = field.get(entity);								
+				
+				if (log.isDebugEnabled()) 
+					log.debug("header: " + field.getName() + ", field: " + value);
 				
 				String exportValue = "";	
 				
@@ -162,7 +169,7 @@ public class EntityExportService {
 					//value is not exportable or a primitive type
 					else {
 						//exportValue = value.toString();
-						exportValue = "null";
+						exportValue = "not exportable or a primitive type";
 					}
 				}
 				

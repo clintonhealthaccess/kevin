@@ -163,4 +163,8 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 		return "SurveyCheckboxQuestion[getId()=" + getId() + ", getNames()=" + getNames() + "]";
 	}
 
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
+	}
 }

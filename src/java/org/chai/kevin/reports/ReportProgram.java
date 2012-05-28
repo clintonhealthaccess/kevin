@@ -19,7 +19,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity(name="ReportProgram")
 @Table(name="dhsst_report_program")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class ReportProgram extends ReportEntity implements Exportable, Importable {
+public class ReportProgram extends ReportEntity {
 
 	private Long id;
 	private ReportProgram parent;
@@ -60,12 +60,12 @@ public class ReportProgram extends ReportEntity implements Exportable, Importabl
 
 	@Override
 	public String toExportString() {
-		return "[" + Utils.formatExportCode(getId().toString()) + ", " + getCode() + "]";
+		return "[" + Utils.formatExportCode(getCode()) + ", " + getCode() + "]";
 	}
 	
-	@Override
-	public ReportProgram fromExportString(Object value) {
-		return (ReportProgram) value;
-	}
+//	@Override
+//	public ReportProgram fromExportString(Object value) {
+//		return (ReportProgram) value;
+//	}
 	
 }

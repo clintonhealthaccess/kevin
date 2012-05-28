@@ -235,5 +235,8 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		return "SurveyTableQuestion[getId()=" + getId() + ", getNames()=" + getNames() + "]";
 	}
 
-
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
+	}
 }

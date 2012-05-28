@@ -40,9 +40,11 @@ import javax.persistence.Transient;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.reports.ReportProgram;
+import org.chai.kevin.util.Utils;
 
 @MappedSuperclass
 public abstract class DashboardEntity extends ReportEntity {
@@ -97,6 +99,11 @@ public abstract class DashboardEntity extends ReportEntity {
 	@Override
 	public String toString() {
 		return "DashboardEntity[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	}
+	
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 
 }

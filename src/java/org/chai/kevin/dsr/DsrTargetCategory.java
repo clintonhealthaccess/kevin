@@ -55,7 +55,7 @@ import org.hibernate.annotations.FetchMode;
 @Entity(name = "DsrTargetCategory")
 @Table(name = "dhsst_dsr_target_category")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DsrTargetCategory extends ReportEntity implements Exportable, Importable {
+public class DsrTargetCategory extends ReportEntity {
 
 	private Long id;
 	private List<DsrTarget> targets = new ArrayList<DsrTarget>();
@@ -95,11 +95,11 @@ public class DsrTargetCategory extends ReportEntity implements Exportable, Impor
 	
 	@Override
 	public String toExportString() {
-		return "[" + Utils.formatExportCode(getId().toString()) + ", " + getCode() + "]";
+		return "[" + Utils.formatExportCode(getCode()) + ", " + getCode() + "]";
 	}
 	
-	@Override
-	public DsrTargetCategory fromExportString(Object value) {
-		return (DsrTargetCategory) value;
-	}
+//	@Override
+//	public DsrTargetCategory fromExportString(Object value) {
+//		return (DsrTargetCategory) value;
+//	}
 }

@@ -2,9 +2,9 @@
 	<thead>
 		<tr>
 			<th/>
+			<g:sortableColumn property="code"  params="[q:q]" title="${message(code: 'entity.code.label')}" />
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="entity.description.label"/></th>
-			<g:sortableColumn property="code"  params="[q:q]" title="${message(code: 'entity.code.label')}" />
 			<th><g:message code="default.number.label" args="[message(code:'enumoption.label')]"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
@@ -26,9 +26,9 @@
 						</li>
 					</ul>
 				</td>
+				<td>${enumation.code}</td>				
 				<td><g:i18n field="${enumation.names}" /></td>
 				<td><g:i18n field="${enumation.descriptions}" /></td>
-				<td>${enumation.code}</td>
 				<td>${enumation.enumOptions.size()}</td>
 				<td>
 				<div class="js_dropdown dropdown"> 
