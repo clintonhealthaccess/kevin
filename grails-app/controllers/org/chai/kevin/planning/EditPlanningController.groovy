@@ -149,7 +149,7 @@ class EditPlanningController extends AbstractController {
 							pre (
 								prefix: invalidPrefix,
 								valid: validatable.isValid(invalidPrefix),
-								errors: g.renderUserErrors(element: planningEntry, validatable: validatable, suffix: invalidPrefix, location: location)
+								errors: g.renderUserErrors(element: planningType.formElement, validatable: validatable, suffix: invalidPrefix, location: location)
 
 							)
 						}

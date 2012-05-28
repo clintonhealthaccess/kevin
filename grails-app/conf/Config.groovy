@@ -169,6 +169,11 @@ security.shiro.authc.required = false
 				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
 				   'org.hibernate'
 
+		    info   'org.chai.kevin.importer.GeneralDataImporter',
+			       'org.chai.kevin.importer.NormalizedDataImporter',
+				   'org.chai.kevin.importer.Importer',
+				   'org.chai.kevin.value.ValueService'
+				   				   
 			debug  'grails.app',
 				   'org.chai.kevin'
 
@@ -238,8 +243,8 @@ fct.skip.levels=[]
 cost.skip.levels=[]
 survey.skip.levels=[]
 
+survey.skip.levels=["Sector"]
 survey.submit.skip.levels=["National", "Province"]
-
 survey.export.skip.levels=["National", "Sector"]
 
 info.group.level="District"

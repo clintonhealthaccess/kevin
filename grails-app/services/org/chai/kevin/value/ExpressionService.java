@@ -66,7 +66,8 @@ public class ExpressionService {
 	private LocationService locationService;
 	private ValueService valueService;
 	private JaqlService jaqlService;
-
+	private SessionFactory sessionFactory;
+	
 	public static class StatusValuePair {
 		public Status status = null;
 		public Value value = null;
@@ -144,27 +145,24 @@ public class ExpressionService {
 				
 				for (Entry<String, T> entry : datas.entrySet()) {
 					DataValue dataValue = valueService.getDataElementValue(entry.getValue(), dataLocation, period);
-					valueMap.put(entry.getValue().getId().toString(), dataValue==null?null:dataValue.getValue());
+					Value value = dataValue==null?null:dataValue.getValue();
+					if (value == null) value = Value.NULL_INSTANCE();
+					valueMap.put(entry.getValue().getId().toString(), value);
 					typeMap.put(entry.getValue().getId().toString(), entry.getValue().getType());
+					
+					sessionFactory.getCurrentSession().evict(dataValue);
 				}
 //				if (expressionLog.isDebugEnabled()) expressionLog.debug("values and types: valueMap={"+valueMap+"}", typeMap={"+typeMap+"}");
 				
-				if (hasNullValues(valueMap.values())) {
-					if (expressionLog.isInfoEnabled()) expressionLog.info("found null values");
+				try {
+					if (expressionLog.isInfoEnabled()) expressionLog.info("no null values found, evaluating expression");
+					statusValuePair.value = jaqlService.evaluate(expression, type, valueMap, typeMap);
+					statusValuePair.status = Status.VALID;
+				} catch (IllegalArgumentException e) {
+					if (expressionLog.isErrorEnabled()) expressionLog.error("expression={"+expression+"}, type={"+type+"}, period={"+period+"}, dataLocation={"+dataLocation+"}, valueMap={"+valueMap+"}, typeMap={"+typeMap+"}", e);
+					log.warn("there was an error evaluating expression: "+expression, e);
 					statusValuePair.value = Value.NULL_INSTANCE();
-					statusValuePair.status = Status.MISSING_VALUE;
-				}
-				else {
-					try {
-						if (expressionLog.isInfoEnabled()) expressionLog.info("no null values found, evaluating expression");
-						statusValuePair.value = jaqlService.evaluate(expression, type, valueMap, typeMap);
-						statusValuePair.status = Status.VALID;
-					} catch (IllegalArgumentException e) {
-						if (expressionLog.isErrorEnabled()) expressionLog.error("expression={"+expression+"}, type={"+type+"}, period={"+period+"}, dataLocation={"+dataLocation+"}, valueMap={"+valueMap+"}, typeMap={"+typeMap+"}", e);
-						log.warn("there was an error evaluating expression: "+expression, e);
-						statusValuePair.value = Value.NULL_INSTANCE();
-						statusValuePair.status = Status.ERROR;
-					}
+					statusValuePair.status = Status.ERROR;
 				}
 			}
 		}
@@ -258,6 +256,10 @@ public class ExpressionService {
 	
 	public void setJaqlService(JaqlService jaqlService) {
 		this.jaqlService = jaqlService;
+	}
+	
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 	
 }

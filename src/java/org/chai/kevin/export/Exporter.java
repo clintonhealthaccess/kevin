@@ -28,6 +28,7 @@
 package org.chai.kevin.export;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -69,9 +70,9 @@ public class Exporter {
 	private Translation descriptions = new Translation();
 	private Date date;
 	private String typeCodeString;
-	private Set<CalculationLocation> locations;
-	private Set<Period> periods;
-	private Set<Data<DataValue>> data;
+	private Set<CalculationLocation> locations = new HashSet<CalculationLocation>();
+	private Set<Period> periods = new HashSet<Period>();
+	private Set<Data<DataValue>> data = new HashSet<Data<DataValue>>();
 	
 	@Id
 	@GeneratedValue
@@ -184,5 +185,6 @@ public class Exporter {
 		return "Exporter [id=" + id + ", descriptions=" + descriptions + ", date=" + date
 				+ "]";
 	}
+	
 	
 }

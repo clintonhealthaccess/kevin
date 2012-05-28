@@ -75,7 +75,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		then:
 		result.value == Value.NULL_INSTANCE()
-		result.status == Status.MISSING_VALUE
+		result.status == Status.VALID
 
 		when: "expression is missing for data location type"
 		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period)
@@ -101,6 +101,50 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		then:
 		result.value == Value.NULL_INSTANCE()
 		result.status == Status.VALID
+	}
+	
+	def "test check for null in formulas"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"if (\$"+dataElement.id+" == \"null\") 1 else 0"]]))
+		def result
+		
+		when: "value is missing"
+		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
+		
+		then:
+		result.value == Value.VALUE_NUMBER(1);
+		
+		when: "value is null"
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), Value.NULL_INSTANCE())
+		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
+		
+		then:
+		result.value == Value.VALUE_NUMBER(1);
+	}
+	
+	def "test check for null in formulas with list types"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["test": Type.TYPE_NUMBER()])), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"if (\$"+dataElement.id+" == \"null\") [] else [{\"test\":1}]"]]))
+		def result
+		
+		when: "value is missing"
+		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
+		
+		then:
+		result.value.equals(Value.VALUE_LIST([]));
+		
+		when: "value is null"
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), Value.NULL_INSTANCE())
+		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
+		
+		then:
+		result.value.equals(Value.VALUE_LIST([]));
 	}
 	
 	def "test normalized data elements expression empty expressions treated as missing"() {

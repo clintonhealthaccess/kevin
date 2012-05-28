@@ -147,6 +147,7 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 					});
 					
 					// we remove all the errors
+					$('#element-'+element.id).find('.element-list-row').removeClass('row-errors');
 					$('#element-'+element.id).find('.element').removeClass('errors');
 					$('#element-'+element.id).find('.element').children('.error-list').html('');
 					
@@ -154,6 +155,7 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 					$.each(element.invalid, function(index, invalid) {
 						if (!invalid.valid) $('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).addClass('errors');
 						$('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).children('.error-list').html(invalid.errors);
+						$('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).parents('.element-list-row').first().addClass('row-errors');
 					});
 					
 				});

@@ -223,7 +223,7 @@ public class Type extends JSONValue {
 			for (Entry<String, Type> entry : getElementMap().entrySet()) {
 				if (prefix.matches("\\."+entry.getKey()+"$") 
 					|| prefix.matches("\\."+entry.getKey()+"\\..*") 
-					|| prefix.matches("\\."+entry.getKey()+"\\[_\\].*")) {
+					|| prefix.matches("\\."+entry.getKey()+"\\[(\\d*|_)\\].*")) {
 					found = true;
 					return entry.getValue().getType(prefix.substring(entry.getKey().length()+1));
 				}
@@ -497,8 +497,7 @@ public class Type extends JSONValue {
 						String itemJaqlString = array.getString(i);
 						values.add(getListType().getValueFromJaql(itemJaqlString).getJsonObject());
 					}
-					if (values.size() == 0) object.put(Value.VALUE_STRING, JSONNull.getInstance());
-					else object.put(Value.VALUE_STRING, values);
+					object.put(Value.VALUE_STRING, values);
 					break;
 				case MAP:
 					JSONObject jaqlObject = JSONObject.fromObject(jaqlString);
@@ -716,7 +715,7 @@ public class Type extends JSONValue {
 
 	// use visit() instead
 	@Deprecated
-	public void getCombinations(Value value, List<String> strings, Set<List<String>> combinations, String prefix) {
+	public void getCombinations(Value value, List<String> strings, Set<List<String>> combinations, String prefix, String genericPrefix) {
 		switch (getType()) {
 			case NUMBER:
 			case BOOL:
@@ -724,16 +723,16 @@ public class Type extends JSONValue {
 			case TEXT:
 			case DATE:
 			case ENUM:
-				combinations.add(strings);
+				combinations.add(replace(strings, genericPrefix, prefix));
 				break;
 			case LIST:
 				if (!value.isNull()) {
 					List<Value> values = value.getListValue();
 					Type listType = getListType();
 					for (int i = 0; i < values.size(); i++) {
-						combinations.add(replace(strings, prefix+"[_]", prefix+"["+i+"]"));
-						listType.getCombinations(values.get(i), strings, combinations, prefix+"["+i+"]");
-						listType.getCombinations(values.get(i), strings, combinations, prefix+"[]");
+//						combinations.add(replace(strings, genericPrefix+"[_]", prefix+"["+i+"]"));
+						listType.getCombinations(values.get(i), strings, combinations, prefix+"["+i+"]", genericPrefix+"[_]");
+//						listType.getCombinations(values.get(i), strings, combinations, prefix+"[]");
 					}
 				}
 				break;
@@ -741,7 +740,7 @@ public class Type extends JSONValue {
 				if (!value.isNull()) {
 					Map<String, Type> typeMap = getElementMap();
 					for (Entry<String, Value> entry : value.getMapValue().entrySet()) {
-						typeMap.get(entry.getKey()).getCombinations(entry.getValue(), strings, combinations, prefix+"."+entry.getKey());
+						typeMap.get(entry.getKey()).getCombinations(entry.getValue(), strings, combinations, prefix+"."+entry.getKey(), genericPrefix+"."+entry.getKey());
 					}
 					break;
 				}

@@ -173,6 +173,28 @@ class ExporterController extends AbstractEntityController {
 			q:params['q']
 		])
 	}
+	
+	def clone ={
+		Exporter exportExisting= Exporter.get(params.int('export.id'));
+		if(log.isDebugEnabled()) log.debug("clone(exporter="+exportExisting+")")
+		if(exportExisting){
+			def  newExport= new Exporter()
+			for (String language : languageService.getAvailableLanguages())
+					newExport.getDescriptions().put(language,exportExisting.getDescriptions().get(language) + "(copy)")		
+			newExport.setDate(new Date());
+			newExport.setTypeCodeString(exportExisting.getTypeCodeString());
+			newExport.getLocations().addAll(exportExisting.getLocations());
+			newExport.getPeriods().addAll(exportExisting.getPeriods());
+			newExport.getData().addAll(exportExisting.getData());
+			newExport.save(failOnError: true);
+			if(newExport)
+				flash.message = message(code: 'exporter.cloned')
+		}else{
+			flash.message = message(code: 'exporter.clone.failed')
+		}
+		
+		redirect (controller: 'exporter', action: 'list')	
+	}
 
 	
 	

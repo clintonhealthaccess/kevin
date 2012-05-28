@@ -173,7 +173,6 @@ public class PlanningType {
 	@Transient
 	public List<String> getValuePrefixes(String section) {
 		List<String> result = formElement.getDataElement().getValuePrefixes(section);
-		// we get rid of the discriminator
 		// TODO how do we handle lists
 		result.remove(getFixedHeader());
 		return result;

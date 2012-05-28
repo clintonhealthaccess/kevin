@@ -150,6 +150,8 @@ class ExporterService {
 				dataPointVisitor.setBasicInfo(basicInfo);
 				data.getType().visit(dataValue.getValue(), dataPointVisitor);
 			}
+			
+			sessionFactory.getCurrentSession().evict(dataValue);
 		}
 		return dataPointVisitor.getLines();
 	}

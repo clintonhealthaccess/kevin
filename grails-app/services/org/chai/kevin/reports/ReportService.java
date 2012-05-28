@@ -119,8 +119,7 @@ public class ReportService {
 	
 	public Set<LocationLevel> getSkipLocationLevels(Set<String> skipLevels) {
 		Set<String> allSkipLevels = new HashSet<String>();
-		if (skipLevels != null) 
-			allSkipLevels.addAll(skipLevels);
+		if (skipLevels != null) allSkipLevels.addAll(skipLevels);
 		allSkipLevels.addAll(this.skipLevels);
 		
 		Set<LocationLevel> levels = new HashSet<LocationLevel>();

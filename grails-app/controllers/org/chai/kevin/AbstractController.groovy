@@ -53,6 +53,8 @@ public abstract class AbstractController {
 	ReportService reportService;
 	LocationService locationService;
 	EntityExportService entityExportService;
+	protected final static String FILE_TYPE_ZIP="application/zip";
+	protected final static String FILE_TYPE_CSV="text/csv";
 	
 	def exporter = {
 		def clazz = getEntityClass();

@@ -28,8 +28,11 @@
 package org.chai.kevin.importer;
 
 import org.chai.kevin.AbstractController;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
+import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.value.ValueService;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
@@ -37,7 +40,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  *
  */
 class GeneralImporterController extends AbstractController {
-	ImporterService importerService;
+	LocationService locationService;
+	ValueService valueService;
+	DataService dataService;
 	final String IMPORT_FORM = "generalImport";
 	final String IMPORT_OUTPUT = "importOutput";	
 	
@@ -47,10 +52,22 @@ class GeneralImporterController extends AbstractController {
 	
 	def uploader = { GeneralImporterCommand cmd ->
 		ImporterErrorManager errorManager = new ImporterErrorManager();
+		errorManager.setNumberOfSavedRows(0)
+		errorManager.setNumberOfUnsavedRows(0)
+		errorManager.setNumberOfRowsSavedWithError(0)
 		if (!cmd.hasErrors()) {
-			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file.getInputStream()+",period="+cmd.period+")")
-			InputStreamReader csvInputStreamReader = new InputStreamReader(cmd.file.getInputStream());
-			importerService.importGeneralData(csvInputStreamReader, cmd.period,errorManager);
+			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",period="+cmd.period+")")
+			
+			GeneralDataImporter importer = new GeneralDataImporter(
+				locationService, valueService, dataService,
+				errorManager,  cmd.period
+				);			
+			if(cmd.file.getContentType().equals(FILE_TYPE_ZIP))
+				importer.importZipFiles(cmd.file.getInputStream())
+			if(cmd.file.getContentType().equals(FILE_TYPE_CSV))
+				importer.importCsvFile(cmd.file.getName(),cmd.file.getInputStream())
+			cmd.file.getInputStream().close();
+				
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 		}else{
 			this.getModel(cmd,errorManager,IMPORT_FORM);
