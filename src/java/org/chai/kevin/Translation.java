@@ -2,7 +2,10 @@ package org.chai.kevin;
 
 import javax.persistence.Embeddable;
 
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.entity.export.Importable;
 import org.chai.kevin.json.JSONMap;
+import org.hibernate.sql.ordering.antlr.TranslationContext;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -33,7 +36,7 @@ import org.chai.kevin.json.JSONMap;
  */
 
 @Embeddable
-public class Translation extends JSONMap<String> {
+public class Translation extends JSONMap<String> implements Exportable, Importable {
 
 	private static final long serialVersionUID = -5824766707595826135L;
 
@@ -45,13 +48,21 @@ public class Translation extends JSONMap<String> {
 		super(jsonMap);
 	}
 	
-//	@Override
-//	public String toString() {
-//		return "Translation[getJsonText()=" + getJsonText() + "]";
-//	}
-	
 	@Override
 	public String toString() {
 		return getJsonText();
 	}
+
+	@Override
+	public String toExportString() {
+		return super.toExportString();
+	}
+
+	@Override
+	public Translation fromExportString(Object value) {
+		JSONMap jsonMap = super.fromExportString(value);
+		Translation translation = new Translation(jsonMap);
+		return translation;
+	}
+
 }

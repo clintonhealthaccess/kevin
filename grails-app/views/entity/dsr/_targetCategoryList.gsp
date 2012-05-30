@@ -2,8 +2,8 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="entity.code.label"/></th>
+			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="entity.order.label"/></th>
 		</tr>
 	</thead>
@@ -23,10 +23,10 @@
 						
 					</ul>
 				</td>
+				<td>${category.code}</td>
 				<td>
 					<g:i18n field="${category.names}"/>
 				</td>
-				<td>${category.code}</td>
 				<td>${category.order}</td>
 			</tr>
 		</g:each>

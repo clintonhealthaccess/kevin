@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValueType;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.value.DataValue;
 
 
@@ -23,7 +24,7 @@ import org.chai.kevin.value.DataValue;
 @Entity(name="DataElement")
 @Table(name="dhsst_data_element")
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class DataElement<T extends DataValue> extends Data<T> {
+public abstract class DataElement<T extends DataValue> extends Data<T> implements Exportable {
 
 	private Type type;
 

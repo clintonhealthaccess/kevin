@@ -74,8 +74,9 @@ class PlanningTypeController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
-		return PlanningType.class;
+	def getEntityClass(){
+		//TODO return PlanningType.class;
+		return null;
 	}
 	
 	def bindParams(def entity) {
@@ -104,7 +105,8 @@ class PlanningTypeController extends AbstractEntityController {
 				template:"planningTypeList",
 				entities: planningTypes,
 				entityCount: planningTypes.size(),
-				code: getLabel()
+				code: getLabel(),
+				entityClass: getEntityClass()
 			])
 		}
 	}

@@ -55,11 +55,13 @@ class CostRampUpController extends AbstractEntityController {
 		return [rampUp: entity, years: costService.years]
 	}
 	
-	def exportEntity(){
-		return CostRampUp.class;
+	def getEntityClass(){
+		//TODO return CostRampUp.class;
+		return null;
 	}
 	
 	def validateEntity(def entity) {
+		//TODO check for duplicate code
 		boolean valid = true;
 		entity.years.each { key, value ->
 			if (!value.validate()) valid = false
@@ -85,11 +87,12 @@ class CostRampUpController extends AbstractEntityController {
 		List<CostRampUp> entities = CostRampUp.list(params)
 		
 		render (view: '/entity/list', model: [
-			entities: entities, 
+			entities: entities,
 			entityCount: CostRampUp.count(), 
 			years: costService.getYears(),
 			code: 'costrampup.label',
-			template: 'costRampUp/costRampUpList'
+			template: 'costRampUp/costRampUpList',
+			entityClass: getEntityClass()
 		])
 	}
 	

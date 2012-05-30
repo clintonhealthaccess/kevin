@@ -53,6 +53,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
@@ -60,10 +61,16 @@ import org.chai.kevin.util.Utils;
 @Entity(name = "SurveyQuestion")
 @Table(name = "dhsst_survey_question")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class SurveyQuestion extends Orderable<Integer> {
+public abstract class SurveyQuestion extends Orderable<Integer> implements Exportable {
 
 	// TODO might be a good idea to get rid of this
-	public enum QuestionType {CHECKBOX("checkboxQuestion"), TABLE("tableQuestion"), SIMPLE("simpleQuestion"), WIZARD("wizardQuestion");
+	public enum QuestionType {
+		
+		CHECKBOX("checkboxQuestion"), 
+		TABLE("tableQuestion"), 
+		SIMPLE("simpleQuestion"), 
+		WIZARD("wizardQuestion");
+		
 		private String template;
 	
 		private QuestionType(String template) {
@@ -72,11 +79,11 @@ public abstract class SurveyQuestion extends Orderable<Integer> {
 		
 		public String getTemplate() {
 			return template;
-		}
-	
+		}	
 	}
 	
 	private Long id;
+	private String code;
 	private Integer order;
 	private SurveySection section;
 	private String typeCodeString;
@@ -198,6 +205,7 @@ public abstract class SurveyQuestion extends Orderable<Integer> {
 
 	protected abstract SurveyQuestion newInstance();
 	protected void deepCopy(SurveyQuestion copy, SurveyCloner surveyCloner) {
+		copy.setCode(getCode() + " clone");
 		copy.setNames(new Translation(getNames()));
 		copy.setDescriptions(new Translation(getDescriptions()));
 		copy.setTypeCodeString(getTypeCodeString());
@@ -207,5 +215,12 @@ public abstract class SurveyQuestion extends Orderable<Integer> {
 
 	@Override
 	public abstract String toString();
-	
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
 }

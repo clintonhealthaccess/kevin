@@ -10,12 +10,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="Location")
 @Table(name="dhsst_location_location")
-public class Location extends CalculationLocation {
+public class Location extends CalculationLocation implements Exportable {
 
 	private Location parent;
 	private List<Location> children = new ArrayList<Location>();
@@ -134,6 +136,11 @@ public class Location extends CalculationLocation {
 	@Override
 	public String toString() {
 		return "Location[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 
 }

@@ -108,13 +108,7 @@ abstract public class Data<T extends DataValue> {
 	public abstract Type getType();
 	
 	@Transient
-	public abstract Class<T> getValueClass();
-
-	@Override
-	public String toString() {
-		return "Data [getId()=" + getId() + ", getCode()="
-				+ getCode() + "]";
-	}
+	public abstract Class<T> getValueClass();	
 	
 	@Override
 	public int hashCode() {

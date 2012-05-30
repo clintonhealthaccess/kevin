@@ -2,8 +2,8 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="entity.code.label"/></th>
+			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="entity.order.label"/></th>
 		</tr>
 	</thead>
@@ -23,10 +23,10 @@
 						
 					</ul>
 				</td>
+				<td>${locationLevel.code}</td>
 				<td>
 					<g:i18n field="${locationLevel.names}"/>
 				</td>
-				<td>${locationLevel.code}</td>
 				<td>${locationLevel.order}</td>
 			</tr>
 		</g:each>

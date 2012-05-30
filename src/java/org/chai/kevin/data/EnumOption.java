@@ -34,6 +34,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -43,15 +44,19 @@ import javax.persistence.Table;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Ordering;
 import org.chai.kevin.Translation;
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.entity.export.Importable;
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="EnumOption")
 @Table(name="dhsst_enum_option")
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class EnumOption extends Orderable<Ordering> {
+public class EnumOption extends Orderable<Ordering> implements Exportable, Importable {
 
 	private Long id;
+	private String code;
 	private String value;
 	private Ordering order = new Ordering();
 	private Translation names = new Translation();
@@ -72,6 +77,15 @@ public class EnumOption extends Orderable<Ordering> {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	@Basic(fetch=FetchType.EAGER)
+	public String getCode() {
+		return code;
+	}
+	
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 	@Embedded
@@ -149,11 +163,15 @@ public class EnumOption extends Orderable<Ordering> {
 		} else if (!getId().equals(other.getId()))
 			return false;
 		return true;
-	}
-
+	}	
+	
 	@Override
-	public String toString() {
-		return "EnumOption[getId()=" + getId() + ", getValue()=" + getValue() + "]";
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode().toString()) + "]";
 	}
 	
+	@Override
+	public EnumOption fromExportString(Object value) {
+		return (EnumOption) value;
+	}
 }

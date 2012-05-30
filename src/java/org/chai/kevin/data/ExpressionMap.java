@@ -4,10 +4,12 @@ import java.util.Map;
 
 import javax.persistence.Embeddable;
 
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.entity.export.Importable;
 import org.chai.kevin.json.JSONMap;
 
 @Embeddable
-public class ExpressionMap extends JSONMap<Map<String, String>> {
+public class ExpressionMap extends JSONMap<Map<String, String>> implements Exportable, Importable {
 
 	private static final long serialVersionUID = 6260432376582051031L;
 	
@@ -16,4 +18,15 @@ public class ExpressionMap extends JSONMap<Map<String, String>> {
 		return "ExpressionMap[getJsonMap()='" + getJsonText() + "']";
 	}
 
+	@Override
+	public String toExportString() {
+		return getJsonText();
+	}
+
+	@Override
+	public ExpressionMap fromExportString(Object value) {
+		ExpressionMap expressionMap = new ExpressionMap();		
+		expressionMap.setJsonText(value.toString());		
+		return expressionMap;
+	}
 }

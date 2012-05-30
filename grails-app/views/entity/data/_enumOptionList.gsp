@@ -2,6 +2,7 @@
 	<thead>
 		<tr>
 			<th/>
+			<th><g:message code="entity.code.label"/></th>
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="enumoption.inactive.label"/></th>
 			<th><g:message code="enumoption.value.label"/></th>
@@ -25,6 +26,7 @@
 						</li>
 					</ul>
 				</td>
+				<td>${option.code}</td>
 				<td><g:i18n field="${option.names}" /></td>
 				<td>${option.inactive?'\u2713':''}</td>
 				<td>${option.value}</td>

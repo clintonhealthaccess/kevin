@@ -62,7 +62,7 @@ class SectionController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return SurveySection.class;
 	}
 	
@@ -94,7 +94,8 @@ class SectionController extends AbstractEntityController {
 				program: program,
 				entities: sections.subList(params['offset'], max),
 				entityCount: sections.size(),
-				code: getLabel()
+				code: getLabel(),
+				entityClass: getEntityClass()
 			])
 		}
 	}

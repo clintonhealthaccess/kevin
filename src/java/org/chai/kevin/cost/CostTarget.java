@@ -41,12 +41,13 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
 
 @Entity(name="CostTarget")
 @Table(name="dhsst_cost_target")
-public class CostTarget extends AbstractReportTarget {
+public class CostTarget extends AbstractReportTarget implements Exportable {
 
 	private Long id;
 	
@@ -134,6 +135,11 @@ public class CostTarget extends AbstractReportTarget {
 	@Transient
 	public boolean isAverage() {
 		return dataElementEnd != null;
+	}
+	
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + ", " + getCode() + "]";
 	}
 	
 }

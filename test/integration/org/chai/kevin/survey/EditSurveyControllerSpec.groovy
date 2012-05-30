@@ -51,8 +51,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		then:
 		editSurveyController.modelAndView.model.surveyPage.survey.equals(survey)
 	}
-	
-	
+		
 	def "access to view action redirects to active survey if SurveyUser"() {
 		setup:
 		setupLocationTree()

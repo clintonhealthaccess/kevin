@@ -16,6 +16,8 @@ class SimpleQuestionControllerSpec extends SurveyIntegrationTests {
 		simpleQuestionController = new SimpleQuestionController()
 		
 		when:
+		inc++
+		simpleQuestionController.params['code'] = code
 		simpleQuestionController.params['section.id'] = section.id
 		simpleQuestionController.params['surveyElement.dataElement.id'] = dataElement.id
 		simpleQuestionController.params['order'] = 1

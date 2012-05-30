@@ -28,6 +28,7 @@
 package org.chai.kevin.data
 
 import org.chai.kevin.AbstractController;
+import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
@@ -47,13 +48,14 @@ class CalculationController extends AbstractController {
 		return "calculation.label"
 	}
 	
-	def exportEntity(){
+	def Class getEntityClass(){
 		return Calculation.class;
+//		return [Aggregation.class, Average.class, Sum.class];
 	}
 	
 	def list = {
 		adaptParamsForList()
-		List<Calculation<?>> calculations = dataService.list(Calculation.class, params)
+		List<Calculation<?>> calculations = dataService.list(Calculation.class, params)		
 		
 		render (view: '/entity/list', model:[
 			entities: calculations,

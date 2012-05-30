@@ -51,13 +51,15 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "SurveyTableColumn")
 @Table(name = "dhsst_survey_table_column")
-public class SurveyTableColumn extends Orderable<Integer> {
+public class SurveyTableColumn extends Orderable<Integer> implements Exportable {
 
 	private Long id;
+	private String code;
 	private Integer order;
 	private String typeCodeString;
 	private SurveyTableQuestion question;
@@ -129,6 +131,7 @@ public class SurveyTableColumn extends Orderable<Integer> {
 	@Transient
 	protected SurveyTableColumn deepCopy(SurveyCloner cloner) {
 		SurveyTableColumn copy = new SurveyTableColumn();
+		copy.setCode(getCode() + " clone");
 		copy.setNames(new Translation(getNames()));
 		copy.setTypeCodeString(getTypeCodeString());
 		copy.setOrder(getOrder());
@@ -139,6 +142,19 @@ public class SurveyTableColumn extends Orderable<Integer> {
 	@Override
 	public String toString() {
 		return "SurveyTableColumn[getId()=" + getId() + ", getNames()=" + getNames() + "]";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 }

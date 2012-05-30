@@ -10,13 +10,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.entity.export.Importable;
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="ReportProgram")
 @Table(name="dhsst_report_program")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class ReportProgram extends ReportEntity {
+public class ReportProgram extends ReportEntity implements Exportable {
 
 	private Long id;
 	private ReportProgram parent;
@@ -53,11 +56,16 @@ public class ReportProgram extends ReportEntity {
 	public void addChild(ReportProgram child){
 		children.add(child);
 		child.setParent(this);
+	}	
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 	
-	@Override
-	public String toString() {
-		return "ReportProgram[getId()=" + getId() + ", getCode()=" + getCode() + "]";
-	}
+//	@Override
+//	public ReportProgram fromExportString(Object value) {
+//		return (ReportProgram) value;
+//	}
 	
 }

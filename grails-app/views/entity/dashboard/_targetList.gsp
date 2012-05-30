@@ -2,8 +2,8 @@
 	<thead>
 		<tr>
 			<th/>
+			<th><g:message code="entity.code.label"/></th>			
 			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="entity.code.label"/></th>
 			<th><g:message code="dashboard.target.program.label"/></th>
 			<th><g:message code="dashboard.target.calculation.label"/></th>
 			<th><g:message code="dashboard.target.weight.label"/></th>
@@ -26,10 +26,10 @@
 						
 					</ul>
 				</td>
+				<td>${target.code}</td>				
 				<td>
 					<g:i18n field="${target.names}"/>
 				</td>
-				<td>${target.code}</td>
 				<td>
 					<g:i18n field="${target.program.names}"/>
 				</td>

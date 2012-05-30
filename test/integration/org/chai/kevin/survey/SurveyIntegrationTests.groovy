@@ -13,7 +13,7 @@ import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.util.Utils;
 
 abstract class SurveyIntegrationTests extends IntegrationTests {
-
+	
 	def static newSurvey(def period) {
 		return newSurvey([:], period, false)
 	}
@@ -23,7 +23,8 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	}
 	
 	def static newSurvey(def names, def period, def active) {
-		return new Survey(names: names, period: period, active: active).save(failOnError: true);
+		inc++
+		return new Survey(code: code, names: names, period: period, active: active).save(failOnError: true);
 	}
 	
 	def static newSurveyProgram(def survey, def order, def types) {
@@ -31,7 +32,8 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	}
 	
 	def static newSurveyProgram(def names, def survey, def order, def types) {
-		def program = new SurveyProgram(names: names, survey: survey, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
+		inc++
+		def program = new SurveyProgram(code: code, names: names, survey: survey, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 		survey.addProgram(program)
 		survey.save(failOnError: true)
 		return program
@@ -42,7 +44,8 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	}
 	
 	def static newSurveySection(def names, def program, def order, def types) {
-		def section = new SurveySection(names: names, program: program, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
+		inc++
+		def section = new SurveySection(code: code, names: names, program: program, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 		program.addSection(section)
 		program.save(failOnError: true)
 		return section
@@ -74,16 +77,18 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	}
 
 	def static newSurveySkipRule(def survey, def expression, def skippedElements, def skippedQuestions) {
-		def skipRule = new SurveySkipRule(survey: survey, expression: expression, skippedFormElements: skippedElements, skippedSurveyQuestions: skippedQuestions).save(failOnError: true)
+		inc++
+		def skipRule = new SurveySkipRule(code: code, survey: survey, expression: expression, skippedFormElements: skippedElements, skippedSurveyQuestions: skippedQuestions).save(failOnError: true)
 		survey.addSkipRule(skipRule)
 		survey.save(failOnError: true, flush: true)
 		return skipRule
 	}
 	
 	def static newSimpleQuestion(def names, def section, def order, def types) {
-		def question = new SurveySimpleQuestion(names: names, section: section, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
+		inc++
+		def question = new SurveySimpleQuestion(code: code, names: names, section: section, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 		section.addQuestion(question)
-		section.save(failOnError: true, flush: true)
+		section.save(failOnError: true, flush: true)		
 		return question
 	}
 	
@@ -92,28 +97,32 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	}
 	
 	def static newTableQuestion(def section, def order, def types) {
-		def question = new SurveyTableQuestion(section: section, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
+		inc++
+		def question = new SurveyTableQuestion(code: code, section: section, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 		section.addQuestion(question)
 		section.save(failOnError: true)
 		return question
 	}
 	
 	def static newTableColumn(def question, def order, def types) {
-		def column = new SurveyTableColumn(question: question, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
+		inc++
+		def column = new SurveyTableColumn(code: code, question: question, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 		question.addColumn(column)
 		question.save(failOnError: true)
 		return column
 	}
 	
 	def static newTableRow(def question, def order, def types, def elements) {
-		def row = new SurveyTableRow(question: question, order: order, typeCodeString: Utils.unsplit(types), surveyElements: elements).save(failOnError: true)
+		inc++
+		def row = new SurveyTableRow(code: code, question: question, order: order, typeCodeString: Utils.unsplit(types), surveyElements: elements).save(failOnError: true)
 		question.addRow(row)
 		question.save(failOnError: true)
 		return row
 	}
 	
 	def static newCheckboxQuestion(def section, def order, def types) {
-		def question = new SurveyCheckboxQuestion(section: section, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
+		inc++
+		def question = new SurveyCheckboxQuestion(code: code, section: section, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 		section.addQuestion(question)
 		section.save(failOnError: true)
 		return question
@@ -124,7 +133,8 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	}
 	
 	def static newCheckboxOption(def question, def order, def types, def element) {
-		def option = new SurveyCheckboxOption(question: question, order: order, typeCodeString: Utils.unsplit(types), surveyElement: element).save(failOnError: true)
+		inc++
+		def option = new SurveyCheckboxOption(code: code, question: question, order: order, typeCodeString: Utils.unsplit(types), surveyElement: element).save(failOnError: true)
 		question.addOption(option)
 		question.save(failOnError: true)
 		return option

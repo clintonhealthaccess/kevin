@@ -60,6 +60,7 @@ class AuthControllerSpec extends IntegrationTests {
 		
 		when:
 		authController.params.email = 'test@test.com'
+		authController.params.code = 'testCode'
 		authController.params.firstname = 'first'
 		authController.params.lastname = 'last'
 		authController.params.location = 'org'
@@ -71,6 +72,7 @@ class AuthControllerSpec extends IntegrationTests {
 		authController.response.redirectedUrl == '/auth/login'
 		RegistrationToken.count() == 1
 		User.count() == 1
+		User.findByEmail('test@test.com').code == 'test@test.com'
 		User.findByEmail('test@test.com').firstname == 'first'
 		User.findByEmail('test@test.com').lastname == 'last'
 		User.findByEmail('test@test.com').location == 'org'
@@ -81,7 +83,7 @@ class AuthControllerSpec extends IntegrationTests {
 	def "register with already used email address"() {
 		setup:
 		authController = new AuthController()
-		new User(username: 'not_important', email:'test@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
+		new User(code: 'not_important', username: 'not_important', email:'test@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
 		
 		when:
 		authController.params.email = 'test@test.com'
@@ -100,7 +102,7 @@ class AuthControllerSpec extends IntegrationTests {
 	def "register with already used username as email address"() {
 		setup:
 		authController = new AuthController()
-		new User(username: 'test@test.com', email:'test1@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
+		new User(code: 'test@test.com', username: 'test@test.com', email:'test1@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
 		
 		when:
 		authController.params.email = 'test@test.com'
@@ -130,7 +132,7 @@ class AuthControllerSpec extends IntegrationTests {
 	def "confirm account with valid token"() {
 		setup:
 		authController = new AuthController()
-		def user = new User(username: 'not_important', email: 'test@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
+		def user = new User(code: 'not_important', username: 'not_important', email: 'test@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
 		new RegistrationToken(token: '123', user: user, used: false).save(failOnError: true)
 		
 		when:
@@ -147,7 +149,7 @@ class AuthControllerSpec extends IntegrationTests {
 	def "confirm account with used token does not change user state"() {
 		setup:
 		authController = new AuthController()
-		def user = new User(username: 'not_important', email: 'test@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
+		def user = new User(code: 'not_important', username: 'not_important', email: 'test@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
 		new RegistrationToken(token: '123', user:user, used:true).save(failOnError: true)
 		
 		when:
@@ -164,7 +166,7 @@ class AuthControllerSpec extends IntegrationTests {
 	def "activate account with unconfirmed user"() {
 		setup:
 		authController = new AuthController()
-		def user = new User(username: 'not_important', email: 'test@test.com', passwordHash: '', active: false, confirmed: false, uuid: 'uuid').save(failOnError: true)
+		def user = new User(code: 'not_important', username: 'not_important', email: 'test@test.com', passwordHash: '', active: false, confirmed: false, uuid: 'uuid').save(failOnError: true)
 		
 		when:
 		authController.params.id = user.id
@@ -178,7 +180,7 @@ class AuthControllerSpec extends IntegrationTests {
 	def "activate account with confirmed user"() {
 		setup:
 		authController = new AuthController()
-		def user = new User(username: 'not_important', email: 'test@test.com', passwordHash: '', active: false, confirmed: true, uuid: 'uuid').save(failOnError: true)
+		def user = new User(code: 'not_important', username: 'not_important', email: 'test@test.com', passwordHash: '', active: false, confirmed: true, uuid: 'uuid').save(failOnError: true)
 		
 		when:
 		authController.params.id = user.id
@@ -193,7 +195,7 @@ class AuthControllerSpec extends IntegrationTests {
 	def "activate account with confirmed user deletes registration token"() {
 		setup:
 		authController = new AuthController()
-		def user = new User(username: 'not_important', email: 'test@test.com', passwordHash: '', active: false, confirmed: true, uuid: 'uuid').save(failOnError: true)
+		def user = new User(code: 'not_important', username: 'not_important', email: 'test@test.com', passwordHash: '', active: false, confirmed: true, uuid: 'uuid').save(failOnError: true)
 		new RegistrationToken(token: '123', user:user, used:true).save(failOnError: true)
 		
 		when:
@@ -237,7 +239,7 @@ class AuthControllerSpec extends IntegrationTests {
 	def "retrieve password with known user"() {
 		setup:
 		authController = new AuthController()
-		new User(username: 'not_important', email: 'test@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
+		new User(code: 'not_important', username: 'not_important', email: 'test@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
 		
 		when:
 		authController.params.email = 'test@test.com'
@@ -262,7 +264,7 @@ class AuthControllerSpec extends IntegrationTests {
 	def "new password with valid token"() {
 		setup:
 		authController = new AuthController()
-		def user = new User(username: 'not_important', email: 'test@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
+		def user = new User(code: 'not_important', username: 'not_important', email: 'test@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
 		new PasswordToken(token: '123', user:user).save(failOnError: true)
 		
 		when:
@@ -293,7 +295,7 @@ class AuthControllerSpec extends IntegrationTests {
 	def "set password with valid token - invalid password"() {
 		setup:
 		authController = new AuthController()
-		def user = new User(username: 'not_important', email: 'test@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
+		def user = new User(code: 'not_important', username: 'not_important', email: 'test@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
 		new PasswordToken(token: '123', user:user).save(failOnError: true)
 		
 		when:
@@ -313,7 +315,7 @@ class AuthControllerSpec extends IntegrationTests {
 	def "set password with valid token - valid password"() {
 		setup:
 		authController = new AuthController()
-		def user = new User(username: 'not_important', email: 'test@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
+		def user = new User(code: 'not_important', username: 'not_important', email: 'test@test.com', passwordHash: '', uuid: 'uuid').save(failOnError: true)
 		new PasswordToken(token: '123', user:user).save(failOnError: true)
 		
 		when:

@@ -63,7 +63,7 @@ class TableRowController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return SurveyTableRow.class;
 	}
 	

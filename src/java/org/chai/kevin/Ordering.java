@@ -4,11 +4,13 @@ import java.util.Comparator;
 
 import javax.persistence.Embeddable;
 
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.entity.export.Importable;
 import org.chai.kevin.json.JSONMap;
 
 
 @Embeddable
-public class Ordering extends JSONMap<Integer> implements Comparable<Ordering> {
+public class Ordering extends JSONMap<Integer> implements Comparable<Ordering>, Exportable, Importable {
 
 	private static final long serialVersionUID = 1179476928310670136L;
 
@@ -67,4 +69,15 @@ public class Ordering extends JSONMap<Integer> implements Comparable<Ordering> {
 		return 0;
 	}
 	
+	@Override
+	public String toExportString() {
+		return super.toExportString();
+	}
+
+	@Override
+	public Ordering fromExportString(Object value) {
+		JSONMap jsonMap = super.fromExportString(value);
+		Ordering ordering = new Ordering(jsonMap);
+		return ordering;
+	}
 }

@@ -29,7 +29,7 @@ class PeriodController extends AbstractEntityController  {
 		return [period: entity]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return Period.class;
 	}
 	
@@ -47,7 +47,8 @@ class PeriodController extends AbstractEntityController  {
 			entities: periods, 
 			entityCount: Period.count(),
 			code: getLabel(),
-			template: 'period/periodList'
+			template: 'period/periodList',
+			entityClass: getEntityClass()
 		])
 	}
 }

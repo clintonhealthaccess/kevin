@@ -14,7 +14,7 @@ class DataLocationTypeController extends AbstractEntityController {
 		[dataLocationType: entity]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return DataLocationType.class;
 	}
 	
@@ -52,7 +52,8 @@ class DataLocationTypeController extends AbstractEntityController {
 			template:"location/dataLocationTypeList",
 			entities: types,
 			entityCount: DataLocationType.count(),
-			code: getLabel()
+			code: getLabel(),
+			entityClass: getEntityClass()
 		])
 	}
 }

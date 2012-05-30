@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.LanguageService;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.form.FormCloner;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormElementService;
@@ -19,13 +20,15 @@ import org.chai.kevin.form.FormValidationService;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
 
 @Entity(name = "SurveyElement")
 @Table(name = "dhsst_survey_element")
-public class SurveyElement extends FormElement {
+public class SurveyElement extends FormElement implements Exportable {
 
+	private String code;
 	private SurveyQuestion surveyQuestion;
 	
 	@ManyToOne(targetEntity=SurveyQuestion.class, fetch=FetchType.LAZY)
@@ -126,5 +129,18 @@ public class SurveyElement extends FormElement {
 	@Override
 	public String toString() {
 		return "SurveyElement[getId()=" + getId() + ", getDataElement()=" + getDataElement() + "]";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + ", " + getDataElement().toExportString() + "]";
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 }

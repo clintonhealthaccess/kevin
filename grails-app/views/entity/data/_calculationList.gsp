@@ -4,9 +4,9 @@
   		<tr>
   			<th/>
   		    <g:sortableColumn property="id" title="${message(code: 'entity.id.label')}" />
+  		    <g:sortableColumn property="code" title="${message(code: 'entity.code.label')}" />
   		    <th><g:message code="entity.type.label"/></th>
   			<th><g:message code="entity.name.label"/></th>
-  			<g:sortableColumn property="code" title="${message(code: 'entity.code.label')}" />
   			<th><g:message code="calculation.expression.label"/></th>
   			<th><g:message code="calculation.lastrefreshed.label"/></th>
   			<th><g:message code="calculation.lastvaluechanged.label"/></th>
@@ -31,9 +31,9 @@
   					</ul>
   				</td>
   				<td>${calculation.id}</td>
+  				<td>${calculation.code}</td>  				
   				<td><g:message code="${calculation.class.simpleName.toLowerCase()}.label"/></td>
-  				<td data-data="${calculation.id}"><g:i18n field="${calculation.names}" /></td>
-  				<td>${calculation.code}</td>
+  				<td data-data="${calculation.id}"><g:i18n field="${calculation.names}" /></td>  				
   				<td>${calculation.expression}</td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${calculation.refreshed}"/></td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${calculation.lastValueChanged}"/></td>
