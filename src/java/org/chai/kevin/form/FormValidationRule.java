@@ -31,7 +31,7 @@ import org.chai.kevin.util.Utils;
 
 @Entity(name="FormValidationRule")
 @Table(name="dhsst_form_validation_rule")
-public class FormValidationRule implements Exportable {
+public class FormValidationRule {
 
 	private final static Log log = LogFactory.getLog(FormValidationRule.class);
 	
@@ -203,8 +203,8 @@ public class FormValidationRule implements Exportable {
 		this.code = code;
 	}
 
-	@Override
-	public String toExportString() {
-		return "[" + Utils.formatExportCode(getCode()) + "]";
-	}
+//	@Override
+//	public String toExportString() {
+//		return "[" + Utils.formatExportCode(getCode()) + "]";
+//	}
 }

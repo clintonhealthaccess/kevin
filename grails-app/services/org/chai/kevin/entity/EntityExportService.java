@@ -45,9 +45,7 @@ public class EntityExportService {
 	@Transactional(readOnly=true)
 	public File getExportFile(String filename, Class<?> clazz) throws IOException { 				
 		
-		File csvFile = File.createTempFile(filename, CSV_FILE_EXTENSION);
-		
-		if(Utils.isExportable(clazz) == null) return csvFile;
+		File csvFile = File.createTempFile(filename, CSV_FILE_EXTENSION);		
 		
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
@@ -59,22 +57,21 @@ public class EntityExportService {
 			while(headerClass != null && headerClass != Object.class){				
 				Field[] classFields = headerClass.getDeclaredFields();
 				for(Field field : classFields){
+					if(field.getName().equalsIgnoreCase(ID_HEADER)) continue;
 					entityFieldHeaders.add(field);
 				}
 				headerClass = headerClass.getSuperclass();
 			}
+			Collections.sort(entityFieldHeaders, EntityHeaderSorter.BY_FIELD());
 			
 			//TODO custom headers/values
 			//ability to add custom headers
 			//and a custom "handle" method to add the custom values to each row			
-			
-			Collections.sort(entityFieldHeaders, EntityHeaderSorter.BY_FIELD());			
+						
 			List<String> entityHeaders = new ArrayList<String>();
 			for(Field field : entityFieldHeaders){
-				if(field.getName().equalsIgnoreCase(ID_HEADER)) continue;
 				entityHeaders.add(field.getName());				
-			}
-			
+			}			
 			if(entityHeaders.toArray(new String[0]) != null)
 				writer.writeHeader(entityHeaders.toArray(new String[0]));									
 			
@@ -111,7 +108,7 @@ public class EntityExportService {
 	public List<String> getEntityData(Object entity, List<Field> fields){
 		List<String> entityData = new ArrayList<String>();
 		for(Field field : fields){			
-			if(field.getName().equalsIgnoreCase(ID_HEADER)) continue;			
+			
 			Object value = null;			
 			
 			try {

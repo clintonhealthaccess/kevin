@@ -22,7 +22,7 @@ import org.chai.kevin.util.Utils;
 
 @Entity(name="SurveySkipRule")
 @Table(name="dhsst_survey_skip_rule")
-public class SurveySkipRule extends FormSkipRule implements Exportable {
+public class SurveySkipRule extends FormSkipRule {
 
 	private Survey survey;
 	private Set<SurveyQuestion> skippedSurveyQuestions = new HashSet<SurveyQuestion>();
@@ -79,8 +79,8 @@ public class SurveySkipRule extends FormSkipRule implements Exportable {
 		return "SurveySkipRule[getId()=" + getId() + ", getExpression()='" + getExpression() + "']";
 	}
 
-	@Override
-	public String toExportString() {
-		return "[" + Utils.formatExportCode(getCode()) + "]";
-	}
+//	@Override
+//	public String toExportString() {
+//		return "[" + Utils.formatExportCode(getCode()) + "]";
+//	}
 }

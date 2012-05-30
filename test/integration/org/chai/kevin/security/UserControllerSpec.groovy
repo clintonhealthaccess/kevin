@@ -45,6 +45,7 @@ class UserControllerSpec extends IntegrationTests{
 		
 		when: 
 		userController.params.email="exemple@exemple.com";
+		userController.params.code ="exemple";
 		userController.params.username ="exemple";
 		userController.params.password = "exemple";
 		userController.params.repeat = "exemple";

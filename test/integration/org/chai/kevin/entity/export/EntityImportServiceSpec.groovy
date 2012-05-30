@@ -73,6 +73,7 @@ class EntityImportServiceSpec extends IntegrationTests {
 		while(headerClass != null && headerClass != Object.class){				
 			Field[] classFields = headerClass.getDeclaredFields();
 			for(Field field : classFields){
+				if(field.getName().equalsIgnoreCase("id")) continue;
 				entitySurveyQuestionFieldHeaders.add(field);
 			}
 			headerClass = headerClass.getSuperclass();
@@ -83,6 +84,7 @@ class EntityImportServiceSpec extends IntegrationTests {
 		while(headerClass != null && headerClass != Object.class){
 			Field[] classFields = headerClass.getDeclaredFields();
 			for(Field field : classFields){
+				if(field.getName().equalsIgnoreCase("id")) continue;
 				entityDashboardTargetFieldHeaders.add(field);
 			}
 			headerClass = headerClass.getSuperclass();
@@ -95,8 +97,8 @@ class EntityImportServiceSpec extends IntegrationTests {
 		def dashboardTargetHeaders = entityDashboardTargetFieldHeaders.collect { it.getName() }
 		
 		then:
-		surveyQuestionHeaders.equals(["id", "names", "order", "section", "typeCodeString", "descriptions"])
-		dashboardTargetHeaders.equals(["id", "code", "names", "order", "calculation", "program", "weight", "descriptions"])
+		surveyQuestionHeaders.equals(["code", "names", "order", "section", "typeCodeString", "descriptions"])
+		dashboardTargetHeaders.equals(["code", "names", "order", "calculation", "program", "weight", "descriptions"])
 	}
 		
 }

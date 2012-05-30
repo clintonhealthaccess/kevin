@@ -7,7 +7,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile
 class EntityImporterController extends AbstractController {
 	
 	EntityImportService entityImportService;
-	ImporterService importerService;
 	
 	final String ENTITY_IMPORT = "entityImport";
 	final String IMPORT_OUTPUT = "importOutput";

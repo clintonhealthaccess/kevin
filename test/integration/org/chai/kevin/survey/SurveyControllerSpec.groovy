@@ -11,6 +11,7 @@ class SurveyControllerSpec extends SurveyIntegrationTests {
 		surveyController = new SurveyController()
 
 		when:
+		surveyController.params.code = survey.code+"2"
 		surveyController.params['period.id'] = period.id
 		surveyController.params.active = true
 		surveyController.saveWithoutTokenCheck()
@@ -28,6 +29,7 @@ class SurveyControllerSpec extends SurveyIntegrationTests {
 		surveyController = new SurveyController()
 
 		when:
+		surveyController.params.code = survey.code+"2"
 		surveyController.params.active = true
 		surveyController.saveWithoutTokenCheck()
 		

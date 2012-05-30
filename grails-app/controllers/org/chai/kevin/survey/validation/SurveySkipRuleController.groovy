@@ -69,7 +69,8 @@ class SurveySkipRuleController  extends AbstractEntityController {
 	}
 
 	def getEntityClass(){
-		return SurveySkipRule.class;
+		//TODO return SurveySkipRule.class;
+		return null;
 	}
 	
 	def bindParams(def entity) {

@@ -131,6 +131,7 @@ public class SurveyTableColumn extends Orderable<Integer> implements Exportable 
 	@Transient
 	protected SurveyTableColumn deepCopy(SurveyCloner cloner) {
 		SurveyTableColumn copy = new SurveyTableColumn();
+		copy.setCode(getCode() + " clone");
 		copy.setNames(new Translation(getNames()));
 		copy.setTypeCodeString(getTypeCodeString());
 		copy.setOrder(getOrder());

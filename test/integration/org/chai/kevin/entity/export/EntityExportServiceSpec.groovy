@@ -92,21 +92,22 @@ class EntityExportServiceSpec extends IntegrationTests {
 			csvFiles.add(entityExportService.getExportFile(filename, clazz));
 		}
 		String zipFilename = StringUtils.join(filenames, "_")
-		def zipFile = Utils.getZipFile(filenames, zipFilename)
+		def zipFile = Utils.getZipFile(csvFiles, zipFilename)
 		
 		then:
-		zipFilename.startsWith("SurveyCheckboxQuestion_SurveySimpleQuestion_SurveyTableQuestion_")
+		zipFilename.startsWith("SurveyCheckboxQuestion__SurveySimpleQuestion__SurveyTableQuestion_")
 		zipFile.exists() == true
 		zipFile.length() > 0
 	}
 	
 	def "test for entity header sort"(){
-		setup:
-		def entitySurveyQuestionFieldHeaders = []			
-		def headerClass = SurveyQuestion.class;
+		setup:		
+		def entitySurveyQuestionFieldHeaders = []		
+		Class<?> headerClass = SurveyQuestion.class;
 		while(headerClass != null && headerClass != Object.class){				
 			Field[] classFields = headerClass.getDeclaredFields();
 			for(Field field : classFields){
+				if(field.getName().equalsIgnoreCase("id")) continue;
 				entitySurveyQuestionFieldHeaders.add(field);
 			}
 			headerClass = headerClass.getSuperclass();
@@ -114,9 +115,10 @@ class EntityExportServiceSpec extends IntegrationTests {
 		
 		def entityDashboardTargetFieldHeaders = []
 		headerClass = DashboardTarget.class;
-		while(headerClass != null && headerClass != Object.class){
+		while(headerClass != null && headerClass != Object.class){				
 			Field[] classFields = headerClass.getDeclaredFields();
 			for(Field field : classFields){
+				if(field.getName().equalsIgnoreCase("id")) continue;
 				entityDashboardTargetFieldHeaders.add(field);
 			}
 			headerClass = headerClass.getSuperclass();
@@ -162,93 +164,112 @@ class EntityExportServiceSpec extends IntegrationTests {
 	
 	def "test entity fields are exportable"(){
 		when:
-		def ie = new IsExportableEntity("ieCode1", 1, new Date())
-		 			
+		def ie = new IsExportableEntity("ieCode1", 1, new Date())		 			
 		List<Field> fields = new ArrayList<Field>();		
 		Class<?> headerClass = ie.class;
 		while(headerClass != null && headerClass != Object.class){
-			Field[] classFields = headerClass.getDeclaredFields();
+			Field[]classFields = headerClass.getDeclaredFields();
 			for(Field field : classFields){
 				fields.add(field);
 			}
 			headerClass = headerClass.getSuperclass();
 		}
-		
+		Collections.sort(fields, EntityHeaderSorter.BY_FIELD());				
 		def entityData = entityExportService.getEntityData(ie, fields)
 		
 		then:
-		entityData.equals(["code", 1, "01-01-0001", "{}"])
+		entityData[0].equals("ieCode1")
+		entityData[1].equals("1")
+		entityData[2].equals("30-05-2012")
+		entityData[3].equals("")
 		
 		when:
 		ie.trans = new Translation(j(["en":"English", "fr":"French"]))
+		entityData = entityExportService.getEntityData(ie, fields)
 		
 		then:
-		entityData.equals(["code", 1, "01-01-0001", "{\"en\":\"English\", \"fr\":\"French\"}"])
-	}
+		entityData[0].equals("ieCode1")
+		entityData[1].equals("1")
+		entityData[2].equals("30-05-2012")
+		entityData[3].equals(ie.trans.toExportString())
+	}	
 	
 	def "test entity fields that are exportable and not exportable"(){
 		when:
-		def te = new TestExportableEntity("testCode")
-					 
+		def te = new TestExportableEntity("testCode")					 
 		List<Field> fields = new ArrayList<Field>();
 		Class<?> headerClass = te.class;
 		while(headerClass != null && headerClass != Object.class){
-			Field[] classFields = headerClass.getDeclaredFields();
+			Field[] classFields = headerClass.getFields();
+			classFields = headerClass.getDeclaredFields();
 			for(Field field : classFields){
 				fields.add(field);
 			}
 			headerClass = headerClass.getSuperclass();
 		}
-		
+		Collections.sort(fields, EntityHeaderSorter.BY_FIELD());
 		def entityData = entityExportService.getEntityData(te, fields)
 		
 		then:
-		entityData.equals(["testCode", "[]", Utils.VALUE_NOT_EXPORTABLE])
+		entityData[0].equals("testCode")
+		entityData[1].equals("")
+		entityData[2].equals("")
 		
 		when:
 		te.iee = new IsExportableEntity("ieCode", 1, new Date())
 		te.inee = new IsNotExportableEntity()
+		entityData = entityExportService.getEntityData(te, fields)
 		
 		then:
-		entityData.equals(["testCode", "[~ieCode~]", Utils.VALUE_NOT_EXPORTABLE])
+		entityData[0].equals("testCode")
+		entityData[1].equals("[~ieCode~]")
+		entityData[2].equals(Utils.VALUE_NOT_EXPORTABLE)
 	}
 	
 	def "test entity fields that are exportable lists and not exportable lists"(){
 		when:
-		def te = new TestExportableEntities("testCode")
-					 
+		def te = new TestExportableEntities("testCode")					 
 		List<Field> fields = new ArrayList<Field>();
 		Class<?> headerClass = te.class;
 		while(headerClass != null && headerClass != Object.class){
-			Field[] classFields = headerClass.getDeclaredFields();
+			Field[] classFields = headerClass.getFields();
+			classFields = headerClass.getDeclaredFields();
 			for(Field field : classFields){
 				fields.add(field);
 			}
 			headerClass = headerClass.getSuperclass();
 		}
-		
+		Collections.sort(fields, EntityHeaderSorter.BY_FIELD());
 		def entityData = entityExportService.getEntityData(te, fields)
 		
 		then:
-		entityData.equals(["testCode", "[]", Utils.VALUE_NOT_EXPORTABLE])
+		entityData[0].equals("testCode")
+		entityData[1].equals("")
+		entityData[2].equals("")
 		
 		when:
 		te.listIee = [new IsExportableEntity("ieCode1", 1, new Date())] 
-		te.listInee = [new IsNotExportableEntity(), new IsNotExportableEntity()]
+		te.listInee = [new IsNotExportableEntity(), new IsNotExportableEntity()]		
+		entityData = entityExportService.getEntityData(te, fields)
 		
 		then:
-		entityData.equals(["testCode", "[[~ieCode1~]]", Utils.VALUE_NOT_EXPORTABLE])
+		entityData[0].equals("testCode")
+		entityData[1].equals("[[~ieCode1~]]")
+		entityData[2].equals(Utils.VALUE_NOT_EXPORTABLE)
 		
 		when:
-		te.listIee = [new IsExportableEntity("ieCode1", 1, new Date()),[new IsExportableEntity("ieCode2", 2, new Date())]]
+		te.listIee = [new IsExportableEntity("ieCode1", 1, new Date()), new IsExportableEntity("ieCode2", 2, new Date())]
 		te.listInee = [new IsNotExportableEntity(), new IsNotExportableEntity()]
+		entityData = entityExportService.getEntityData(te, fields)
 		
 		then:
-		entityData.equals(["testCode", "[[~ieCode1~], [~ieCod2e~]]", Utils.VALUE_NOT_EXPORTABLE])
-	}
+		entityData[0].equals("testCode")
+		entityData[1].equals("[[~ieCode1~], [~ieCode2~]]")
+		entityData[2].equals(Utils.VALUE_NOT_EXPORTABLE)		
+	}	
 	
 	
-	public class IsExportableEntity implements Exportable {
+	public class IsExportableEntity extends Object implements Exportable {
 		
 		public Integer num;
 		public String code;
@@ -266,7 +287,6 @@ class EntityExportServiceSpec extends IntegrationTests {
 			this.num = num;
 			this.code = code;
 			this.dat = dat;
-			this.trans = new Translation();
 		}
 		
 		public String toExportString() {
@@ -274,11 +294,11 @@ class EntityExportServiceSpec extends IntegrationTests {
 		}
 	}
 	
-	public class IsNotExportableEntity {
+	public class IsNotExportableEntity extends Object {
 		IsNotExportableEntity() { }
-	}		
+	}	
 	
-	public class TestExportableEntity implements Exportable {
+	public class TestExportableEntity extends Object implements Exportable {
 		
 		public String code;
 		public IsExportableEntity iee;
@@ -286,8 +306,6 @@ class EntityExportServiceSpec extends IntegrationTests {
 		
 		public TestExportableEntity(String code) {
 			this.code = code;
-			iee = new IsExportableEntity()
-			inee = new IsNotExportableEntity()
 		}
 				
 		public String toExportString() {
@@ -295,7 +313,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		}
 	}
 	
-	public class TestExportableEntities implements Exportable {
+	public class TestExportableEntities extends Object implements Exportable {
 		
 		public String code;
 		public List<IsExportableEntity> listIee;
@@ -303,8 +321,6 @@ class EntityExportServiceSpec extends IntegrationTests {
 		
 		public TestExportableEntities(String code) {
 			this.code = code;
-			listIee = []
-			listInee = []
 		}
 			
 		public String toExportString() {

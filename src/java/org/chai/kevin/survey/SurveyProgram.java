@@ -217,6 +217,7 @@ public class SurveyProgram extends Orderable<Integer> implements Exportable {
 
 	@Transient
 	protected void deepCopy(SurveyProgram copy, SurveyCloner cloner) {
+		copy.setCode(getCode() + " clone");
 		copy.setNames(new Translation(getNames()));
 //		if (getDependency() != null) copy.setDependency(cloner.getProgram(getDependency()));
 		copy.setTypeCodeString(getTypeCodeString());

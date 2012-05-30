@@ -207,6 +207,7 @@ public class SurveySection extends Orderable<Integer> implements Exportable {
 	}
 
 	protected void deepCopy(SurveySection copy, SurveyCloner surveyCloner) {
+		copy.setCode(getCode() + " clone");
 		copy.setNames(new Translation(getNames()));
 		copy.setTypeCodeString(getTypeCodeString());
 		copy.setProgram(surveyCloner.getProgram(getProgram()));

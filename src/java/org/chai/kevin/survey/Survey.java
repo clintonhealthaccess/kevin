@@ -182,6 +182,7 @@ public class Survey implements Exportable {
 	
 	@Transient
 	protected void deepCopy(Survey copy, SurveyCloner cloner) {
+		copy.setCode(getCode() + " clone");
 		copy.setNames(new Translation(getNames()));
 		copy.setDescriptions(new Translation(getDescriptions()));
 		copy.setActive(isActive());

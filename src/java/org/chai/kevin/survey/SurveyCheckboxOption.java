@@ -141,6 +141,7 @@ public class SurveyCheckboxOption extends Orderable<Integer> implements Exportab
 
 	public SurveyCheckboxOption deepCopy(SurveyCloner cloner) {
 		SurveyCheckboxOption copy = new SurveyCheckboxOption();
+		copy.setCode(getCode() + " clone");
 		copy.setNames(new Translation(getNames()));
 		copy.setTypeCodeString(getTypeCodeString());
 		copy.setOrder(getOrder());

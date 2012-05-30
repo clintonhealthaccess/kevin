@@ -205,6 +205,7 @@ public abstract class SurveyQuestion extends Orderable<Integer> implements Expor
 
 	protected abstract SurveyQuestion newInstance();
 	protected void deepCopy(SurveyQuestion copy, SurveyCloner surveyCloner) {
+		copy.setCode(getCode() + " clone");
 		copy.setNames(new Translation(getNames()));
 		copy.setDescriptions(new Translation(getDescriptions()));
 		copy.setTypeCodeString(getTypeCodeString());
