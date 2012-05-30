@@ -162,6 +162,7 @@ public class Utils {
 		return "";
 	}
 	
+	//TODO get ride of this
 	public static File getZipFile(File file, String filename) throws IOException {		
 		
 		File zipFile = File.createTempFile(filename, ZIP_FILE_EXTENSION);
