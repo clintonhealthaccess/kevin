@@ -64,7 +64,13 @@ import org.chai.kevin.util.Utils;
 public abstract class SurveyQuestion extends Orderable<Integer> implements Exportable {
 
 	// TODO might be a good idea to get rid of this
-	public enum QuestionType {CHECKBOX("checkboxQuestion"), TABLE("tableQuestion"), SIMPLE("simpleQuestion"), WIZARD("wizardQuestion");
+	public enum QuestionType {
+		
+		CHECKBOX("checkboxQuestion"), 
+		TABLE("tableQuestion"), 
+		SIMPLE("simpleQuestion"), 
+		WIZARD("wizardQuestion");
+		
 		private String template;
 	
 		private QuestionType(String template) {
@@ -73,8 +79,7 @@ public abstract class SurveyQuestion extends Orderable<Integer> implements Expor
 		
 		public String getTemplate() {
 			return template;
-		}
-	
+		}	
 	}
 	
 	private Long id;

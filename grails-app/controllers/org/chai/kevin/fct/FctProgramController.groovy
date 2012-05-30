@@ -64,9 +64,9 @@ class FctProgramController extends AbstractEntityController {
 		return ReportProgram.class;
 	}
 	
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
+//	def validateEntity(def entity) {
+//		return entity.validate()
+//	}
 	
 	def saveEntity(def entity) {
 		entity.save()

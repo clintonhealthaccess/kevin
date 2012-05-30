@@ -46,6 +46,11 @@ class UserController extends UserAbstractController {
 		return 'user.label'
 	}
 	
+	def getEntityClass(){
+//		return User.class;
+		return null;
+	}
+	
 	def getTemplate() {
 		return "/entity/user/createUser"
 	}	

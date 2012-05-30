@@ -60,9 +60,10 @@ class QuestionController extends AbstractController {
 		])
 	}
 	
-	def exportEntity(){
-		return SurveyQuestion.class;
-	}
+	def getEntityClass(){
+//		return SurveyQuestion.class;
+		return [SurveyCheckboxQuestion.class, SurveySimpleQuestion.class, SurveyTableQuestion.class];
+	}	
 	
 	def list = {
 		adaptParamsForList()
@@ -86,7 +87,7 @@ class QuestionController extends AbstractController {
 				entityCount: questions.size(),
 				code: 'survey.question.label',
 				addTemplate: '/survey/admin/addQuestion',
-				entityClass: exportEntity()
+				entityClass: getEntityClass()
 			])
 		}
 	}

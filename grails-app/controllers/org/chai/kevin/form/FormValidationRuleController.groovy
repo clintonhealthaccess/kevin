@@ -71,7 +71,8 @@ class FormValidationRuleController extends AbstractEntityController {
 	}
 
 	def getEntityClass(){
-		return FormValidationRule.class;
+		//TODO return FormValidationRule.class;
+		return null;
 	}
 	
 	def saveEntity(def entity) {

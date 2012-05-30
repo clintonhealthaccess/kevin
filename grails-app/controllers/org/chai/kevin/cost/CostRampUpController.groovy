@@ -56,10 +56,12 @@ class CostRampUpController extends AbstractEntityController {
 	}
 	
 	def getEntityClass(){
-		return CostRampUp.class;
+		//TODO return CostRampUp.class;
+		return null;
 	}
 	
 	def validateEntity(def entity) {
+		//TODO check for duplicate code
 		boolean valid = true;
 		entity.years.each { key, value ->
 			if (!value.validate()) valid = false

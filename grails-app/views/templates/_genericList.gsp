@@ -8,24 +8,20 @@
 		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'create')+(request.queryString==null?'':'&'+request.queryString)}">
 		  					<g:message code="default.new.label" args="[entityName]"/>
 		  				</a>
-		  				&nbsp;
-		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'exporter')+(request.queryString==null?'':'&'+request.queryString)}">
-		  					<g:message code="default.export.label" />
-		  				</a>
-		  				&nbsp;
-		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'importer')+(request.queryString==null?'':'&'+request.queryString)}">
-		  					<g:message code="default.import.label" />
-		  				</a>
+		  				<g:if test="${entityClass != null}">
+			  				&nbsp;
+			  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'exporter')+(request.queryString==null?'':'&'+request.queryString)}">
+			  					<g:message code="default.export.label" />
+			  				</a>
+			  				<!-- TODO add importer -->			  							  			
+		  				</g:if>
 		  			</g:if>
 		  			<g:else>
 		  				<g:render template="${addTemplate}"/>
 		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'exporter')+(request.queryString==null?'':'&'+request.queryString)}">
 		  					<g:message code="default.export.label" />
 		  				</a>
-		  				&nbsp;
-		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'importer')+(request.queryString==null?'':'&'+request.queryString)}">
-		  					<g:message code="default.import.label" />
-		  				</a>
+		  				<!-- TODO add importer -->
 		  			</g:else>
 		     	</span>
 	     	</g:if>

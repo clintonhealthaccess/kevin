@@ -11,16 +11,18 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.form.FormCloner;
 import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.SurveyElement.SurveyElementCalculator;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
+import org.chai.kevin.util.Utils;
 
 @Entity(name="SurveySkipRule")
 @Table(name="dhsst_survey_skip_rule")
-public class SurveySkipRule extends FormSkipRule {
+public class SurveySkipRule extends FormSkipRule implements Exportable {
 
 	private Survey survey;
 	private Set<SurveyQuestion> skippedSurveyQuestions = new HashSet<SurveyQuestion>();
@@ -75,5 +77,10 @@ public class SurveySkipRule extends FormSkipRule {
 	@Override
 	public String toString() {
 		return "SurveySkipRule[getId()=" + getId() + ", getExpression()='" + getExpression() + "']";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 }

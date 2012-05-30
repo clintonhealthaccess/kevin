@@ -79,7 +79,8 @@ class EnumController extends AbstractEntityController {
 			entities: enums,
 			template: "data/enumList",
 			entityCount: Enum.count(),
-			code: getLabel()
+			code: getLabel(),
+			entityClass: getEntityClass()
 		])
 		
 	}

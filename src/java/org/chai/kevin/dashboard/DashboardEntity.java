@@ -99,11 +99,6 @@ public abstract class DashboardEntity extends ReportEntity {
 	@Override
 	public String toString() {
 		return "DashboardEntity[getId()=" + getId() + ", getCode()=" + getCode() + "]";
-	}
-	
-	@Override
-	public String toExportString() {
-		return "[" + Utils.formatExportCode(getCode()) + "]";
-	}
+	}	
 
 }

@@ -50,15 +50,17 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 @Entity(name = "SurveyCheckboxOption")
 @Table(name = "dhsst_survey_checkbox_option")
-public class SurveyCheckboxOption extends Orderable<Integer> {
+public class SurveyCheckboxOption extends Orderable<Integer> implements Exportable {
 
 	private Long id;
+	private String code;
 	private Integer order;
 	private String typeCodeString;
 	private SurveyCheckboxQuestion question;
@@ -152,4 +154,16 @@ public class SurveyCheckboxOption extends Orderable<Integer> {
 		return "SurveyCheckboxOption[getId()=" + getId() + ", getNames()=" + getNames() + "]";
 	}
 
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + ", " + getSurveyElement().toExportString() + "]";
+	}
 }

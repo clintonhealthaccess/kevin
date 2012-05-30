@@ -24,8 +24,7 @@ class UserListController  extends AbstractController {
 			code: 'user.label',
 			addTemplate: '/entity/user/addUser'
 		])
-	}
-	
+	}	
 
 	def search={
 		adaptParamsForList()

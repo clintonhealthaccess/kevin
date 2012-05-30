@@ -7,6 +7,8 @@ import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
+import org.chai.kevin.entity.export.Exportable;
+
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
@@ -124,6 +126,7 @@ public abstract class JSONValue {
 
 	@Override
 	public boolean equals(Object obj) {
+
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -137,5 +140,5 @@ public abstract class JSONValue {
 		} else if (!getJsonValue().equals(other.getJsonValue()))
 			return false;
 		return true;
-	}
+	}	
 }

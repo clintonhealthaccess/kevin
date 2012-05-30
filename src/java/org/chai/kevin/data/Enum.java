@@ -175,11 +175,11 @@ public class Enum  implements Exportable, Importable {
 	@Override
 	public String toString() {
 		return "Enum[getId()=" + getId() + ", getCode()=" + getCode() + "]";
-	}		
+	}
 	
 	@Override
 	public String toExportString() {
-		return "[" + Utils.formatExportCode(getId().toString()) + ", " + getCode() + "]";
+		return "[" + Utils.formatExportCode(getCode().toString()) + "]";
 	}
 	
 	@Override

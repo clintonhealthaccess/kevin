@@ -262,8 +262,16 @@ public class EntityImportService {
 					
 				}
 				//value is a primitive or 'wrapper to primitive' or string type
-				else if(importableClazz.isPrimitive() || ClassUtils.wrapperToPrimitive(importableClazz) != null || importableClazz.equals(String.class)){
+				else if(importableClazz.isPrimitive() || ClassUtils.wrapperToPrimitive(importableClazz) != null){				
 					importValue = value;
+				}
+				//value is a string
+				else if(importableClazz.equals(String.class)){
+					importValue = value;
+				}
+				//value is a date
+				else if(importableClazz.equals(Date.class)){
+					//TODO				
 				}
 				//value is not importable or a primitive type
 				else {

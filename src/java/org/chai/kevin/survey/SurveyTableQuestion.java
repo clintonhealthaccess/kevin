@@ -48,6 +48,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Translation;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
@@ -58,7 +59,7 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "SurveyTableQuestion")
 @Table(name = "dhsst_survey_table_question")
-public class SurveyTableQuestion extends SurveyQuestion {
+public class SurveyTableQuestion extends SurveyQuestion implements Exportable {
 
 	private Translation tableNames = new Translation();
 	private List<SurveyTableColumn> columns = new ArrayList<SurveyTableColumn>();

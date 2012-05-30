@@ -21,7 +21,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity(name = "FctTargetOption")
 @Table(name = "dhsst_fct_target_option")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class FctTargetOption extends ReportEntity {
+public class FctTargetOption extends ReportEntity implements Exportable {
 
 	private Long id;
 	private Sum sum;

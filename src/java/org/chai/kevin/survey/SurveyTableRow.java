@@ -32,7 +32,9 @@ package org.chai.kevin.survey;
  *
  */
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -55,17 +57,20 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 @Entity(name = "SurveyTableRow")
 @Table(name = "dhsst_survey_table_row")
-public class SurveyTableRow extends Orderable<Integer> {
+public class SurveyTableRow extends Orderable<Integer> implements Exportable {
 
 	private Long id;
+	private String code;
 	private Integer order;
 	private String typeCodeString;
 	private SurveyTableQuestion question;
@@ -195,6 +200,32 @@ public class SurveyTableRow extends Orderable<Integer> {
 	@Override
 	public String toString() {
 		return "SurveyTableRow[getId()=" + getId() + ", getNames()=" + getNames() + "]";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + ", " + toSurveyElementMapExportString() + "]";
+	}
+	
+	public String toSurveyElementMapExportString(){
+		String result = "";		
+		Map<SurveyTableColumn, SurveyElement> surveyElementMap = getSurveyElements();
+		if(getSurveyElements() != null){
+			List<String> surveyElements = new ArrayList<String>();
+			for(SurveyTableColumn column : surveyElementMap.keySet()){
+				surveyElements.add(surveyElementMap.get(column).toExportString());
+			}
+			result = "[" + StringUtils.join(surveyElements, ", ") + "]";
+		}		
+		return result;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}    
 
 }

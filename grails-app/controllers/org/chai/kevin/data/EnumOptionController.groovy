@@ -69,9 +69,9 @@ class EnumOptionController extends AbstractEntityController {
 		return EnumOption.class;
 	}
 	
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
+//	def validateEntity(def entity) {
+//		return entity.validate()
+//	}
 
 	def saveEntity(def entity) {
 		entity.save()
@@ -107,7 +107,8 @@ class EnumOptionController extends AbstractEntityController {
 				entities: options.subList(params['offset'], max),
 				template: "data/enumOptionList",
 				entityCount: options.size(),
-				code: getLabel()
+				code: getLabel(),
+				entityClass: getEntityClass()
 			])
 		}
 	}

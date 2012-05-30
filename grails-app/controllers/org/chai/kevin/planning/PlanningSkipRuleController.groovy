@@ -57,7 +57,8 @@ class PlanningSkipRuleController extends AbstractEntityController {
 	}
 
 	def getEntityClass(){
-		return PlanningSkipRule.class;
+		//TODO return PlanningSkipRule.class;
+		return null;
 	}
 	
 	def bindParams(def entity) {

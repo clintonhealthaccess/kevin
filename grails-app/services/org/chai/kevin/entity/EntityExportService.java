@@ -8,13 +8,13 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LanguageService;
 import org.chai.kevin.entity.export.EntityHeaderSorter;
 import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.util.Utils;
@@ -29,7 +29,7 @@ public class EntityExportService {
 	private static final Log log = LogFactory.getLog(EntityExportService.class);
 	
 	private SessionFactory sessionFactory;
-	private static final String ID_HEADER = "id";
+	private static final String ID_HEADER = "id";	
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -40,12 +40,14 @@ public class EntityExportService {
 	public String getExportFilename(Class<?> clazz){
 		String exportFilename = clazz.getSimpleName().replaceAll("[^a-zA-Z0-9]", "") + "_";
 		return exportFilename;
-	}
+	}		
 	
 	@Transactional(readOnly=true)
 	public File getExportFile(String filename, Class<?> clazz) throws IOException { 				
 		
 		File csvFile = File.createTempFile(filename, CSV_FILE_EXTENSION);
+		
+		if(Utils.isExportable(clazz) == null) return csvFile;
 		
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
@@ -60,7 +62,7 @@ public class EntityExportService {
 					entityFieldHeaders.add(field);
 				}
 				headerClass = headerClass.getSuperclass();
-			}			
+			}
 			
 			//TODO custom headers/values
 			//ability to add custom headers
@@ -100,7 +102,7 @@ public class EntityExportService {
 		return csvFile;
 	}	
 	
-	public List<Object> getEntities(Class<?> clazz){
+	private List<Object> getEntities(Class<?> clazz){
 		List<Object> entities = new ArrayList<Object>();
 		entities = (List<Object>) sessionFactory.getCurrentSession().createCriteria(clazz).list();
 		return entities;
@@ -131,9 +133,7 @@ public class EntityExportService {
 					Class<?> valueClazz = field.getType();
 					Class<?> innerClazz = null;
 					
-					//value is not a list
-					boolean isAssignable = Exportable.class.isAssignableFrom(valueClazz);				
-					Class<?>[] clazzInterfaces = valueClazz.getInterfaces();
+					//value is not a list					
 					Class<?> exportableClazz = valueClazz;					
 					
 					//value is a list
@@ -141,14 +141,12 @@ public class EntityExportService {
 					if(valueClazz.equals(List.class)){
 						listValues = (List<Object>) value;			
 						ParameterizedType type = (ParameterizedType) field.getGenericType();
-						innerClazz = (Class<?>) type.getActualTypeArguments()[0];					
-						isAssignable = Exportable.class.isAssignableFrom(innerClazz);
-						clazzInterfaces = innerClazz.getInterfaces();
+						innerClazz = (Class<?>) type.getActualTypeArguments()[0];
 						exportableClazz = innerClazz;
 					}					
 					
 					//value is exportable
-					if(isAssignable && Arrays.asList(clazzInterfaces).contains(Exportable.class)){
+					if(Utils.isExportable(exportableClazz) != null){
 						
 						//value is a list
 						if(listValues != null){
@@ -163,13 +161,20 @@ public class EntityExportService {
 						}		
 					}
 					//value is a primitive or 'wrapper to primitive' or string type
-					else if(exportableClazz.isPrimitive() || ClassUtils.wrapperToPrimitive(exportableClazz) != null || exportableClazz.equals(String.class)){
+					else if(Utils.isExportablePrimitive(exportableClazz) != null){
 						exportValue = value.toString();
 					}
+					//value is a string
+					else if (exportableClazz.equals(String.class)){
+						exportValue = value.toString();
+					}
+					//value is a date
+					else if(exportableClazz.equals(Date.class)){
+						exportValue = Utils.formatDate((Date) value);
+					}
 					//value is not exportable or a primitive type
-					else {
-						//exportValue = value.toString();
-						exportValue = "not exportable or a primitive type";
+					else{
+						exportValue = Utils.VALUE_NOT_EXPORTABLE;
 					}
 				}
 				

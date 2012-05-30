@@ -28,6 +28,7 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.dsr.DsrTargetCategory
 import org.chai.kevin.entity.EntityExportService;
@@ -57,11 +58,23 @@ public abstract class AbstractController {
 	protected final static String FILE_TYPE_CSV="text/csv";
 	
 	def exporter = {
-		def clazz = getEntityClass();
-		String filename = entityExportService.getExportFilename(clazz);
-		File csvFile = entityExportService.getExportFile(filename, clazz);
-		def zipFile = Utils.getZipFile(csvFile, filename)
-			
+		def entityClazz = getEntityClass();		
+		
+		if(entityClazz instanceof Class)
+			entityClazz = [entityClazz]
+		
+		List<String> filenames = new ArrayList<String>();
+		List<File> csvFiles = new ArrayList<File>();
+		
+		for(Class clazz : entityClazz){
+			String filename = entityExportService.getExportFilename(clazz);
+			filenames.add(filename);			
+			csvFiles.add(entityExportService.getExportFile(filename, clazz));
+		}
+		
+		String zipFilename = StringUtils.join(filenames, "_")		
+		def zipFile = Utils.getZipFile(csvFiles, zipFilename)
+		
 		if(zipFile.exists()){
 			response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());
 			response.setContentType("application/zip");
@@ -72,7 +85,10 @@ public abstract class AbstractController {
 	
 	def importer = {
 		def clazz = getEntityClass();
-		redirect (controller: 'entityImporter', action: 'importer', params: [entityClass: clazz.name]);
+		
+		if(clazz instanceof Class){
+			redirect (controller: 'entityImporter', action: 'importer', params: [entityClass: clazz.name]);
+		}
 	}
 		
 	def getTargetURI() {

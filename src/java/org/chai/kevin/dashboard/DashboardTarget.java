@@ -49,7 +49,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity(name="DashboardTarget")
 @Table(name="dhsst_dashboard_target")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DashboardTarget extends DashboardEntity implements ReportTarget {
+public class DashboardTarget extends DashboardEntity implements ReportTarget, Exportable {
 
 	private Long id;
 	private Calculation<?> calculation;

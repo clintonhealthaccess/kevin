@@ -167,7 +167,7 @@ public class EnumOption extends Orderable<Ordering> implements Exportable, Impor
 	
 	@Override
 	public String toExportString() {
-		return "[" + Utils.formatExportCode(getId().toString()) + ", " + getValue() + "]";
+		return "[" + Utils.formatExportCode(getCode().toString()) + "]";
 	}
 	
 	@Override

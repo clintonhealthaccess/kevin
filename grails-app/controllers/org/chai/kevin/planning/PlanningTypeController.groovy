@@ -75,7 +75,8 @@ class PlanningTypeController extends AbstractEntityController {
 	}
 
 	def getEntityClass(){
-		return PlanningType.class;
+		//TODO return PlanningType.class;
+		return null;
 	}
 	
 	def bindParams(def entity) {

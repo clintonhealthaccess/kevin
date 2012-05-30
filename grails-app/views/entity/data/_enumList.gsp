@@ -2,7 +2,7 @@
 	<thead>
 		<tr>
 			<th/>
-			<g:sortableColumn property="code"  params="[q:q]" title="${message(code: 'entity.code.label')}" />
+			<g:sortableColumn property="code" params="[q:q]" title="${message(code: 'entity.code.label')}" />
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="entity.description.label"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'enumoption.label')]"/></th>

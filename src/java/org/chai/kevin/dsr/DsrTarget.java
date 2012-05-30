@@ -98,7 +98,7 @@ public class DsrTarget extends AbstractReportTarget implements Exportable, Impor
 	
 	@Override
 	public String toExportString() {
-		return "[" + Utils.formatExportCode(getId().toString()) + "]";
+		return "[" + Utils.formatExportCode(getCode().toString()) + "]";
 	}
 	
 	@Override

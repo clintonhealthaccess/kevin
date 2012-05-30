@@ -41,7 +41,7 @@ import org.chai.kevin.Translation;
 import org.chai.kevin.entity.export.Exportable;
 
 @MappedSuperclass
-public abstract class ReportEntity extends Orderable<Integer> implements Exportable {
+public abstract class ReportEntity extends Orderable<Integer> {
 
 	protected Integer order;
 	protected Translation names = new Translation();

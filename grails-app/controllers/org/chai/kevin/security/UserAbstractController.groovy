@@ -12,6 +12,7 @@ abstract class UserAbstractController extends AbstractEntityController {
 	}
 
 	def validateEntity(def entity) {
+		//TODO check for duplicate code
 		boolean valid = entity.validate() && params['cmd'].validate()
 		if (log.isDebugEnabled()) log.debug ("validation for command object ${params['cmd']}: ${params['cmd'].errors}}")
 		return valid;

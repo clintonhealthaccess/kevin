@@ -43,11 +43,14 @@ import java.util.Set;
 import java.util.zip.*;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.LanguageService;
+import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.EnumService;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.Value;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -66,6 +69,8 @@ public class Utils {
 	public final static String CODE_DELIMITER = "~";
 	public final static String CODE_PATTERN = 
 			CODE_DELIMITER + "[^" + CODE_DELIMITER + "]+" + CODE_DELIMITER;
+//	public final static String CODE_MISSING = "MISSING_CODE";
+	public final static String VALUE_NOT_EXPORTABLE = "VALUE_NOT_EXPORTABLE";	
 	
 	public static Set<String> split(String string) {
 		Set<String> result = new HashSet<String>();
@@ -178,8 +183,56 @@ public class Utils {
 			
 		return zipFile;
 	}
+	
+	public static File getZipFile(List<File> files, String filename) throws IOException {		
 		
+		File zipFile = File.createTempFile(filename, ZIP_FILE_EXTENSION);
+
+		ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile));
+				
+		try {
+			for(File file: files){
+				FileInputStream fileInputStream = new FileInputStream(file);
+			    ZipEntry zipEntry = new ZipEntry(file.getName());
+			    zipOutputStream.putNextEntry(zipEntry);
+			    
+			    IOUtils.copy(fileInputStream, zipOutputStream);
+			    zipOutputStream.closeEntry();	
+			}			
+		} catch (IOException e) {
+			throw e;
+		} finally {
+		    IOUtils.closeQuietly(zipOutputStream);
+		    IOUtils.closeQuietly(zipOutputStream);
+		}
+			
+		return zipFile;
+	}
+	
+	public static Class<?> isExportable(Class<?> clazz){
+		Class<?> exportableClazz = null;		
+		boolean isAssignable = Exportable.class.isAssignableFrom(clazz);				
+		Class<?>[] clazzInterfaces = clazz.getInterfaces();							
+		if(isAssignable && Arrays.asList(clazzInterfaces).contains(Exportable.class)){
+			exportableClazz = clazz;
+		}
+		return exportableClazz;
+	}						
+	
+	public static Class<?> isExportablePrimitive(Class<?> clazz){
+		Class<?> exportableClazz = null;		
+		if(clazz.isPrimitive() || ClassUtils.wrapperToPrimitive(clazz) != null){
+			exportableClazz = clazz;
+		}
+		return exportableClazz;
+	}
+	
 	public static String formatExportCode(String code){
+		//TODO relocate outer brackets to this method
+//		if(code == null || code.isEmpty()){
+//			code = CODE_MISSING;
+//		}
 		return CODE_DELIMITER + code + CODE_DELIMITER;
-	}	
+	}
+	
 }

@@ -72,9 +72,9 @@ class FctTargetController extends AbstractEntityController {
 		return FctTarget.class;
 	}
 	
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
+//	def validateEntity(def entity) {
+//		return entity.validate()
+//	}
 
 	def saveEntity(def entity) {
 		entity.save();
