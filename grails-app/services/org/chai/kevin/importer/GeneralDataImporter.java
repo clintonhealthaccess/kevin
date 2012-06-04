@@ -84,20 +84,20 @@ public class GeneralDataImporter extends Importer{
 			Map<String, String> rows = readFileAsMap.read(headers);
 			Map<DataLocation, Set<RawDataElement>> savedData = new HashMap<DataLocation, Set<RawDataElement>>();
 			
-			if(!Arrays.asList(headers).contains(CODE_HEADER) || !Arrays.asList(headers).contains(DATA_ELEMENT_HEADER) || !Arrays.asList(headers).contains(VALUE_HEADER))
+			if(!Arrays.asList(headers).contains(LOCATION_CODE_HEADER) || !Arrays.asList(headers).contains(DATA_HEADER) || !Arrays.asList(headers).contains(VALUE_HEADER))
 				manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(), Arrays.asList(headers).toString(),"import.error.message.unknowm.header"));
 			else{
 				
 				while (rows != null) {
-					if (log.isInfoEnabled()) log.info("starting import of line with code: " + rows.get(CODE_HEADER)+ " raw_data_element: "+ rows.get(DATA_ELEMENT_HEADER) + " data_value "+ rows.get(VALUE_HEADER));
+					if (log.isInfoEnabled()) log.info("starting import of line with code: " + rows.get(LOCATION_CODE_HEADER)+ " raw_data_element: "+ rows.get(DATA_HEADER) + " data_value "+ rows.get(VALUE_HEADER));
 					
 					Value value = null;
 					Set<String> attributes = new HashSet<String>();
 					Map<String, Object> map = new HashMap<String, Object>();
 					Map<String, Type> types = new HashMap<String, Type>();
 					
-					DataLocation dataEntity = locationService.findCalculationLocationByCode(rows.get(CODE_HEADER), DataLocation.class);
-					RawDataElement rawDataElement = dataService.getDataByCode(rows.get(DATA_ELEMENT_HEADER), RawDataElement.class);
+					DataLocation dataEntity = locationService.findCalculationLocationByCode(rows.get(LOCATION_CODE_HEADER), DataLocation.class);
+					RawDataElement rawDataElement = dataService.getDataByCode(rows.get(DATA_HEADER), RawDataElement.class);
 					RawDataElementValue rawDataElementValue = null;
 					
 					if (dataEntity != null && rawDataElement != null) {
@@ -145,8 +145,8 @@ public class GeneralDataImporter extends Importer{
 							manager.incrementNumberOfRowsSavedWithError(1);
 						manager.incrementNumberOfSavedRows();
 					} else {
-						if(dataEntity==null) manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.unknown.data.location"));
-						if(rawDataElement==null) manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(),DATA_ELEMENT_HEADER,"import.error.message.unknown.raw.data.element"));	
+						if(dataEntity==null) manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(),LOCATION_CODE_HEADER,"import.error.message.unknown.data.location"));
+						if(rawDataElement==null) manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(),DATA_HEADER,"import.error.message.unknown.raw.data.element"));	
 						manager.incrementNumberOfUnsavedRows();
 					}
 					

@@ -100,15 +100,14 @@ public class NormalizedDataImporter extends Importer {
 	 * Imports numberLinesToImport lines and then returns. Returns true when file has been read entirely.
 	 * 
 	 * @param fileName
-	 * @param reader
+	 * @param readFileAsMap
 	 * @param numberOfLinesToImport
 	 * @param sanitizer
-	 * @param readFileAsMap
 	 * @param headers
 	 * @param positions
 	 * @throws IOException
 	 */
-	private boolean importData(String fileName, Reader reader, Integer numberOfLinesToImport, ImportSanitizer sanitizer, ICsvMapReader readFileAsMap, String[] headers, Map<String, Integer> positions) throws IOException {
+	private boolean importData(String fileName,ICsvMapReader readFileAsMap,Integer numberOfLinesToImport, ImportSanitizer sanitizer, String[] headers, Map<String, Integer> positions) throws IOException {
 
 		DataLocation dataLocation=null;
 		RawDataElementValue rawDataElementValue= null;	
@@ -124,9 +123,9 @@ public class NormalizedDataImporter extends Importer {
 			sanitizer.setLineNumber(readFileAsMap.getLineNumber());
 			sanitizer.setNumberOfErrorInRows(0);
 			
-			if(log.isDebugEnabled()) log.debug("current facility code: "+values.get(CODE_HEADER));
+			if(log.isDebugEnabled()) log.debug("current facility code: "+values.get(LOCATION_CODE_HEADER));
 			
-			if (values.get(CODE_HEADER)!=null && !values.get(CODE_HEADER).equals(code)) {
+			if (values.get(LOCATION_CODE_HEADER)!=null && !values.get(LOCATION_CODE_HEADER).equals(code)) {
 				// either we are reading the first line and there is no current location
 				// or we change location
 				
@@ -141,14 +140,14 @@ public class NormalizedDataImporter extends Importer {
 				
 				// second we get the new location
 				// 1 update the current code
-				code = values.get(CODE_HEADER);
+				code = values.get(LOCATION_CODE_HEADER);
 				// 2 update and save the position	
 				if (positions.get(code) == null) positions.put(code, 0);
 				// 3 update the location
 				dataLocation = locationService.findCalculationLocationByCode(code, DataLocation.class);
 				// if the location is not found, we add an error
 				if (dataLocation == null) {
-					manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.unknown.location"));
+					manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(),LOCATION_CODE_HEADER,"import.error.message.unknown.location"));
 				} 
 				else {
 					// get the value associated to the new location
@@ -165,7 +164,7 @@ public class NormalizedDataImporter extends Importer {
 			else {
 				// read values from line and put into valueMap
 				for (String header : headers){
-					if (!header.equals(CODE_HEADER)){
+					if (!header.equals(LOCATION_CODE_HEADER)){
 						positionsValueMap.put("[" + positions.get(code) + "]."+ header, values.get(header));
 					}		
 				}
@@ -220,7 +219,7 @@ public class NormalizedDataImporter extends Importer {
 		
 		for (String header : headers)  { 
 			try {
-				if(!header.equals(CODE_HEADER))
+				if(!header.equals(LOCATION_CODE_HEADER))
 					types.put("[_]."+header,rawDataElement.getType().getType("[_]."+header));
 			} catch(IllegalArgumentException e){
 				if(log.isWarnEnabled()) log.warn("Column type not found for header"+header, e);
@@ -241,7 +240,7 @@ public class NormalizedDataImporter extends Importer {
 					sessionFactory.getCurrentSession().refresh(period);
 					
 					try {
-						return importData(fileName, reader, NUMBER_OF_LINES_TO_IMPORT, sanitizer, readFileAsMap, headers, positions);
+						return importData(fileName,readFileAsMap,NUMBER_OF_LINES_TO_IMPORT, sanitizer,  headers, positions);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

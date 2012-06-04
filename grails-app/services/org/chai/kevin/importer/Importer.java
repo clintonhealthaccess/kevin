@@ -57,8 +57,8 @@ import org.chai.kevin.value.ValueService;
 public abstract class Importer {
 	
 	private static final Log log = LogFactory.getLog(Importer.class);
-	static final String CODE_HEADER = "code";
-	static final String DATA_ELEMENT_HEADER = "raw_data_element";
+	static final String LOCATION_CODE_HEADER = "code";
+	static final String DATA_HEADER = "data";
 	static final String VALUE_HEADER = "data_value";
 	
 	protected ValueService valueService;
