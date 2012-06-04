@@ -319,7 +319,7 @@ class Initializer {
 						"instances": Type.TYPE_NUMBER(),
 						"responsible": Type.TYPE_STRING(),
 						"new_structure": Type.TYPE_BOOL(),
-						"test": Type.TYPE_LIST(Type.TYPE_NUMBER()),
+						"test_test": Type.TYPE_LIST(Type.TYPE_NUMBER()),
 					]),
 					"staffing": Type.TYPE_MAP([
 						"nurse": Type.TYPE_MAP([
@@ -1189,8 +1189,8 @@ class Initializer {
 			
 			def validationRule2 = new FormValidationRule(
 				formElement: formElement,
-				prefix: '[_].basic.test[_]',
-				expression: "\$"+formElement.id+"[_].basic.test[_] > 100",
+				prefix: '[_].basic.test_test[_]',
+				expression: "\$"+formElement.id+"[_].basic.test_test[_] > 100",
 				messages: j(["en":"Validation error"]),
 				dependencies: [],
 				typeCodeString: "District Hospital,Health Center",
