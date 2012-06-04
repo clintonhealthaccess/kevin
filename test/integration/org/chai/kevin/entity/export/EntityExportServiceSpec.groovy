@@ -1,6 +1,8 @@
 package org.chai.kevin.entity.export
 
 import java.lang.reflect.Field
+import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.IntegrationTests
 import org.chai.kevin.Translation
@@ -164,7 +166,8 @@ class EntityExportServiceSpec extends IntegrationTests {
 	
 	def "test entity fields are exportable"(){
 		when:
-		def ie = new IsExportableEntity("ieCode1", 1, new Date())		 			
+		def today =new Date()
+		def ie = new IsExportableEntity("ieCode1", 1, today)		 			
 		List<Field> fields = new ArrayList<Field>();		
 		Class<?> headerClass = ie.class;
 		while(headerClass != null && headerClass != Object.class){
@@ -180,7 +183,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		then:
 		entityData[0].equals("ieCode1")
 		entityData[1].equals("1")
-		entityData[2].equals("30-05-2012")
+		entityData[2].equals(Utils.formatDate(today))
 		entityData[3].equals("")
 		
 		when:
@@ -190,7 +193,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		then:
 		entityData[0].equals("ieCode1")
 		entityData[1].equals("1")
-		entityData[2].equals("30-05-2012")
+		entityData[2].equals(Utils.formatDate(today))
 		entityData[3].equals(ie.trans.toExportString())
 	}	
 	
