@@ -87,28 +87,34 @@ class DataController extends AbstractController {
 	// TODO move to DataElementController
 	def dataElementValueList = {
 		adaptParamsForList()
+		
 		def data = dataService.getData(params.int('data'), DataElement.class)
 		if (data == null) {
 			response.sendError(404)
 		}
 		else {
-			List<Period> periods = []
-			if (params.get('period')) periods << Period.get(params.int('period'))
-			else periods.addAll Period.list([cache: true])
+			List<Period> periods = Period.list([cache: true])
+			def period = Period.get(params.int('period'))
+			if (period == null) period = Period.list()[Period.count() - 1]
 			
-			Map<Period, DataValue> valueMap = new HashMap<Period, DataValue>()
-			periods.each { period ->
-				valueMap.put(period, valueService.listDataElementValues(
+			def values = []
+			def valueCount = 0
+			if (period != null) {
+				 values.addAll(valueService.listDataElementValues(
 					data,
-					DataLocation.get(params.int('location')),
-					period
+					null,
+					period,
+					params
 				))
+				valueCount = valueService.countDataElementValues(data, null, period)
 			}
 			
 			render (view: '/entity/list', model:[
 				data: data,
 				periods: periods,
-				entities: valueMap,
+				selectedPeriod: period,
+				entities: values,
+				entityCount: valueCount,
 				template: "value/data"+data.class.simpleName+"List",
 				code: 'dataelementvalue.label',
 				search: true

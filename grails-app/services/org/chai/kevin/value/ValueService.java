@@ -29,8 +29,10 @@ package org.chai.kevin.value;
  */
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -49,6 +51,7 @@ import org.chai.kevin.location.DataLocationType;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,7 +76,7 @@ public class ValueService {
 	@Transactional(readOnly=true)
 	public <T extends DataValue> T getDataElementValue(DataElement<T> data, DataLocation dataLocation, Period period) {
 		if (log.isDebugEnabled()) log.debug("getDataElementValue(data="+data+", period="+period+", dataLocation="+dataLocation+")");
-		List<T> values = listDataElementValues(data, dataLocation, period);
+		List<T> values = listDataElementValues(data, dataLocation, period, new HashMap<String, Object>());
 		T result = null;
 		if (values.size() > 0) result = values.get(0);
 		if (log.isDebugEnabled()) log.debug("getDataElementValue(...)="+result);
@@ -83,15 +86,36 @@ public class ValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=true)
-	public <T extends DataValue> List<T> listDataElementValues(DataElement<T> data, DataLocation dataLocation, Period period) {
+	public <T extends DataValue> List<T> listDataElementValues(DataElement<T> data, DataLocation dataLocation, Period period, Map<String, Object> params) {
 		if (log.isDebugEnabled()) log.debug("listDataElementValues(data="+data+", period="+period+", dataLocation="+dataLocation+")");
+		Criteria criteria = getListCriteria(data, dataLocation, period);
+		
+		criteria.createAlias("location", "location");
+		criteria.addOrder(Order.asc("location.code"));
+		
+		if (params.get("offset") != null) criteria.setFirstResult((Integer)params.get("offset"));
+		if (params.get("max") != null) criteria.setMaxResults((Integer)params.get("max"));
+		
+		List<T> result = criteria.list();
+		if (log.isDebugEnabled()) log.debug("listDataElementValues(...)=");
+		return result;
+	}
+	
+	public <T extends DataValue> Long countDataElementValues(DataElement<T> data, DataLocation dataLocation, Period period) {
+		if (log.isDebugEnabled()) log.debug("listDataElementValues(data="+data+", period="+period+", dataLocation="+dataLocation+")");
+		Criteria criteria = getListCriteria(data, dataLocation, period);
+		
+		Long result = (Long)criteria.setProjection(Projections.count("id")).uniqueResult();
+		if (log.isDebugEnabled()) log.debug("listDataElementValues(...)=");
+		return result;
+	}
+	
+	private <T extends DataValue> Criteria getListCriteria(DataElement<T> data, DataLocation dataLocation, Period period) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(data.getValueClass());
 		criteria.add(Restrictions.eq("data", data));
 		if (period != null) criteria.add(Restrictions.eq("period", period));
 		if (dataLocation != null) criteria.add(Restrictions.eq("location", dataLocation));
-		List<T> result = criteria.list();
-		if (log.isDebugEnabled()) log.debug("listDataElementValues(...)=");
-		return result;
+		return criteria;
 	}
 	
 	@Transactional(readOnly=true)
