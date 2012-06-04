@@ -137,86 +137,54 @@ environments {
 security.shiro.authc.required = false
 
 // log4j configuration
-//environments {
-//	development {
+log4j = {
+	// Example of changing the log pattern for the default console
+	// appender:
+	//
+	//appenders {
+	//    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
+	//}
+
+	error  'grails.app.services.org.grails.plugin.resource',
+		   'grails.app.resourceMappers.org.grails.plugin.resource',
+		   'grails.app.taglib.org.grails.plugin.resource',
+		   'grails.app.resourceMappers.org.grails.plugin.cachedresources',
+		   'grails.app.services.grails.plugin.springcache',
+		   'grails.plugin.springcache'
+	
+	error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
+		   'org.codehaus.groovy.grails.web.pages', //  GSP
+		   'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+		   'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+		   'org.codehaus.groovy.grails.web.mapping', // URL mapping
+		   'org.codehaus.groovy.grails.commons', // core / classloading
+		   'org.codehaus.groovy.grails.plugins', // plugins
+		   'net.sf.ehcache.hibernate',
+		   'grails.app.services.org.chai.kevin.survey.SurveyElementService',
+		   'org.chai.kevin.JaqlService',
+		   'org.chai.kevin.ExpressionService',
+		   'org.springframework',
+		   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+		   'org.hibernate'
+
+    info   'org.chai.kevin.importer.GeneralDataImporter',
+	       'org.chai.kevin.importer.NormalizedDataImporter',
+		   'org.chai.kevin.importer.Importer',
+		   'org.chai.kevin.value.ValueService'
+		   				   
+	debug  'grails.app',
+		   'org.chai.kevin'
+}
+
+environments {
+	test {
 		log4j = {
-			// Example of changing the log pattern for the default console
-			// appender:
-			//
-			//appenders {
-			//    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-			//}
-		
-			error  'grails.app.services.org.grails.plugin.resource',
-				   'grails.app.resourceMappers.org.grails.plugin.resource',
-				   'grails.app.taglib.org.grails.plugin.resource',
-				   'grails.app.resourceMappers.org.grails.plugin.cachedresources',
-				   'grails.app.services.grails.plugin.springcache',
-				   'grails.plugin.springcache'
-			
-			error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
-				   'org.codehaus.groovy.grails.web.pages', //  GSP
-				   'org.codehaus.groovy.grails.web.sitemesh', //  layouts
-				   'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-				   'org.codehaus.groovy.grails.web.mapping', // URL mapping
-				   'org.codehaus.groovy.grails.commons', // core / classloading
-				   'org.codehaus.groovy.grails.plugins', // plugins
-				   'net.sf.ehcache.hibernate',
-				   'grails.app.services.org.chai.kevin.survey.SurveyElementService',
-				   'org.chai.kevin.JaqlService',
-				   'org.chai.kevin.ExpressionService',
-				   'org.springframework',
-				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-				   'org.hibernate'
-
-		    info   'org.chai.kevin.importer.GeneralDataImporter',
-			       'org.chai.kevin.importer.NormalizedDataImporter',
-				   'org.chai.kevin.importer.Importer',
-				   'org.chai.kevin.value.ValueService'
-				   				   
-			debug  'grails.app',
-				   'org.chai.kevin'
-
+			root {
+				error
+			}	
 		}
-//	}
-//	test {
-//		log4j = {
-//			root {
-//				error
-//			}	
-//		}
-//	}
-//}
-//	production {
-//		log4j = {
-//			appenders {
-//				rollingFile name: "rolling",
-//				maxFileSize: 1024,
-//				file: "/var/log/kevin.log"
-//			}
-//			
-//			root {
-//				error 'rolling'
-//			}
-//			
-//			debug  'org.codehaus.groovy.grails.web.servlet',  //  controllers
-//				   'org.codehaus.groovy.grails.web.pages', //  GSP
-//				   'org.codehaus.groovy.grails.web.sitemesh', //  layouts
-//				   'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-//				   'org.codehaus.groovy.grails.web.mapping', // URL mapping
-//				   'org.codehaus.groovy.grails.commons', // core / classloading
-//				   'org.codehaus.groovy.grails.plugins', // plugins
-//				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-//				   'org.springframework',
-//				   'org.hibernate',
-//				   'net.sf.ehcache.hibernate'
-//				  
-//			debug  'grails.app',
-//				   'org.chai.kevin'
-//		}
-//	}
-//}
-
+	}
+}
 
 //cloudbees.api.url='https://api.cloudbees.com/api'
 //cloudbees.api.key=System.properties['bees.key']
