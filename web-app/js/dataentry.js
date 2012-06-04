@@ -128,7 +128,7 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 				$.each(data.elements, function(elementIndex, element) {
 					$.each(element.nullPrefixes, function(prefixIndex, prefix) {
 						var elementToCheck = escape('#element-'+element.id+'-'+prefix);
-						if (!$(elementToCheck).hasClass('ajax-in-process') && !$(elementToCheck).hasClass('ajax-error')) {
+						if (!$(elementToCheck).hasClass('ajax-in-process') && !$(elementToCheck).hasClass('ajax-error') && !$(elementToCheck).find('textarea, input, select').is(':focus')) {
 							$(elementToCheck).find('textarea, input, select').attr('value', '');
 						}
 					});
