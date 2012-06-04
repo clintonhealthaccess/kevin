@@ -42,6 +42,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
@@ -52,7 +53,7 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "SurveySimpleQuestion")
 @Table(name = "dhsst_survey_single_question")
-public class SurveySimpleQuestion extends SurveyQuestion {
+public class SurveySimpleQuestion extends SurveyQuestion implements Exportable {
 
 	private SurveyElement surveyElement;
 
@@ -124,4 +125,8 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 		return "SurveySimpleQuestion[getId()=" + getId() + ", getNames()=" + getNames() + "]";
 	}
 
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
+	}
 }

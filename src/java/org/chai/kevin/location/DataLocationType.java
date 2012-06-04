@@ -11,13 +11,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.chai.kevin.Translation;
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="DataLocationType")
 @Table(name="dhsst_location_data_location_type")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DataLocationType {
+public class DataLocationType implements Exportable {
 
 	private Long id;
 	private String code;
@@ -82,6 +84,11 @@ public class DataLocationType {
 	@Override
 	public String toString() {
 		return "DataLocationType[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 	
 }

@@ -37,9 +37,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Period;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.ExpressionService.StatusValuePair;
 import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.SumValue;
@@ -81,6 +83,11 @@ public class Sum extends Calculation<SumPartialValue> {
 	public String toString() {
 		return "Sum[getId()=" + getId() + ", getCode()="
 				+ getCode() + ", getExpression()='" + getExpression() + "']";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 
 }

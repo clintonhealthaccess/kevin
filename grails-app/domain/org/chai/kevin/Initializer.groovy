@@ -1177,7 +1177,7 @@ class Initializer {
 				]
 			).save(failOnError: true)
 		
-			def validationRule = new FormValidationRule(
+			def validationRule1 = new FormValidationRule(
 				formElement: formElement,
 				prefix: '[_].basic.instances',
 				expression: "\$"+formElement.id+"[_].basic.instances > 100",
@@ -1187,7 +1187,18 @@ class Initializer {
 				allowOutlier: false
 			).save(failOnError: true)
 			
-		formElement.addValidationRule(validationRule)
+			def validationRule2 = new FormValidationRule(
+				formElement: formElement,
+				prefix: '[_].basic.test[_]',
+				expression: "\$"+formElement.id+"[_].basic.test[_] > 100",
+				messages: j(["en":"Validation error"]),
+				dependencies: [],
+				typeCodeString: "District Hospital,Health Center",
+				allowOutlier: false
+			).save(failOnError: true)
+			
+		formElement.addValidationRule(validationRule1)
+		formElement.addValidationRule(validationRule2)
 		formElement.save(failOnError: true)
 		
 		// add validation and skip rules

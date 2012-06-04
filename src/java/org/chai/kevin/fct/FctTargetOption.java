@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.Sum;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
@@ -20,7 +21,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity(name = "FctTargetOption")
 @Table(name = "dhsst_fct_target_option")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class FctTargetOption extends ReportEntity {
+public class FctTargetOption extends ReportEntity implements Exportable {
 
 	private Long id;
 	private Sum sum;
@@ -67,5 +68,10 @@ public class FctTargetOption extends ReportEntity {
 	@Override
 	public String toString() {
 		return "FctTargetOption[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 }

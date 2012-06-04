@@ -16,7 +16,7 @@ class LocationLevelController extends AbstractEntityController {
 		[locationLevel: entity]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return LocationLevel.class;
 	}
 	
@@ -54,7 +54,8 @@ class LocationLevelController extends AbstractEntityController {
 			template:"location/locationLevelList",
 			entities: locationLevels,
 			entityCount: LocationLevel.count(),
-			code: getLabel()
+			code: getLabel(),
+			entityClass: getEntityClass()
 		])
 	}
 	

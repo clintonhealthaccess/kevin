@@ -50,6 +50,7 @@ import org.chai.kevin.value.DataValue;
  *
  */
 class ExporterController extends AbstractEntityController {
+	
 	def dataLocationService;
 	def exporterService;
 	def languageService;
@@ -112,7 +113,8 @@ class ExporterController extends AbstractEntityController {
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
-	def exportEntity() {
+	
+	def getEntityClass() {
 		return Exporter.class;
 	}
 	
@@ -147,8 +149,7 @@ class ExporterController extends AbstractEntityController {
 		if(params['method'].equals("search")) search()
 		else list()	
 	}
-	
-	
+		
 	def list={
 		adaptParamsForList()
 		List<Exporter> exports = exporterService.getExporters("date","desc");

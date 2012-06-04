@@ -24,6 +24,7 @@ import javax.persistence.Transient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Translation;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.util.Utils;
@@ -35,6 +36,7 @@ public class FormValidationRule {
 	private final static Log log = LogFactory.getLog(FormValidationRule.class);
 	
 	private Long id;
+	private String code;
 	
 	private FormElement formElement;
 	private String prefix = "";
@@ -192,4 +194,17 @@ public class FormValidationRule {
 	public String toString() {
 		return "FormValidationRule[getId()=" + getId() + ", getExpression()='" + getExpression() + "']";
 		}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+//	@Override
+//	public String toExportString() {
+//		return "[" + Utils.formatExportCode(getCode()) + "]";
+//	}
 }

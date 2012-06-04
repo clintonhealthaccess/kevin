@@ -68,13 +68,13 @@ class FctTargetController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return FctTarget.class;
 	}
 	
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
+//	def validateEntity(def entity) {
+//		return entity.validate()
+//	}
 
 	def saveEntity(def entity) {
 		entity.save();
@@ -122,7 +122,8 @@ class FctTargetController extends AbstractEntityController {
 			entities: targets,
 			template: "fct/targetList",
 			code: getLabel(),
-			entityCount: FctTarget.count()
+			entityCount: FctTarget.count(),
+			entityClass: getEntityClass()
 		])
 	}
 	

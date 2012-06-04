@@ -22,7 +22,8 @@ public class SurveyCopyService {
 	private LanguageService languageService;
 	
 	@Transactional(readOnly=false)
-	public SurveyCopy<Survey> copySurvey(Survey survey) {
+	public SurveyCopy<Survey> copySurvey(Survey survey) {		
+		
 		CompleteSurveyCloner cloner = new CompleteSurveyCloner(survey);
 		cloner.cloneTree();
 		sessionFactory.getCurrentSession().save(cloner.getSurvey());

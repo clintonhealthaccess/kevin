@@ -2,6 +2,7 @@
 	<thead>
 		<tr>
 			<th/>
+			<th><g:message code="entity.code.label"/></th>
 			<th><g:message code="survey.question.label"/></th>
 			<th><g:message code="survey.question.type.label"/></th>
 			<th><g:message code="entity.datalocationtype.label"/></th>
@@ -25,6 +26,7 @@
 						</li>
 					</ul>
 				</td>
+				<td>${question.code}</td>
 				<td><a title="Question" href="#" class="cluetip"
 					rel="${createLink(controller:question.getType().getTemplate(), action:'getDescription', params:[question: question.id])}"
 					onclick="return false;"><g:stripHtml field="${i18n(field: question.names)}" chars="100"/></a></td>

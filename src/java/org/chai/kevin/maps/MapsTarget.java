@@ -36,11 +36,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.reports.ReportEntity;
+import org.chai.kevin.util.Utils;
 
 @Entity(name="MapsTarget")
 @Table(name="dhsst_maps_target")
-public class MapsTarget extends ReportEntity {
+public class MapsTarget extends ReportEntity implements Exportable {
 
 	private Long id;
 	private Calculation<?> calculation;
@@ -71,6 +73,11 @@ public class MapsTarget extends ReportEntity {
 	
 	public void setMaxValue(Double maxValue) {
 		this.maxValue = maxValue;
+	}
+	
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 	
 }

@@ -59,7 +59,7 @@ class ReportProgramController extends AbstractEntityController{
 		[ program: entity, programs: ReportProgram.list() ]
 	}
 	
-	def exportEntity(){
+	def getEntityClass(){
 		return ReportProgram.class;
 	}
 	
@@ -81,7 +81,8 @@ class ReportProgramController extends AbstractEntityController{
 			entities: programs,
 			template: "reports/programList",
 			code: getLabel(),
-			entityCount: ReportProgram.count()
+			entityCount: ReportProgram.count(),
+			entityClass: getEntityClass()
 		])
 	}
 }

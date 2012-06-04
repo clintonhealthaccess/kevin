@@ -70,8 +70,9 @@ class FormValidationRuleController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
-		return FormValidationRule.class;
+	def getEntityClass(){
+		//TODO return FormValidationRule.class;
+		return null;
 	}
 	
 	def saveEntity(def entity) {
@@ -120,7 +121,8 @@ class FormValidationRuleController extends AbstractEntityController {
 				template:"form/validationRuleList",
 				entities: validationRules.subList(params['offset'], max),
 				entityCount: validationRules.size(),
-				code: getLabel()
+				code: getLabel(),
+				entityClass: getEntityClass()
 			])
 		}
 	}

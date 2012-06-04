@@ -11,6 +11,8 @@
 		<g:i18nTextarea name="names" bean="${option}" value="${option.names}" label="${message(code:'entity.name.label')}" field="names" height="100"  width="300" maxHeight="100" />
 		<g:i18nInput name="order" label="${message(code:'entity.order.label')}" bean="${option}" value="${option.order}" field="order"/>
 		
+		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${option}" field="code" />
+		
 		<g:input name="value" label="${message(code:'enumoption.value.label')}" bean="${option}" field="value"/>
 		
 		<div class="row">

@@ -37,6 +37,7 @@ public class FormSkipRule {
 	private final static Log log = LogFactory.getLog(FormSkipRule.class);
 	
 	private Long id;
+	private String code;
 	private String expression;
 	private Translation descriptions = new Translation();
 	private Map<FormElement, String> skippedFormElements = new HashMap<FormElement, String>();
@@ -141,5 +142,13 @@ public class FormSkipRule {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+	
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 }

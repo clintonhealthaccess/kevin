@@ -1,3 +1,4 @@
+<%@ page import="org.apache.shiro.SecurityUtils" %>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -19,6 +20,10 @@
 		    	<g:render template="/templates/help" model="[content: message(code:'planning.new.help')]"/>
 					
 				<div id="questions">
+					<shiro:hasPermission permission="admin">
+						<div class="right"><a href="#" onclick="$('.admin-hint').toggle();return false;">Toggle element information</a></div>
+					</shiro:hasPermission>
+				
 					<g:form url="[controller:'editPlanning', action:'save', params: [location: location.id, planningType: planningType.id, targetURI: targetURI]]">
 		  				<input class="js_always-send" type="hidden" name="lineNumber" value="${planningEntry.lineNumber}"/>
 		
@@ -44,7 +49,8 @@
 										validatable: planningEntry.validatable,
 										
 										readonly: readonly,
-										enums: planningEntry.enums
+										enums: planningEntry.enums,
+										showHints: SecurityUtils.subject.isPermitted('admin')
 									]"/>
 									
 									<div class="adv-aside help-container">

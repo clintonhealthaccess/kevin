@@ -79,7 +79,7 @@ class RawDataElementController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return RawDataElement.class;
 	}
 		
@@ -95,6 +95,7 @@ class RawDataElementController extends AbstractEntityController {
 	}
 
 	def validateEntity(def entity) {
+		//TODO check for duplicate code
 		boolean valid = entity.validate()
 		if (entity.id != null && !params['oldType'].equals(new Type(params['type.jsonValue'])) && valueService.getNumberOfValues(entity) != 0) {
 			// error if types are different
@@ -166,7 +167,8 @@ class RawDataElementController extends AbstractEntityController {
 			entities: rawDataElements,
 			template: "data/rawDataElementList",
 			code: getLabel(),
-			entityCount: RawDataElement.count()
+			entityCount: RawDataElement.count(),
+			entityClass: getEntityClass()
 		])
 	}
 

@@ -3,6 +3,7 @@
 	<thead>
 		<tr>
 			<th/>
+			<th><g:message code="entity.code.label"/></th>
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="survey.active.label"/></th>
 			<th><g:message code="entity.description.label"/></th>
@@ -28,6 +29,7 @@
 						</li>
 					</ul>
 				</td>
+				<td>${survey.code}</td>
 				<td><g:i18n field="${survey.names}" /></td>
 				<td>${survey?.active?'\u2713':''}</td>
 				<td><g:i18n field="${survey.descriptions}" /></td>

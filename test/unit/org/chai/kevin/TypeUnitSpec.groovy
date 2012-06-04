@@ -499,7 +499,7 @@ public class TypeUnitSpec extends UnitSpec {
 		value = new Value("{\"value\": [{\"value\":10}, {\"value\":11}]}")
 		strings = ["values[_]"]
 		list = new HashSet();
-		type.getCombinations(value, strings, list, "values")
+		type.getCombinations(value, strings, list, "values", "values")
 		
 		then:
 		list.containsAll([["values[0]"],["values[1]"]])
@@ -509,10 +509,31 @@ public class TypeUnitSpec extends UnitSpec {
 		value = new Value("{\"value\":10}");
 		strings = [""]
 		list = new HashSet();
-		type.getCombinations(value, strings, list, "")
+		type.getCombinations(value, strings, list, "", "")
 		
 		then:
 		list.containsAll([[""]])
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		value = Value.VALUE_LIST([Value.VALUE_LIST([Value.VALUE_NUMBER(1), Value.VALUE_NUMBER(1)])])
+		strings = ["[_][_]"]
+		list = new HashSet();
+		type.getCombinations(value, strings, list, "", "")
+		
+		then:
+		list.containsAll([["[0][0]"], ["[0][1]"]])
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["test": Type.TYPE_NUMBER()]))
+		value = Value.VALUE_LIST([Value.VALUE_MAP(["test":Value.VALUE_NUMBER(1)])])
+		strings = ["[_].test"]
+		list = new HashSet();
+		type.getCombinations(value, strings, list, "", "")
+		
+		then:
+		list.containsAll([["[0].test"]])
+		
 	}
 	
 	def "test generic prefix for merge value from map"() {
@@ -960,6 +981,12 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		then:
 		type.getType("[_].key_test[_]").equals(Type.TYPE_NUMBER())
+		
+		when:
+		type = Type.TYPE_MAP(["key": Type.TYPE_NUMBER(), 'key_test': Type.TYPE_LIST(Type.TYPE_NUMBER())])
+		
+		then:
+		type.getType(".key_test[0]").equals(Type.TYPE_NUMBER())
 	}
 	
 	def "get displayed value"() {

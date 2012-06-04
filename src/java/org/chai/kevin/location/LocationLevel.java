@@ -16,13 +16,15 @@ import javax.persistence.Table;
 
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="LocationLevel")
 @Table(name="dhsst_location_location_level")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class LocationLevel extends Orderable<Integer> {
+public class LocationLevel extends Orderable<Integer> implements Exportable {
 
 	private Long id;
 	private String code;
@@ -109,6 +111,11 @@ public class LocationLevel extends Orderable<Integer> {
 	@Override
 	public String toString() {
 		return "LocationLevel[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 	
 }

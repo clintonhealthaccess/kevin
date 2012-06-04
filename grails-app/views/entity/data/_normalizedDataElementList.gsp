@@ -4,9 +4,9 @@
   		<tr>
   			<th/>
   			<th><g:message code="entity.id.label"/></th>
+  			<th><g:message code="entity.code.label"/></th>
   			<th><g:message code="entity.name.label"/></th>
   			<th><g:message code="entity.type.label"/></th>
-  			<th><g:message code="entity.code.label"/></th>
   			<th><g:message code="normalizeddataelement.lastrefreshed.label"/></th>
   			<th><g:message code="normalizeddataelement.lastvaluechanged.label"/></th>
   			<th><g:message code="entity.list.manage.label"/></th>
@@ -26,11 +26,11 @@
   		           	</ul>
   				</td>
   				<td>${normalizedDataElement.id}</td>
+  				<td>${normalizedDataElement.code}</td>  				
   				<td class="data-element-explainer" data-data="${normalizedDataElement.id}">
   					<a href="${createLink(controller:'normalizedDataElement', action:'getExplainer', params:[id: normalizedDataElement.id])}"><g:i18n field="${normalizedDataElement.names}"/></a>
   				</td>
   				<td><g:toHtml value="${normalizedDataElement.type.getDisplayedValue(2, 2)}"/></td>
-  				<td>${normalizedDataElement.code}</td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${normalizedDataElement.refreshed}"/></td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${normalizedDataElement.lastValueChanged}"/></td>
   				<td>

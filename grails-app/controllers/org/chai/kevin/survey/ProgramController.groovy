@@ -63,7 +63,7 @@ class ProgramController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return SurveyProgram.class;
 	}
 	
@@ -93,7 +93,8 @@ class ProgramController extends AbstractEntityController {
 				survey:survey,
 				entities: programs.subList(params['offset'], max),
 				entityCount: programs.size(),
-				code: getLabel()
+				code: getLabel(),
+				entityClass: getEntityClass()
 			])
 		}
 	}

@@ -16,11 +16,12 @@ import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.json.JSONValue;
 import org.chai.kevin.util.Utils;
 
 @Embeddable
-public class Value extends JSONValue {
+public class Value extends JSONValue implements Exportable {
 	
 	public static final String MAP_KEY = "map_key";
 	public static final String MAP_VALUE = "map_value";
@@ -220,4 +221,8 @@ public class Value extends JSONValue {
 		return new Value("{\""+VALUE_STRING+"\":["+json.toString()+"]}");
 	}
 	
+	@Override
+	public String toExportString() {
+		return getJsonValue();
+	}
 }

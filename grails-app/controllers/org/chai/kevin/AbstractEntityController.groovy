@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.entity.EntityExportService
+import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 abstract class AbstractEntityController extends AbstractController {		
@@ -99,15 +100,26 @@ abstract class AbstractEntityController extends AbstractController {
 	}
 			
 	def saveWithoutTokenCheck = {
-		if (log.isDebugEnabled()) log.debug ('saving entity with params:'+params)
+		if (log.isDebugEnabled()) log.debug ('saving entity with params:'+params)		
 		
 		def entity = getEntity(params.int('id'));
 		if (entity == null) {
 			entity = createEntity()
 		}
+		
 		bindParams(entity)
 		if (log.isDebugEnabled()) log.debug('bound params, entity: '+entity)
-		if (!validateEntity(entity)) {
+		
+		def codeIsValid = true
+		if (params.containsKey("code")){
+			String code = (String) params.get("code");
+			codeIsValid = validateCode(entity, code)
+			if(!codeIsValid){
+				entity.errors.rejectValue("code","entity.code.notunique", "Code needs to be unique.}");
+			}
+		}
+					
+		if (!codeIsValid || !validateEntity(entity)) {
 			if (log.isInfoEnabled()) log.info ("validation error in ${entity}: ${entity.errors}}")
 			
 			def model = getModel(entity)
@@ -127,6 +139,18 @@ abstract class AbstractEntityController extends AbstractController {
 		return entity.validate()
 	}
 
+	def validateCode(def entity, def code){
+		if(code != null){			
+			def entityWithCode = entity.getClass().findByCode(code);
+			if(entityWithCode != null){
+				if(entityWithCode.id != entity.id){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	def saveEntity(def entity) {
 		entity.save()
 	}
@@ -167,6 +191,6 @@ abstract class AbstractEntityController extends AbstractController {
 	
 	protected abstract def getLabel();
 	
-	protected abstract def exportEntity();
+	protected abstract def getEntityClass();
 	
 }

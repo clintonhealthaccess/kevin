@@ -56,7 +56,7 @@ class DsrTargetCategoryController extends AbstractEntityController {
 		[ category: entity ]
 	}
 	
-	def exportEntity(){
+	def getEntityClass(){
 		return DsrTargetCategory.class;
 	}
 	
@@ -101,7 +101,8 @@ class DsrTargetCategoryController extends AbstractEntityController {
 			entities: categories,
 			template: "dsr/targetCategoryList",
 			code: getLabel(),
-			entityCount: DsrTargetCategory.count()
+			entityCount: DsrTargetCategory.count(),
+			entityClass: getEntityClass()
 		])
 	}
 

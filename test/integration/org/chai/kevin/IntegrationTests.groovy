@@ -110,6 +110,9 @@ abstract class IntegrationTests extends IntegrationSpec {
 	
 	static String PROGRAM3 = "Program3"
 	
+	def static inc = 0;
+	def static code = ""+inc;
+	
 	def setup() {
 		// using cache.use_second_level_cache = false in test mode doesn't work so
 		// we flush the cache after each test
@@ -143,7 +146,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 		
 	static def newPeriod() {
-		def period = new Period(startDate: mar01, endDate: mar31)
+		def period = new Period(code: "2005", startDate: mar01, endDate: mar31)
 		return period.save(failOnError: true)
 	} 
 	
@@ -200,15 +203,15 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}	
 			
 	static def newUser(def username, def uuid) {
-		return new User(username: username, permissionString: '', passwordHash:'', uuid: uuid).save(failOnError: true)
+		return new User(code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid).save(failOnError: true)
 	}
 	
 	static def newSurveyUser(def username, def uuid, def dataLocationId) {
-		return new DataUser(username: username, landingPage: HomeController.SURVEY_LANDING_PAGE, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId).save(failOnError: true)
+		return new DataUser(code: username, username: username, landingPage: HomeController.SURVEY_LANDING_PAGE, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId).save(failOnError: true)
 	}
 	
 	static def newPlanningUser(def username, def uuid, def dataLocationId) {
-		return new DataUser(username: username, landingPage: HomeController.PLANNING_LANDING_PAGE, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId).save(failOnError: true)
+		return new DataUser(code: username, username: username, landingPage: HomeController.PLANNING_LANDING_PAGE, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId).save(failOnError: true)
 	}
 	
 	static def newReportProgram(def code) {
@@ -321,7 +324,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static EnumOption newEnumOption(def names, Enum enume, def value, def order) {
-		def enumOption = new EnumOption(names: names, enume: enume, value: value, order: order).save(failOnError: true)
+		def enumOption = new EnumOption(code: enume.code+value, names: names, enume: enume, value: value, order: order).save(failOnError: true)
 		enume.addEnumOption(enumOption)
 		enume.save(failOnError: true)
 		return enumOption
@@ -332,7 +335,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def static newFormValidationRule(def element, def prefix, def types, def expression, boolean allowOutlier, def dependencies = []) {
-		def validationRule = new FormValidationRule(expression: expression, prefix: prefix, messages: [:], formElement: element, typeCodeString: Utils.unsplit(types), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
+		inc++
+		def validationRule = new FormValidationRule(code: code, expression: expression, prefix: prefix, messages: [:], formElement: element, typeCodeString: Utils.unsplit(types), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
 		element.addValidationRule(validationRule)
 		element.save(failOnError: true)
 		return validationRule
@@ -343,11 +347,13 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def static newFormElement(def dataElement) {
-		return new FormElement(dataElement: dataElement).save(failOnError: true)
+		inc++
+		return new FormElement(code: code, dataElement: dataElement).save(failOnError: true)
 	}
 	
 	def static newFormSkipRule(def expression, def skippedElements) {
-		return new FormSkipRule(expression: expression, skippedFormElements: skippedElements).save(failOnError: true)
+		inc++
+		return new FormSkipRule(code: code, expression: expression, skippedFormElements: skippedElements).save(failOnError: true)
 	}
 
 	def refresh() {

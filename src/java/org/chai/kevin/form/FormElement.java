@@ -26,8 +26,10 @@ import org.chai.kevin.Translation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValuePredicate;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
@@ -35,9 +37,10 @@ import org.chai.kevin.value.ValueService;
 @Entity(name = "FormElement")
 @Table(name = "dhsst_form_element")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class FormElement {
+public class FormElement implements Exportable {
 
 	protected Long id;
+	private String code;
 	private RawDataElement dataElement;
 	private List<FormValidationRule> validationRules = new ArrayList<FormValidationRule>();
 	private Map<String, Translation> headers = new HashMap<String, Translation>();
@@ -253,5 +256,18 @@ public class FormElement {
 
 	public String toString(){
 		return "FormElement[getId()=" + getId() + ", getDataElement()=" + getDataElement() + "]";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + ", " + getDataElement().toExportString() + "]";
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 }

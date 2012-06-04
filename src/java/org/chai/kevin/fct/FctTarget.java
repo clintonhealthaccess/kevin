@@ -42,6 +42,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
@@ -50,7 +51,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity(name = "FctTarget")
 @Table(name = "dhsst_fct_target")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class FctTarget extends AbstractReportTarget {
+public class FctTarget extends AbstractReportTarget implements Exportable {
 	
 	private Long id;
 	private List<FctTargetOption> targetOptions = new ArrayList<FctTargetOption>();
@@ -101,6 +102,11 @@ public class FctTarget extends AbstractReportTarget {
 	@Override
 	public String toString() {
 		return "FctTarget[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	}
+	
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 
 }

@@ -32,7 +32,8 @@ package org.chai.kevin.data
  *
  */
 constraints ={
-	  enume(nullable: false, blank: false)
-	  value(nullable: false, blank: false)
-	 //order(nullable: false, blank: false)
+	code(nullable:false, blank: false, unique: true)
+	enume(nullable: false, blank: false)
+	value(nullable: false, blank: false)
+	//order(nullable: false, blank: false)
 }

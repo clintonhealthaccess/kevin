@@ -44,6 +44,11 @@ class SurveyValidationRuleController extends AbstractController {
 
 	def surveyService
 	
+	def getEntityClass(){
+		//TODO return FormValidationRule.class;
+		return null;
+	}
+	
 	def list = {
 		adaptParamsForList()
 

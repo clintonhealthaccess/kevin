@@ -128,7 +128,6 @@ beans = {
 	}
 	
 	entityExportService(EntityExportService){
-		languageService = ref("languageService")
 		sessionFactory = ref("sessionFactory")
 	}
 	
