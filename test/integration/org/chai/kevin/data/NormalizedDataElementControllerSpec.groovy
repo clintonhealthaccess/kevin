@@ -6,6 +6,8 @@ import org.chai.kevin.data.NormalizedDataElementController;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.planning.PlanningCost.PlanningCostType;
+import org.chai.kevin.planning.PlanningIntegrationTests;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.Status;
 
@@ -79,6 +81,27 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		then:
 		NormalizedDataElement.count() == 1
 		Average.count() == 1
+	}
+	
+	def "cannot delete normalized data element if there are associated planning costs"() {
+		setup:
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = PlanningIntegrationTests.newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def formElement = newFormElement(dataElement)
+		def planningType = PlanningIntegrationTests.newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningCost = PlanningIntegrationTests.newPlanningCost(PlanningCostType.OUTGOING, normalizedDataElement, "value", planningType)
+		
+		normalizedDataElementController = new NormalizedDataElementController()
+		
+		when:
+		normalizedDataElementController.params.id = normalizedDataElement.id
+		normalizedDataElementController.delete()
+		
+		then:
+		NormalizedDataElement.count() == 1
 	}
 	
 	def "search normalized data element"() {
