@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -714,9 +715,14 @@ public class Type extends JSONValue {
 		return changed | predicate.transformValue(currentValue, this, currentPrefix);
 	}
 
+	public void getCombinations(Value value, List<String> strings, Set<List<String>> combinations, String prefix) {
+		combinations.add(strings);
+		getCombinations(value, combinations, prefix, prefix);
+	}
+	
 	// use visit() instead
 	@Deprecated
-	public void getCombinations(Value value, List<String> strings, Set<List<String>> combinations, String prefix, String genericPrefix) {
+	private void getCombinations(Value value, Set<List<String>> combinations, String prefix, String genericPrefix) {
 		switch (getType()) {
 			case NUMBER:
 			case BOOL:
@@ -724,15 +730,15 @@ public class Type extends JSONValue {
 			case TEXT:
 			case DATE:
 			case ENUM:
-				combinations.add(replace(strings, genericPrefix, prefix));
+				combinations.addAll(replace(combinations, genericPrefix, prefix));
 				break;
 			case LIST:
 				if (!value.isNull()) {
 					List<Value> values = value.getListValue();
 					Type listType = getListType();
 					for (int i = 0; i < values.size(); i++) {
-//						combinations.add(replace(strings, genericPrefix+"[_]", prefix+"["+i+"]"));
-						listType.getCombinations(values.get(i), strings, combinations, prefix+"["+i+"]", genericPrefix+"[_]");
+						combinations.addAll(replace(combinations, genericPrefix+"[_]", prefix+"["+i+"]"));
+						listType.getCombinations(values.get(i), combinations, prefix+"["+i+"]", genericPrefix+"[_]");
 //						listType.getCombinations(values.get(i), strings, combinations, prefix+"[]");
 					}
 				}
@@ -741,7 +747,7 @@ public class Type extends JSONValue {
 				if (!value.isNull()) {
 					Map<String, Type> typeMap = getElementMap();
 					for (Entry<String, Value> entry : value.getMapValue().entrySet()) {
-						typeMap.get(entry.getKey()).getCombinations(entry.getValue(), strings, combinations, prefix+"."+entry.getKey(), genericPrefix+"."+entry.getKey());
+						typeMap.get(entry.getKey()).getCombinations(entry.getValue(), combinations, prefix+"."+entry.getKey(), genericPrefix+"."+entry.getKey());
 					}
 					break;
 				}
@@ -912,12 +918,16 @@ public class Type extends JSONValue {
 		return getJaqlValue(value);
 	}
 	
-	private List<String> replace(List<String> strings, String toReplace, String replaceWith) {
-		List<String> result = new ArrayList<String>();
-		for (String string : strings) {
-			result.add(string.replace(toReplace, replaceWith));
+	private Set<List<String>> replace(Set<List<String>> strings, String toReplace, String replaceWith) {
+		Set<List<String>> resultSet = new HashSet<List<String>>();
+		for (List<String> stringList : strings) {
+			List<String> result = new ArrayList<String>();
+			for (String string : stringList) {
+				result.add(string.replace(toReplace, replaceWith));
+			}
+			resultSet.add(result);
 		}
-		return result;
+		return resultSet;
 	}
 	
 	public String getDisplayedValue(int indent, Integer numberOfLines) {

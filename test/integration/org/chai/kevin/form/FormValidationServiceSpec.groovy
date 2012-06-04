@@ -60,7 +60,27 @@ class FormValidationServiceSpec extends IntegrationTests {
 		
 		then:
 		prefixes.equals(new HashSet([""]))
-	}	
+	}
+	
+	def "false validation based on other elements with prefix"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+
+		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["test1": Type.TYPE_NUMBER(), "test2": Type.TYPE_NUMBER()])))
+		def element1 = newFormElement(dataElement1)
+		
+		def validationRule = null
+		
+		when:
+		validationRule = newFormValidationRule(element1, "[_].test1", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+"[_].test1 > \$"+element1.id+"[_].test2")
+		
+		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), Value.VALUE_LIST([Value.VALUE_MAP(["test1":Value.VALUE_NUMBER(1), "test2":Value.VALUE_NUMBER(1)])]))
+		def prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocation.findByCode(KIVUYE), getLocator())
+		
+		then:
+		prefixes.equals(new HashSet(["[0].test1"]))
+	}
 	
 	def "no validation errors"() {
 		setup:
