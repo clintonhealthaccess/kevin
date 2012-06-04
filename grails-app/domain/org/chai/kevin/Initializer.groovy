@@ -106,23 +106,23 @@ class Initializer {
 		surveyAllReadonly.addToPermissions("editSurvey:print")
 		surveyAllReadonly.save()
 
-		def user = new User(username: "dhsst", email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), active: true, confirmed: true, uuid:'dhsst_uuid')
+		def user = new User(code:"dhsst",username: "dhsst", email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), active: true, confirmed: true, uuid:'dhsst_uuid')
 		user.addToRoles(reportAllReadonly)
 		user.addToRoles(surveyAllReadonly)
 		// access to site
 		user.save(failOnError: true)
 
-		def admin = new User(username: "admin", email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), active: true, confirmed: true, uuid:'admin_uuid')
+		def admin = new User(code:"admin",username: "admin", email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), active: true, confirmed: true, uuid:'admin_uuid')
 		admin.addToPermissions("*")
 		admin.save(failOnError: true)
 
-		def butaro = new DataUser(username: "butaro", landingPage: HomeController.SURVEY_LANDING_PAGE, dataLocationId: DataLocation.findByCode("Butaro DH").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'butaro_uuid')
+		def butaro = new DataUser(code:"butaro",username: "butaro", landingPage: HomeController.SURVEY_LANDING_PAGE, dataLocationId: DataLocation.findByCode("Butaro DH").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'butaro_uuid')
 		butaro.addToPermissions("editSurvey:view")
 		butaro.addToPermissions("editSurvey:*:"+DataLocation.findByCode("Butaro DH").id)
 		butaro.addToPermissions("menu:survey")
 		butaro.save(failOnError: true)
 		
-		def kivuye = new DataUser(username: "kivuye", landingPage: HomeController.PLANNING_LANDING_PAGE, dataLocationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
+		def kivuye = new DataUser(code:"kivuye",username: "kivuye", landingPage: HomeController.PLANNING_LANDING_PAGE, dataLocationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
 		kivuye.addToPermissions("editPlanning:view")
 		kivuye.addToPermissions("editPlanning:*:"+DataLocation.findByCode("Kivuye HC").id)
 		kivuye.addToPermissions("menu:planning")
@@ -133,10 +133,10 @@ class Initializer {
 
 		if (!Period.count()) {
 			// periods
-			def period = new Period(startDate: mar01, endDate: mar31)
+			def period = new Period(code:"period1", startDate: mar01, endDate: mar31)
 			period.save(failOnError: true)
 
-			def period2 = new Period(startDate: mar011, endDate: mar311)
+			def period2 = new Period(code:"period2",startDate: mar011, endDate: mar311)
 			period2.save(failOnError: true, flush: true)
 		}
 
@@ -217,21 +217,21 @@ class Initializer {
 		if (!Enum.count()) {
 			// Enumerations
 			def enume = new Enum(names:j(["en":"Enum 1"]), descriptions:j([:]), code:"ENUM1");
-			def enumOption1 = new EnumOption(names:j(["en":"Value 1"]), value:"value1", enume: enume, order: o(["en":1,"fr":2]));
-			def enumOption2 = new EnumOption(names:j(["en":"Value 2"]), value:"value2", enume: enume, order: o(["en":2,"fr":1]));
+			def enumOption1 = new EnumOption(code:"EnumOption1",names:j(["en":"Value 1"]), value:"value1", enume: enume, order: o(["en":1,"fr":2]));
+			def enumOption2 = new EnumOption(code:"EnumOption2",names:j(["en":"Value 2"]), value:"value2", enume: enume, order: o(["en":2,"fr":1]));
 			
 			def enume2 = new Enum(names:j(["en":"Enum 2"]), descriptions:j([:]), code:"ENUM2");
-			def enumOption01 = new EnumOption(names:j(["en":"N/A Did not receive training"]), value:"N/A Did not receive training", enume: enume2);
-			def enumOption02 = new EnumOption(names:j(["en":"NGO or Partner"]), value:"NGO or Partner", enume: enume2);
-			def enumOption03 = new EnumOption(names:j(["en":"Ministry of Health"]), value:"Ministry of Health", enume: enume2);
+			def enumOption01 = new EnumOption(code:"EnumOption3",names:j(["en":"N/A Did not receive training"]), value:"N/A Did not receive training", enume: enume2);
+			def enumOption02 = new EnumOption(code:"EnumOption4",names:j(["en":"NGO or Partner"]), value:"NGO or Partner", enume: enume2);
+			def enumOption03 = new EnumOption(code:"EnumOption5",names:j(["en":"Ministry of Health"]), value:"Ministry of Health", enume: enume2);
 			
 			def enumeGender = new Enum(names:j(["en":"Table Sex"]), descriptions:j([:]), code:"gender");
-			def enumGenderOption1 = new EnumOption(names:j(["en":"Male"]), value:"male", enume: enumeGender, order: o(["en":1,"fr":2]));
-			def enumGenderOption2 = new EnumOption(names:j(["en":"Female"]), value:"female", enume: enumeGender, order: o(["en":2,"fr":1]));
+			def enumGenderOption1 = new EnumOption(code:"EnumOption6",names:j(["en":"Male"]), value:"male", enume: enumeGender, order: o(["en":1,"fr":2]));
+			def enumGenderOption2 = new EnumOption(code:"EnumOption7",names:j(["en":"Female"]), value:"female", enume: enumeGender, order: o(["en":2,"fr":1]));
 			
 			def primaryFunction = new Enum(names:j(["en":"Primary function table"]), descriptions:j([:]), code:"primaryfunction");
-			def primaryFunctionOp1 = new EnumOption(names:j(["en":"PrimaryFunction1"]), value:"primaryFunction1", enume: primaryFunction, order: o(["en":1,"fr":2]));
-			def primaryFunctionOp2 = new EnumOption(names:j(["en":"PrimaryFunction2"]), value:"primaryFunction2", enume: primaryFunction, order: o(["en":2,"fr":1]));
+			def primaryFunctionOp1 = new EnumOption(code:"EnumOption8",names:j(["en":"PrimaryFunction1"]), value:"primaryFunction1", enume: primaryFunction, order: o(["en":1,"fr":2]));
+			def primaryFunctionOp2 = new EnumOption(code:"EnumOption9",names:j(["en":"PrimaryFunction2"]), value:"primaryFunction2", enume: primaryFunction, order: o(["en":2,"fr":1]));
 			
 			enume.enumOptions = [
 				enumOption1, 
@@ -1340,6 +1340,7 @@ class Initializer {
 
 			//Creating Survey
 			def surveyOne = new Survey(
+					code:"Survey1",
 					names: j(["en":"Survey Number 1"]),
 					descriptions: j(["en":"Survey Number 1 Description"]),
 					period: Period.list([cache: true])[1],
@@ -1347,6 +1348,7 @@ class Initializer {
 					active: true,
 					)
 			def surveyTwo = new Survey(
+					code:"Survey2",
 					names: j(["en":"Survey Number 2"]),
 					descriptions: j(["en":"Survey Number 2 Description"]),
 					period: Period.list([cache: true])[1],
@@ -1354,42 +1356,48 @@ class Initializer {
 
 			//Creating Program
 			def serviceDev = new SurveyProgram(
-
+				code:"Program1",
 				names: j(["en":"Service Delivery"]),
 				order: 2,
 				typeCodeString: "District Hospital,Health Center"
 			)
 			def hResourceHealth = new SurveyProgram(
+				code:"Program2",
 				names: j(["en":"Human Resources for Health"]),
 				order: 4,
 				typeCodeString: "District Hospital,Health Center",
 			)
 
 			def geoAccess = new SurveyProgram(
+				code:"Program3",
 				names: j(["en":"Geographic Access"]),
 				order: 5,
 				typeCodeString: "District Hospital,Health Center",
 			)
 
 			def institutCap = new SurveyProgram(
+				code:"Program4",
 				names: j(["en":"Institutional Capacity"]),
 				order: 3,
 				typeCodeString: "Health Center",
 			)
 
 			def coreFacId = new SurveyProgram(
+				code:"Program5",
 				names: j(["en":"Core Facility Identify"]),
 				order: 1,
 				typeCodeString: "District Hospital,Health Center",
 			)
 
 			def finance = new SurveyProgram(
+				code:"Program6",
 				names: j(["en":"Finance"]),
 				order: 6,
 				typeCodeString: "District Hospital,Health Center",
 			)
 
 			def dvandC = new SurveyProgram(
+				code:"Program7",
 				names: j(["en":"Drugs, Vaccines, and Consumables"]),
 				order: 7,
 				typeCodeString: "District Hospital,Health Center",
@@ -1409,7 +1417,7 @@ class Initializer {
 
 			//Adding section to program
 			def facilityId = new SurveySection(
-
+				code:"Section1",
 				names: j(["en":"Facility Identifier"]),
 				order: 1,
 				program: coreFacId,
@@ -1420,13 +1428,14 @@ class Initializer {
 			coreFacId.save(failOnError:true);
 
 			def services=new SurveySection(
-
+				code:"Section2",
 				names: j(["en":"Services"]),
 				order: 2,
 				program: serviceDev,
 				typeCodeString: "District Hospital,Health Center"
 			)
 			def labTests= new SurveySection(
+				code:"Section3",
 				names: j(["en":"Lab Tests"]),
 				order: 1,
 				program: serviceDev,
@@ -1434,6 +1443,7 @@ class Initializer {
 			)
 
 			def patientReg=new SurveySection(
+				code:"Section4",
 				names: j(["en":"Patient Registration"]),
 				order: 3,
 				program: serviceDev,
@@ -1441,6 +1451,7 @@ class Initializer {
 			)
 
 			def patientQ1 = new SurveySimpleQuestion(
+				code:"Question1",
 				names: j(["en":"Patient Section Simple Question NUMBER"]),
 				descriptions: j([:]),
 				order: 3,
@@ -1480,7 +1491,7 @@ class Initializer {
 			surveyElementPatientQ1.save(failOnError: true)
 
 			def staffing=new SurveySection(
-
+				code:"Section5",
 				names: j(["en":"Staffing"]),
 				order: 1,
 				program: hResourceHealth,
@@ -1488,6 +1499,7 @@ class Initializer {
 			)
 
 			def continuingEd = new SurveySection(
+				code:"Section6",
 				names: j(["en":"Continuing Education"]),
 				order: 2,
 				program: hResourceHealth,
@@ -1495,6 +1507,7 @@ class Initializer {
 			)
 
 			def openResponse = new SurveySection(
+				code:"Section7",
 				names: j(["en":"Open Response"]),
 				order: 3,
 				program: hResourceHealth,
@@ -1508,19 +1521,21 @@ class Initializer {
 			hResourceHealth.save(failOnError:true);
 
 			def infrastructure = new SurveySection(
-
+				code:"Section8",
 				names: j(["en":"Infrastructure"]),
 				order: 3,
 				program: geoAccess,
 				typeCodeString: "District Hospital,Health Center"
 			)
 			def medicalEq=new SurveySection(
+				code:"Section9",
 				names: j(["en":"Medical Equipment"]),
 				order: 2,
 				program: geoAccess,
 				typeCodeString: "District Hospital,Health Center"	
 			)
 			def wasteMgmnt=new SurveySection(
+				code:"Section10",
 				names: j(["en":"Waste Management"]),
 				order: 1,
 				program: geoAccess,
@@ -1535,7 +1550,7 @@ class Initializer {
 
 			//Adding questions to sections
 			def serviceQ1 = new SurveySimpleQuestion(
-
+				code:"Question2",
 				names: j(["en":"Service Section Simple Question NUMBER"]),
 				descriptions: j(["en":"<br/>"]),
 				order: 3,
@@ -1550,7 +1565,7 @@ class Initializer {
 			serviceQ1.save(failOnError: true)
 
 			def serviceQ2 = new SurveySimpleQuestion(
-
+				code:"Question3",
 				names: j(["en":"Service Section Simple Question BOOL"]),
 				descriptions: j(["en":""]),
 				order: 0,
@@ -1565,7 +1580,7 @@ class Initializer {
 			serviceQ2.save(failOnError: true)
 
 			def serviceQ3 = new SurveySimpleQuestion(
-
+				code:"Question4",
 				names: j(["en":"Service Section Simple Question ENUM "]),
 				descriptions: j([:]),
 				order: 0,
@@ -1594,6 +1609,7 @@ class Initializer {
 			//			serviceQ4.save(failOnError: true)
 
 			def serviceQ5 = new SurveySimpleQuestion(
+					code:"Question5",
 					names: j(["en":"Service Section Simple Question MAP"]),
 					descriptions: j(["en":"<div>Help text</div>"]),
 					order: 5,
@@ -1614,6 +1630,7 @@ class Initializer {
 			serviceQ5.save(failOnError: true)
 
 			def serviceQ6 = new SurveySimpleQuestion(
+					code:"Question6",
 					names: j(["en":"Service Section Simple Question LIST of MAP"]),
 					descriptions: j(["en":"Help text"]),
 					order: 6,
@@ -1703,6 +1720,7 @@ class Initializer {
 			surveyElementServiceQ1.save(failOnError: true)
 
 			def openQ = new SurveySimpleQuestion(
+				    code: "Question9",
 					names: j(["en":"Sample Open Question Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module."]),
 					descriptions: j(["en":"Help text"]),
 					order: 1,
@@ -1718,6 +1736,7 @@ class Initializer {
 			openQ.save(failOnError: true)
 
 			def checkBoxQ = new SurveyCheckboxQuestion(
+					code: "Question10",
 					names: j(["en":"Service Section CheckBox Question"]),
 					descriptions: j(["en":"Help text"]),
 					order: 2,
@@ -1762,6 +1781,7 @@ class Initializer {
 
 
 			def staffingQ1 = new SurveySimpleQuestion(
+					code:"Question7",
 					names: j(["en":"List all of your staff"]),
 					descriptions: j(["en":"Help text"]),
 					order: 10,
@@ -1870,6 +1890,7 @@ class Initializer {
 
 			//Adding a table type question
 			def tableQ = new SurveyTableQuestion(
+					code:"Question8",
 					names: j(["en":"For each training module:"]),
 					descriptions: j(["en":"(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
 					tableNames: j(["en":"Training Modules"]),
