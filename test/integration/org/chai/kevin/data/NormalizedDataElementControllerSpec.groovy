@@ -91,8 +91,8 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = PlanningIntegrationTests.newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = PlanningIntegrationTests.newPlanningType(formElement, "[_].key0", "[_].key1", planning)
-		def planningCost = PlanningIntegrationTests.newPlanningCost(PlanningCostType.OUTGOING, normalizedDataElement, "value", planningType)
+		def planningType = PlanningIntegrationTests.newPlanningType(formElement, "[_].key1", planning)
+		def planningCost = PlanningIntegrationTests.newPlanningCost(PlanningCostType.OUTGOING, normalizedDataElement, planningType)
 		
 		normalizedDataElementController = new NormalizedDataElementController()
 		
