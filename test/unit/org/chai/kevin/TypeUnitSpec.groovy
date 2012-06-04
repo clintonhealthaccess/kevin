@@ -499,7 +499,7 @@ public class TypeUnitSpec extends UnitSpec {
 		value = new Value("{\"value\": [{\"value\":10}, {\"value\":11}]}")
 		strings = ["values[_]"]
 		list = new HashSet();
-		type.getCombinations(value, strings, list, "values", "values")
+		type.getCombinations(value, strings, list, "values")
 		
 		then:
 		list.containsAll([["values[0]"],["values[1]"]])
@@ -509,7 +509,7 @@ public class TypeUnitSpec extends UnitSpec {
 		value = new Value("{\"value\":10}");
 		strings = [""]
 		list = new HashSet();
-		type.getCombinations(value, strings, list, "", "")
+		type.getCombinations(value, strings, list, "")
 		
 		then:
 		list.containsAll([[""]])
@@ -519,7 +519,7 @@ public class TypeUnitSpec extends UnitSpec {
 		value = Value.VALUE_LIST([Value.VALUE_LIST([Value.VALUE_NUMBER(1), Value.VALUE_NUMBER(1)])])
 		strings = ["[_][_]"]
 		list = new HashSet();
-		type.getCombinations(value, strings, list, "", "")
+		type.getCombinations(value, strings, list, "")
 		
 		then:
 		list.containsAll([["[0][0]"], ["[0][1]"]])
@@ -529,10 +529,30 @@ public class TypeUnitSpec extends UnitSpec {
 		value = Value.VALUE_LIST([Value.VALUE_MAP(["test":Value.VALUE_NUMBER(1)])])
 		strings = ["[_].test"]
 		list = new HashSet();
-		type.getCombinations(value, strings, list, "", "")
+		type.getCombinations(value, strings, list, "")
 		
 		then:
 		list.containsAll([["[0].test"]])
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["test1": Type.TYPE_NUMBER(), "test2": Type.TYPE_NUMBER()]))
+		value = Value.VALUE_LIST([Value.VALUE_MAP(["test1":Value.VALUE_NUMBER(1), "test2":Value.VALUE_NUMBER(1)])])
+		strings = ["[_].test2 > [_].test1", "[_]"]
+		list = new HashSet();
+		type.getCombinations(value, strings, list, "")
+		
+		then:
+		list.containsAll([["[0].test2 > [0].test1", "[0]"]])
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["test1": Type.TYPE_NUMBER(), "test2": Type.TYPE_NUMBER()]))
+		value = Value.VALUE_LIST([Value.VALUE_MAP(["test1":Value.VALUE_NUMBER(1), "test2":Value.VALUE_NUMBER(1)])])
+		strings = ["\$1[_].test2 > \$2[_].test1", "\$1[_]"]
+		list = new HashSet();
+		type.getCombinations(value, strings, list, "\$1")
+		
+		then:
+		list.containsAll([["\$1[0].test2 > \$2[_].test1", "\$1[0]"]])
 		
 	}
 	
