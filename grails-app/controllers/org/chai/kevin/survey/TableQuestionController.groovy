@@ -74,7 +74,7 @@ class TableQuestionController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return SurveyTableQuestion.class;
 	}
 	
@@ -105,7 +105,6 @@ class TableQuestionController extends AbstractEntityController {
 		model << [template: '/survey/admin/tablePreview']
 		render (view: '/entity/edit', model: model)
 	}
-
 
 	def getDescription = {
 		def question = SurveyTableQuestion.get(params.int('question'))

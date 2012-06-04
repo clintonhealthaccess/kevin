@@ -53,6 +53,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
@@ -62,9 +63,10 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "SurveyProgram")
 @Table(name = "dhsst_survey_program")
-public class SurveyProgram extends Orderable<Integer> {
+public class SurveyProgram extends Orderable<Integer> implements Exportable {
 
 	private Long id;
+	private String code;
 	private Integer order;
 	private Survey survey;
 	private List<SurveySection> sections = new ArrayList<SurveySection>();
@@ -215,6 +217,7 @@ public class SurveyProgram extends Orderable<Integer> {
 
 	@Transient
 	protected void deepCopy(SurveyProgram copy, SurveyCloner cloner) {
+		copy.setCode(getCode() + " clone");
 		copy.setNames(new Translation(getNames()));
 //		if (getDependency() != null) copy.setDependency(cloner.getProgram(getDependency()));
 		copy.setTypeCodeString(getTypeCodeString());
@@ -228,6 +231,19 @@ public class SurveyProgram extends Orderable<Integer> {
 	@Override
 	public String toString() {
 		return "SurveyProgram[getId()=" + getId() + "]";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 }

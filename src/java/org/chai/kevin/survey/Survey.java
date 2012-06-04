@@ -49,6 +49,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
@@ -58,9 +59,10 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity(name="Survey")
 @Table(name="dhsst_survey")
-public class Survey {
+public class Survey implements Exportable {
 	
 	private Long id;
+	private String code;
 	private Period lastPeriod;
 	private Period period;
 	private boolean active = false;
@@ -180,6 +182,7 @@ public class Survey {
 	
 	@Transient
 	protected void deepCopy(Survey copy, SurveyCloner cloner) {
+		copy.setCode(getCode() + " clone");
 		copy.setNames(new Translation(getNames()));
 		copy.setDescriptions(new Translation(getDescriptions()));
 		copy.setActive(isActive());
@@ -199,5 +202,18 @@ public class Survey {
 	@Override
 	public String toString() {
 		return "Survey[getId()=" + getId() + "]";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}	
 }

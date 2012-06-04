@@ -9,6 +9,8 @@
 	<g:form url="[controller:'section', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${section}" value="${section?.names}" label="${message(code:'entity.name.label')}" field="names" />
 			
+		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${section}" field="code" />			
+			
 		<g:selectFromList name="program.id" label="${message(code:'survey.program.label')}" field="program" optionKey="id" multiple="false"
 			from="${programs}" value="${section.program?.id}" bean="${section}" values="${programs.collect {i18n(field:it.names)}}" />
 			

@@ -44,6 +44,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
@@ -54,7 +55,7 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "SurveyCheckboxQuestion")
 @Table(name = "dhsst_survey_checkbox_question")
-public class SurveyCheckboxQuestion extends SurveyQuestion {
+public class SurveyCheckboxQuestion extends SurveyQuestion implements Exportable {
 
 	List<SurveyCheckboxOption> options = new ArrayList<SurveyCheckboxOption>();
 
@@ -163,4 +164,8 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 		return "SurveyCheckboxQuestion[getId()=" + getId() + ", getNames()=" + getNames() + "]";
 	}
 
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
+	}
 }

@@ -38,16 +38,18 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportTarget;
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="DashboardTarget")
 @Table(name="dhsst_dashboard_target")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DashboardTarget extends DashboardEntity implements ReportTarget {
+public class DashboardTarget extends DashboardEntity implements ReportTarget, Exportable {
 
 	private Long id;
 	private Calculation<?> calculation;
@@ -108,8 +110,13 @@ public class DashboardTarget extends DashboardEntity implements ReportTarget {
 	
 	@Override
 	public String toString() {
-		return "DashboardTarget [getId()=" + getId() + ", getCode()="
+		return "DashboardTarget[getId()=" + getId() + ", getCode()="
 				+ getCode() + "]";
+	}
+	
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 
 }

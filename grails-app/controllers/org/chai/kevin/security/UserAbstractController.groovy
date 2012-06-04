@@ -12,6 +12,7 @@ abstract class UserAbstractController extends AbstractEntityController {
 	}
 
 	def validateEntity(def entity) {
+		//TODO check for duplicate code
 		boolean valid = entity.validate() && params['cmd'].validate()
 		if (log.isDebugEnabled()) log.debug ("validation for command object ${params['cmd']}: ${params['cmd'].errors}}")
 		return valid;
@@ -26,15 +27,18 @@ abstract class UserAbstractController extends AbstractEntityController {
 					
 		if(params['cmd']?.password != null && !params['cmd']?.password.equals(''))
 			entity.passwordHash = new Sha256Hash(params['cmd'].password).toHex();
-	}
-	
+	}	
 	
 	def save = { PasswordCommand cmd ->
 		if (log.isDebugEnabled()) log.debug("create.userPassword, params:"+params+"command"+cmd)
 		params['cmd'] = cmd;
 		super.save()
 
-	}		
+	}
+	
+	def getEntityClass(){
+		return User.class;
+	}
 }
 class PasswordCommand {
 	String password

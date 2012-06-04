@@ -32,5 +32,6 @@ package org.chai.kevin.survey
  *
  */
 constraints ={
+	code (nullable: false, blank: false, unique: true)
 	period(nullable:false, blank: false)
 }

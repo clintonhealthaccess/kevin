@@ -31,8 +31,9 @@ package org.chai.kevin.survey
  * @author Jean Kahigiso M.
  *
  */
-constraints = {
-	section(nullable:false,blank:false)
+constraints={
+	code (nullable:false, blank:false, unique:true)
+	section(nullable:false, blank:false)
 	order(nullable:false, blank:false)
-	typeCodeString(nullable:false /*,blank:false*/ )
+	typeCodeString(nullable:false /*, blank:false*/)
 }

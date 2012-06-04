@@ -70,7 +70,7 @@ class DsrTargetController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return DsrTarget.class;
 	}
 	
@@ -101,7 +101,8 @@ class DsrTargetController extends AbstractEntityController {
 			entities: targets,
 			template: "dsr/targetList",
 			code: getLabel(),
-			entityCount: DsrTarget.count()
+			entityCount: DsrTarget.count(),
+			entityClass: getEntityClass()
 		])
 	}
 	

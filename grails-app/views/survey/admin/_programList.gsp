@@ -3,6 +3,7 @@
 	<thead>
 		<tr>
 			<th/>
+			<th><g:message code="entity.code.label"/></th>
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="entity.datalocationtype.label"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'survey.section.label')]"/></th>
@@ -27,6 +28,7 @@
 						</li>
 					</ul>
 				</td>
+				<td>${program.code}</td>
 				<td><g:i18n field="${program.names}" /></td>
 				<td>${program.typeCodeString}</td>
 				<td>${program.sections.size()}</td>

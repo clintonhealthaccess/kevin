@@ -55,6 +55,8 @@
 		
 		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${question}" field="order"/>
 		
+		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${question}" field="code" />
+		
 		<g:selectFromList name="section.id" label="${message(code:'survey.section.label')}" field="section" optionKey="id" multiple="false"
 			from="${sections}" value="${question.section?.id}" bean="${question}" values="${sections.collect {i18n(field:it.names)}}" />
 

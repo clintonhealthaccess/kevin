@@ -27,12 +27,13 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.json.JSONValue;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 
 @Embeddable
-public class Type extends JSONValue {
+public class Type extends JSONValue implements Exportable {
 	
 	private static final String TYPE_STRING = "type";
 	private static final String ENUM_CODE = "enum_code";
@@ -498,8 +499,7 @@ public class Type extends JSONValue {
 						String itemJaqlString = array.getString(i);
 						values.add(getListType().getValueFromJaql(itemJaqlString).getJsonObject());
 					}
-					if (values.size() == 0) object.put(Value.VALUE_STRING, JSONNull.getInstance());
-					else object.put(Value.VALUE_STRING, values);
+					object.put(Value.VALUE_STRING, values);
 					break;
 				case MAP:
 					JSONObject jaqlObject = JSONObject.fromObject(jaqlString);
@@ -1010,6 +1010,11 @@ public class Type extends JSONValue {
 
 	public static Type TYPE_ENUM (String enumCode) {
 		return new Type("{\""+TYPE_STRING+"\":\"enum\", \""+ENUM_CODE+"\":\""+enumCode+"\"}");
+	}
+
+	@Override
+	public String toExportString() {
+		return getJsonValue();
 	}
 
 }

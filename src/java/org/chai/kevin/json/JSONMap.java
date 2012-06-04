@@ -40,10 +40,12 @@ import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.entity.export.Importable;
 import org.chai.kevin.util.JSONUtils;
 
 @MappedSuperclass
-public class JSONMap<T> implements Map<String, T>, Serializable {
+public class JSONMap<T> implements Map<String, T>, Serializable, Exportable, Importable {
 	
 	private static final long serialVersionUID = 659167226523919292L;
 	private String jsonText = " ";
@@ -188,5 +190,17 @@ public class JSONMap<T> implements Map<String, T>, Serializable {
 	@Override
 	public String toString() {
 		return "JSONMap[getJsonMap()=" + getJsonText() + "]";
+	}
+	
+	@Override
+	public String toExportString() {
+		return getJsonText();
+	}
+
+	@Override
+	public JSONMap fromExportString(Object value) {
+		JSONMap jsonMap = new JSONMap();		
+		jsonMap.setJsonText(value.toString());		
+		return jsonMap;
 	}
 }

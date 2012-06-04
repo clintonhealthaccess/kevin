@@ -40,7 +40,7 @@ public class ImporterError {
 
 	public ImporterError(String fileName,Integer lineNumber, String header, String messageCode) {
 		super();
-		this.fileName= fileName;
+		this.fileName = fileName;
 		this.lineNumber = lineNumber;
 		this.header = header;
 		this.messageCode = messageCode;

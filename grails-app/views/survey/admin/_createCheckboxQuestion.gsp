@@ -13,6 +13,8 @@
 		
 		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${question}" field="order"/>
 		
+		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${question}" field="code" />
+		
 		<g:if test="${question.id != null}">
 			<div class="row">
 				<a href="#" onclick="$(this).next().toggle();return false;"><g:message code="survey.checkboxquestion.checkboxoption.label"/>:</a>

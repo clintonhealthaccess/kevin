@@ -68,8 +68,9 @@ class SurveySkipRuleController  extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
-		return SurveySkipRule.class;
+	def getEntityClass(){
+		//TODO return SurveySkipRule.class;
+		return null;
 	}
 	
 	def bindParams(def entity) {
@@ -117,7 +118,8 @@ class SurveySkipRuleController  extends AbstractEntityController {
 				template: "skipRuleList",
 				entities: skipRules.subList(params['offset'], max),
 				entityCount: skipRules.size(),
-				code: getLabel()
+				code: getLabel(),
+				entityClass: getEntityClass()
 			])
 		}
 	}

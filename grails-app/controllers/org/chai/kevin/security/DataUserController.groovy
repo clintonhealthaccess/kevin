@@ -63,7 +63,7 @@ class DataUserController  extends UserAbstractController {
 		]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return DataUser.class;
 	}
 }

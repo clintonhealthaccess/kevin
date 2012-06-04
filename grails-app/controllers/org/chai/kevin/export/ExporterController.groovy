@@ -50,6 +50,7 @@ import org.chai.kevin.value.DataValue;
  *
  */
 class ExporterController extends AbstractEntityController {
+	
 	def dataLocationService;
 	def exporterService;
 	def languageService;
@@ -112,7 +113,8 @@ class ExporterController extends AbstractEntityController {
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
-	def exportEntity() {
+	
+	def getEntityClass() {
 		return Exporter.class;
 	}
 	
@@ -147,8 +149,7 @@ class ExporterController extends AbstractEntityController {
 		if(params['method'].equals("search")) search()
 		else list()	
 	}
-	
-	
+		
 	def list={
 		adaptParamsForList()
 		List<Exporter> exports = exporterService.getExporters("date","desc");
@@ -171,6 +172,28 @@ class ExporterController extends AbstractEntityController {
 			method: method,
 			q:params['q']
 		])
+	}
+	
+	def clone ={
+		Exporter exportExisting= Exporter.get(params.int('export.id'));
+		if(log.isDebugEnabled()) log.debug("clone(exporter="+exportExisting+")")
+		if(exportExisting){
+			def  newExport= new Exporter()
+			for (String language : languageService.getAvailableLanguages())
+					newExport.getDescriptions().put(language,exportExisting.getDescriptions().get(language) + "(copy)")		
+			newExport.setDate(new Date());
+			newExport.setTypeCodeString(exportExisting.getTypeCodeString());
+			newExport.getLocations().addAll(exportExisting.getLocations());
+			newExport.getPeriods().addAll(exportExisting.getPeriods());
+			newExport.getData().addAll(exportExisting.getData());
+			newExport.save(failOnError: true);
+			if(newExport)
+				flash.message = message(code: 'exporter.cloned')
+		}else{
+			flash.message = message(code: 'exporter.clone.failed')
+		}
+		
+		redirect (controller: 'exporter', action: 'list')	
 	}
 
 	

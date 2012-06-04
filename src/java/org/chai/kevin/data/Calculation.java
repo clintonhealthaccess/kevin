@@ -43,9 +43,11 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Period;
+import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionService.StatusValuePair;
@@ -54,7 +56,7 @@ import org.chai.kevin.value.Value;
 @Entity(name="Calculation")
 @Table(name="dhsst_data_calculation")
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class Calculation<T extends CalculationPartialValue> extends Data<T> {
+public abstract class Calculation<T extends CalculationPartialValue> extends Data<T> implements Exportable {
 
 	public static Type TYPE = Type.TYPE_NUMBER();
 	
@@ -104,8 +106,6 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 		this.refreshed = refreshed;
 	}
 	
-	
 	@Override
 	public abstract String toString();
-	
 }

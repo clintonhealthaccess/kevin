@@ -67,7 +67,7 @@ class NormalizedDataElementController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return NormalizedDataElement.class;
 	}
 	
@@ -135,6 +135,7 @@ class NormalizedDataElementController extends AbstractEntityController {
 			entityCount: NormalizedDataElement.count(),
 			template: 'data/normalizedDataElementList',
 			code: getLabel(),
+			entityClass: getEntityClass(),
 			targetURI: getTargetURI()
 		])
 	}

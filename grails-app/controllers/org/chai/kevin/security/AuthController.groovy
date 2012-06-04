@@ -40,7 +40,7 @@ class AuthController {
 			render(view:'register', model:[register: cmd])
 		}
 		else {
-			def user = new User(username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'', firstname: cmd.firstname, lastname: cmd.lastname, location: cmd.location, uuid: UUID.randomUUID().toString()).save()
+			def user = new User(code: cmd.email, username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'', firstname: cmd.firstname, lastname: cmd.lastname, location: cmd.location, uuid: UUID.randomUUID().toString()).save()
 			RegistrationToken token = new RegistrationToken(token: RandomStringUtils.randomAlphabetic(20), user: user, used: false).save()
 			def url = createLink(absolute: true, controller:'auth', action:'confirmRegistration', params:[token:token.token])
 			

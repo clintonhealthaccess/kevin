@@ -56,8 +56,9 @@ class PlanningSkipRuleController extends AbstractEntityController {
 		[skip: entity, languageService: languageService]
 	}
 
-	def exportEntity(){
-		return PlanningSkipRule.class;
+	def getEntityClass(){
+		//TODO return PlanningSkipRule.class;
+		return null;
 	}
 	
 	def bindParams(def entity) {
@@ -95,7 +96,8 @@ class PlanningSkipRuleController extends AbstractEntityController {
 				template: "skipRuleList",
 				entities: skipRules.subList(params['offset'], max),
 				entityCount: skipRules.size(),
-				code: getLabel()
+				code: getLabel(),
+				entityClass: getEntityClass()
 			])
 		}
 	}

@@ -44,7 +44,7 @@ class GeneralImporterController extends AbstractController {
 	ValueService valueService;
 	DataService dataService;
 	final String IMPORT_FORM = "generalImport";
-	final String IMPORT_OUTPUT = "importOutput";
+	final String IMPORT_OUTPUT = "importOutput";	
 	
 	def importer = {
 		this.getModel(null,null,IMPORT_FORM);
@@ -93,5 +93,13 @@ class GeneralImporterCommand {
 	
 	static constraints = {
 		period(blank:false,nullable:false)
+//		file(blank:false,nullable:false, validator: { val, obj ->
+//			final String FILE_TYPE = "text/csv";
+//			boolean valid = true;
+//			if(val != null)
+//				if(!val.contentType.equals(FILE_TYPE))
+//					valid=false;
+//			return valid;
+//		})
 	}
 }

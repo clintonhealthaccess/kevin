@@ -26,7 +26,7 @@ class FormTagLibTests extends GroovyPagesTestCase {
 		def html = applyTemplate (
 			'<g:selectFromList name="name" label="Name" '+
 			'bean="${bean}" field="name" multiple="true" from="${names}" '+
-			'value="${namesSet}"/>',
+			'value="${namesSet}"/>',	
 			[
 				bean: ['name': 'TEST'],
 				names: ['name1', 'name2'],
@@ -38,6 +38,19 @@ class FormTagLibTests extends GroovyPagesTestCase {
 		assertTrue html.contains ('<option value="name2" selected>')
 		// if it is multiple, contains a hidden field
 		assertTrue html.contains ('<input type="hidden" name="name" value=""/>')
+	}
+	
+	def testi18nTextareaWithNullValue(){
+				
+		def html = applyTemplate (
+			'<g:i18nTextarea name="name" label="Name" '+
+			'bean="${bean}" field="name" '+
+			'value="${null}"/>',
+			[
+				bean: ['name': 'TEST']
+			]
+		)
+		assertTrue html.contains ('<textarea type="text" class="idle-field" name="name.en" rows="4"></textarea>');
 	}
 	
 }

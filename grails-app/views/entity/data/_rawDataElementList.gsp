@@ -4,9 +4,9 @@
   		<tr>
   			<th/>
   		    <g:sortableColumn property="id" title="${message(code: 'entity.id.label')}" />
+  			<g:sortableColumn property="code" title="${message(code: 'entity.code.label')}" />  		    
   			<th><g:message code="entity.name.label"/></th>
   			<th><g:message code="entity.type.label"/></th>
-  			<g:sortableColumn property="code" title="${message(code: 'entity.code.label')}" />
   			<th><g:message code="rawdataelement.lastvaluechanged.label"/></th>
   			<th><g:message code="entity.list.manage.label"/></th>
   		</tr>
@@ -29,11 +29,11 @@
   					</ul>
   				</td>
   				<td>${rawDataElement.id}</td> 
+  				<td>${rawDataElement.code}</td>  				
   				<td class="data-element-explainer" data-data="${rawDataElement.id}">
   					<a href="${createLink(controller:'rawDataElement', action:'getExplainer', params:[id: rawDataElement.id])}"><g:i18n field="${rawDataElement.names}" /></a>
   				</td>
   				<td><g:toHtml value="${rawDataElement.type.getDisplayedValue(2, 2)}"/></td>
-  				<td>${rawDataElement.code}</td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${rawDataElement.lastValueChanged}"/></td>
   				<td>
 					<div class="js_dropdown dropdown"> 

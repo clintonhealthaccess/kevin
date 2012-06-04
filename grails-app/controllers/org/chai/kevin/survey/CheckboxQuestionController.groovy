@@ -71,7 +71,7 @@ class CheckboxQuestionController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return SurveyCheckboxQuestion.class;
 	}
 	

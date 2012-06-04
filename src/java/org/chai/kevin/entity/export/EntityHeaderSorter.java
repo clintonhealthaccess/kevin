@@ -11,32 +11,22 @@ public class EntityHeaderSorter {
 				if (field1 == null || field2 == null)
 					return 0;
 				
-				if (field1.getName().toLowerCase() == "id")
-					return -1;
-				if (field1.getName().toLowerCase() == "code"
-						&& field2.getName().toLowerCase() != "id")
+				if (field1.getName().toLowerCase() == "code")
 					return -1;
 				if (field1.getName().toLowerCase() == "names"
-						&& field2.getName().toLowerCase() != "id"
 						&& field2.getName().toLowerCase() != "code")
 					return -1;
 				if (field1.getName().toLowerCase() == "order"
-						&& field2.getName().toLowerCase() != "id"
 						&& field2.getName().toLowerCase() != "code"
 						&& field2.getName().toLowerCase() != "names")
 					return -1;
 				
-				if (field2.getName().toLowerCase() == "id")
-					return 1;
-				if (field2.getName().toLowerCase() == "code"
-						&& field1.getName().toLowerCase() != "id")
+				if (field2.getName().toLowerCase() == "code")
 					return 1;
 				if (field2.getName().toLowerCase() == "names"
-						&& field1.getName().toLowerCase() != "id"
 						&& field1.getName().toLowerCase() != "code")
 					return 1;
 				if (field2.getName().toLowerCase() == "order"
-						&& field1.getName().toLowerCase() != "id"
 						&& field1.getName().toLowerCase() != "code"
 						&& field1.getName().toLowerCase() != "names")
 					return 1;

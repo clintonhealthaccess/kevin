@@ -60,7 +60,7 @@ class MapsTargetController extends AbstractEntityController {
 		[ target: entity, calculations: entity.calculation!=null?[entity.calculation]:[], types: DataLocationType.list([cache: true])]
 	}
 	
-	def exportEntity(){
+	def getEntityClass(){
 		return MapsTarget.class;
 	}
 	

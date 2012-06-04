@@ -42,6 +42,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.entity.export.Importable;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.StoredValue;
@@ -51,7 +53,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity(name = "DsrTarget")
 @Table(name = "dhsst_dsr_target")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DsrTarget extends AbstractReportTarget {
+public class DsrTarget extends AbstractReportTarget implements Exportable, Importable {
 	
 	private Long id;
 	private DataElement<StoredValue> dataElement;
@@ -95,7 +97,12 @@ public class DsrTarget extends AbstractReportTarget {
 	}
 	
 	@Override
-	public String toString() {
-		return "DsrTarget[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode().toString()) + "]";
 	}
+	
+	@Override
+	public DsrTarget fromExportString(Object value) {
+		return (DsrTarget) value;
+	}	
 }
