@@ -17,6 +17,25 @@ class EnumOptionControllerSpec extends IntegrationTests {
 		enumOptionController.modelAndView == null
 	}
 	
+	def "create enum option"() {
+		setup: 
+		def enume = newEnume(CODE("the code one"), "My Enum one", "Enum one for test one");
+		enumOptionController = new EnumOptionController()
+		
+		when:
+		enumOptionController.params["enume.id"] = enume.id
+		enumOptionController.params["names"] = ["en": "Name"]
+		enumOptionController.params["descriptions"] = ["en": "Description"]
+		enumOptionController.params["code"] = "code"
+		enumOptionController.params["value"] = "value"
+		enumOptionController.saveWithoutTokenCheck()
+		
+		then:
+		EnumOption.list()[0].enume.equals(enume)
+		EnumOption.list()[0].names.en.equals("Name")
+		EnumOption.list()[0].descriptions.en.equals("Description")
+	}
+	
 	def "search and list option"(){
 		setup:
 		def enume = newEnume(CODE("the code one"), "My Enum one", "Enum one for test one");
