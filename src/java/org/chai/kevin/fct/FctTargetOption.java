@@ -11,8 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Exportable;
 import org.chai.kevin.data.Sum;
-import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;

@@ -41,9 +41,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Exportable;
+import org.chai.kevin.Importable;
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.entity.export.Exportable;
-import org.chai.kevin.entity.export.Importable;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.StoredValue;

@@ -31,7 +31,6 @@ package org.chai.kevin;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.dsr.DsrTargetCategory
-import org.chai.kevin.entity.EntityExportService;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location
 import org.chai.kevin.location.LocationLevel
@@ -53,44 +52,9 @@ public abstract class AbstractController {
 
 	ReportService reportService;
 	LocationService locationService;
-	EntityExportService entityExportService;
 	protected final static String FILE_TYPE_ZIP="application/zip";
 	protected final static String FILE_TYPE_CSV="text/csv";
 	
-	def exporter = {
-		def entityClazz = getEntityClass();		
-		
-		if(entityClazz instanceof Class)
-			entityClazz = [entityClazz]
-		
-		List<String> filenames = new ArrayList<String>();
-		List<File> csvFiles = new ArrayList<File>();
-		
-		for(Class clazz : entityClazz){
-			String filename = entityExportService.getExportFilename(clazz);
-			filenames.add(filename);			
-			csvFiles.add(entityExportService.getExportFile(filename, clazz));
-		}
-		
-		String zipFilename = StringUtils.join(filenames, "_")		
-		def zipFile = Utils.getZipFile(csvFiles, zipFilename)
-		
-		if(zipFile.exists()){
-			response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());
-			response.setContentType("application/zip");
-			response.setHeader("Content-length", zipFile.length().toString());
-			response.outputStream << zipFile.newInputStream()
-		}
-	}
-	
-	def importer = {
-		def clazz = getEntityClass();
-		
-		if(clazz instanceof Class){
-			redirect (controller: 'entityImporter', action: 'importer', params: [entityClass: clazz.name]);
-		}
-	}
-		
 	def getTargetURI() {
 		return params.targetURI?: "/"
 	}

@@ -49,7 +49,7 @@ import org.chai.kevin.data.ExpressionMap;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
-import org.chai.kevin.export.Exporter;
+import org.chai.kevin.exports.DataExport;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormSkipRule;
@@ -158,8 +158,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new DataLocationType(names: names, code: code).save(failOnError: true)
 	}
 	
-	static def newExporter(def descriptions,def periods, def locationType, def locations, def data){
-		return new Exporter(descriptions:descriptions,periods:periods,typeCodeString:locationType,locations:locations,data:data,date:new Date()).save(failOnError: true);
+	static def newDataExport(def descriptions,def periods, def locationType, def locations, def data){
+		return new DataExport(descriptions:descriptions,periods:periods,typeCodeString:locationType,locations:locations,data:data,date:new Date()).save(failOnError: true);
 	}
 		
 	static def newDataLocation(def code, def location, def type) {

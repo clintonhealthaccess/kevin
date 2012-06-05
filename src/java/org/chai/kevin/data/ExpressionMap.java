@@ -4,8 +4,8 @@ import java.util.Map;
 
 import javax.persistence.Embeddable;
 
-import org.chai.kevin.entity.export.Exportable;
-import org.chai.kevin.entity.export.Importable;
+import org.chai.kevin.Exportable;
+import org.chai.kevin.Importable;
 import org.chai.kevin.json.JSONMap;
 
 @Embeddable

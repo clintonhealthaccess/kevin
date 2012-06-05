@@ -68,7 +68,7 @@ import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
-import org.chai.kevin.export.Exporter;
+import org.chai.kevin.exports.DataExport;
 import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
 import org.chai.kevin.form.FormElement;
@@ -1271,7 +1271,7 @@ class Initializer {
 	
 	
 	static def createExporter(){
-		if(!Exporter.count()){
+		if(!DataExport.count()){
 			def dh = DataLocationType.findByCode("District Hospital")
 			def hc = DataLocationType.findByCode("Health Center")
 			def periodOne = Period.list()[0];
@@ -1289,7 +1289,7 @@ class Initializer {
 			def south = Location.findByCode("South");
 			
 			
-			def exporterThree = new Exporter(
+			def exporterThree = new DataExport(
 				descriptions: j(["en":"Exporter Raw Data Element Three"]),
 				date: new Date(),
 				typeCodeString:"Health Center",
@@ -1298,7 +1298,7 @@ class Initializer {
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 			
-			def exporterTwo = new Exporter(
+			def exporterTwo = new DataExport(
 				descriptions: j(["en":"Exporter Raw Data Element Two"]),
 				date: new Date(),
 				typeCodeString:"Health Center",
@@ -1307,7 +1307,7 @@ class Initializer {
 				periods: [periodOne]
 				).save(failOnError: true)
 				
-			def exporterOne = new Exporter(
+			def exporterOne = new DataExport(
 				descriptions: j(["en":"Exporter Raw Data Element One"]),
 				date: new Date(),
 				locations:[est,burera,south],
@@ -1316,7 +1316,7 @@ class Initializer {
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 				
-			def exporterFour = new Exporter(
+			def exporterFour = new DataExport(
 				descriptions: j(["en":"Exporter Raw Data Element Four"]),
 				date: new Date(),
 				typeCodeString:"District Hospital",
