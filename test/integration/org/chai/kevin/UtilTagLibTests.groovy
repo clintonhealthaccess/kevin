@@ -43,4 +43,14 @@ class UtilTagLibTests extends GroovyPagesTestCase {
 		assertEquals "/test/test?targetURI=%2Ftest%2Ftest&test=123", url
 	}
 	
+	def testStripHtml() {
+		def html = applyTemplate(
+			'<g:stripHtml field="${field}" chars="10"/>',
+			[
+				field: '<br/>this is a test with blabla'
+			]
+		)
+		assertEquals 'this is a <a href="#" onclick="return false;" title="this is a test with blabla" class="tooltip">...</a>', html
+	}
+	
 }

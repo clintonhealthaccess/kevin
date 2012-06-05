@@ -217,8 +217,8 @@ class Initializer {
 		if (!Enum.count()) {
 			// Enumerations
 			def enume = new Enum(names:j(["en":"Enum 1"]), descriptions:j([:]), code:"ENUM1");
-			def enumOption1 = new EnumOption(code:"EnumOption1",names:j(["en":"Value 1"]), value:"value1", enume: enume, order: o(["en":1,"fr":2]));
-			def enumOption2 = new EnumOption(code:"EnumOption2",names:j(["en":"Value 2"]), value:"value2", enume: enume, order: o(["en":2,"fr":1]));
+			def enumOption1 = new EnumOption(code:"EnumOption1",names:j(["en":"Value 1"]), descriptions:j(["en":"Lorem Ipsum blabla bli blabla bla Lorem Ipsum Sit Amet Description is huge"]), value:"value1", enume: enume, order: o(["en":1,"fr":2]));
+			def enumOption2 = new EnumOption(code:"EnumOption2",names:j(["en":"Value 2"]), descriptions:j(["en":"Small Description Lorem Ipsum"]), value:"value2", enume: enume, order: o(["en":2,"fr":1]));
 			
 			def enume2 = new Enum(names:j(["en":"Enum 2"]), descriptions:j([:]), code:"ENUM2");
 			def enumOption01 = new EnumOption(code:"EnumOption3",names:j(["en":"N/A Did not receive training"]), value:"N/A Did not receive training", enume: enume2);
