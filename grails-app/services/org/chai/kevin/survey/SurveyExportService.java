@@ -340,7 +340,7 @@ public class SurveyExportService {
 	}
 	
 	private String formatExportDataItem(String value){		
-		if (value != null) value = Utils.stripHtml(value, value.length());
+		if (value != null) value = Utils.stripHtml(value);
 		if (value == null) value = "null";
 		return value;
 	}

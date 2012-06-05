@@ -9,6 +9,7 @@
 		<input type="hidden" name="enume.id" value="${option.enume.id}"/>
 		
 		<g:i18nTextarea name="names" bean="${option}" value="${option.names}" label="${message(code:'entity.name.label')}" field="names" height="100"  width="300" maxHeight="100" />
+		<g:i18nTextarea name="descriptions" bean="${option}" value="${option.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions" height="150"  width="300" maxHeight="150" />
 		<g:i18nInput name="order" label="${message(code:'entity.order.label')}" bean="${option}" value="${option.order}" field="order"/>
 		
 		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${option}" field="code" />
