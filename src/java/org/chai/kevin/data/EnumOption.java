@@ -60,7 +60,8 @@ public class EnumOption extends Orderable<Ordering> implements Exportable, Impor
 	private String value;
 	private Ordering order = new Ordering();
 	private Translation names = new Translation();
-
+	private Translation descriptions = new Translation();
+	
 	// TODO flag to deactivate option in survey, 
 	// think about how to make that better
 	// enum and enum options should not be directly linked to a survey
@@ -99,7 +100,18 @@ public class EnumOption extends Orderable<Ordering> implements Exportable, Impor
 	public void setNames(Translation names) {
 		this.names = names;
 	}
-	
+
+	@Embedded
+	@AttributeOverrides({
+        @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
+	})
+	public Translation getDescriptions() {
+		return descriptions;
+	}
+
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
+	}
 	
 	@Basic
 	@Column(nullable=false)

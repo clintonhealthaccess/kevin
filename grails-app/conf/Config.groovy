@@ -181,7 +181,9 @@ environments {
 		log4j = {
 			root {
 				error
-			}	
+			}
+			
+			off 'ExpressionLog'
 		}
 	}
 }

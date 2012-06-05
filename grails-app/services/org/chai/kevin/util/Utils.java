@@ -123,9 +123,8 @@ public class Utils {
 		return string.matches(".*\\$"+id+"(\\z|\\D|$).*");
 	}
 	
-	public static String stripHtml(String htmlString, Integer num) {
+	public static String stripHtml(String htmlString) {
 		String noHtmlString;
-		Integer length = num;
 	
 		if (htmlString != null){
 			noHtmlString = htmlString.replace("&nbsp;", " ");
@@ -135,8 +134,7 @@ public class Utils {
 		}
 		else noHtmlString = htmlString;
 	
-		if (num == null || noHtmlString.length() <= num) return noHtmlString;
-		return noHtmlString.substring(0, length);
+		return noHtmlString;
 	}
 	
 	public static String getValueString(Type type, Value value){
