@@ -15,7 +15,7 @@
 						<g:render template="/planning/planningTabs" model="[planning: planning, location: location, selected: 'undertakings']"/>
 						<g:render template="/planning/undertakingsTabs" model="[planning: planning, location: location, selected: planningType.id]"/>
 						
-        				<g:render template="/templates/help" model="[content: message(code:'planning.list.help')]"/>
+        				<g:render template="/templates/help" model="[content: i18n(field: planningType.listHelps)]"/>
         
 						<ul class="clearfix" id="questions">
 							<li class="question push-20">

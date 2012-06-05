@@ -39,6 +39,8 @@ public class PlanningType {
 	private Planning planning;
 	private Translation names = new Translation();
 	private Translation namesPlural = new Translation();
+	private Translation newHelps = new Translation();
+	private Translation listHelps = new Translation();
 	private String fixedHeader;
 
 	private Integer maxNumber;
@@ -82,6 +84,30 @@ public class PlanningType {
 		this.namesPlural = namesPlural;
 	}
 	
+	@Embedded
+	@AttributeOverrides({
+        @AttributeOverride(name="jsonText", column=@Column(name="jsonNewHelps", nullable=false))
+	})
+	public Translation getNewHelps() {
+		return newHelps;
+	}
+
+	public void setNewHelps(Translation newHelps) {
+		this.newHelps = newHelps;
+	}
+	
+	@Embedded
+	@AttributeOverrides({
+        @AttributeOverride(name="jsonText", column=@Column(name="jsonListHelps", nullable=false))
+	})
+	public Translation getListHelps() {
+		return listHelps;
+	}
+
+	public void setListHelps(Translation listHelps) {
+		this.listHelps = listHelps;
+	}
+
 	@JoinColumn(nullable=false)
 	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
 	@ManyToOne(targetEntity=FormElement.class, optional=false)

@@ -1119,6 +1119,8 @@ class Initializer {
 			period: Period.list([cache: true])[0],
 			names: j(["en":"Planning 2011"]),
 			typeCodeString: "Health Center",
+			overviewHelps: j(["en": "Some help information for the planning tool - overview"]),
+			budgetHelps: j(["en": "Some help information for the planning tool - budget"]),
 			active: true
 		).save(failOnError: true)
 		
@@ -1209,7 +1211,6 @@ class Initializer {
 		def planningType = new PlanningType(
 			names: j(["en":"Activity"]),
 			namesPlural: j(["en":"Activities"]),
-//			sections: ["[_].key1","[_].key2"],
 			sectionDescriptions: [
 				"[_].basic": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
 				"[_].staffing": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
@@ -1219,6 +1220,8 @@ class Initializer {
 			],
 			formElement: formElement,
 			fixedHeader: '[_].basic.description',
+			listHelps: j(["en": "Some help information for the planning tool - list"]),
+			newHelps: j(["en": "Some help information for the planning tool - new"]),
 			planning: planning
 		).save(failOnError: true);
 		planning.planningTypes << planningType

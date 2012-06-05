@@ -11,6 +11,9 @@
 		<g:i18nInput name="names" bean="${planningType}" value="${planningType.names}" label="${message(code:'entity.name.label')}" field="names"/>
 		<g:i18nInput name="namesPlural" bean="${planningType}" value="${planningType.namesPlural}" label="${message(code:'planning.planningtype.nameplural.label')}" field="namesPlural"/>
 
+		<g:i18nTextarea name="listHelps" bean="${planningType}" value="${planningType.listHelps}" label="${message(code:'planning.planningtype.listhelp.label')}" field="listHelps" height="150"  width="300" maxHeight="150" />
+		<g:i18nTextarea name="newHelps" bean="${planningType}" value="${planningType.newHelps}" label="${message(code:'planning.planningtype.newhelp.label')}" field="newHelps" height="150"  width="300" maxHeight="150" />
+
 		<g:selectFromList name="fixedHeader" label="${message(code:'planning.planningtype.fixedheader.label')}" bean="${planningType}" field="fixedHeader" multiple="false"
 			from="${valuePrefixes}" value="${planningType.fixedHeader}"/>
 		
