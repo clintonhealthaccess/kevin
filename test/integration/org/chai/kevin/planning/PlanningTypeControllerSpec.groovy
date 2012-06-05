@@ -45,7 +45,9 @@ class PlanningTypeControllerSpec extends PlanningIntegrationTests {
 		planningTypeController.params['formElement.id'] = formElement.id
 		planningTypeController.params['fixedHeader'] = '[_].key'
 		planningTypeController.params['namesPlural'] = ['en': 'Activities']
-		planningTypeController.params['namesPlural'] = ['en': 'Activities']	
+		planningTypeController.params['namesPlural'] = ['en': 'Activities']
+		planningTypeController.params['newHelps'] = ['en': 'Help - new']
+		planningTypeController.params['listHelps'] = ['en': 'Help - list']
 		planningTypeController.params['headerList'] = ['[_].key']
 		planningTypeController.params['headerList[[_].key].en'] = 'Header'
 		planningTypeController.params['headerList[[_].key]'] = ['en': 'Header'] // this is not used
@@ -58,6 +60,8 @@ class PlanningTypeControllerSpec extends PlanningIntegrationTests {
 		PlanningType.count() == 1
 		PlanningType.list()[0].period.equals(period)
 		PlanningType.list()[0].namesPlural.en.equals("Activities")
+		PlanningType.list()[0].newHelps.en.equals("Help - new")
+		PlanningType.list()[0].listHelps.en.equals("Help - list")
 		PlanningType.list()[0].formElement.headers['[_].key'].en.equals('Header')
 		PlanningType.list()[0].sectionDescriptions['[_].key'].en.equals('Description')
 		

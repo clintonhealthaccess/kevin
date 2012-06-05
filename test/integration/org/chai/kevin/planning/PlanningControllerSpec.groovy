@@ -24,11 +24,17 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		
 		when:
 		planningController.params['period.id'] = period.id
+		planningController.params['names'] = ['en': 'Name']
+		planningController.params['overviewHelps'] = ['en': 'Help - overview']
+		planningController.params['budgetHelps'] = ['en': 'Help - budget']
 		planningController.saveWithoutTokenCheck()
 
 		then:
 		Planning.count() == 1
 		Planning.list()[0].period.equals(period)
+		Planning.list()[0].names.en.equals('Name')
+		Planning.list()[0].overviewHelps.en.equals('Help - overview')
+		Planning.list()[0].budgetHelps.en.equals('Help - budget')
 	}
 	
 	def "create planning with active flag resets active flag on other planning"() {

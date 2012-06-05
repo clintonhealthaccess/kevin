@@ -87,6 +87,8 @@ class PlanningController extends AbstractEntityController {
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
+		if (params.overviewHelps!=null) entity.overviewHelps = params.overviewHelps
+		if (params.budgetHelps!=null) entity.budgetHelps = params.budgetHelps
 	}
 
 	def list = {

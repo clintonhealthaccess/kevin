@@ -17,7 +17,7 @@
 					<li><a class="selected" href="#"><g:message code="planning.tabs.new" args="[i18n(field:planningType.names)]"/></a></li>
 					<li><a class="${selected=='budget'?'selected':''}" href="${createLink(controller:'editPlanning', action:'budget', params:[planning: planningType.planning.id, location: location.id])}"><g:message code="planning.tabs.budget"/></a></li>
 				</ul>
-		    	<g:render template="/templates/help" model="[content: message(code:'planning.new.help')]"/>
+		    	<g:render template="/templates/help" model="[content: i18n(field: planningType.newHelps)]"/>
 					
 				<div id="questions">
 					<shiro:hasPermission permission="admin">

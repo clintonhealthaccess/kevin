@@ -8,6 +8,9 @@
 	<g:form url="[controller:'planning', action:'save', params:[targetURI: targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${planning}" value="${planning?.names}" label="${message(code:'entity.name.label')}" field="names"/>
 		
+		<g:i18nTextarea name="overviewHelps" bean="${planning}" value="${planning.overviewHelps}" label="${message(code:'planning.overviewhelp.label')}" field="overviewHelps" height="150"  width="300" maxHeight="150" />
+		<g:i18nTextarea name="budgetHelps" bean="${planning}" value="${planning.budgetHelps}" label="${message(code:'planning.budgethelp.label')}" field="budgetHelps" height="150"  width="300" maxHeight="150" />
+		
 		<g:selectFromList name="period.id" label="${message(code:'planning.period.label')}" bean="${planning}" field="period"
 			from="${periods}" value="${planning.period?.id}" values="${periods.collect{it.startDate.toString()+' - '+it.endDate.toString()}}" optionKey="id" multiple="false"/>
 	
