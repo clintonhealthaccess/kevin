@@ -86,6 +86,8 @@ class PlanningTypeController extends AbstractEntityController {
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
 		if (params.namesPlural!=null) entity.namesPlural = params.namesPlural
+		if (params.listHelps!=null) entity.listHelps = params.listHelps
+		if (params.newHelps!=null) entity.newHelps = params.newHelps
 		
 		// headers
 		bindTranslationMap('headerList', entity.formElement?.headers)

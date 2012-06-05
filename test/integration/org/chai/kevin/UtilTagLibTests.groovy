@@ -43,4 +43,47 @@ class UtilTagLibTests extends GroovyPagesTestCase {
 		assertEquals "/test/test?targetURI=%2Ftest%2Ftest&test=123", url
 	}
 	
+	def testIfTextWhenNoText() {
+		def html = applyTemplate(
+			'<g:ifText field="${field}">TEXT</g:ifText>',
+			[
+				field: '<br/>'
+			]
+		)
+
+		assertEquals "", html
+	}
+	
+	def testIfTextWhenNullText() {
+		def html = applyTemplate(
+			'<g:ifText field="${field}">TEXT</g:ifText>',
+			[
+				field: null
+			]
+		)
+
+		assertEquals "", html
+	}
+	
+	def testIfTextWhenText() {
+		def html = applyTemplate(
+			'<g:ifText field="${field}">TEXT</g:ifText>',
+			[
+				field: '<br/>123'
+			]
+		)
+
+		assertEquals "TEXT", html
+	}
+	
+	def testStripHtmlWhenNullText() {
+		def html = applyTemplate(
+			'<g:stripHtml field="${field}" chars="10"/>',
+			[
+				field: null
+			]
+		)
+
+		assertEquals "", html
+	}
 }

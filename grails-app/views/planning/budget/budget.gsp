@@ -13,7 +13,7 @@
 			<div class="wrapper">
 				<div class="main">
 					<g:render template="/planning/planningTabs" model="[planning: planning, location: location, selected: "budget"]"/>
-	        		<g:render template="/templates/help" model="[content: message(code:'planning.budget.help')]"/>
+	        		<g:render template="/templates/help" model="[content: i18n(field: planning.budgetHelps)]"/>
 	        		
 					<div id="questions">
 						<div class="question push-20">

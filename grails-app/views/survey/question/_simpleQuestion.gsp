@@ -5,7 +5,7 @@
 		<span class="question-number">${surveyPage.getQuestionNumber(question)}</span><g:i18n field="${question.names}" />
 	</h4>
 
-	<g:ifText field="${question.descriptions}">
+	<g:ifText field="${i18n(field: question.descriptions)}">
 		<g:render template="/templates/help" model="[content: i18n(field: question.descriptions)]"/>
 	</g:ifText>
 	<div class="clear"></div>
