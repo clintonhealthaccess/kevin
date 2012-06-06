@@ -14,9 +14,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
-import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;

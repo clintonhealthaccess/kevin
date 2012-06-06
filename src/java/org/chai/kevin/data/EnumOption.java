@@ -41,11 +41,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.chai.kevin.Exportable;
+import org.chai.kevin.Importable;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Ordering;
 import org.chai.kevin.Translation;
-import org.chai.kevin.entity.export.Exportable;
-import org.chai.kevin.entity.export.Importable;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;

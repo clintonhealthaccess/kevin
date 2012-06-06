@@ -37,10 +37,10 @@ import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
-import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.reports.ReportProgram;
