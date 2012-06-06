@@ -25,8 +25,8 @@
   						<td><span class="js_progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
   						<td>
   							<a href="${createLink(controller: 'editSurvey', action: 'programPage', params: [program: program.id, location: location.id])}"><g:message code="survey.summary.viewsurvey.label"/></a>
-  							<shiro:hasPermission permission="editSurvey:export"> 
-								<a href="${createLink(controller: 'editSurvey', action: 'export', params: [program: program.id, location: location.id])}">
+  							<shiro:hasPermission permission="surveyExport:export"> 
+								<a href="${createLink(controller: 'surveyExport', action: 'export', params: [program: program.id, location: location.id])}">
 									<g:message code="survey.summary.exportprogram.label" />
 								</a>
 							</shiro:hasPermission>

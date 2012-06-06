@@ -30,9 +30,9 @@
 									<g:message code="survey.summary.viewprogram.label" />
 								</a>
 							</li> 
-							<shiro:hasPermission permission="editSurvey:export">
+							<shiro:hasPermission permission="surveyExport:export">
 								<li> 
-									<a href="${createLink(controller: 'editSurvey', action: 'export', params: [program: currentProgram.id, location: location.id])}">
+									<a href="${createLink(controller: 'surveyExport', action: 'export', params: [program: currentProgram.id, location: location.id])}">
 										<g:message code="survey.summary.exportprogram.label" />
 									</a>
 								</li>

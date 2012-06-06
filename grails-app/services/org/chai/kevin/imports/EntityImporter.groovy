@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,7 +49,7 @@ public class EntityImporter extends FileImporter {
 	}
 
 	public void importData(String filename, Reader reader) throws IOException {
-		if (log.isDebugEnabled()) log.debug("importData(Reader:" + reader + " Class:"+ clazz.getName() + "ImporterErrorManager: " + manager + ")");
+		if (log.isDebugEnabled()) log.debug("importData(filename: " + filename + ", reader: "+reader+")");
 			
 		ICsvMapReader readFileAsMap = new CsvMapReader(reader, CsvPreference.EXCEL_PREFERENCE);		
 		
@@ -61,9 +62,9 @@ public class EntityImporter extends FileImporter {
 			final String[] headers = readFileAsMap.getCSVHeader(true);
 			List<Field> fields = new ArrayList<Field>();			
 			Class<?> headerClass = clazz;
-			while(headerClass != null && headerClass != Object.class){				
+			while (headerClass != null && headerClass != Object.class) {				
 				Field[] classFields = headerClass.getDeclaredFields();
-				for(Field field : classFields){
+				for (Field field : classFields) {
 					fields.add(field);
 				}
 				headerClass = headerClass.getSuperclass();
@@ -71,45 +72,60 @@ public class EntityImporter extends FileImporter {
 			Collections.sort(fields, EntityHeaderSorter.BY_FIELD());			
 			
 			List<String> fieldNames = new ArrayList<String>();
-			for(Field field : fields){
+			for (Field field : fields){
 				if (!field.getName().equals("id")) fieldNames.add(field.getName());
 			}
-			if(!Arrays.asList(headers).containsAll(fieldNames)) {
-				if (log.isInfoEnabled()) log.info("fields in entity: "+fieldNames+", headers: "+headers)
-				manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(),Arrays.asList(headers).toString(),"import.error.message.unknown.header"));
-			}	
-			else {
-				
-				List<String> entityCodes = new ArrayList<String>();									
-				Map<String, String> row = readFileAsMap.read(headers);
-				
-				//entities
-				while (row != null) {					
+			Collection missingHeaders = CollectionUtils.subtract(fieldNames, headers as Collection)
+			if (!missingHeaders.isEmpty()) {
+				for (String missingHeader : missingHeaders) {
+					manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(), missingHeader, "import.error.message.missing.header"));
+				}
+			}
+			Collection unknownHeaders = CollectionUtils.subtract(headers as Collection, fieldNames)
+			if (!unknownHeaders.isEmpty()) {
+				for (String unknownHeader : unknownHeaders) {
+					manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(), unknownHeader, "import.error.message.unknown.header"));
+				}
+			}
+			
+			List<String> entityCodes = new ArrayList<String>();									
+			Map<String, String> row = readRow(filename, readFileAsMap, headers, manager);
+			
+			//entities
+			while (row != null) {
+				if (!row.isEmpty()) {
 					Object entity = null;
 					
-					String entityCode = row.get(CODE_HEADER);					
-					if(entityCodes.contains(entityCode)){
-						manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.entitycodeduplicate"));
+					// TODO what if there is no CODE_HEADER, what if the code is not called code ?
+					String entityCode = row.get(CODE_HEADER);
+					if (entityCode == null) {
+						manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(), "", "import.error.message.code.noheader"));
+						manager.incrementNumberOfUnsavedRows();
+					}
+					else if (entityCodes.contains(entityCode)) {
+						manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(), CODE_HEADER, "import.error.message.data.duplicated"));
 						manager.incrementNumberOfUnsavedRows();
 					}
 					else {
 						entityCodes.add(entityCode);
 															
-						if(entityCode == null || entityCode.isEmpty()){
+						if (entityCode == null || entityCode.isEmpty()) {
 							try {
 								entity = clazz.newInstance();
 							} catch (InstantiationException e) {
+								// TODO change this
 								e.printStackTrace();
 							} catch (IllegalAccessException e) {
+								// TODO change this
 								e.printStackTrace();
 							}
 						}
-						else{
+						else {
 							entity = findEntityByCode(entityCode, clazz);
 						}
 						
-						if(entity == null){
-							manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.entitynull"));
+						if (entity == null) {
+							manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.entity.notfound"));
 							manager.incrementNumberOfUnsavedRows();
 						}									
 						else {	
@@ -124,7 +140,7 @@ public class EntityImporter extends FileImporter {
 								manager.incrementNumberOfRowsSavedWithError(1);
 							
 							if(!entity.validate()){
-								manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(),"blank","import.error.message.entityinvalid"));
+								manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(),"","import.error.message.entity.invalid"));
 								manager.incrementNumberOfUnsavedRows();
 							}
 							else{
@@ -133,13 +149,12 @@ public class EntityImporter extends FileImporter {
 							}
 						}
 					}
-																
-					row = readFileAsMap.read(headers);
-				}								
+				}
+															
+				row = readRow(filename, readFileAsMap, headers, manager);
 			}
-
 		} catch (IOException ioe) {
-			// TODO Please throw something meaningful
+			// TODO change this
 			throw ioe;
 		} finally {
 			readFileAsMap.close();
@@ -149,23 +164,21 @@ public class EntityImporter extends FileImporter {
 
 	private Object setEntityData(Map<String, String> row, Object entity, List<Field> fields, EntityImportSanitizer sanitizer){					
 		
-		for(Field field : fields){
+		for (Field field : fields) {
 			String fieldName = field.getName();
 			if (log.isDebugEnabled()) 
 				log.debug("header: " + fieldName + ", field: " + row.get(fieldName));
 				
 			try {
 				boolean isNotAccessible = false;
-				if(!field.isAccessible()){ 
+				if (!field.isAccessible()) { 
 					field.setAccessible(true);
 					isNotAccessible = true;
 				}				
 										
 				Object newValue = row.get(fieldName);
-				if(newValue == null || newValue.isEmpty())
-					newValue = "null";
-				else{
-					
+				if (newValue == null || newValue.isEmpty()) newValue = "null";
+				else {
 					Class<?> clazz = null;
 					clazz = field.getType();
 					Class<?> innerClazz = null;
@@ -180,11 +193,12 @@ public class EntityImporter extends FileImporter {
 					field.set(entity, newValue);			
 				}
 				
-				if(isNotAccessible)
-					field.setAccessible(false);	
+				if (isNotAccessible) field.setAccessible(false);	
 			} catch (IllegalArgumentException e) {
+				// TODO change this
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
+				// TODO change this
 				e.printStackTrace();
 			}						
 		}		
@@ -270,6 +284,7 @@ public class EntityImporter extends FileImporter {
 						}
 						else{
 							this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
+							// TODO what is this error message ?
 							errors.add(new ImporterError(filename, lineNumber, header,"import.error.message.importentitiesinvalid"));
 						}
 					}										
@@ -289,8 +304,9 @@ public class EntityImporter extends FileImporter {
 				}
 				//value is not importable or a primitive type
 				else {
+					// TODO we can catch this way before here
 					this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-					errors.add(new ImporterError(filename, lineNumber, header,"import.error.message.entitynotimportable"));
+					errors.add(new ImporterError(filename, lineNumber, header,"import.error.message.entity.notimportable"));
 				}
 			}					
 			
@@ -318,6 +334,7 @@ public class EntityImporter extends FileImporter {
 					}
 					else{
 						this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
+						// TODO what is this error message ?
 						errors.add(new ImporterError(filename, lineNumber, header,"import.error.message.importentitynull"));
 						break;
 					}

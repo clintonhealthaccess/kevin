@@ -19,8 +19,8 @@
 						<a href="${createLink(controller: 'editSurvey', action: 'sectionPage', params: [section: currentSection.id, location: location.id])}">
 							<g:message code="survey.summary.viewsurvey.label" />
 						</a>
-						<shiro:hasPermission permission="editSurvey:export"> 
-							<a href="${createLink(controller: 'editSurvey', action: 'export', params: [section: currentSection.id, location: location.id])}">
+						<shiro:hasPermission permission="surveyExport:export"> 
+							<a href="${createLink(controller: 'surveyExport', action: 'export', params: [section: currentSection.id, location: location.id])}">
 								<g:message code="survey.summary.exportsection.label" />
 							</a>
 						</shiro:hasPermission>

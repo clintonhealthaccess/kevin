@@ -99,9 +99,7 @@ public class EntityExportService {
 	}	
 	
 	private List<Object> getEntities(Class<?> clazz){
-		List<Object> entities = new ArrayList<Object>();
-		entities = (List<Object>) sessionFactory.getCurrentSession().createCriteria(clazz).list();
-		return entities;
+		return (List<Object>) sessionFactory.getCurrentSession().createCriteria(clazz).list();
 	}
 	
 	public List<String> getEntityData(Object entity, List<Field> fields){
