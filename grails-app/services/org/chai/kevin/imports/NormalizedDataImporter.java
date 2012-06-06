@@ -95,89 +95,91 @@ public class NormalizedDataImporter extends DataImporter {
 	/**
 	 * Imports numberLinesToImport lines and then returns. Returns true when file has been read entirely.
 	 * 
-	 * @param fileName
+	 * @param filename
 	 * @param reader
 	 * @param numberOfLinesToImport
 	 * @param sanitizer
-	 * @param readFileAsMap
+	 * @param csvMapReader
 	 * @param headers
 	 * @param positions
 	 * @throws IOException
 	 */
-	private boolean importData(String fileName, Reader reader, Integer numberOfLinesToImport, ImportSanitizer sanitizer, ICsvMapReader readFileAsMap, String[] headers, Map<String, Integer> positions) throws IOException {
+	private boolean importData(String filename, Reader reader, Integer numberOfLinesToImport, ImportSanitizer sanitizer, ICsvMapReader csvMapReader, String[] headers, Map<String, Integer> positions) throws IOException {
 
 		DataLocation dataLocation=null;
 		RawDataElementValue rawDataElementValue= null;	
 		String code=null;
 		
 		Map<String,Object> positionsValueMap = new HashMap<String, Object>();
-		Map<String,String> values = readFileAsMap.read(headers);
+		Map<String,String> values = readRow(filename, csvMapReader, headers, manager);
 		
 		int importedLines = 0;
 		while (values != null && importedLines < numberOfLinesToImport) {
-			if (log.isInfoEnabled()) log.info("starting import of line with values: "+values);
-			
-			sanitizer.setLineNumber(readFileAsMap.getLineNumber());
-			sanitizer.setNumberOfErrorInRows(0);
-			
-			if(log.isDebugEnabled()) log.debug("current facility code: "+values.get(CODE_HEADER));
-			
-			if (values.get(CODE_HEADER)!=null && !values.get(CODE_HEADER).equals(code)) {
-				// either we are reading the first line and there is no current location
-				// or we change location
+			if (!values.isEmpty()) {
+				if (log.isInfoEnabled()) log.info("starting import of line with values: "+values);
 				
-				// first we save the data of the preceding lines
-				if (dataLocation != null) {
-					// we merge and save the current data
-					saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, positions, code, sanitizer);
+				sanitizer.setLineNumber(csvMapReader.getLineNumber());
+				sanitizer.setNumberOfErrorInRows(0);
+				
+				if(log.isDebugEnabled()) log.debug("current facility code: "+values.get(CODE_HEADER));
+				
+				if (values.get(CODE_HEADER)!=null && !values.get(CODE_HEADER).equals(code)) {
+					// either we are reading the first line and there is no current location
+					// or we change location
 					
-					// clear the value map since we are reading a line for a new location
-					positionsValueMap.clear();
-				}
-				
-				// second we get the new location
-				// 1 update the current code
-				code = values.get(CODE_HEADER);
-				// 2 update and save the position	
-				if (positions.get(code) == null) positions.put(code, 0);
-				// 3 update the location
-				dataLocation = locationService.findCalculationLocationByCode(code, DataLocation.class);
-				// if the location is not found, we add an error
-				if (dataLocation == null) {
-					manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.unknown.location"));
-				} 
-				else {
-					// get the value associated to the new location
-					rawDataElementValue = valueService.getDataElementValue(rawDataElement, dataLocation, period);
-					if(rawDataElementValue == null) {
-						rawDataElementValue = new RawDataElementValue(rawDataElement, dataLocation, period, new Value(""));
+					// first we save the data of the preceding lines
+					if (dataLocation != null) {
+						// we merge and save the current data
+						saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, positions, code, sanitizer);
+						
+						// clear the value map since we are reading a line for a new location
+						positionsValueMap.clear();
+					}
+					
+					// second we get the new location
+					// 1 update the current code
+					code = values.get(CODE_HEADER);
+					// 2 update and save the position	
+					if (positions.get(code) == null) positions.put(code, 0);
+					// 3 update the location
+					dataLocation = locationService.findCalculationLocationByCode(code, DataLocation.class);
+					// if the location is not found, we add an error
+					if (dataLocation == null) {
+						manager.getErrors().add(new ImporterError(filename,csvMapReader.getLineNumber(),CODE_HEADER,"import.error.message.unknown.location"));
+					} 
+					else {
+						// get the value associated to the new location
+						rawDataElementValue = valueService.getDataElementValue(rawDataElement, dataLocation, period);
+						if(rawDataElementValue == null) {
+							rawDataElementValue = new RawDataElementValue(rawDataElement, dataLocation, period, new Value(""));
+						}
 					}
 				}
-			}
-			
-			if (dataLocation == null) {
-				manager.incrementNumberOfUnsavedRows();
-			}
-			else {
-				// read values from line and put into valueMap
-				for (String header : headers){
-					if (!header.equals(CODE_HEADER)){
-						positionsValueMap.put("[" + positions.get(code) + "]."+ header, values.get(header));
-					}		
+				
+				if (dataLocation == null) {
+					manager.incrementNumberOfUnsavedRows();
 				}
-				// increment number of lines read for this location
-				positions.put(code, positions.get(code) + 1);
-			
-				if (sanitizer.getNumberOfErrorInRows()>0) manager.incrementNumberOfRowsSavedWithError(1);
-				manager.incrementNumberOfSavedRows();
+				else {
+					// read values from line and put into valueMap
+					for (String header : headers){
+						if (!header.equals(CODE_HEADER)){
+							positionsValueMap.put("[" + positions.get(code) + "]."+ header, values.get(header));
+						}		
+					}
+					// increment number of lines read for this location
+					positions.put(code, positions.get(code) + 1);
+				
+					if (sanitizer.getNumberOfErrorInRows()>0) manager.incrementNumberOfRowsSavedWithError(1);
+					manager.incrementNumberOfSavedRows();
+				}
+				if (log.isInfoEnabled()) log.info("finished importing line");
+				
+				// we increment the number of imported lines to stop the while loop when it reaches numberOfLinesToImport
+				importedLines++;
 			}
-			if (log.isInfoEnabled()) log.info("finished importing line");
-			
-			// we increment the number of imported lines to stop the while loop when it reaches numberOfLinesToImport
-			importedLines++;
 			
 			// read new line
-			if (importedLines < numberOfLinesToImport) values = readFileAsMap.read(headers);
+			if (importedLines < numberOfLinesToImport) values = readRow(filename, csvMapReader, headers, manager);
 		}
 		
 		saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, positions, code, sanitizer);
@@ -209,8 +211,8 @@ public class NormalizedDataImporter extends DataImporter {
 		
 		manager.setCurrentFileName(fileName);
 		
-		final ICsvMapReader readFileAsMap = new CsvMapReader(reader, CsvPreference.EXCEL_PREFERENCE);
-		final String[] headers = readFileAsMap.getCSVHeader(true);
+		final ICsvMapReader csvMapReader = new CsvMapReader(reader, CsvPreference.EXCEL_PREFERENCE);
+		final String[] headers = csvMapReader.getCSVHeader(true);
 		
 		Map<String,Type> types = new HashMap<String,Type>();
 		
@@ -220,7 +222,7 @@ public class NormalizedDataImporter extends DataImporter {
 					types.put("[_]."+header,rawDataElement.getType().getType("[_]."+header));
 			} catch(IllegalArgumentException e){
 				if(log.isWarnEnabled()) log.warn("Column type not found for header"+header, e);
-				manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(),header,"import.error.message.unknowm.column.type"));
+				manager.getErrors().add(new ImporterError(fileName,csvMapReader.getLineNumber(),header,"import.error.message.unknowm.column.type"));
 			}
 		}
 				
@@ -237,7 +239,7 @@ public class NormalizedDataImporter extends DataImporter {
 					sessionFactory.getCurrentSession().refresh(period);
 					
 					try {
-						return importData(fileName, reader, NUMBER_OF_LINES_TO_IMPORT, sanitizer, readFileAsMap, headers, positions);
+						return importData(fileName, reader, NUMBER_OF_LINES_TO_IMPORT, sanitizer, csvMapReader, headers, positions);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
