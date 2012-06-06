@@ -10,8 +10,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.chai.kevin.entity.export.Exportable;
-import org.chai.kevin.entity.export.Importable;
+import org.chai.kevin.Exportable;
+import org.chai.kevin.Importable;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;

@@ -33,7 +33,6 @@ import org.chai.kevin.RefreshValueService
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
-import org.chai.kevin.entity.EntityExportService
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.LocationService
@@ -45,12 +44,12 @@ import org.chai.kevin.data.InfoService;
 import org.chai.kevin.planning.PlanningService;
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.dsr.DsrService
-import org.chai.kevin.export.ExporterService;
+import org.chai.kevin.exports.EntityExportService;
+import org.chai.kevin.exports.SurveyExportService;
 import org.chai.kevin.fct.FctService
 import org.chai.kevin.form.FormValidationService;
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.survey.SurveyCopyService
-import org.chai.kevin.survey.SurveyExportService
 import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.summary.SummaryService;
 import org.chai.kevin.value.ExpressionService;

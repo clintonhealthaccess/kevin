@@ -4,8 +4,6 @@ import java.util.Comparator;
 
 import javax.persistence.Embeddable;
 
-import org.chai.kevin.entity.export.Exportable;
-import org.chai.kevin.entity.export.Importable;
 import org.chai.kevin.json.JSONMap;
 
 

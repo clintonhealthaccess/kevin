@@ -14,9 +14,10 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.chai.kevin.Exportable;
 import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.value.DataValue;
 
 

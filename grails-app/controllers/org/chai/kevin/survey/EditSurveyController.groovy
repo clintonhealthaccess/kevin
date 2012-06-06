@@ -31,6 +31,7 @@ import java.util.zip.ZipOutputStream
 import org.apache.shiro.SecurityUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.LocationService
+import org.chai.kevin.exports.SurveyExportService;
 import org.chai.kevin.form.FormValidationService;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;

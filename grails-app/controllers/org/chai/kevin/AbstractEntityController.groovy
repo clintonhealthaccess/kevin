@@ -28,15 +28,17 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.entity.EntityExportService
 import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 abstract class AbstractEntityController extends AbstractController {		
+	
+	def entityExportService
 	
 	def index = {
         redirect(action: "list", params: params)
@@ -190,6 +192,38 @@ abstract class AbstractEntityController extends AbstractController {
 	protected abstract def getTemplate();
 	
 	protected abstract def getLabel();
+	
+	def exporter = {
+		def entityClazz = getEntityClass();
+		if (entityClazz instanceof Class) entityClazz = [entityClazz]
+		
+		List<String> filenames = new ArrayList<String>();
+		List<File> csvFiles = new ArrayList<File>();
+		
+		for (Class clazz : entityClazz){
+			String filename = entityExportService.getExportFilename(clazz);
+			filenames.add(filename);
+			csvFiles.add(entityExportService.getExportFile(filename, clazz));
+		}
+		
+		String zipFilename = StringUtils.join(filenames, "_")
+		def zipFile = Utils.getZipFile(csvFiles, zipFilename)
+		
+		if(zipFile.exists()){
+			response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());
+			response.setContentType("application/zip");
+			response.setHeader("Content-length", zipFile.length().toString());
+			response.outputStream << zipFile.newInputStream()
+		}
+	}
+	
+	def importer = {
+		def clazz = getEntityClass();
+		
+		if(clazz instanceof Class){
+			redirect (controller: 'entityImporter', action: 'importer', params: [entityClass: clazz.name]);
+		}
+	}
 	
 	protected abstract def getEntityClass();
 	

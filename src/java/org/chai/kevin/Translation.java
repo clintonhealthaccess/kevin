@@ -2,8 +2,6 @@ package org.chai.kevin;
 
 import javax.persistence.Embeddable;
 
-import org.chai.kevin.entity.export.Exportable;
-import org.chai.kevin.entity.export.Importable;
 import org.chai.kevin.json.JSONMap;
 import org.hibernate.sql.ordering.antlr.TranslationContext;
 

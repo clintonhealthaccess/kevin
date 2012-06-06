@@ -27,7 +27,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.Exportable;
 import org.chai.kevin.json.JSONValue;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;

@@ -20,13 +20,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Exportable;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValuePredicate;
-import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.util.Utils;
