@@ -68,7 +68,7 @@ public class Average extends Calculation<AveragePartialValue> {
 
 	@Override
 	public AveragePartialValue getCalculationPartialValue(String expression, Map<DataLocation, StatusValuePair> values, CalculationLocation location, Period period, DataLocationType type) {
-		Value value = getValue(values.values());
+		Value value = getValue(values, location);
 		Integer numberOfDataLocations = getNumberOfDataLocations(values);
 		return new AveragePartialValue(this, location, period, type, numberOfDataLocations, value);
 	}
