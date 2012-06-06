@@ -97,25 +97,6 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		editSurveyController.response.redirectedUrl == '/surveySummary/summaryPage'
 	}
 	
-	def "export survey works"() {
-		setup:
-		setupLocationTree()
-		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question1 = newSimpleQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		editSurveyController = new EditSurveyController()
-		
-		when:
-		editSurveyController.params.location = Location.findByCode(RWANDA).id
-		editSurveyController.params.survey = survey.id
-		editSurveyController.export()
-		
-		then:
-		editSurveyController.response.getContentType() == "application/zip"
-	}
-	
 //	def "refresh survey works with location"() {
 //		setup:
 //		setupLocationTree()

@@ -33,12 +33,12 @@ package org.chai.kevin.imports;
  */
 public class ImporterError {
 	
-	String fileName;
-	Integer lineNumber;
-	String header;
-	String messageCode;
+	private String fileName;
+	private Integer lineNumber;
+	private String header;
+	private String messageCode;
 
-	public ImporterError(String fileName,Integer lineNumber, String header, String messageCode) {
+	public ImporterError(String fileName, Integer lineNumber, String header, String messageCode) {
 		super();
 		this.fileName = fileName;
 		this.lineNumber = lineNumber;
@@ -49,22 +49,26 @@ public class ImporterError {
 	public Integer getLineNumber() {
 		return lineNumber;
 	}
+	
 	public void setLineNumber(Integer lineNumber) {
 		this.lineNumber = lineNumber;
 	}
+	
 	public String getHeader() {
 		return header;
 	}
+	
 	public void setHeader(String header) {
 		this.header = header;
 	}
+	
 	public String getMessageCode() {
 		return messageCode;
 	}
+	
 	public void setMessageCode(String messageCode) {
 		this.messageCode = messageCode;
 	}
-	
 
 	@Override
 	public int hashCode() {
