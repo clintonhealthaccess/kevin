@@ -41,7 +41,7 @@
       margin-top: 5px
       
   .horizontal li
-    margin-bottom: 10px
+    margin-bottom: 5px
   
   h5
     border-bottom: 2px dotted $filler - #090909
@@ -55,6 +55,8 @@
     display: block
     font-size: 10px
     margin-bottom: 3px
+    width: 205px
+    height: 16px
     
   input
     background: #fff
@@ -75,7 +77,6 @@
     width: 205px
     
 .adv-form-0
-  margin-bottom: 20px
   > .adv-form-section
     clear: both
     display: block
@@ -83,18 +84,22 @@
 
 .adv-form-mini
   float: left
+  height: 0
   
-  &.horizontal li
-    margin-bottom: 0
-    
+  li
+    margin-top: 1px
+  
+  .option-description-container
+    display: none
+  
   .adv-form-subsection
     background: none
     border: none
     cursor: pointer
     font-weight: bold
-    margin-top: 0
     margin-bottom: 0 !important
-    padding: 3px 0
+    padding-top: 0px
+    padding-right: 2px
     
 .adv-form-subsection
   background: #fff
@@ -391,9 +396,17 @@ ul.filtered
     background-color: yellow
 
 // start fterrier:
+.element
+  margin-bottom: 4px
+  
 .element-enum
+  height: 30px
+  margin-bottom: -10px
+
   .option-description-container
-    margin-top: -4px
+    text-align: right
+    margin-bottom: -10px
+    margin-top: -5px
     height: 20px
     
   .option-description
@@ -404,6 +417,8 @@ ul.filtered
 // end fterrier
 
 .element-list
+  margin-bottom: 5px
+  
   .element-map-header, .element-map-body
     display: block
     .element-map-header, .element-map-body
@@ -431,7 +446,7 @@ ul.filtered
 .element-list-row
   background: #fafafa
   border: 1px solid $dropdown
-  padding: 15px
+  padding: 15px 15px 0px 15px
   position: relative
   
 ul.element-map
