@@ -230,6 +230,29 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		s(result*.value).equals(s([v("2"), v("1")]))
 	}
 	
+	def "test calculation with missing value"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER());
+		def sum = newSum("\$"+rawDataElement.id, CODE(2))
+		def result
+		
+		when:
+		result = expressionService.calculatePartialValues(sum, DataLocation.findByCode(BUTARO), period)
+		
+		then:
+		result.size() == 1
+		result*.value.equals([Value.NULL_INSTANCE()])
+		
+		when:
+		result = expressionService.calculatePartialValues(sum, Location.findByCode(BURERA), period)
+		
+		then:
+		result.size() == 2
+		result*.value.equals([v("0"), v("0")])
+	}
+	
 	def "test sum with missing data location type"() {
 		setup:
 		setupLocationTree()
@@ -251,7 +274,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		then:
 		result.size() == 1
-		result*.value.equals([v("0")])
+		result*.value.equals([Value.NULL_INSTANCE()])
 		
 		when:
 		result = expressionService.calculatePartialValues(sum, Location.findByCode(BURERA), period)

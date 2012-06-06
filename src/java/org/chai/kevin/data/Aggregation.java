@@ -44,9 +44,8 @@ public class Aggregation extends Calculation<AggregationPartialValue> {
 	public AggregationPartialValue getCalculationPartialValue(
 			String expression, Map<DataLocation, StatusValuePair> values,
 			CalculationLocation location, Period period, DataLocationType type) {
-		Value value = getValue(values.values());
-		return new AggregationPartialValue(this, location, period, type,
-				expression, value);
+		Value value = getValue(values, location);
+		return new AggregationPartialValue(this, location, period, type, expression, value);
 	}
 
 	@Override

@@ -67,7 +67,7 @@ public class Sum extends Calculation<SumPartialValue> {
 
 	@Override
 	public SumPartialValue getCalculationPartialValue(String expression, Map<DataLocation, StatusValuePair> values, CalculationLocation location, Period period, DataLocationType type) {
-		Value value = getValue(values.values());
+		Value value = getValue(values, location);
 		return new SumPartialValue(this, location, period, type, value);
 	}
 

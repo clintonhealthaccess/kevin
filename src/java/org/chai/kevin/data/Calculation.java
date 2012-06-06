@@ -72,12 +72,20 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 	
 	public abstract CalculationValue<T> getCalculationValue(List<T> partialValues, Period period, CalculationLocation location);
 	
-	protected Value getValue(Collection<StatusValuePair> statusValuePairs) {
-		Double value = 0d;
-		for (StatusValuePair statusValuePair : statusValuePairs) {
-			if (!statusValuePair.value.isNull()) value += statusValuePair.value.getNumberValue().doubleValue();
+	protected Value getValue(Map<DataLocation, StatusValuePair> statusValuePairs, CalculationLocation location) {
+		Value result = null;
+		if (location.collectsData()) {
+			StatusValuePair statusValuePair = statusValuePairs.get(location);
+			result = statusValuePair.value;
 		}
-		return getType().getValue(value);
+		else {
+			Double value = 0d;
+			for (StatusValuePair statusValuePair : statusValuePairs.values()) {
+				if (!statusValuePair.value.isNull()) value += statusValuePair.value.getNumberValue().doubleValue();
+			}
+			result = getType().getValue(value);
+		}
+		return result;
 	}
 	
 	@Lob
