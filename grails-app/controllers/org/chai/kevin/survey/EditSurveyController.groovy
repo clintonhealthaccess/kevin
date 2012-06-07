@@ -249,7 +249,6 @@ class EditSurveyController extends AbstractController {
 								enteredValue.validatable.invalidPrefixes.each { invalidPrefix ->
 									pre (
 										prefix: invalidPrefix,
-										valid: enteredValue.validatable.isValid(invalidPrefix),
 										errors: g.renderUserErrors(element: surveyElement, validatable: enteredValue.validatable, suffix: invalidPrefix, location: enteredValue.dataLocation)
 									)
 								}

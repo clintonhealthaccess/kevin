@@ -20,21 +20,29 @@ public class ValidationService {
 	
 	public JaqlService jaqlService;
 
-	public Set<String> getPrefixes(String expression, Set<String> prefixes, ValidatableValue validatable, DataLocation location, ValidatableLocator locator, Boolean evaluateTo) {
-		Set<String> result = new HashSet<String>();
+	public Set<String> getPrefixes(String dataElementPrefix, String expression, Set<String> prefixes, ValidatableValue validatable, DataLocation location, ValidatableLocator locator, Boolean evaluateTo) {
 		Set<List<String>> combinations = new HashSet<List<String>>();
 		
 		List<String> toCombine = new ArrayList<String>();
 		toCombine.add(expression);
-		toCombine.addAll(prefixes);
+		for (String prefix : prefixes) {
+			toCombine.add(dataElementPrefix+prefix);
+		}
 		
-		validatable.getType().getCombinations(validatable.getValue(), toCombine, combinations, "");
+		validatable.getType().getCombinations(validatable.getValue(), toCombine, combinations, dataElementPrefix);
 		
+		Set<String> resultSetWithPrefix = new HashSet<String>();
 		for (List<String> list : combinations) {
 			if (!isWildcard(list)) {
-				if (evaluateTo.equals(evaluate(list.get(0), location, locator))) result.addAll(list.subList(1, list.size()));
+				if (evaluateTo.equals(evaluate(list.get(0), location, locator))) resultSetWithPrefix.addAll(list.subList(1, list.size()));
 			}
 		}
+		
+		Set<String> result = new HashSet<String>();
+		for (String resultWithPrefix : resultSetWithPrefix) {
+			result.add(resultWithPrefix.substring(dataElementPrefix.length(), resultWithPrefix.length()));
+		}
+		
 		return result;
 	}
 	

@@ -120,13 +120,13 @@ public class Utils {
 	}
 	
 	public static boolean containsId(String string, Long id) {
-		return string.matches(".*\\$"+id+"(\\z|\\D|$).*");
+		return string.matches(".*\\$"+id+"(\\D|\\z|\\s)(.|\\s)*");
 	}
 	
 	public static String stripHtml(String htmlString) {
 		String noHtmlString;
 	
-		if (htmlString != null){
+		if (htmlString != null) {
 			noHtmlString = htmlString.replace("&nbsp;", " ");
 			noHtmlString = noHtmlString.replaceAll("<.*?>", " ");
 			noHtmlString = StringEscapeUtils.unescapeHtml(noHtmlString);

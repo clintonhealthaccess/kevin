@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.Stack;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
@@ -722,7 +723,7 @@ public class Type extends JSONValue implements Exportable {
 	
 	// use visit() instead
 	@Deprecated
-	private void getCombinations(Value value, Set<List<String>> combinations, String prefix, String genericPrefix) {
+	private void getCombinations(Value value, Set<List<String>> combinations, String toReplace, String replacement) {
 		switch (getType()) {
 			case NUMBER:
 			case BOOL:
@@ -730,15 +731,15 @@ public class Type extends JSONValue implements Exportable {
 			case TEXT:
 			case DATE:
 			case ENUM:
-				combinations.addAll(replace(combinations, genericPrefix, prefix));
+				combinations.addAll(replace(combinations, toReplace, replacement));
 				break;
 			case LIST:
 				if (!value.isNull()) {
 					List<Value> values = value.getListValue();
 					Type listType = getListType();
 					for (int i = 0; i < values.size(); i++) {
-						combinations.addAll(replace(combinations, genericPrefix+"[_]", prefix+"["+i+"]"));
-						listType.getCombinations(values.get(i), combinations, prefix+"["+i+"]", genericPrefix+"[_]");
+						combinations.addAll(replace(combinations, toReplace+"[_]", replacement+"["+i+"]"));
+						listType.getCombinations(values.get(i), combinations, toReplace+"["+i+"]", replacement+"["+i+"]");
 //						listType.getCombinations(values.get(i), strings, combinations, prefix+"[]");
 					}
 				}
@@ -747,7 +748,7 @@ public class Type extends JSONValue implements Exportable {
 				if (!value.isNull()) {
 					Map<String, Type> typeMap = getElementMap();
 					for (Entry<String, Value> entry : value.getMapValue().entrySet()) {
-						typeMap.get(entry.getKey()).getCombinations(entry.getValue(), combinations, prefix+"."+entry.getKey(), genericPrefix+"."+entry.getKey());
+						typeMap.get(entry.getKey()).getCombinations(entry.getValue(), combinations, toReplace+"."+entry.getKey(), replacement+"."+entry.getKey());
 					}
 					break;
 				}
@@ -923,7 +924,7 @@ public class Type extends JSONValue implements Exportable {
 		for (List<String> stringList : strings) {
 			List<String> result = new ArrayList<String>();
 			for (String string : stringList) {
-				result.add(string.replace(toReplace, replaceWith));
+				result.add(string.replaceAll(Pattern.quote(toReplace), replaceWith.replace("$", "\\$")));
 			}
 			resultSet.add(result);
 		}

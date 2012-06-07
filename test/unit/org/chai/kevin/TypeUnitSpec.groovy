@@ -517,12 +517,36 @@ public class TypeUnitSpec extends UnitSpec {
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		value = Value.VALUE_LIST([Value.VALUE_LIST([Value.VALUE_NUMBER(1), Value.VALUE_NUMBER(1)])])
-		strings = ["[_][_]"]
+		strings = ["\$1[_][_]"]
 		list = new HashSet();
-		type.getCombinations(value, strings, list, "")
+		type.getCombinations(value, strings, list, "\$1")
 		
 		then:
-		list.containsAll([["[0][0]"], ["[0][1]"]])
+		list.containsAll([["\$1[0][0]"], ["\$1[0][1]"]])
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["test": Type.TYPE_LIST(Type.TYPE_MAP(["test_nested": Type.TYPE_NUMBER()]))]))
+		value = Value.VALUE_LIST([
+			Value.VALUE_MAP([
+				"test": Value.VALUE_LIST([
+					Value.VALUE_MAP(["test_nested": Value.VALUE_NUMBER(1)]),
+					Value.VALUE_MAP(["test_nested": Value.VALUE_NUMBER(1)]),
+				])
+			]),
+			Value.VALUE_MAP([
+				"test": Value.VALUE_LIST([Value.VALUE_MAP(["test_nested": Value.VALUE_NUMBER(1)])])
+			])
+		])
+		strings = ["\$1[_].test[_].test_nested", "\$1[_].test[_].test_nested > 100"]
+		list = new HashSet();
+		type.getCombinations(value, strings, list, "\$1")
+		
+		then:
+		list.containsAll([
+			["\$1[0].test[0].test_nested", "\$1[0].test[0].test_nested > 100"],
+			["\$1[0].test[1].test_nested", "\$1[0].test[1].test_nested > 100"],
+			["\$1[1].test[0].test_nested", "\$1[1].test[0].test_nested > 100"],
+		])
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_MAP(["test": Type.TYPE_NUMBER()]))
@@ -536,13 +560,21 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_MAP(["test1": Type.TYPE_NUMBER(), "test2": Type.TYPE_NUMBER()]))
-		value = Value.VALUE_LIST([Value.VALUE_MAP(["test1":Value.VALUE_NUMBER(1), "test2":Value.VALUE_NUMBER(1)])])
+		value = Value.VALUE_LIST([
+			Value.VALUE_MAP(["test1":Value.VALUE_NUMBER(1), "test2":Value.VALUE_NUMBER(1)]),Value.VALUE_MAP(["test1":Value.VALUE_NUMBER(1), "test2":Value.VALUE_NUMBER(1)])
+		])
 		strings = ["[_].test2 > [_].test1", "[_]"]
 		list = new HashSet();
 		type.getCombinations(value, strings, list, "")
 		
 		then:
 		list.containsAll([["[0].test2 > [0].test1", "[0]"]])
+		!list.contains(["[1].test2 > [0].test1", "[0]"])
+		!list.contains(["[1].test2 > [1].test1", "[0]"])
+		!list.contains(["[1].test2 > [0].test1", "[1]"])
+		!list.contains(["[0].test2 > [0].test1", "[1]"])
+		!list.contains(["[0].test2 > [1].test1", "[1]"])
+		!list.contains(["[0].test2 > [1].test1", "[0]"])
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_MAP(["test1": Type.TYPE_NUMBER(), "test2": Type.TYPE_NUMBER()]))

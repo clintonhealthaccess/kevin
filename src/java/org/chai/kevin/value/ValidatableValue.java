@@ -111,24 +111,8 @@ public class ValidatableValue {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	private Set<String> getUnacceptedErrors(String prefix) {
-		try {
-			Set<String> invalidRules = Utils.split(type.getAttribute(value, prefix, "invalid"));
-			Set<String> acceptedRules = Utils.split(type.getAttribute(value, prefix, "warning"));
-			
-			return new HashSet<String>(CollectionUtils.subtract(invalidRules, acceptedRules));
-		} 
-		catch (IndexOutOfBoundsException e) {
-			return new HashSet<String>();
-		}
-	}
-	
-	public boolean isValid(String prefix) {
-		return getUnacceptedErrors(prefix).isEmpty();
-	}
 	public boolean isTreeValid(String prefix) {
-		for (String invalidPrefix : getReallyInvalidPrefixes()) {
+		for (String invalidPrefix : getInvalidPrefixes()) {
 			if (invalidPrefix.startsWith(prefix)) return false;
 		}
 		return true;
@@ -141,17 +125,12 @@ public class ValidatableValue {
 		return true;
 	}
 	
-	private Set<String> getSkippedRules(String prefix) {
-		try {
-			return Utils.split(type.getAttribute(value, prefix, "skipped"));
-		}
-		catch (IndexOutOfBoundsException e) {
-			return new HashSet<String>();
-		}
+	public boolean isValid(String prefix) {
+		return !getInvalidPrefixes().contains(prefix);
 	}
 	
 	public boolean isSkipped(String prefix) {
-		return !getSkippedRules(prefix).isEmpty();
+		return getSkippedPrefixes().contains(prefix);
 	}
 	
 	public boolean isAcceptedWarning(FormValidationRule rule, String prefix) {
@@ -177,9 +156,6 @@ public class ValidatableValue {
 	 * @return all prefixes whose "invalid" attributes is not empty.
 	 */
 	public Set<String> getInvalidPrefixes() {
-		return getPrefixesWithAttribute("invalid").keySet();
-	}
-	private Collection<String> getReallyInvalidPrefixes() {
 		// we get the list of all the invalid prefixes that
 		// have not been accepted
 		Map<String, Value> invalidPrefixes = getPrefixesWithAttribute("invalid");
@@ -199,7 +175,7 @@ public class ValidatableValue {
 		// element is invalid if those prefixes are not all skipped
 		Set<String> skippedPrefixes = getSkippedPrefixes();
 		
-		return CollectionUtils.subtract(invalidAndUnacceptedPrefixes, skippedPrefixes);
+		return new HashSet<String>(CollectionUtils.subtract(invalidAndUnacceptedPrefixes, skippedPrefixes));
 	}
 	
 	/**
@@ -209,7 +185,7 @@ public class ValidatableValue {
 	 * @return true if this value is invalid.
 	 */
 	public Boolean isInvalid() {
-		return !getReallyInvalidPrefixes().isEmpty();
+		return !getInvalidPrefixes().isEmpty();
 	}
 	
 	/**
