@@ -1,16 +1,21 @@
 package org.chai.kevin
 
+import java.nio.charset.Charset;
+
 class FormTagLib {
 
 	def languageService
-	
+	def grailsApplication
+		
 	def input = { attrs, body ->
 		if (attrs["type"] == null) attrs["type"] = 'text'
 		out << render(template:"/tags/form/input", model: attrs)
 	}
 		
 	def file = { attrs, body ->
-		if (attrs["type"] == null) attrs["type"] = 'file'
+		attrs["requestCharset"] = request?.characterEncoding==null?Charset.defaultCharset():Charset.forName(request.characterEncoding)
+		attrs["availableCharsets"] = grailsApplication.config.file.upload.available.charset.collect {Charset.forName(it)}
+		attrs["delimiter"] = grailsApplication.config.file.upload.delimiter
 		out << render(template:"/tags/form/file", model: attrs)
 	}
 	

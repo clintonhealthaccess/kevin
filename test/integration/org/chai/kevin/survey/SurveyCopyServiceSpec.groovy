@@ -12,15 +12,15 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 	def "test clone double number of elements"() {
 		setup:
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [])
-		def section = newSurveySection(program, 1, [])
-		def question = newTableQuestion(section, 1, [])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [])
+		def section = newSurveySection(CODE(1), program, 1, [])
+		def question = newTableQuestion(CODE(1), section, 1, [])
 		
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
-		def column = newTableColumn(question, 1, [])
-		def row = newTableRow(question, 1, [], [(column): element])
+		def column = newTableColumn(CODE(1), question, 1, [])
+		def row = newTableRow(CODE(1), question, 1, [], [(column): element])
 		
 		expect:
 		Survey.count() == 1
@@ -57,13 +57,13 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 	def "test clone survey with skip rule"() {
 		setup:
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [])
-		def section = newSurveySection(program, 1, [])
-		def question = newSimpleQuestion(section, 1, [])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [])
+		def section = newSurveySection(CODE(1), program, 1, [])
+		def question = newSimpleQuestion(CODE(1), section, 1, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
-		def skipRule = newSurveySkipRule(survey, "\$"+element.id+" == 1", [:], [])
+		def skipRule = newSurveySkipRule(CODE(1), survey, "\$"+element.id+" == 1", [:], [])
 		
 		when:
 		def surveyCopy = surveyCopyService.copySurvey(survey)
@@ -80,20 +80,20 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 	def "test clone survey with validation rule from other survey"() {
 		setup:
 		def period = newPeriod()
-		def survey1 = newSurvey(period)
-		def program1 = newSurveyProgram(survey1, 1, [])
-		def section1 = newSurveySection(program1, 1, [])
-		def question1 = newSimpleQuestion(section1, 1, [])
+		def survey1 = newSurvey(CODE(1), period)
+		def program1 = newSurveyProgram(CODE(1), survey1, 1, [])
+		def section1 = newSurveySection(CODE(1), program1, 1, [])
+		def question1 = newSimpleQuestion(CODE(1), section1, 1, [])
 		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element1 = newSurveyElement(question1, dataElement1)
 		
-		def survey2 = newSurvey(period)
-		def program2 = newSurveyProgram(survey2, 1, [])
-		def section2 = newSurveySection(program2, 1, [])
-		def question2 = newSimpleQuestion(section2, 1, [])
+		def survey2 = newSurvey(CODE(2), period)
+		def program2 = newSurveyProgram(CODE(2), survey2, 1, [])
+		def section2 = newSurveySection(CODE(2), program2, 1, [])
+		def question2 = newSimpleQuestion(CODE(2), section2, 1, [])
 		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		def element2 = newSurveyElement(question2, dataElement2)
-		def validationRule = newFormValidationRule(element2, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1+" == 1", [element1])
+		def validationRule = newFormValidationRule(CODE(1), element2, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1+" == 1", [element1])
 		
 		when:
 		def surveyCopy = surveyCopyService.copySurvey(survey2)
@@ -110,13 +110,13 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 	def "test clone survey with validation rule transforms dependencies"() {
 		setup:
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [])
-		def section = newSurveySection(program, 1, [])
-		def question = newSimpleQuestion(section, 1, [])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [])
+		def section = newSurveySection(CODE(1), program, 1, [])
+		def question = newSimpleQuestion(CODE(1), section, 1, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
-		def validationRule = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "1 == 1", [element])
+		def validationRule = newFormValidationRule(CODE(1), element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "1 == 1", [element])
 		
 		when:
 		def surveyCopy = surveyCopyService.copySurvey(survey)

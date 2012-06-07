@@ -40,6 +40,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Importable;
@@ -51,7 +52,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="EnumOption")
-@Table(name="dhsst_enum_option")
+@Table(name="dhsst_enum_option", uniqueConstraints={@UniqueConstraint(columnNames={"code"})})
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class EnumOption extends Orderable<Ordering> implements Exportable, Importable {
 

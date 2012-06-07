@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.LanguageService;
@@ -28,6 +29,7 @@ import org.chai.kevin.value.ValueService;
 @Table(name = "dhsst_survey_element")
 public class SurveyElement extends FormElement implements Exportable {
 
+	// TODO get rid of this
 	private String code;
 	private SurveyQuestion surveyQuestion;
 	

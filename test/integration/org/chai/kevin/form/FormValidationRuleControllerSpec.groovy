@@ -17,7 +17,7 @@ class FormValidationRuleControllerSpec extends IntegrationTests {
 		def period = newPeriod()
 		
 		def element = newFormElement(newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
-		def validationRule = newFormValidationRule(element, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+" > 0")
+		def validationRule = newFormValidationRule(CODE(1), element, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+" > 0")
 		formValidationRuleController = new FormValidationRuleController()
 		
 		when:
@@ -56,7 +56,7 @@ class FormValidationRuleControllerSpec extends IntegrationTests {
 	def "test copy validation rule"() {
 		setup:
 		def formElement = newFormElement(newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
-		def validationRule = newFormValidationRule(formElement, "", [HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP], "1==1")
+		def validationRule = newFormValidationRule(CODE(1), formElement, "", [HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP], "1==1")
 		formValidationRuleController = new FormValidationRuleController()
 		
 		when:

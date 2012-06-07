@@ -261,7 +261,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key1", planning)
-		def validationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
+		def validationRule = newFormValidationRule(CODE(1), formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
 		def formValue = null
 		
 		when:

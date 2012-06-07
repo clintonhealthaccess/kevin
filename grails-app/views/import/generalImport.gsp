@@ -16,7 +16,7 @@
 					<g:selectFromList name="period.id" label="${message(code:'period.label')}" bean="${generalImporter}" field="period" optionKey="id" multiple="false"
 					from="${periods}" value="${generalImporter?.period?.id}" optionValue="startDate" />
 					
-					<g:file name="file" label="${message(code:'import.file.label')}" bean="${generalImporter}" field="file"/>
+					<g:file bean="${generalImporter}"/>
 					<div class="row">
 						<button type="submit"><g:message code="import.button.import.label"/></button>
 					</div>

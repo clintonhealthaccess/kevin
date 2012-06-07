@@ -12,10 +12,10 @@ class SurveySkipRuleControllerSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		(0..12).each{order -> newSimpleQuestion(section, order, [(HEALTH_CENTER_GROUP)]) }
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		(0..12).each{order -> newSimpleQuestion(CODE(order), section, order, [(HEALTH_CENTER_GROUP)]) }
 		
 		surveySkipRuleController = new SurveySkipRuleController()
 		
@@ -36,10 +36,10 @@ class SurveySkipRuleControllerSpec extends SurveyIntegrationTests {
 	def "list skip rules"() {
 		setup:
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def skipRule = newSurveySkipRule(survey, "1 == 1", [:], [])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def skipRule = newSurveySkipRule(CODE(1), survey, "1 == 1", [:], [])
 		surveySkipRuleController = new SurveySkipRuleController()
 		
 		when:

@@ -18,10 +18,10 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
-		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
@@ -44,10 +44,10 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
@@ -62,10 +62,10 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
@@ -76,7 +76,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		surveyValueService.getNumberOfSurveyEnteredQuestions(survey, DataLocation.findByCode(BUTARO), program, null, true, false, true) == 1
 		
 		when:
-		def skipRule = newSurveySkipRule(survey, "1", [:], [])
+		def skipRule = newSurveySkipRule(CODE(1), survey, "1", [:], [])
 		surveyEnteredQuestion.complete = false
 		surveyEnteredQuestion.skippedRules = new HashSet([skipRule])
 		surveyEnteredQuestion.save(failOnError: true, flush: true)
@@ -91,10 +91,10 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
-		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		def formEnteredValue = newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("1"))
 		
@@ -113,15 +113,15 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def section1 = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(section1, 1, [(HEALTH_CENTER_GROUP)])
+		def section1 = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), section1, 1, [(HEALTH_CENTER_GROUP)])
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
-		def section2 = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question2 = newSimpleQuestion(section2, 1, [(HEALTH_CENTER_GROUP)])
+		def section2 = newSurveySection(CODE(2), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(CODE(2), section2, 1, [(HEALTH_CENTER_GROUP)])
 		def element2 = newSurveyElement(question2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()))
 
 		expect:
@@ -150,16 +150,16 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
+		def survey = newSurvey(CODE(1), period)
 		
-		def program1 = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])		
-		def section1 = newSurveySection(program1, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(section1, 1, [(HEALTH_CENTER_GROUP)])
+		def program1 = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])		
+		def section1 = newSurveySection(CODE(1), program1, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), section1, 1, [(HEALTH_CENTER_GROUP)])
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
-		def program2 = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section2 = newSurveySection(program2, 1, [(HEALTH_CENTER_GROUP)])
-		def question2 = newSimpleQuestion(section2, 1, [(HEALTH_CENTER_GROUP)])
+		def program2 = newSurveyProgram(CODE(2), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section2 = newSurveySection(CODE(2), program2, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(CODE(2), section2, 1, [(HEALTH_CENTER_GROUP)])
 		def element2 = newSurveyElement(question2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()))
 
 		expect:
@@ -189,16 +189,16 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		def period1 = newPeriod()
 		def period2 = newPeriod()
 		
-		def survey1 = newSurvey(period1)
-		def program1 = newSurveyProgram(survey1, 1, [(HEALTH_CENTER_GROUP)])
-		def section1 = newSurveySection(program1, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(section1, 1, [(HEALTH_CENTER_GROUP)])
+		def survey1 = newSurvey(CODE(1), period1)
+		def program1 = newSurveyProgram(CODE(1), survey1, 1, [(HEALTH_CENTER_GROUP)])
+		def section1 = newSurveySection(CODE(1), program1, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), section1, 1, [(HEALTH_CENTER_GROUP)])
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))		
 		
-		def survey2 = newSurvey(period2)
-		def program2 = newSurveyProgram(survey2, 1, [(HEALTH_CENTER_GROUP)])
-		def section2 = newSurveySection(program2, 1, [(HEALTH_CENTER_GROUP)])
-		def question2 = newSimpleQuestion(section2, 1, [(HEALTH_CENTER_GROUP)])
+		def survey2 = newSurvey(CODE(2), period2)
+		def program2 = newSurveyProgram(CODE(2), survey2, 1, [(HEALTH_CENTER_GROUP)])
+		def section2 = newSurveySection(CODE(2), program2, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(CODE(2), section2, 1, [(HEALTH_CENTER_GROUP)])
 		def element2 = newSurveyElement(question2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()))
 
 		expect:

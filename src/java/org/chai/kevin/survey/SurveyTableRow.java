@@ -56,6 +56,7 @@ import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.Exportable;
@@ -66,7 +67,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 @Entity(name = "SurveyTableRow")
-@Table(name = "dhsst_survey_table_row")
+@Table(name = "dhsst_survey_table_row", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 public class SurveyTableRow extends Orderable<Integer> implements Exportable {
 
 	private Long id;

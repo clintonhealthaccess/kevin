@@ -5,6 +5,7 @@ import grails.validation.ValidationException;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.value.RawDataElementValue;
 
@@ -14,7 +15,7 @@ class StoredValueSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def type = newDataLocationType(DISTRICT_HOSPITAL_GROUP)
+		def type = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
 		
 		when:
 		new RawDataElementValue(location: DataLocation.findByCode(BUTARO), period: period, value: v("1")).save(failOnError: true)

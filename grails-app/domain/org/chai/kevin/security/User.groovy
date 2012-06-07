@@ -6,6 +6,7 @@ class User {
 	
 	String email
     String username
+	// TODO get rid of this
 	String code
     String passwordHash = ''
 	String permissionString = ''
