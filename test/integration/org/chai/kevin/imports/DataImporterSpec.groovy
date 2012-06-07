@@ -49,6 +49,8 @@ import org.chai.kevin.value.ValueService;
 import org.chai.kevin.LocationService;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.supercsv.io.CsvMapReader;
+import org.supercsv.prefs.CsvPreference;
 
 /**
 * @author Jean Kahigiso M.
@@ -76,6 +78,8 @@ class DataImporterSpec extends IntegrationTests {
 	def cleanup() {
 		RawDataElementValue.executeUpdate("delete RawDataElementValue")
 		RawDataElement.executeUpdate("delete RawDataElement")
+		EnumOption.executeUpdate("delete EnumOption")
+		Enum.executeUpdate("delete Enum")
 	} 
 	
 	def cleanupSpec() {
@@ -96,9 +100,6 @@ class DataImporterSpec extends IntegrationTests {
 		def dataElement = newRawDataElement(CODE(1), type)
 		
 		def importerErrorManager = new ImporterErrorManager();
-		importerErrorManager.setNumberOfSavedRows(0)
-		importerErrorManager.setNumberOfUnsavedRows(0)
-		importerErrorManager.setNumberOfRowsSavedWithError(0)
 		
 		NormalizedDataImporter importer = new NormalizedDataImporter(
 			locationService, valueService, dataService,
@@ -106,7 +107,7 @@ class DataImporterSpec extends IntegrationTests {
 			importerErrorManager, dataElement, Period.list()[0]
 		);
 	
-	    importer.importData("File Name",new StringReader(csvString))
+	    importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
 			
 		then:
 		RawDataElementValue.count() == 1
@@ -128,17 +129,14 @@ class DataImporterSpec extends IntegrationTests {
 		def rawDataElementValue = newRawDataElementValue(dataElement,Period.list()[0],DataLocation.findByCode(BUTARO),Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("test")])]))
 		
 		def importerErrorManager = new ImporterErrorManager();
-		importerErrorManager.setNumberOfSavedRows(0)
-		importerErrorManager.setNumberOfUnsavedRows(0)
-		importerErrorManager.setNumberOfRowsSavedWithError(0)
-		
+
 		NormalizedDataImporter importer = new NormalizedDataImporter(
 			locationService, valueService, dataService,
 			sessionFactory, transactionManager,
 			importerErrorManager, dataElement, Period.list()[0]
 		);
 	
-		importer.importData("File Name",new StringReader(csvString))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
 			
 		then:
 		RawDataElementValue.count() == 1
@@ -163,9 +161,6 @@ class DataImporterSpec extends IntegrationTests {
 		def dataBoolElement = newRawDataElement(CODE(2), typeBool)
 		
 		def importerErrorManagerBool = new ImporterErrorManager();
-		importerErrorManagerBool.setNumberOfSavedRows(0)
-		importerErrorManagerBool.setNumberOfUnsavedRows(0)
-		importerErrorManagerBool.setNumberOfRowsSavedWithError(0)
 		
 		NormalizedDataImporter importer = new NormalizedDataImporter(
 			locationService, valueService, dataService,
@@ -173,7 +168,7 @@ class DataImporterSpec extends IntegrationTests {
 			importerErrorManagerBool, dataBoolElement, Period.list()[0]
 		);
 	
-		importer.importData("File Name",new StringReader(csvBoolString))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvBoolString), CsvPreference.EXCEL_PREFERENCE))
 		
 		then:
 		importerErrorManagerBool.errors.size() == 1
@@ -193,9 +188,6 @@ class DataImporterSpec extends IntegrationTests {
 		def dataDateElement = newRawDataElement(CODE(3), typeDate)
 		
 		def importerErrorManagerDate = new ImporterErrorManager();
-		importerErrorManagerDate.setNumberOfSavedRows(0)
-		importerErrorManagerDate.setNumberOfUnsavedRows(0)
-		importerErrorManagerDate.setNumberOfRowsSavedWithError(0)
 		
 		NormalizedDataImporter importer = new NormalizedDataImporter(
 			locationService, valueService, dataService,
@@ -203,7 +195,7 @@ class DataImporterSpec extends IntegrationTests {
 			importerErrorManagerDate, dataDateElement, Period.list()[0]
 		);
 	
-		importer.importData("File Name",new StringReader(csvDateString))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvDateString), CsvPreference.EXCEL_PREFERENCE))
 					
 		then:
 		importerErrorManagerDate.errors.size() == 0
@@ -219,20 +211,16 @@ class DataImporterSpec extends IntegrationTests {
 		BUTARO+",1\n"+
 		BUTARO+",ff\n"
 		
-		
 		def dataNumberElement = newRawDataElement(CODE(4), typeNumber)
 		
 		def importerErrorManagerNumber = new ImporterErrorManager();
-		importerErrorManagerNumber.setNumberOfSavedRows(0)
-		importerErrorManagerNumber.setNumberOfUnsavedRows(0)
-		importerErrorManagerNumber.setNumberOfRowsSavedWithError(0)
 		
 		NormalizedDataImporter importer = new NormalizedDataImporter(
 			locationService, valueService, dataService,
 			sessionFactory, transactionManager,
 			importerErrorManagerNumber, dataNumberElement, Period.list()[0]
 		);
-		importer.importData("File Name",new StringReader(csvNumberString))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvNumberString), CsvPreference.EXCEL_PREFERENCE))
 			
 		then:
 		importerErrorManagerNumber.errors.size() == 1
@@ -257,16 +245,13 @@ class DataImporterSpec extends IntegrationTests {
 		def dataEnumElement = newRawDataElement(CODE(5), typeEnum)
 		
 		def importerErrorManagerEnum = new ImporterErrorManager();
-		importerErrorManagerEnum.setNumberOfSavedRows(0)
-		importerErrorManagerEnum.setNumberOfUnsavedRows(0)
-		importerErrorManagerEnum.setNumberOfRowsSavedWithError(0)
 		
 		NormalizedDataImporter importer = new NormalizedDataImporter(
 			locationService, valueService, dataService,
 			sessionFactory, transactionManager,
 			importerErrorManagerEnum, dataEnumElement, Period.list()[0]
 		);
-		importer.importData("File Name",new StringReader(csvEnumString))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvEnumString), CsvPreference.EXCEL_PREFERENCE))
 		
 		then:
 		importerErrorManagerEnum.errors.size() == 1
@@ -286,16 +271,13 @@ class DataImporterSpec extends IntegrationTests {
 		def dataCodeElement = newRawDataElement(CODE(6), typeCode)
 		
 		def importerErrorManagerCode = new ImporterErrorManager();
-		importerErrorManagerCode.setNumberOfSavedRows(0)
-		importerErrorManagerCode.setNumberOfUnsavedRows(0)
-		importerErrorManagerCode.setNumberOfRowsSavedWithError(0)
 		
 		NormalizedDataImporter importer = new NormalizedDataImporter(
 			locationService, valueService, dataService,
 			sessionFactory, transactionManager,
 			importerErrorManagerCode, dataCodeElement, Period.list()[0]
 		);
-		importer.importData("File Name",new StringReader(csvCodeString))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvCodeString), CsvPreference.EXCEL_PREFERENCE))
 	
 		then:
 		importerErrorManagerCode.errors.size() == 1
@@ -307,13 +289,10 @@ class DataImporterSpec extends IntegrationTests {
 	
 	def "test system don't break if the file from zip is not csv"(){
 		when:
-		def typeDate = Type.TYPE_LIST(Type.TYPE_MAP(["birth_date": Type.TYPE_DATE()]))
+		def typeDate = Type.TYPE_LIST(Type.TYPE_MAP(["birth_date": Type.TYPE_DATE(), "test": Type.TYPE_STRING()]))
 		def dateDataElement = newRawDataElement(CODE(3), typeDate)
 
 		def importerErrorManagerDate = new ImporterErrorManager();
-		importerErrorManagerDate.setNumberOfSavedRows(0)
-		importerErrorManagerDate.setNumberOfUnsavedRows(0)
-		importerErrorManagerDate.setNumberOfRowsSavedWithError(0)
 		
 		NormalizedDataImporter importer = new NormalizedDataImporter(
 			locationService, valueService, dataService,
@@ -322,12 +301,102 @@ class DataImporterSpec extends IntegrationTests {
 		);
 	
 		File file = new File("test/integration/org/chai/kevin/imports/normalizedTestFile.csv.zip");
-		importer.importZipFiles(new FileInputStream(file));
+		importer.importZipFiles(new FileInputStream(file), null, null);
 		
 		then:
 		importerErrorManagerDate.errors.size() == 1
 		RawDataElementValue.count()==1
 		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].birth_date").getDateValue().equals(new SimpleDateFormat("dd-MM-yyyy").parse("15-08-1971"));
+	}
+	
+	def "test imports with right delimiter is correct"(){
+		when:
+		def typeDate = Type.TYPE_LIST(Type.TYPE_MAP(["birth_date": Type.TYPE_DATE(), "test": Type.TYPE_STRING()]))
+		def dateDataElement = newRawDataElement(CODE(3), typeDate)
+
+		def importerErrorManagerDate = new ImporterErrorManager();
+		
+		NormalizedDataImporter importer = new NormalizedDataImporter(
+			locationService, valueService, dataService,
+			sessionFactory, transactionManager,
+			importerErrorManagerDate, dateDataElement, Period.list()[0]
+		);
+	
+		File file = new File("test/integration/org/chai/kevin/imports/normalizedTestFile.csv.zip");
+		importer.importZipFiles(new FileInputStream(file), null, ',' as Character);
+		
+		then:
+		importerErrorManagerDate.errors.size() == 1
+		RawDataElementValue.count()==1
+		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].birth_date").getDateValue().equals(new SimpleDateFormat("dd-MM-yyyy").parse("15-08-1971"));
+		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].test").getStringValue() == "éééé"
+	}
+	
+	def "test imports with wrong delimiter is incorrect"(){
+		when:
+		def typeDate = Type.TYPE_LIST(Type.TYPE_MAP(["birth_date": Type.TYPE_DATE(), "test": Type.TYPE_STRING()]))
+		def dateDataElement = newRawDataElement(CODE(3), typeDate)
+
+		def importerErrorManagerDate = new ImporterErrorManager();
+		
+		NormalizedDataImporter importer = new NormalizedDataImporter(
+			locationService, valueService, dataService,
+			sessionFactory, transactionManager,
+			importerErrorManagerDate, dateDataElement, Period.list()[0]
+		);
+	
+		File file = new File("test/integration/org/chai/kevin/imports/normalizedTestFile.csv.zip");
+		importer.importZipFiles(new FileInputStream(file), null, ';' as Character);
+		
+		then:
+		importerErrorManagerDate.errors.size() == 6
+		RawDataElementValue.count()==0
+	}
+	
+	def "test system imports file correctly when right encoding is specified"(){
+		when:
+		def typeDate = Type.TYPE_LIST(Type.TYPE_MAP(["birth_date": Type.TYPE_DATE(), "test": Type.TYPE_STRING()]))
+		def dateDataElement = newRawDataElement(CODE(3), typeDate)
+
+		def importerErrorManagerDate = new ImporterErrorManager();
+		
+		NormalizedDataImporter importer = new NormalizedDataImporter(
+			locationService, valueService, dataService,
+			sessionFactory, transactionManager,
+			importerErrorManagerDate, dateDataElement, Period.list()[0]
+		);
+	
+		File file = new File("test/integration/org/chai/kevin/imports/normalizedTestFile.csv.zip");
+		importer.importZipFiles(new FileInputStream(file), "utf-8", null);
+		
+		then:
+		importerErrorManagerDate.errors.size() == 1
+		RawDataElementValue.count()==1
+		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].birth_date").getDateValue().equals(new SimpleDateFormat("dd-MM-yyyy").parse("15-08-1971"));
+		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].test").getStringValue() == "éééé"
+	}
+	
+	def "test system imports file incorrectly when wrong encoding is specified"(){
+		when:
+		def typeDate = Type.TYPE_LIST(Type.TYPE_MAP(["birth_date": Type.TYPE_DATE(), "test": Type.TYPE_STRING()]))
+		def dateDataElement = newRawDataElement(CODE(3), typeDate)
+
+		def importerErrorManagerDate = new ImporterErrorManager();
+		
+		NormalizedDataImporter importer = new NormalizedDataImporter(
+			locationService, valueService, dataService,
+			sessionFactory, transactionManager,
+			importerErrorManagerDate, dateDataElement, Period.list()[0]
+		);
+	
+		File file = new File("test/integration/org/chai/kevin/imports/normalizedTestFile.csv.zip");
+		importer.importZipFiles(new FileInputStream(file), "ISO-8859-1", null);
+		
+		then:
+		importerErrorManagerDate.errors.size() == 1
+		RawDataElementValue.count()==1
+		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].birth_date").getDateValue().equals(new SimpleDateFormat("dd-MM-yyyy").parse("15-08-1971"));
+		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].test").getStringValue() != "éééé"
 	}
 	
 	def "get general import string data from csv"(){
@@ -340,16 +409,13 @@ class DataImporterSpec extends IntegrationTests {
 			BUTARO+","+dataElement.code+",value\n"
 			
 		def importerErrorManager = new ImporterErrorManager();
-		importerErrorManager.setNumberOfSavedRows(0)
-		importerErrorManager.setNumberOfUnsavedRows(0)
-		importerErrorManager.setNumberOfRowsSavedWithError(0)
 		
 		GeneralDataImporter importer = new GeneralDataImporter(
 			locationService, valueService, dataService,
 			importerErrorManager,  Period.list()[0]
 			);
 
-		importer.importData("File Name",new StringReader(csvString))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
 					
 		then:
 		RawDataElementValue.count() == 1
@@ -374,16 +440,13 @@ class DataImporterSpec extends IntegrationTests {
 			BUTARO+","+dataElementThree.code+",N\n"
 			
 		def importerErrorManager = new ImporterErrorManager();
-		importerErrorManager.setNumberOfSavedRows(0)
-		importerErrorManager.setNumberOfUnsavedRows(0)
-		importerErrorManager.setNumberOfRowsSavedWithError(0)
 		
 		GeneralDataImporter importer = new GeneralDataImporter(
 			locationService, valueService, dataService,
 			importerErrorManager,  Period.list()[0]
 			);
 
-		importer.importData("File Name",new StringReader(csvString))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
 						
 		then:
 		RawDataElementValue.count() == 3
@@ -408,16 +471,13 @@ class DataImporterSpec extends IntegrationTests {
 		BUTARO+","+dataElementTwo.code+",Male\n"
 
 		def importerErrorManager = new ImporterErrorManager();
-		importerErrorManager.setNumberOfSavedRows(0)
-		importerErrorManager.setNumberOfUnsavedRows(0)
-		importerErrorManager.setNumberOfRowsSavedWithError(0)
 		
 		GeneralDataImporter importer = new GeneralDataImporter(
 			locationService, valueService, dataService,
 			importerErrorManager,  Period.list()[0]
 			);
 
-		importer.importData("File Name",new StringReader(csvString))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
 						
 			
 		then:
@@ -438,18 +498,14 @@ class DataImporterSpec extends IntegrationTests {
 		BUTARO+","+dataElementOne.code+",zz\n"+
 		BUTARO+","+dataElementTwo.code+",44\n"
 	
-		
 		def importerErrorManager = new ImporterErrorManager();
-		importerErrorManager.setNumberOfSavedRows(0)
-		importerErrorManager.setNumberOfUnsavedRows(0)
-		importerErrorManager.setNumberOfRowsSavedWithError(0)
 		
 		GeneralDataImporter importer = new GeneralDataImporter(
 			locationService, valueService, dataService,
 			importerErrorManager,  Period.list()[0]
 			);
 
-		importer.importData("File Name",new StringReader(csvNumberString))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvNumberString), CsvPreference.EXCEL_PREFERENCE))
 							
 		then:
 		importerErrorManager.errors.size() == 1
@@ -470,16 +526,13 @@ class DataImporterSpec extends IntegrationTests {
 		BUTARO+","+dataElementTwo.code+",44\n"
 		
 		def importerErrorManager = new ImporterErrorManager();
-		importerErrorManager.setNumberOfSavedRows(0)
-		importerErrorManager.setNumberOfUnsavedRows(0)
-		importerErrorManager.setNumberOfRowsSavedWithError(0)
 		
 		GeneralDataImporter importer = new GeneralDataImporter(
 			locationService, valueService, dataService,
 			importerErrorManager,  Period.list()[0]
 			);
 
-		importer.importData("File Name",new StringReader(csvDateString))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvDateString), CsvPreference.EXCEL_PREFERENCE))
 			
 		then:
 		importerErrorManager.errors.size() == 1
@@ -497,18 +550,14 @@ class DataImporterSpec extends IntegrationTests {
 		BUTARO+","+dataElement.code+",Text2\n"+
 		BUTARO+","+"Code"+",Text2\n"
 		
-		
 		def importerErrorManager = new ImporterErrorManager();
-		importerErrorManager.setNumberOfSavedRows(0)
-		importerErrorManager.setNumberOfUnsavedRows(0)
-		importerErrorManager.setNumberOfRowsSavedWithError(0)
 		
 		GeneralDataImporter importer = new GeneralDataImporter(
 			locationService, valueService, dataService,
 			importerErrorManager,  Period.list()[0]
 			);
 
-		importer.importData("File Name",new StringReader(csvCodeString))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvCodeString), CsvPreference.EXCEL_PREFERENCE))
 			
 		then:
 		importerErrorManager.errors.size() == 2
@@ -530,16 +579,13 @@ class DataImporterSpec extends IntegrationTests {
 		BUTARO+","+dataElement.code+",overrideStringTwo\n"
 		
 		def importerErrorManager = new ImporterErrorManager();
-		importerErrorManager.setNumberOfSavedRows(0)
-		importerErrorManager.setNumberOfUnsavedRows(0)
-		importerErrorManager.setNumberOfRowsSavedWithError(0)
 		
 		GeneralDataImporter importer = new GeneralDataImporter(
 			locationService, valueService, dataService,
 			importerErrorManager,  Period.list()[0]
 			);
 
-		importer.importData("File Name",new StringReader(csvCodeString))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvCodeString), CsvPreference.EXCEL_PREFERENCE))
 			
 			
 		then:

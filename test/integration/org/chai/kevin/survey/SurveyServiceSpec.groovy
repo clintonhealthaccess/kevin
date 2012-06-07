@@ -10,11 +10,11 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 	def "get survey question"() {
 		setup:
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
-		def question2 = newSimpleQuestion(["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), ["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(CODE(2), ["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
 		
 		expect:
 		surveyService.getSurveyQuestion(question1.id).equals(question1)
@@ -24,11 +24,11 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 	def "search question test"() {
 		setup:
 		def period = newPeriod() 
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
-		def question2 = newSimpleQuestion(["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), ["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(CODE(2), ["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
 		
 		expect:
 		surveyService.searchSurveyQuestions("que", survey).equals([question1])
@@ -38,11 +38,11 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 	def "search question - paging works"() {
 		setup:
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
-		def question2 = newSimpleQuestion(["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), ["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(CODE(2), ["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
 		
 		expect:
 		surveyService.searchSurveyQuestions("", survey, [offset: 0, max:1]).equals([question1])
@@ -54,16 +54,16 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(period)
+		def survey = newSurvey(CODE(1), period)
 		def program = null
 		def section = null
 		def question = null
 		def element = null
 		
 		when:
-		program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 
 		element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
@@ -76,16 +76,16 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(period)
+		def survey = newSurvey(CODE(1), period)
 		def program = null
 		def section = null
 		def question = null
 		def element = null
 		
 		when:
-		program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		section = newSurveySection(program, 1, [])
-		question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		section = newSurveySection(CODE(1), program, 1, [])
+		question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 
 		element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 	
@@ -99,10 +99,10 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
@@ -119,10 +119,10 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 	def "search survey elements"() {
 		def period = newPeriod()
 		
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def dataElement = newRawDataElement(j(["en": "element"]),CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
@@ -160,7 +160,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		surveyElements.equals([element])
 				
 		when: "search filtered by survey"
-		def survey2 = newSurvey(period)
+		def survey2 = newSurvey(CODE(2), period)
 		surveyElements = surveyService.searchSurveyElements("ele", survey2, [], [:])
 		
 		then:

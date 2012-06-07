@@ -16,13 +16,14 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="CalculationLocation")
-@Table(name="dhsst_location_abstract")
+@Table(name="dhsst_location_abstract", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Inheritance(strategy=InheritanceType.JOINED)
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public abstract class CalculationLocation {

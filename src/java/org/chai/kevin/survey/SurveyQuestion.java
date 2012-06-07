@@ -50,6 +50,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
@@ -59,7 +60,7 @@ import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "SurveyQuestion")
-@Table(name = "dhsst_survey_question")
+@Table(name = "dhsst_survey_question", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class SurveyQuestion extends Orderable<Integer> implements Exportable {
 

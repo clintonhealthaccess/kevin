@@ -35,6 +35,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Period;
@@ -47,7 +48,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="DashboardTarget")
-@Table(name="dhsst_dashboard_target")
+@Table(name="dhsst_dashboard_target", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DashboardTarget extends DashboardEntity implements ReportTarget, Exportable {
 

@@ -15,13 +15,13 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
-		def validationRule = newFormValidationRule(element, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+" > 0")
+		def validationRule = newFormValidationRule(CODE(1), element, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+" > 0")
 		surveyValidationRuleController = new SurveyValidationRuleController()
 		
 		when:

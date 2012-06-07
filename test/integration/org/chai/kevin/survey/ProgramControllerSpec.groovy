@@ -20,8 +20,8 @@ class ProgramControllerSpec extends SurveyIntegrationTests {
 	def "program list"() {
 		setup:
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [])
 		programController = new ProgramController()
 		
 		when:

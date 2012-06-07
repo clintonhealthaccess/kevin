@@ -56,7 +56,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def formValidationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
+		def formValidationRule = newFormValidationRule(CODE(1), formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
 		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		def jsonResult
@@ -86,7 +86,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def formValidationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
+		def formValidationRule = newFormValidationRule(CODE(1), formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
 		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		def jsonResult
@@ -115,7 +115,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def formValidationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", true, [])
+		def formValidationRule = newFormValidationRule(CODE(1), formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", true, [])
 		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		def jsonResult
@@ -146,7 +146,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def skipRule = newFormSkipRule("\$"+formElement.id+"[_].key1 == 1", [(formElement):"[_].key1"])
+		def skipRule = newFormSkipRule(CODE(1), "\$"+formElement.id+"[_].key1 == 1", [(formElement):"[_].key1"])
 		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		def jsonResult
@@ -445,7 +445,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def formValidationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
+		def formValidationRule = newFormValidationRule(CODE(1), formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
 		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		

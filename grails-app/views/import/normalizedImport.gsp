@@ -20,7 +20,7 @@
 					<g:selectFromList name="period.id" label="${message(code:'period.label')}" bean="${normalizedImporter}" field="period" optionKey="id" multiple="false"
 					from="${periods}" value="${normalizedImporter?.period?.id}" optionValue="startDate" />
 					
-					<g:file name="file" label="${message(code:'import.file.label')}" bean="${normalizedImporter}" field="file"/>
+					<g:file bean="${normalizedImporter}"/>
 					<div class="row">
 						<button type="submit"><g:message code="import.button.import.label"/></button>
 					</div>

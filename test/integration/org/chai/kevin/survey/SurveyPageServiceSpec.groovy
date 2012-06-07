@@ -31,11 +31,11 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
+		def survey = newSurvey(CODE(1), period)
 		
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])		
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])		
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
@@ -57,11 +57,11 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
+		def survey = newSurvey(CODE(1), period)
 		
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
@@ -83,11 +83,11 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
+		def survey = newSurvey(CODE(1), period)
 		
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))				
 		
 		when:
@@ -127,11 +127,11 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
+		def survey = newSurvey(CODE(1), period)
 		
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))				
 		
 		when:
@@ -171,17 +171,17 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
+		def survey = newSurvey(CODE(1), period)
 		
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), v("1"))
 		
-		def rule1 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
-		def rule2 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 100")		
+		def rule1 = newFormValidationRule(CODE(1), element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
+		def rule2 = newFormValidationRule(CODE(2), element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 100")		
 		
 		when:
 		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5"])
@@ -201,17 +201,17 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
+		def survey = newSurvey(CODE(1), period)
 		
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), v("1"))
 		
-		def rule1 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
-		def rule2 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 100")
+		def rule1 = newFormValidationRule(CODE(1), element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
+		def rule2 = newFormValidationRule(CODE(2), element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 100")
 		
 		when:
 		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5"])
@@ -232,11 +232,11 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
+		def survey = newSurvey(CODE(1), period)
 		
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))				
 		
 		when:
@@ -276,11 +276,11 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
+		def survey = newSurvey(CODE(1), period)
 		
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))				
 		
 		when:
@@ -320,11 +320,11 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		newSurveyProgram(CODE(1), survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(CODE(2), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_MAP(["key1":Type.TYPE_NUMBER(),"key2":Type.TYPE_NUMBER()])))
 		
 		when:
@@ -365,11 +365,11 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		newSurveyProgram(CODE(2), survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
@@ -386,16 +386,16 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		newSurveyProgram(CODE(2), survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(CODE(2), section, 2, [(HEALTH_CENTER_GROUP)])
 		
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		def element2 = newSurveyElement(question2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()))
-		def skipRule = newSurveySkipRule(survey, "\$"+element1.id+" == 1", [:], [question2])
+		def skipRule = newSurveySkipRule(CODE(1), survey, "\$"+element1.id+" == 1", [:], [question2])
 		
 		when:
 		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element1], [("elements["+element1.id+"].value"): "1"])
@@ -412,16 +412,16 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		newSurveyProgram(CODE(2), survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(CODE(2), section, 2, [(HEALTH_CENTER_GROUP)])
 		
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		def element2 = newSurveyElement(question2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()))
-		def skipRule = newSurveySkipRule(survey, "\$"+element1.id+" == 1", [(element2):""], [])
+		def skipRule = newSurveySkipRule(CODE(1), survey, "\$"+element1.id+" == 1", [(element2):""], [])
 		
 		when:
 		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element1], [("elements["+element1.id+"].value"): "1"])
@@ -438,14 +438,14 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		newSurveyProgram(CODE(2), survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
-		def rule = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
+		def rule = newFormValidationRule(CODE(1), element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
 		
 		when:
 		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5"])
@@ -478,15 +478,15 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		newSurveyProgram(CODE(2), survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
-		def rule1 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
-		def rule2 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 100")
+		def rule1 = newFormValidationRule(CODE(1), element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
+		def rule2 = newFormValidationRule(CODE(2), element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 100")
 		
 		when:
 		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5"])
@@ -503,11 +503,11 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		newSurveyProgram(CODE(2), survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER())))
 		
@@ -544,11 +544,11 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		newSurveyProgram(CODE(2), survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		when:
 		surveyPageService.refreshSectionForDataLocation(DataLocation.findByCode(KIVUYE), section)
@@ -563,10 +563,10 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
-		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
@@ -581,10 +581,10 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
@@ -608,9 +608,9 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program1 = newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def program2 = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program1 = newSurveyProgram(CODE(1), survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program2 = newSurveyProgram(CODE(2), survey, 1, [(HEALTH_CENTER_GROUP)])
 		
 		when:
 		def surveyPage = surveyPageService.getSurveyPage(DataLocation.findByCode(KIVUYE), survey)
@@ -624,12 +624,12 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newCheckboxQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		def option1 = newCheckboxOption(question, 2, [(HEALTH_CENTER_GROUP)], null)
-		def option2 = newCheckboxOption(question, 1, [(HEALTH_CENTER_GROUP)], null)
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newCheckboxQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		def option1 = newCheckboxOption(CODE(1), question, 2, [(HEALTH_CENTER_GROUP)], null)
+		def option2 = newCheckboxOption(CODE(2), question, 1, [(HEALTH_CENTER_GROUP)], null)
 		
 		when:
 		def surveyPage = surveyPageService.getSurveyPage(DataLocation.findByCode(KIVUYE), section)

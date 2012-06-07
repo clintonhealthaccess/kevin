@@ -12,17 +12,17 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question1 = newTableQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def column = newTableColumn(question1, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def row = newTableRow(question1, 1, [(DISTRICT_HOSPITAL_GROUP)], [(column): null])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question1 = newTableQuestion(CODE(1), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def column = newTableColumn(CODE(1), question1, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def row = newTableRow(CODE(1), question1, 1, [(DISTRICT_HOSPITAL_GROUP)], [(column): null])
 
-		def question2 = newSimpleQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question2 = newSimpleQuestion(CODE(2), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 
-		def question3 = newCheckboxQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def option = newCheckboxOption(question3, 1, [(DISTRICT_HOSPITAL_GROUP)], null)
+		def question3 = newCheckboxQuestion(CODE(3), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def option = newCheckboxOption(CODE(1), question3, 1, [(DISTRICT_HOSPITAL_GROUP)], null)
 		editSurveyController = new EditSurveyController()
 		
 		when:
@@ -40,7 +40,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(period)
+		def survey = newSurvey(CODE(1), period)
 		editSurveyController = new EditSurveyController()
 		
 		when:
@@ -57,7 +57,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
-		def survey = newSurvey([:], period, true)
+		def survey = newSurvey(CODE(1), [:], period, true)
 		editSurveyController = new EditSurveyController()
 		
 		when:
@@ -72,7 +72,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
-		def survey = newSurvey(period)
+		def survey = newSurvey(CODE(1), period)
 		editSurveyController = new EditSurveyController()
 		
 		when:
@@ -87,7 +87,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
-		def survey = newSurvey(period)
+		def survey = newSurvey(CODE(1), period)
 		editSurveyController = new EditSurveyController()
 		
 		when:

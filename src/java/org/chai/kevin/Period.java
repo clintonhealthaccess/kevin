@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
@@ -19,6 +20,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class Period implements Exportable {
 
 	private Long id;
+	// TODO get rid of this
 	private String code;
 	private Date startDate;
 	private Date endDate;

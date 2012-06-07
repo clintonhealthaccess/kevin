@@ -76,10 +76,8 @@ class NormalizedImporterController extends AbstractController {
 				sessionFactory, transactionManager,
 				errorManager, cmd.dataElement, cmd.period
 			);
-			if(cmd.file.getContentType().equals(FILE_TYPE_ZIP))
-				importer.importZipFiles(cmd.file.getInputStream())
-			if(cmd.file.getContentType().equals(FILE_TYPE_CSV))
-				importer.importCsvFile(cmd.file.getName(),cmd.file.getInputStream())
+			if (cmd.file.getContentType().equals(FILE_TYPE_ZIP)) importer.importZipFiles(cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
+			if (cmd.file.getContentType().equals(FILE_TYPE_CSV)) importer.importCsvFile(cmd.file.getName(), cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
 			cmd.file.getInputStream().close();
 			
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
@@ -107,11 +105,17 @@ class NormalizedImporterCommand {
 
 	Period period;
 	CommonsMultipartFile file;
+	String encoding;
+	Character delimiter;
 	RawDataElement dataElement;
 
 	static constraints = {
+		file(blank:false, nullable:false, validator: {val, obj ->
+			return !val.empty
+		})
+		delimiter(blank:false,nullable:false)
+		encoding(blank:false,nullable:false)
 		period(blank:false,nullable:false)
 		dataElement(blank:false,nullable:false)
-		
 	}
 }

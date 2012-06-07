@@ -40,6 +40,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Importable;
@@ -51,7 +52,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name = "DsrTarget")
-@Table(name = "dhsst_dsr_target")
+@Table(name = "dhsst_dsr_target", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DsrTarget extends AbstractReportTarget implements Exportable, Importable {
 	

@@ -49,10 +49,10 @@ class FormElementServiceSpec extends IntegrationTests {
 		formElementService.getFormElement(formElement.id).equals(formElement)
 		
 		when:
-		def survey = SurveyIntegrationTests.newSurvey(period)
-		def program = SurveyIntegrationTests.newSurveyProgram(survey, 1, [])
-		def section = SurveyIntegrationTests.newSurveySection(program, 1, [])
-		def question = SurveyIntegrationTests.newSimpleQuestion(section, 1, [])
+		def survey = SurveyIntegrationTests.newSurvey(CODE(1), period)
+		def program = SurveyIntegrationTests.newSurveyProgram(CODE(1), survey, 1, [])
+		def section = SurveyIntegrationTests.newSurveySection(CODE(1), program, 1, [])
+		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(1), section, 1, [])
 		def surveyElement = SurveyIntegrationTests.newSurveyElement(question, dataElement)
 		
 		then:
@@ -118,7 +118,7 @@ class FormElementServiceSpec extends IntegrationTests {
 		def list = null
 		
 		when:
-		def rule1 = newFormSkipRule("1==1", [(element): ""])
+		def rule1 = newFormSkipRule(CODE(1), "1==1", [(element): ""])
 		list = formElementService.searchSkipRules(element)
 		
 		then:
@@ -132,7 +132,7 @@ class FormElementServiceSpec extends IntegrationTests {
 		def list = null
 		
 		when:
-		def rule2 = newFormSkipRule("\$"+element.id+"==1", [(element): ""])
+		def rule2 = newFormSkipRule(CODE(1), "\$"+element.id+"==1", [(element): ""])
 		list = formElementService.searchSkipRules(element)
 		
 		then:
@@ -146,8 +146,8 @@ class FormElementServiceSpec extends IntegrationTests {
 		def list = null
 	
 		when:
-		def rule3 = newFormSkipRule("\$"+element.id+"0"+"==1", [(element): ""])
-		def rule4 = newFormSkipRule("\$"+element.id+"==1", [(element): ""])
+		def rule3 = newFormSkipRule(CODE(1), "\$"+element.id+"0"+"==1", [(element): ""])
+		def rule4 = newFormSkipRule(CODE(2), "\$"+element.id+"==1", [(element): ""])
 		list = formElementService.searchSkipRules(element)
 		
 		then:
@@ -157,15 +157,15 @@ class FormElementServiceSpec extends IntegrationTests {
 	def "test retrieve skip rule with super class"() {
 		setup:
 		def period = newPeriod()
-		def survey = SurveyIntegrationTests.newSurvey(period)
-		def program = SurveyIntegrationTests.newSurveyProgram(survey, 1, [])
-		def section = SurveyIntegrationTests.newSurveySection(program, 1, [])
-		def question = SurveyIntegrationTests.newSimpleQuestion(section, 1, [])
+		def survey = SurveyIntegrationTests.newSurvey(CODE(1), period)
+		def program = SurveyIntegrationTests.newSurveyProgram(CODE(1), survey, 1, [])
+		def section = SurveyIntegrationTests.newSurveySection(CODE(1), program, 1, [])
+		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(1), section, 1, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = SurveyIntegrationTests.newSurveyElement(question, dataElement)
 		
 		when:
-		def rule1 = SurveyIntegrationTests.newSurveySkipRule(survey, "\$"+element.id+" == 1", [:], [])
+		def rule1 = SurveyIntegrationTests.newSurveySkipRule(CODE(1), survey, "\$"+element.id+" == 1", [:], [])
 		def list = formElementService.searchSkipRules(element)
 		
 		then:
@@ -189,7 +189,7 @@ class FormElementServiceSpec extends IntegrationTests {
 		list.isEmpty()
 		
 		when:
-		def rule1 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+"==1")
+		def rule1 = newFormValidationRule(CODE(1), element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+"==1")
 		list = formElementService.searchValidationRules(element, DataLocationType.findByCode( (HEALTH_CENTER_GROUP) ))
 		
 		then:
@@ -214,8 +214,8 @@ class FormElementServiceSpec extends IntegrationTests {
 		def list = null
 	
 		when:
-		def rule3 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"0"+"==1")
-		def rule4 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"==1")
+		def rule3 = newFormValidationRule(CODE(1), element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"0"+"==1")
+		def rule4 = newFormValidationRule(CODE(2), element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"==1")
 		list = formElementService.searchValidationRules(element, DataLocationType.findByCode( (HEALTH_CENTER_GROUP) ))
 		
 		then:
