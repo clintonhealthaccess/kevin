@@ -46,10 +46,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.Exportable;
 import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
-import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
@@ -58,7 +59,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity(name="Survey")
-@Table(name="dhsst_survey")
+@Table(name="dhsst_survey", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 public class Survey implements Exportable {
 	
 	private Long id;

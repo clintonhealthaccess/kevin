@@ -41,9 +41,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.entity.export.Exportable;
-import org.chai.kevin.entity.export.Importable;
+import org.chai.kevin.Exportable;
+import org.chai.kevin.Importable;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.Utils;
@@ -53,7 +54,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "DsrTargetCategory")
-@Table(name = "dhsst_dsr_target_category")
+@Table(name = "dhsst_dsr_target_category", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DsrTargetCategory extends ReportEntity implements Exportable {
 

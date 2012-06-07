@@ -50,6 +50,44 @@ class DataControllerSpec extends IntegrationTests {
 		dataController.modelAndView == null
 	}
 	
+	def "get data element values - default to first period when no period specified"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		dataController = new DataController()
+		
+		when:
+		def dataElementValue = newRawDataElementValue(dataElement, period1, DataLocation.findByCode(BUTARO), Value.NULL_INSTANCE())
+		dataController.params.data = dataElement.id
+		dataController.dataElementValueList()
+		
+		then:
+		dataController.modelAndView.model.selectedPeriod.equals(period1)
+		dataController.modelAndView.model.entities.equals([dataElementValue])
+		dataController.modelAndView.model.entityCount == 1
+	}
+	
+	def "get data element values - paging works"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		dataController = new DataController()
+		
+		when:
+		def dataElementValue1 = newRawDataElementValue(dataElement, period1, DataLocation.findByCode(BUTARO), Value.NULL_INSTANCE())
+		def dataElementValue2 = newRawDataElementValue(dataElement, period1, DataLocation.findByCode(KIVUYE), Value.NULL_INSTANCE())
+		dataController.params.period = period1.id
+		dataController.params.data = dataElement.id
+		dataController.params.max = 1
+		dataController.dataElementValueList()
+		
+		then:
+		dataController.modelAndView.model.entities.equals([dataElementValue1])
+		dataController.modelAndView.model.entityCount == 2
+	}
+	
 	def "get data element values - raw data element"() {
 		setup:
 		setupLocationTree()
@@ -63,7 +101,7 @@ class DataControllerSpec extends IntegrationTests {
 		
 		then:
 		dataController.modelAndView.model.periods.equals([period1])
-		dataController.modelAndView.model.entities.equals([(period1):[]])
+		dataController.modelAndView.model.entities.equals([])
 		
 		when:
 		def dataElementValue = newRawDataElementValue(dataElement, period1, DataLocation.findByCode(BUTARO), Value.NULL_INSTANCE())
@@ -71,7 +109,8 @@ class DataControllerSpec extends IntegrationTests {
 		
 		then:
 		dataController.modelAndView.model.periods.equals([period1])
-		dataController.modelAndView.model.entities.equals([(period1):[dataElementValue]])
+		dataController.modelAndView.model.selectedPeriod.equals(period1)
+		dataController.modelAndView.model.entities.equals([dataElementValue])
 	}
 	
 	def "get data element values - normalized data element"() {
@@ -87,7 +126,7 @@ class DataControllerSpec extends IntegrationTests {
 		
 		then:
 		dataController.modelAndView.model.periods.equals([period1])
-		dataController.modelAndView.model.entities.equals([(period1):[]])
+		dataController.modelAndView.model.entities.equals([])
 		
 		when:
 		def dataElementValue = newNormalizedDataElementValue(dataElement, DataLocation.findByCode(BUTARO), period1, Status.VALID, Value.NULL_INSTANCE())
@@ -95,7 +134,7 @@ class DataControllerSpec extends IntegrationTests {
 		
 		then:
 		dataController.modelAndView.model.periods.equals([period1])
-		dataController.modelAndView.model.entities.equals([(period1):[dataElementValue]])
+		dataController.modelAndView.model.entities.equals([dataElementValue])
 	}
 	
 	def "delete values"() {

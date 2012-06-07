@@ -56,7 +56,7 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def type = newDataLocationType(DISTRICT_HOSPITAL_GROUP)
+		def type = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
 		
 		when: "empty value list"
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
@@ -161,7 +161,7 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def type = newDataLocationType(DISTRICT_HOSPITAL_GROUP)
+		def type = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
 		
 		when: 
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
@@ -235,24 +235,52 @@ class ValueServiceSpec extends IntegrationTests {
 		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), v("40"))
 		
 		then:
-		valueService.listDataElementValues(rawDataElement, null, period).equals([rawDataElementValue])
+		valueService.listDataElementValues(rawDataElement, null, period, [:]).equals([rawDataElementValue])
 		
 		when:
 		def period2 = newPeriod()
 		def rawDataElementValue2 = newRawDataElementValue(rawDataElement, period2, DataLocation.findByCode(BUTARO), v("40"))
 		
 		then:
-		valueService.listDataElementValues(rawDataElement, null, period).equals([rawDataElementValue])
-		valueService.listDataElementValues(rawDataElement, null, null).equals([rawDataElementValue, rawDataElementValue2])
+		valueService.listDataElementValues(rawDataElement, null, period, [:]).equals([rawDataElementValue])
+		valueService.listDataElementValues(rawDataElement, null, null, [:]).equals([rawDataElementValue, rawDataElementValue2])
 		
 		when:
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		def rawDataElementValue21 = newRawDataElementValue(rawDataElement2, period, DataLocation.findByCode(KIVUYE), v("40"))
 		
 		then:
-		valueService.listDataElementValues(rawDataElement2, null, period).equals([rawDataElementValue21])
-		valueService.listDataElementValues(rawDataElement, DataLocation.findByCode(BUTARO), period).equals([rawDataElementValue])
+		valueService.listDataElementValues(rawDataElement2, null, period, [:]).equals([rawDataElementValue21])
+		valueService.listDataElementValues(rawDataElement, DataLocation.findByCode(BUTARO), period, [:]).equals([rawDataElementValue])
 		
+	}
+	
+	def "test value count"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		when:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), v("40"))
+		
+		then:
+		valueService.countDataElementValues(rawDataElement, null, period) == 1
+		
+		when:
+		def period2 = newPeriod()
+		def rawDataElementValue2 = newRawDataElementValue(rawDataElement, period2, DataLocation.findByCode(BUTARO), v("40"))
+		
+		then:
+		valueService.countDataElementValues(rawDataElement, null, period) == 1
+		valueService.countDataElementValues(rawDataElement, null, null) == 2
+		
+		when:
+		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		def rawDataElementValue21 = newRawDataElementValue(rawDataElement2, period, DataLocation.findByCode(KIVUYE), v("40"))
+		
+		then:
+		valueService.countDataElementValues(rawDataElement2, null, period) == 1
+		valueService.countDataElementValues(rawDataElement, DataLocation.findByCode(BUTARO), period) == 1
 	}
 
 	def "test delete data element values"() {

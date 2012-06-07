@@ -22,14 +22,14 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 	def "table question has data elements"() {
 		setup:
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [])
-		def section = newSurveySection(program, 1, [])
-		def question = newTableQuestion(section, 1, [])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [])
+		def section = newSurveySection(CODE(1), program, 1, [])
+		def question = newTableQuestion(CODE(1), section, 1, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
-		def column = newTableColumn(question, 1, [])
-		def row = newTableRow(question, 1, [], [(column): element])
+		def column = newTableColumn(CODE(1), question, 1, [])
+		def row = newTableRow(CODE(1), question, 1, [], [(column): element])
 		
 		when:
 		def questionToTest = SurveyTableQuestion.list()[0]
@@ -42,15 +42,15 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 	def "save survey cascades skiprule"() {
 		setup:
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [])
-		def section = newSurveySection(program, 1, [])
-		def question = newSimpleQuestion(section, 1, [])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [])
+		def section = newSurveySection(CODE(1), program, 1, [])
+		def question = newSimpleQuestion(CODE(1), section, 1, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		
 		when:
-		def skipRule = new SurveySkipRule(survey: survey, expression: "\$"+element.id+" == 1", skippedFormElements: [:], skippedSurveyQuestions: [])
+		def skipRule = new SurveySkipRule(code: CODE(1), survey: survey, expression: "\$"+element.id+" == 1", skippedFormElements: [:], skippedSurveyQuestions: [])
 		
 		then:
 		skipRule.id == null
@@ -68,17 +68,17 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		when:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question1 = newTableQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def column = newTableColumn(question1, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def row = newTableRow(question1, 1, [(DISTRICT_HOSPITAL_GROUP)], [(column): null])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question1 = newTableQuestion(CODE(1), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def column = newTableColumn(CODE(1), question1, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def row = newTableRow(CODE(1), question1, 1, [(DISTRICT_HOSPITAL_GROUP)], [(column): null])
 
-		def question2 = newSimpleQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question2 = newSimpleQuestion(CODE(2), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 
-		def question3 = newCheckboxQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def option = newCheckboxOption(question3, 1, [(DISTRICT_HOSPITAL_GROUP)], null)
+		def question3 = newCheckboxQuestion(CODE(3), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def option = newCheckboxOption(CODE(1), question3, 1, [(DISTRICT_HOSPITAL_GROUP)], null)
 		
 		then:
 		question1.getSurveyElements().equals([])
@@ -94,14 +94,14 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		
 		setup:
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = newTableQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newTableQuestion(CODE(1), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
-		def column = newTableColumn(question, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def row = newTableRow(question, 1, [(DISTRICT_HOSPITAL_GROUP)], [(column): element])
+		def column = newTableColumn(CODE(1), question, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def row = newTableRow(CODE(1), question, 1, [(DISTRICT_HOSPITAL_GROUP)], [(column): element])
 		
 		when:
 		def orgunitgroupList = question.getTypeApplicable(element)
@@ -113,16 +113,16 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 	def "survey elements can have 2 validation rules with the same prefix"() {
 		setup:
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = newTableQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newTableQuestion(CODE(1), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		
 		when:
-		newFormValidationRule(element, "", [], "true");
-		newFormValidationRule(element, "", [], "true");
+		newFormValidationRule(CODE(1), element, "", [], "true");
+		newFormValidationRule(CODE(2), element, "", [], "true");
 		
 		then:
 		SurveyElement.list()[0].validationRules.size() == 2
@@ -133,10 +133,10 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		newSurveyProgram(survey, 2, [(DISTRICT_HOSPITAL_GROUP)])
-		def program = newSurveyProgram(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def type = newDataLocationType(HEALTH_CENTER_GROUP)
+		def survey = newSurvey(CODE(1), period)
+		newSurveyProgram(CODE(2), survey, 2, [(DISTRICT_HOSPITAL_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def type = DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		
 		
 		when:

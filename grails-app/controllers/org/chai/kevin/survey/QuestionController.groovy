@@ -101,7 +101,7 @@ class QuestionController extends AbstractController {
 				surveyQuestions.each { question ->
 					quest (
 						key: question.id,
-						value: Utils.stripHtml(g.i18n(field: question.names).toString(), 35)+' - '+ g.i18n(field: question.section.names)
+						value: Utils.stripHtml(g.i18n(field: question.names).toString())+' - '+ g.i18n(field: question.section.names)
 					)
 				}
 			}

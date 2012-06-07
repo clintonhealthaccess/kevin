@@ -35,7 +35,8 @@ public class Planning {
 	private List<PlanningType> planningTypes = new ArrayList<PlanningType>();
 	private List<PlanningSkipRule> skipRules = new ArrayList<PlanningSkipRule>(); 
 	private Translation names = new Translation();
-	// TODO add settings form page
+	private Translation overviewHelps = new Translation();
+	private Translation budgetHelps = new Translation();
 	
 	private Boolean active = false;
 	
@@ -116,6 +117,26 @@ public class Planning {
 	
 	public void setNames(Translation names) {
 		this.names = names;
+	}
+	
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonOverviewHelps", nullable = false)) })
+	public Translation getOverviewHelps() {
+		return overviewHelps;
+	}
+	
+	public void setOverviewHelps(Translation overviewHelps) {
+		this.overviewHelps = overviewHelps;
+	}
+	
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonBudgetHelps", nullable = false)) })
+	public Translation getBudgetHelps() {
+		return budgetHelps;
+	}
+	
+	public void setBudgetHelps(Translation budgetHelps) {
+		this.budgetHelps = budgetHelps;
 	}
 	
 	public String toString(){

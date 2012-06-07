@@ -45,7 +45,6 @@ class EditSurveyController extends AbstractController {
 
 	SummaryService summaryService;
 	SurveyPageService surveyPageService;
-	SurveyExportService surveyExportService;
 	FormValidationService formValidationService;
 	SessionFactory sessionFactory;
 	
@@ -312,23 +311,6 @@ class EditSurveyController extends AbstractController {
 		render (view: '/survey/print/surveyPrint', model:[surveyPage: surveyPage])
 	}
 
-	def export = {
-		CalculationLocation location = locationService.getCalculationLocation(params.int('location'), CalculationLocation.class)
-		SurveySection section = SurveySection.get(params.int('section'))
-		SurveyProgram program = SurveyProgram.get(params.int('program'))
-		Survey survey = Survey.get(params.int('survey'))	
-
-		String filename = surveyExportService.getExportFilename(location, section, program, survey);
-		File csvFile = surveyExportService.getSurveyExportFile(filename, location, section, program, survey);
-		def zipFile = Utils.getZipFile(csvFile, filename)
-			
-		if(zipFile.exists()){
-			response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());
-			response.setContentType("application/zip");
-			response.setHeader("Content-length", zipFile.length().toString());
-			response.outputStream << zipFile.newInputStream()
-		}
-	}
 	
 	private def getSurveyElements() {
 		def result = []

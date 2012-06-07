@@ -48,14 +48,15 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
-import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "SurveyTableColumn")
-@Table(name = "dhsst_survey_table_column")
+@Table(name = "dhsst_survey_table_column", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 public class SurveyTableColumn extends Orderable<Integer> implements Exportable {
 
 	private Long id;

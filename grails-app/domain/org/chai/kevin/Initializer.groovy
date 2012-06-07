@@ -68,7 +68,7 @@ import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
-import org.chai.kevin.export.Exporter;
+import org.chai.kevin.exports.DataExport;
 import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
 import org.chai.kevin.form.FormElement;
@@ -217,8 +217,8 @@ class Initializer {
 		if (!Enum.count()) {
 			// Enumerations
 			def enume = new Enum(names:j(["en":"Enum 1"]), descriptions:j([:]), code:"ENUM1");
-			def enumOption1 = new EnumOption(code:"EnumOption1",names:j(["en":"Value 1"]), value:"value1", enume: enume, order: o(["en":1,"fr":2]));
-			def enumOption2 = new EnumOption(code:"EnumOption2",names:j(["en":"Value 2"]), value:"value2", enume: enume, order: o(["en":2,"fr":1]));
+			def enumOption1 = new EnumOption(code:"EnumOption1",names:j(["en":"Value 1"]), descriptions:j(["en":"Lorem Ipsum blabla bli blabla bla Lorem Ipsum Sit Amet Description is huge"]), value:"value1", enume: enume, order: o(["en":1,"fr":2]));
+			def enumOption2 = new EnumOption(code:"EnumOption2",names:j(["en":"Value 2"]), descriptions:j(["en":"Small Description Lorem Ipsum"]), value:"value2", enume: enume, order: o(["en":2,"fr":1]));
 			
 			def enume2 = new Enum(names:j(["en":"Enum 2"]), descriptions:j([:]), code:"ENUM2");
 			def enumOption01 = new EnumOption(code:"EnumOption3",names:j(["en":"N/A Did not receive training"]), value:"N/A Did not receive training", enume: enume2);
@@ -1119,6 +1119,8 @@ class Initializer {
 			period: Period.list([cache: true])[0],
 			names: j(["en":"Planning 2011"]),
 			typeCodeString: "Health Center",
+			overviewHelps: j(["en": "Some help information for the planning tool - overview"]),
+			budgetHelps: j(["en": "Some help information for the planning tool - budget"]),
 			active: true
 		).save(failOnError: true)
 		
@@ -1209,7 +1211,6 @@ class Initializer {
 		def planningType = new PlanningType(
 			names: j(["en":"Activity"]),
 			namesPlural: j(["en":"Activities"]),
-//			sections: ["[_].key1","[_].key2"],
 			sectionDescriptions: [
 				"[_].basic": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
 				"[_].staffing": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
@@ -1219,6 +1220,8 @@ class Initializer {
 			],
 			formElement: formElement,
 			fixedHeader: '[_].basic.description',
+			listHelps: j(["en": "Some help information for the planning tool - list"]),
+			newHelps: j(["en": "Some help information for the planning tool - new"]),
 			planning: planning
 		).save(failOnError: true);
 		planning.planningTypes << planningType
@@ -1271,7 +1274,7 @@ class Initializer {
 	
 	
 	static def createExporter(){
-		if(!Exporter.count()){
+		if(!DataExport.count()){
 			def dh = DataLocationType.findByCode("District Hospital")
 			def hc = DataLocationType.findByCode("Health Center")
 			def periodOne = Period.list()[0];
@@ -1289,7 +1292,7 @@ class Initializer {
 			def south = Location.findByCode("South");
 			
 			
-			def exporterThree = new Exporter(
+			def exporterThree = new DataExport(
 				descriptions: j(["en":"Exporter Raw Data Element Three"]),
 				date: new Date(),
 				typeCodeString:"Health Center",
@@ -1298,7 +1301,7 @@ class Initializer {
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 			
-			def exporterTwo = new Exporter(
+			def exporterTwo = new DataExport(
 				descriptions: j(["en":"Exporter Raw Data Element Two"]),
 				date: new Date(),
 				typeCodeString:"Health Center",
@@ -1307,7 +1310,7 @@ class Initializer {
 				periods: [periodOne]
 				).save(failOnError: true)
 				
-			def exporterOne = new Exporter(
+			def exporterOne = new DataExport(
 				descriptions: j(["en":"Exporter Raw Data Element One"]),
 				date: new Date(),
 				locations:[est,burera,south],
@@ -1316,7 +1319,7 @@ class Initializer {
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 				
-			def exporterFour = new Exporter(
+			def exporterFour = new DataExport(
 				descriptions: j(["en":"Exporter Raw Data Element Four"]),
 				date: new Date(),
 				typeCodeString:"District Hospital",

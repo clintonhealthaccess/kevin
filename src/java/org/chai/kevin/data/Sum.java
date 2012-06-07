@@ -36,8 +36,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Exportable;
 import org.chai.kevin.Period;
-import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -67,7 +67,7 @@ public class Sum extends Calculation<SumPartialValue> {
 
 	@Override
 	public SumPartialValue getCalculationPartialValue(String expression, Map<DataLocation, StatusValuePair> values, CalculationLocation location, Period period, DataLocationType type) {
-		Value value = getValue(values.values());
+		Value value = getValue(values, location);
 		return new SumPartialValue(this, location, period, type, value);
 	}
 

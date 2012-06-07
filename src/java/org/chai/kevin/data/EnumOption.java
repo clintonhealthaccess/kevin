@@ -40,18 +40,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.Exportable;
+import org.chai.kevin.Importable;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Ordering;
 import org.chai.kevin.Translation;
-import org.chai.kevin.entity.export.Exportable;
-import org.chai.kevin.entity.export.Importable;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="EnumOption")
-@Table(name="dhsst_enum_option")
+@Table(name="dhsst_enum_option", uniqueConstraints={@UniqueConstraint(columnNames={"code"})})
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class EnumOption extends Orderable<Ordering> implements Exportable, Importable {
 
@@ -60,7 +61,8 @@ public class EnumOption extends Orderable<Ordering> implements Exportable, Impor
 	private String value;
 	private Ordering order = new Ordering();
 	private Translation names = new Translation();
-
+	private Translation descriptions = new Translation();
+	
 	// TODO flag to deactivate option in survey, 
 	// think about how to make that better
 	// enum and enum options should not be directly linked to a survey
@@ -99,7 +101,18 @@ public class EnumOption extends Orderable<Ordering> implements Exportable, Impor
 	public void setNames(Translation names) {
 		this.names = names;
 	}
-	
+
+	@Embedded
+	@AttributeOverrides({
+        @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
+	})
+	public Translation getDescriptions() {
+		return descriptions;
+	}
+
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
+	}
 	
 	@Basic
 	@Column(nullable=false)

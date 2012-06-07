@@ -20,17 +20,18 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.Exportable;
 import org.chai.kevin.Translation;
-import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.util.Utils;
 
 @Entity(name="FormValidationRule")
-@Table(name="dhsst_form_validation_rule")
+@Table(name="dhsst_form_validation_rule", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 public class FormValidationRule {
 
 	private final static Log log = LogFactory.getLog(FormValidationRule.class);

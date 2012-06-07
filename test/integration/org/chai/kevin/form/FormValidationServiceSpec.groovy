@@ -29,7 +29,7 @@ class FormValidationServiceSpec extends IntegrationTests {
 		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(['key1':Type.TYPE_NUMBER(),'key2':Type.TYPE_NUMBER()])))
 		def element1 = newFormElement(dataElement1)
 		
-		def rule = newFormSkipRule("\$"+element1.id+"[_].key1 == 1", [(element1): "[_].key1,[_].key2"])
+		def rule = newFormSkipRule(CODE(1), "\$"+element1.id+"[_].key1 == 1", [(element1): "[_].key1,[_].key2"])
 		
 		when:
 		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), new Value("{\"value\": [{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]},{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]}]}"))
@@ -52,7 +52,7 @@ class FormValidationServiceSpec extends IntegrationTests {
 		def validationRule = null
 		
 		when:
-		validationRule = newFormValidationRule(element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > \$"+element2.id)
+		validationRule = newFormValidationRule(CODE(1), element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > \$"+element2.id)
 		
 		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("1"))
 		newFormEnteredValue(element2, period, DataLocation.findByCode(KIVUYE), v("1"))
@@ -73,7 +73,7 @@ class FormValidationServiceSpec extends IntegrationTests {
 		def validationRule = null
 		
 		when:
-		validationRule = newFormValidationRule(element1, "[_].test1", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+"[_].test1 > \$"+element1.id+"[_].test2")
+		validationRule = newFormValidationRule(CODE(1), element1, "[_].test1", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+"[_].test1 > \$"+element1.id+"[_].test2")
 		
 		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), Value.VALUE_LIST([Value.VALUE_MAP(["test1":Value.VALUE_NUMBER(1), "test2":Value.VALUE_NUMBER(1)])]))
 		def prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocation.findByCode(KIVUYE), getLocator())
@@ -95,7 +95,7 @@ class FormValidationServiceSpec extends IntegrationTests {
 		def validationRule = null
 		
 		when:
-		validationRule = newFormValidationRule(element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > \$"+element2.id)
+		validationRule = newFormValidationRule(CODE(1), element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > \$"+element2.id)
 		
 		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("2"))
 		newFormEnteredValue(element2, period, DataLocation.findByCode(KIVUYE), v("1"))
@@ -119,7 +119,7 @@ class FormValidationServiceSpec extends IntegrationTests {
 		def validationRule = null
 		
 		when:
-		validationRule = newFormValidationRule(element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "if (\$"+element1.id+" == 0) \$"+element2.id+" == null else false")
+		validationRule = newFormValidationRule(CODE(1), element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "if (\$"+element1.id+" == 0) \$"+element2.id+" == null else false")
 		
 		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("0"))
 		newFormEnteredValue(element2, period, DataLocation.findByCode(KIVUYE), Value.NULL_INSTANCE())
@@ -137,7 +137,7 @@ class FormValidationServiceSpec extends IntegrationTests {
 		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element1 = newFormElement(dataElement1)
 		
-		def validationRule = newFormValidationRule(element1, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > 0")
+		def validationRule = newFormValidationRule(CODE(1), element1, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > 0")
 		def prefixes = null
 		
 		when:

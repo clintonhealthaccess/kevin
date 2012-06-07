@@ -8,6 +8,14 @@ function DataEntry (settings) {
 DataEntry.prototype.initializeSurvey = function() {
 	var self = this;
 
+	this.element.delegate('form .element-enum select', 'change', function() {
+		var element = $(this).parents('.element').first();
+		showEnumOptionDescription(element);
+	});
+	this.element.find('form .element-enum').each(function(){
+		showEnumOptionDescription(this);
+	});
+
 	this.element.delegate('form .input', 'change', function(){
 		var element = $(this).parents('.element').first();
 		self.surveyValueChanged(element, $(element).find('.input'), self.settings.callback);
@@ -128,7 +136,7 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 				$.each(data.elements, function(elementIndex, element) {
 					$.each(element.nullPrefixes, function(prefixIndex, prefix) {
 						var elementToCheck = escape('#element-'+element.id+'-'+prefix);
-						if (!$(elementToCheck).hasClass('ajax-in-process') && !$(elementToCheck).hasClass('ajax-error')) {
+						if (!$(elementToCheck).hasClass('ajax-in-process') && !$(elementToCheck).hasClass('ajax-error') && !$(elementToCheck).find('textarea, input, select').is(':focus')) {
 							$(elementToCheck).find('textarea, input, select').attr('value', '');
 						}
 					});
@@ -227,6 +235,13 @@ DataEntry.prototype.listAddClick = function(list, callback) {
 		maximizeRow($(list).prev().prev());
 		callback(self, data, element);
 	});
+}
+
+function showEnumOptionDescription(element) {
+	var enumId = $(element).find('select').data('enum');
+	var optionId = $(element).find('option:selected').data('option');
+	$(element).find('.option-description').hide();
+	$(element).find('#enum-'+enumId+'-option-'+optionId).show();
 }
 
 function getId(array, id) {

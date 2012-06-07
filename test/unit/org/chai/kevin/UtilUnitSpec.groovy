@@ -14,7 +14,7 @@ public class UtilUnitSpec extends UnitSpec {
 		when:
 		String htmlString = "Vaccination<br>";
 		String noHtmlString = "Vaccination";
-		htmlString = Utils.stripHtml(htmlString, htmlString.length());
+		htmlString = Utils.stripHtml(htmlString);
 		
 		then:
 		htmlString.equals(noHtmlString);
@@ -22,7 +22,7 @@ public class UtilUnitSpec extends UnitSpec {
 		when:
 		htmlString = "<p class=\"p1\">CHW Supervision</p>";
 		noHtmlString = "CHW Supervision";
-		htmlString = Utils.stripHtml(htmlString, htmlString.length());
+		htmlString = Utils.stripHtml(htmlString);
 		
 		then:
 		htmlString.equals(noHtmlString);
@@ -30,7 +30,7 @@ public class UtilUnitSpec extends UnitSpec {
 		when:
 		htmlString = "<div>Accountant</div><div><br></div>";
 		noHtmlString = "Accountant";
-		htmlString = Utils.stripHtml(htmlString, htmlString.length());
+		htmlString = Utils.stripHtml(htmlString);
 		
 		then:
 		htmlString.equals(noHtmlString);
@@ -38,7 +38,7 @@ public class UtilUnitSpec extends UnitSpec {
 		when:
 		htmlString = "Eye Problems&nbsp;(trauma, cataract, other)";
 		noHtmlString = "Eye Problems (trauma, cataract, other)";
-		htmlString = Utils.stripHtml(htmlString, htmlString.length());
+		htmlString = Utils.stripHtml(htmlString);
 		
 		then:
 		htmlString.equals(noHtmlString);
@@ -46,7 +46,7 @@ public class UtilUnitSpec extends UnitSpec {
 		when:
 		htmlString = "Bone &amp; Joint Diseases";
 		noHtmlString = "Bone & Joint Diseases";
-		htmlString = Utils.stripHtml(htmlString, htmlString.length());
+		htmlString = Utils.stripHtml(htmlString);
 		
 		then:
 		htmlString.equals(noHtmlString);
@@ -54,7 +54,7 @@ public class UtilUnitSpec extends UnitSpec {
 		when:
 		htmlString = "Children 14 Years<br>Old &amp; Younger";
 		noHtmlString = "Children 14 Years Old & Younger";
-		htmlString = Utils.stripHtml(htmlString, htmlString.length());
+		htmlString = Utils.stripHtml(htmlString);
 		
 		then:
 		htmlString.equals(noHtmlString);

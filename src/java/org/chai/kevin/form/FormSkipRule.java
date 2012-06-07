@@ -21,6 +21,7 @@ import javax.persistence.Lob;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +31,7 @@ import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "FormSkipRule")
-@Table(name = "dhsst_form_skip_rule")
+@Table(name = "dhsst_form_skip_rule", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Inheritance(strategy = InheritanceType.JOINED)
 public class FormSkipRule {
 

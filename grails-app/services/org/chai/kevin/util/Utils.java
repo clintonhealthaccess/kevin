@@ -46,11 +46,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.chai.kevin.Exportable;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.EnumService;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.Value;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -123,9 +123,8 @@ public class Utils {
 		return string.matches(".*\\$"+id+"(\\z|\\D|$).*");
 	}
 	
-	public static String stripHtml(String htmlString, Integer num) {
+	public static String stripHtml(String htmlString) {
 		String noHtmlString;
-		Integer length = num;
 	
 		if (htmlString != null){
 			noHtmlString = htmlString.replace("&nbsp;", " ");
@@ -135,8 +134,7 @@ public class Utils {
 		}
 		else noHtmlString = htmlString;
 	
-		if (num == null || noHtmlString.length() <= num) return noHtmlString;
-		return noHtmlString.substring(0, length);
+		return noHtmlString;
 	}
 	
 	public static String getValueString(Type type, Value value){
@@ -164,25 +162,9 @@ public class Utils {
 	
 	//TODO get ride of this
 	public static File getZipFile(File file, String filename) throws IOException {		
-		
-		File zipFile = File.createTempFile(filename, ZIP_FILE_EXTENSION);
-
-		ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile));
-		FileInputStream fileInputStream = new FileInputStream(file);
-		try {						
-		    ZipEntry zipEntry = new ZipEntry(file.getName());
-		    zipOutputStream.putNextEntry(zipEntry);
-		    
-		    IOUtils.copy(fileInputStream, zipOutputStream);
-		    zipOutputStream.closeEntry();
-		} catch (IOException e) {
-			throw e;
-		} finally {
-		    IOUtils.closeQuietly(zipOutputStream);
-		    IOUtils.closeQuietly(zipOutputStream);
-		}
-			
-		return zipFile;
+		List<File> files = new ArrayList<File>();
+		files.add(file);
+		return getZipFile(files, filename);
 	}
 	
 	public static File getZipFile(List<File> files, String filename) throws IOException {		

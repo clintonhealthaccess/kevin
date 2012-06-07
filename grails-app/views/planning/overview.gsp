@@ -15,7 +15,7 @@
 						<g:render template="/planning/planningTabs" model="[planning: planning, location: location, selected: 'undertakings']"/>
 						<g:render template="/planning/undertakingsTabs" model="[planning: planning, location: location, selected: 'overview']"/>
 				    
-						<g:render template="/templates/help" model="[content: message(code:'planning.overview.help')]"/>
+						<g:render template="/templates/help" model="[content: i18n(field: planning.overviewHelps)]"/>
     
 						<div id="questions">
 							<div class="question push-20">

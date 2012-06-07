@@ -11,15 +11,23 @@
 			<g:set var="tooltipValue" value="${option!=null?i18n(field: option.names):lastValue.enumValue}"/>
 		</g:if>
 
-		<select class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="elements[${element.id}].value${suffix}" disabled="disabled">
+		<select class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="elements[${element.id}].value${suffix}" disabled="disabled" data-enum="${enume.id}">
 			<option value=""><g:message code="survey.element.enum.select.label"/></option>
 		
 			<g:eachOption enum="${enume}" var="option">
-				<option value="${option.value}" ${option?.value==value?.enumValue ? 'selected':''}>
+				<option value="${option.value}" ${option?.value==value?.enumValue ? 'selected':''} data-option="${option.id}">
 					<g:i18n field="${option.names}" />
 				</option>
 			</g:eachOption>
 		</select>
+
+		<div class="option-description-container">		
+			<g:eachOption enum="${enume}" var="option">
+				<div id="enum-${enume.id}-option-${option.id}" class="option-description">
+					<g:stripHtml field="${i18n(field: option.descriptions)}" chars="40"/>
+				</div>
+			</g:eachOption>
+		</div>
 	</g:if>
 	<g:else>
 	<label>-- <g:message code="survey.print.selectonlyoneoption.label"/> --</label>

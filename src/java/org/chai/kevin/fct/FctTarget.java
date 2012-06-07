@@ -41,15 +41,16 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.Exportable;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name = "FctTarget")
-@Table(name = "dhsst_fct_target")
+@Table(name = "dhsst_fct_target", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class FctTarget extends AbstractReportTarget implements Exportable {
 	

@@ -31,10 +31,10 @@ class ExpressionController {
 				}
 			}
 			
-			render (view: 'builder', model: [cmd: cmd, periods: Period.list([cache: true])])
+			render (view: 'builder', model: [cmd: cmd, periods: Period.list([cache: true]), types: DataLocationType.list()])
 		}
 		else {
-			def periods = cmd.periodIds.findAll {it!=null} collect {Period.get(it)}
+			def period = Period.get(cmd.periodId)
 			def dataLocationTypes = new HashSet( cmd.typeCodes.collect { DataLocationType.findByCode(it) } )
 			def locations = locationService.getRootLocation().collectDataLocations(null, dataLocationTypes)
 			
@@ -42,33 +42,29 @@ class ExpressionController {
 			dataElement.type = cmd.type
 			
 			def expressionMap = new ExpressionMap()
-			for (def period : periods) {
-				def typeMap = [:]
-				for (def type : dataLocationTypes) {
-					typeMap.put(type.code, cmd.expression)
-				}
-				expressionMap.put(period.id+'', typeMap)
+			def typeMap = [:]
+			for (def type : dataLocationTypes) {
+				typeMap.put(type.code, cmd.expression)
 			}
+			expressionMap.put(period.id+'', typeMap)
 			dataElement.expressionMap = expressionMap
 			
-			def valueMap = [:]
-			for (def period : periods) {
-				def valueList = []
-				int i = 0;
-				for (def location : locations) {
-					valueList.add(expressionService.calculateValue(dataElement, location, period))
-					if (i++ == 20) {
-						if (log.debugEnabled) log.debug('clearing session')
-						sessionFactory.currentSession.clear();
-						i = 0;
-					}
+			def values = []
+			int i = 0;
+			for (def location : locations) {
+				values.add(expressionService.calculateValue(dataElement, location, period))
+				if (i++ == 20) {
+					if (log.debugEnabled) log.debug('clearing session')
+					sessionFactory.currentSession.clear();
+					i = 0;
 				}
-				valueMap.put(period, valueList)
 			}
 			
 			render (view: '/entity/list', model:[
-				periods: periods,
-				entities: valueMap,
+				periods: [period],
+				selectedPeriod: period,
+				entities: values,
+				entityCount: values.size(),
 				template: "value/data"+dataElement.class.simpleName+"List",
 				code: 'dataelementvalue.label',
 				search: true
@@ -81,7 +77,7 @@ class ExpressionController {
 class ExpressionTestCommand {
 	String expression
 	Type type
-	List<Long> periodIds
+	Long periodId
 	String typeCodeString
 	
 	Set<String> getTypeCodes() {
@@ -96,6 +92,6 @@ class ExpressionTestCommand {
 		type (blank: false, nullable: false, validator: {val, obj ->
 			return val.isValid();
 		})
-		periodIds (blank: false)
+		periodId (blank: false)
 	}
 }

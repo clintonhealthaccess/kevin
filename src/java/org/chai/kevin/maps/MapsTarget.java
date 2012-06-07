@@ -34,14 +34,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.Exportable;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.entity.export.Exportable;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.util.Utils;
 
 @Entity(name="MapsTarget")
-@Table(name="dhsst_maps_target")
+@Table(name="dhsst_maps_target", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 public class MapsTarget extends ReportEntity implements Exportable {
 
 	private Long id;

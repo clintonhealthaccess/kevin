@@ -8,21 +8,20 @@
 		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'create')+(request.queryString==null?'':'&'+request.queryString)}">
 		  					<g:message code="default.new.label" args="[entityName]"/>
 		  				</a>
-		  				<g:if test="${entityClass != null}">
-			  				&nbsp;
-			  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'exporter')+(request.queryString==null?'':'&'+request.queryString)}">
-			  					<g:message code="default.export.label" />
-			  				</a>
-			  				<!-- TODO add importer -->			  							  			
-		  				</g:if>
 		  			</g:if>
 		  			<g:else>
 		  				<g:render template="${addTemplate}"/>
-		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'exporter')+(request.queryString==null?'':'&'+request.queryString)}">
-		  					<g:message code="default.export.label" />
-		  				</a>
-		  				<!-- TODO add importer -->
 		  			</g:else>
+		  			&nbsp;
+		  			<a href="${createLinkWithTargetURI(controller: controllerName, action:'exporter')+(request.queryString==null?'':'&'+request.queryString)}">
+	  					<g:message code="default.export.label" />
+	  				</a>
+	  				&nbsp;
+	  				<g:if test="${entityClass != null}">
+		  				<a href="${createLinkWithTargetURI(controller: 'entityImporter', action:'importer', params:[entityClass: entityClass.name])+(request.queryString==null?'':'&'+request.queryString)}">
+		  					<g:message code="default.import.label" />
+		  				</a>
+	  				</g:if>
 		     	</span>
 	     	</g:if>
 		</div>
@@ -31,19 +30,21 @@
 		<g:if test="${grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).hasProperty('search')}">
 			<g:searchBox action="search"/>
 		</g:if>
-		<g:if test="${!entities.empty}">
-			<div class="main">
-				<g:render template="${template}"/>
-			</div>
-			<!-- End of template -->
-			<div class="paginateButtons main">
-				<g:if test="${entityCount != null}">
-					<g:paginate total="${entityCount}" params="${params}" action="${actionName}"/>
-				</g:if>
-			</div>
-		</g:if>
-		<g:else>
+		
+		<div class="main">
+			<g:render template="${template}"/>
+		</div>
+		
+		<g:if test="${entities.empty}">
 			<div class="main"><g:message code="entity.list.empty.label" args="[entityName]"/></div>
-		</g:else>				
+		</g:if>
+		
+		<!-- End of template -->
+		<div class="paginateButtons main">
+			<g:if test="${entityCount != null}">
+				<g:paginate total="${entityCount}" params="${params}" action="${actionName}"/>
+			</g:if>
+		</div>
+		
 	</div>
 </div>

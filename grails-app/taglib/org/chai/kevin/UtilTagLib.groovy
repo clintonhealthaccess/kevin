@@ -75,12 +75,14 @@ class UtilTagLib {
 	}
 	
 	def ifText = { attrs, body ->
-		def text = languageService.getText(attrs['field'])
-		if (text != null && !Utils.stripHtml(text, null).trim().isEmpty()) out << body()
+		def text = attrs['field'] == null?'':attrs['field']+''
+		if (!Utils.stripHtml(text).trim().isEmpty()) out << body()
 	}
 	
 	def stripHtml = { attrs, body ->
-		def text = attrs['field']+''
-		if (text != null) out << Utils.stripHtml(text, attrs.int('chars'))
+		def text = attrs['field'] == null?'':attrs['field']+''
+		def strippedText = Utils.stripHtml(text)
+		def smallText = strippedText.length() > attrs.int('chars')?strippedText.substring(0, attrs.int('chars')):strippedText
+		out << render(template:"/tags/util/stripHtml", model: [fullText: strippedText, smallText: smallText])
 	}
 }

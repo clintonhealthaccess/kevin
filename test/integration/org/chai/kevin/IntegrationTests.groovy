@@ -49,7 +49,7 @@ import org.chai.kevin.data.ExpressionMap;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
-import org.chai.kevin.export.Exporter;
+import org.chai.kevin.exports.DataExport;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormSkipRule;
@@ -110,6 +110,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	
 	static String PROGRAM3 = "Program3"
 	
+	// TODO get rid of this
 	def static inc = 0;
 	def static code = ""+inc;
 	
@@ -158,8 +159,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new DataLocationType(names: names, code: code).save(failOnError: true)
 	}
 	
-	static def newExporter(def descriptions,def periods, def locationType, def locations, def data){
-		return new Exporter(descriptions:descriptions,periods:periods,typeCodeString:locationType,locations:locations,data:data,date:new Date()).save(failOnError: true);
+	static def newDataExport(def descriptions,def periods, def locationType, def locations, def data){
+		return new DataExport(descriptions:descriptions,periods:periods,typeCodeString:locationType,locations:locations,data:data,date:new Date()).save(failOnError: true);
 	}
 		
 	static def newDataLocation(def code, def location, def type) {
@@ -334,26 +335,25 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new FormEnteredValue(formElement: element, value: value, dataLocation: dataLocation).save(failOnError: true, flush: true)
 	}
 	
-	def static newFormValidationRule(def element, def prefix, def types, def expression, boolean allowOutlier, def dependencies = []) {
-		inc++
+	def static newFormValidationRule(def code, def element, def prefix, def types, def expression, boolean allowOutlier, def dependencies = []) {
 		def validationRule = new FormValidationRule(code: code, expression: expression, prefix: prefix, messages: [:], formElement: element, typeCodeString: Utils.unsplit(types), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
 		element.addValidationRule(validationRule)
 		element.save(failOnError: true)
 		return validationRule
 	}
 	
-	def static newFormValidationRule(def element, def prefix, def types, def expression, def dependencies = []) {
-		return newFormValidationRule(element, prefix, types, expression, false, dependencies)
+	def static newFormValidationRule(def code, def element, def prefix, def types, def expression, def dependencies = []) {
+		return newFormValidationRule(code, element, prefix, types, expression, false, dependencies)
 	}
 	
+	def static newFormSkipRule(def code, def expression, def skippedElements) {
+		return new FormSkipRule(code: code, expression: expression, skippedFormElements: skippedElements).save(failOnError: true)
+	}
+	
+	// TODO change this
 	def static newFormElement(def dataElement) {
 		inc++
 		return new FormElement(code: code, dataElement: dataElement).save(failOnError: true)
-	}
-	
-	def static newFormSkipRule(def expression, def skippedElements) {
-		inc++
-		return new FormSkipRule(code: code, expression: expression, skippedFormElements: skippedElements).save(failOnError: true)
 	}
 
 	def refresh() {
@@ -396,10 +396,6 @@ abstract class IntegrationTests extends IntegrationSpec {
 		}
 		return result;
 	}
-	
-//	static def getLocation(def name) {
-//		return new Location(Location.findByName(name))
-//	}
 	
 	static def getCalculationLocation(def code) {
 		def location = Location.findByCode(code)
