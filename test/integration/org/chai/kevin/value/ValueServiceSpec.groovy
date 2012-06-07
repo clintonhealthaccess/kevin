@@ -56,7 +56,7 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def type = newDataLocationType(DISTRICT_HOSPITAL_GROUP)
+		def type = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
 		
 		when: "empty value list"
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
@@ -161,7 +161,7 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def type = newDataLocationType(DISTRICT_HOSPITAL_GROUP)
+		def type = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
 		
 		when: 
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())

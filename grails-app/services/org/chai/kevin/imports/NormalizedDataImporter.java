@@ -104,7 +104,7 @@ public class NormalizedDataImporter extends DataImporter {
 	 * @param positions
 	 * @throws IOException
 	 */
-	private boolean importData(String filename, Reader reader, Integer numberOfLinesToImport, ImportSanitizer sanitizer, ICsvMapReader csvMapReader, String[] headers, Map<String, Integer> positions) throws IOException {
+	private boolean importData(String filename, ICsvMapReader reader, Integer numberOfLinesToImport, ImportSanitizer sanitizer, ICsvMapReader csvMapReader, String[] headers, Map<String, Integer> positions) throws IOException {
 
 		DataLocation dataLocation=null;
 		RawDataElementValue rawDataElementValue= null;	
@@ -206,12 +206,10 @@ public class NormalizedDataImporter extends DataImporter {
 	 * @see org.chai.kevin.importer.Importer#importData(java.lang.String, java.io.Reader)
 	 */
 	@Override
-	public void importData(final String fileName, final Reader reader) throws IOException {
-		if (log.isDebugEnabled()) log.debug("importData(FileName:"+fileName+"Reader:" + reader + ")");
+	public void importData(final String fileName, final ICsvMapReader csvMapReader) throws IOException {
+		if (log.isDebugEnabled()) log.debug("importData(FileName:"+fileName+"Reader:" + csvMapReader + ")");
 		
 		manager.setCurrentFileName(fileName);
-		
-		final ICsvMapReader csvMapReader = new CsvMapReader(reader, CsvPreference.EXCEL_PREFERENCE);
 		final String[] headers = csvMapReader.getCSVHeader(true);
 		
 		Map<String,Type> types = new HashMap<String,Type>();
@@ -219,7 +217,7 @@ public class NormalizedDataImporter extends DataImporter {
 		for (String header : headers)  { 
 			try {
 				if(!header.equals(CODE_HEADER))
-					types.put("[_]."+header,rawDataElement.getType().getType("[_]."+header));
+					types.put("[_]."+header, rawDataElement.getType().getType("[_]."+header));
 			} catch(IllegalArgumentException e){
 				if(log.isWarnEnabled()) log.warn("Column type not found for header"+header, e);
 				manager.getErrors().add(new ImporterError(fileName,csvMapReader.getLineNumber(),header,"import.error.message.unknowm.column.type"));
@@ -239,7 +237,7 @@ public class NormalizedDataImporter extends DataImporter {
 					sessionFactory.getCurrentSession().refresh(period);
 					
 					try {
-						return importData(fileName, reader, NUMBER_OF_LINES_TO_IMPORT, sanitizer, csvMapReader, headers, positions);
+						return importData(fileName, csvMapReader, NUMBER_OF_LINES_TO_IMPORT, sanitizer, csvMapReader, headers, positions);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

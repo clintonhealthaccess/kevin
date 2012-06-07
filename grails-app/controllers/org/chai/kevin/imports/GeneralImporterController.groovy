@@ -64,10 +64,8 @@ class GeneralImporterController extends AbstractController {
 				locationService, valueService, dataService,
 				errorManager, cmd.period
 				);			
-			if(cmd.file.getContentType().equals(FILE_TYPE_ZIP))
-				importer.importZipFiles(cmd.file.getInputStream())
-			if(cmd.file.getContentType().equals(FILE_TYPE_CSV))
-				importer.importCsvFile(cmd.file.getName(),cmd.file.getInputStream())
+			if (cmd.file.getContentType().equals(FILE_TYPE_ZIP)) importer.importZipFiles(cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
+			if (cmd.file.getContentType().equals(FILE_TYPE_CSV)) importer.importCsvFile(cmd.file.getName(), cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
 			cmd.file.getInputStream().close();
 				
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
@@ -91,17 +89,16 @@ class GeneralImporterController extends AbstractController {
 class GeneralImporterCommand {
 
 	Period period;
+	String encoding;
+	Character delimiter;
 	CommonsMultipartFile file;
 	
 	static constraints = {
+		file(blank:false, nullable:false, validator: {val, obj ->
+			return !val.empty
+		})
+		delimiter(blank:false,nullable:false)
+		encoding(blank:false,nullable:false)
 		period(blank:false,nullable:false)
-//		file(blank:false,nullable:false, validator: { val, obj ->
-//			final String FILE_TYPE = "text/csv";
-//			boolean valid = true;
-//			if(val != null)
-//				if(!val.contentType.equals(FILE_TYPE))
-//					valid=false;
-//			return valid;
-//		})
 	}
 }

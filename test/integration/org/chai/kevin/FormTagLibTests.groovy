@@ -52,5 +52,18 @@ class FormTagLibTests extends GroovyPagesTestCase {
 		)
 		assertTrue html.contains ('<textarea type="text" class="idle-field" name="name.en" rows="4"></textarea>');
 	}
-	
+
+	def testFileUploadForm() {
+		def html = applyTemplate(
+			'<g:file bean="${bean}"/>',
+			[
+				bean: null,	
+			]
+		)
+		
+		assertTrue html.contains ('UTF-8')
+		assertTrue html.contains ('ISO-8859-1')
+		assertTrue html.contains ('<input type="text" name="delimiter" value="," style="width: 30px"></input>')
+	}
+		
 }

@@ -28,7 +28,6 @@
 package org.chai.kevin.imports;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,18 +70,17 @@ public class GeneralDataImporter extends DataImporter{
 	}
 
 	@Override
-	public void importData(String fileName,Reader reader) throws IOException {
-		if (log.isDebugEnabled()) log.debug("importData(FileName:"+fileName+"Reader:" + reader + ")");
+	public void importData(String fileName, ICsvMapReader csvMapReader) throws IOException {
+		if (log.isDebugEnabled()) log.debug("importData(FileName:"+fileName+"Reader:" + csvMapReader + ")");
 		manager.setCurrentFileName(fileName);
-		ICsvMapReader readFileAsMap = new CsvMapReader(reader,CsvPreference.EXCEL_PREFERENCE);
 
 		try {
-			final String[] headers = readFileAsMap.getCSVHeader(true);
-			Map<String, String> rows = readFileAsMap.read(headers);
+			final String[] headers = csvMapReader.getCSVHeader(true);
+			Map<String, String> rows = csvMapReader.read(headers);
 			Map<DataLocation, Set<RawDataElement>> savedData = new HashMap<DataLocation, Set<RawDataElement>>();
 			
 			if(!Arrays.asList(headers).contains(CODE_HEADER) || !Arrays.asList(headers).contains(DATA_ELEMENT_HEADER) || !Arrays.asList(headers).contains(VALUE_HEADER))
-				manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(), Arrays.asList(headers).toString(),"import.error.message.unknowm.header"));
+				manager.getErrors().add(new ImporterError(fileName,csvMapReader.getLineNumber(), Arrays.asList(headers).toString(),"import.error.message.unknowm.header"));
 			else{
 				
 				while (rows != null) {
@@ -109,13 +107,13 @@ public class GeneralDataImporter extends DataImporter{
 							if (log.isDebugEnabled()) log.debug("current savedData : "+savedData+" errors: "+manager.getErrors());
 						} else {
 							// already imported
-							manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(),Arrays.asList(headers).toString(),"import.error.message.data.duplicated"));
+							manager.getErrors().add(new ImporterError(fileName,csvMapReader.getLineNumber(),Arrays.asList(headers).toString(),"import.error.message.data.duplicated"));
 						}
 						
 						
 						types.put("", rawDataElement.getType());
 						ImportSanitizer sanitizer = new ImportSanitizer(fileName,manager.getErrors(), types, dataService);
-						sanitizer.setLineNumber(readFileAsMap.getLineNumber());
+						sanitizer.setLineNumber(csvMapReader.getLineNumber());
 						sanitizer.setNumberOfErrorInRows(0);
 						
 						rawDataElementValue = valueService.getDataElementValue(rawDataElement, dataEntity, period);
@@ -142,13 +140,13 @@ public class GeneralDataImporter extends DataImporter{
 							manager.incrementNumberOfRowsSavedWithError(1);
 						manager.incrementNumberOfSavedRows();
 					} else {
-						if(dataEntity==null) manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.unknown.data.location"));
-						if(rawDataElement==null) manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(),DATA_ELEMENT_HEADER,"import.error.message.unknown.raw.data.element"));	
+						if(dataEntity==null) manager.getErrors().add(new ImporterError(fileName,csvMapReader.getLineNumber(),CODE_HEADER,"import.error.message.unknown.data.location"));
+						if(rawDataElement==null) manager.getErrors().add(new ImporterError(fileName,csvMapReader.getLineNumber(),DATA_ELEMENT_HEADER,"import.error.message.unknown.raw.data.element"));	
 						manager.incrementNumberOfUnsavedRows();
 					}
 					
 					if (log.isInfoEnabled()) log.info("finished importing line");
-					rows = readFileAsMap.read(headers);
+					rows = csvMapReader.read(headers);
 				}
 			}
 

@@ -50,6 +50,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
@@ -62,7 +63,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "SurveyProgram")
-@Table(name = "dhsst_survey_program")
+@Table(name = "dhsst_survey_program", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 public class SurveyProgram extends Orderable<Integer> implements Exportable {
 
 	private Long id;

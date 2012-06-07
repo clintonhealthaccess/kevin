@@ -1,7 +1,6 @@
 package org.chai.kevin.imports;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -48,18 +47,16 @@ public class EntityImporter extends FileImporter {
 		this.clazz = clazz;
 	}
 
-	public void importData(String filename, Reader reader) throws IOException {
-		if (log.isDebugEnabled()) log.debug("importData(filename: " + filename + ", reader: "+reader+")");
+	public void importData(String filename, ICsvMapReader csvMapReader) throws IOException {
+		if (log.isDebugEnabled()) log.debug("importData(filename: " + filename + ", reader: "+csvMapReader+")");
 			
-		ICsvMapReader readFileAsMap = new CsvMapReader(reader, CsvPreference.EXCEL_PREFERENCE);		
-		
 		manager.setNumberOfSavedRows(0);
 		manager.setNumberOfUnsavedRows(0);
 		manager.setNumberOfRowsSavedWithError(0);
 		
 		try {						
 			//headers
-			final String[] headers = readFileAsMap.getCSVHeader(true);
+			final String[] headers = csvMapReader.getCSVHeader(true);
 			List<Field> fields = new ArrayList<Field>();			
 			Class<?> headerClass = clazz;
 			while (headerClass != null && headerClass != Object.class) {				
@@ -78,18 +75,18 @@ public class EntityImporter extends FileImporter {
 			Collection missingHeaders = CollectionUtils.subtract(fieldNames, headers as Collection)
 			if (!missingHeaders.isEmpty()) {
 				for (String missingHeader : missingHeaders) {
-					manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(), missingHeader, "import.error.message.missing.header"));
+					manager.getErrors().add(new ImporterError(filename, csvMapReader.getLineNumber(), missingHeader, "import.error.message.missing.header"));
 				}
 			}
 			Collection unknownHeaders = CollectionUtils.subtract(headers as Collection, fieldNames)
 			if (!unknownHeaders.isEmpty()) {
 				for (String unknownHeader : unknownHeaders) {
-					manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(), unknownHeader, "import.error.message.unknown.header"));
+					manager.getErrors().add(new ImporterError(filename, csvMapReader.getLineNumber(), unknownHeader, "import.error.message.unknown.header"));
 				}
 			}
 			
 			List<String> entityCodes = new ArrayList<String>();									
-			Map<String, String> row = readRow(filename, readFileAsMap, headers, manager);
+			Map<String, String> row = readRow(filename, csvMapReader, headers, manager);
 			
 			//entities
 			while (row != null) {
@@ -99,11 +96,11 @@ public class EntityImporter extends FileImporter {
 					// TODO what if there is no CODE_HEADER, what if the code is not called code ?
 					String entityCode = row.get(CODE_HEADER);
 					if (entityCode == null) {
-						manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(), "", "import.error.message.code.noheader"));
+						manager.getErrors().add(new ImporterError(filename, csvMapReader.getLineNumber(), "", "import.error.message.code.noheader"));
 						manager.incrementNumberOfUnsavedRows();
 					}
 					else if (entityCodes.contains(entityCode)) {
-						manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(), CODE_HEADER, "import.error.message.data.duplicated"));
+						manager.getErrors().add(new ImporterError(filename, csvMapReader.getLineNumber(), CODE_HEADER, "import.error.message.data.duplicated"));
 						manager.incrementNumberOfUnsavedRows();
 					}
 					else {
@@ -125,44 +122,41 @@ public class EntityImporter extends FileImporter {
 						}
 						
 						if (entity == null) {
-							manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.entity.notfound"));
+							manager.getErrors().add(new ImporterError(filename, csvMapReader.getLineNumber(),CODE_HEADER,"import.error.message.entity.notfound"));
 							manager.incrementNumberOfUnsavedRows();
 						}									
 						else {	
 							EntityImportSanitizer sanitizer = new EntityImportSanitizer(manager.getErrors(), filename);
 							sanitizer.setHeaders(Arrays.asList(headers))
-							sanitizer.setLineNumber(readFileAsMap.getLineNumber());
+							sanitizer.setLineNumber(csvMapReader.getLineNumber());
 							sanitizer.setNumberOfErrorInRows(0);
 														
-							entity = setEntityData(row, entity, fields, sanitizer);						
+							setEntityData(row, entity, fields, sanitizer);						
 							
 							if (sanitizer.getNumberOfErrorInRows() > 0)
 								manager.incrementNumberOfRowsSavedWithError(1);
 							
 							if(!entity.validate()){
-								manager.getErrors().add(new ImporterError(filename, readFileAsMap.getLineNumber(),"","import.error.message.entity.invalid"));
+								manager.getErrors().add(new ImporterError(filename, csvMapReader.getLineNumber(),"","import.error.message.entity.invalid"));
 								manager.incrementNumberOfUnsavedRows();
 							}
 							else{
-								entity.save();
+								entity.save(flush: true);
 								manager.incrementNumberOfSavedRows();
 							}
 						}
 					}
 				}
 															
-				row = readRow(filename, readFileAsMap, headers, manager);
+				row = readRow(filename, csvMapReader, headers, manager);
 			}
 		} catch (IOException ioe) {
 			// TODO change this
 			throw ioe;
-		} finally {
-			readFileAsMap.close();
 		}
-		
 	}
 
-	private Object setEntityData(Map<String, String> row, Object entity, List<Field> fields, EntityImportSanitizer sanitizer){					
+	private void setEntityData(Map<String, String> row, Object entity, List<Field> fields, EntityImportSanitizer sanitizer){					
 		
 		for (Field field : fields) {
 			String fieldName = field.getName();
@@ -202,8 +196,6 @@ public class EntityImporter extends FileImporter {
 				e.printStackTrace();
 			}						
 		}		
-
-		return entity;
 	}	
 
 	public class EntityImportSanitizer {

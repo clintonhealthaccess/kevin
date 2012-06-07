@@ -20,9 +20,9 @@ class SectionControllerSpec extends SurveyIntegrationTests {
 	def "section list"() {
 		setup:
 		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [])
-		def section = newSurveySection(program, 1, [])
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [])
+		def section = newSurveySection(CODE(1), program, 1, [])
 		sectionController = new SectionController()
 		
 		when:

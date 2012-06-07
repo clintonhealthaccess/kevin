@@ -8,6 +8,7 @@ import org.chai.kevin.data.Average;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.NormalizedDataElementValue;
 
 class NormalizedDataElementSpec extends IntegrationTests {
@@ -55,7 +56,7 @@ class NormalizedDataElementSpec extends IntegrationTests {
 	def "normalized data element value hashcode and equals"() {
 		setup:
 		setupLocationTree()
-		def type = newDataLocationType(DISTRICT_HOSPITAL_GROUP)
+		def type = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 

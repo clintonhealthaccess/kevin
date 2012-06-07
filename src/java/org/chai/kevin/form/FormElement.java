@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.LanguageService;
@@ -40,6 +41,7 @@ import org.chai.kevin.value.ValueService;
 public class FormElement implements Exportable {
 
 	protected Long id;
+	// TODO get rid of this
 	private String code;
 	private RawDataElement dataElement;
 	private List<FormValidationRule> validationRules = new ArrayList<FormValidationRule>();

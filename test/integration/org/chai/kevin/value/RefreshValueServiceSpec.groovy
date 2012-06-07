@@ -154,7 +154,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def date1 = value1.timestamp
 		normalizedDataElement.timestamp = new Date()
 		normalizedDataElement.save(failOnError: true)
-		Thread.sleep(1100)
+		Thread.sleep(2000)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
 		
 		then:

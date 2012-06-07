@@ -14,54 +14,38 @@ import org.chai.kevin.util.Utils;
 
 abstract class SurveyIntegrationTests extends IntegrationTests {
 	
-	def static newSurvey(def period) {
-		return newSurvey([:], period, false)
+	def static newSurvey(def code, def period) {
+		return newSurvey(code, [:], period, false)
 	}
 	
-	def static newSurvey(def names, def period) {
-		return newSurvey(names, period, false)
+	def static newSurvey(def code, def names, def period) {
+		return newSurvey(code, names, period, false)
 	}
 	
-	def static newSurvey(def names, def period, def active) {
-		inc++
+	def static newSurvey(def code, def names, def period, def active) {
 		return new Survey(code: code, names: names, period: period, active: active).save(failOnError: true);
 	}
 	
-	def static newSurveyProgram(def survey, def order, def types) {
-		return newSurveyProgram([:], survey, order, types)
+	def static newSurveyProgram(def code, def survey, def order, def types) {
+		return newSurveyProgram(code, [:], survey, order, types)
 	}
 	
-	def static newSurveyProgram(def names, def survey, def order, def types) {
-		inc++
+	def static newSurveyProgram(def code, def names, def survey, def order, def types) {
 		def program = new SurveyProgram(code: code, names: names, survey: survey, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 		survey.addProgram(program)
 		survey.save(failOnError: true)
 		return program
 	}
 	
-	def static newSurveySection(def program, def order, def types) {
-		def section = newSurveySection([:], program, order, types)
+	def static newSurveySection(def code, def program, def order, def types) {
+		def section = newSurveySection(code, [:], program, order, types)
 	}
 	
-	def static newSurveySection(def names, def program, def order, def types) {
-		inc++
+	def static newSurveySection(def code, def names, def program, def order, def types) {
 		def section = new SurveySection(code: code, names: names, program: program, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 		program.addSection(section)
 		program.save(failOnError: true)
 		return section
-	}
-	
-	def static newSurveyElement(def question, def dataElement) {
-		def element = newSurveyElement(question, dataElement, [:])
-	}
-	
-	def static newSurveyElement(def question, def dataElement, def headers) {
-		def element = new SurveyElement(surveyQuestion: question, dataElement: dataElement, headers: headers).save(failOnError: true, flush: true)
-		if (question instanceof SurveySimpleQuestion) {
-			question.surveyElement = element
-			question.save(failOnError: true, flush: true)
-		}
-		return element;
 	}
 	
 	def static newSurveyEnteredQuestion(def question, def period, def dataLocation, def invalid, def complete) {
@@ -76,68 +60,75 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		return new SurveyEnteredProgram(program: program, dataLocation: dataLocation, invalid: invalid, complete: complete, closed: closed).save(failOnError: true)
 	}
 
-	def static newSurveySkipRule(def survey, def expression, def skippedElements, def skippedQuestions) {
-		inc++
+	def static newSurveySkipRule(def code, def survey, def expression, def skippedElements, def skippedQuestions) {
 		def skipRule = new SurveySkipRule(code: code, survey: survey, expression: expression, skippedFormElements: skippedElements, skippedSurveyQuestions: skippedQuestions).save(failOnError: true)
 		survey.addSkipRule(skipRule)
 		survey.save(failOnError: true, flush: true)
 		return skipRule
 	}
 	
-	def static newSimpleQuestion(def names, def section, def order, def types) {
-		inc++
+	def static newSimpleQuestion(def code, def names, def section, def order, def types) {
 		def question = new SurveySimpleQuestion(code: code, names: names, section: section, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 		section.addQuestion(question)
 		section.save(failOnError: true, flush: true)		
 		return question
 	}
 	
-	def static newSimpleQuestion(def section, def order, def types) {
-		return newSimpleQuestion([:], section, order, types)
+	def static newSimpleQuestion(def code, def section, def order, def types) {
+		return newSimpleQuestion(code, [:], section, order, types)
 	}
 	
-	def static newTableQuestion(def section, def order, def types) {
-		inc++
+	def static newTableQuestion(def code, def section, def order, def types) {
 		def question = new SurveyTableQuestion(code: code, section: section, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 		section.addQuestion(question)
 		section.save(failOnError: true)
 		return question
 	}
 	
-	def static newTableColumn(def question, def order, def types) {
-		inc++
+	def static newTableColumn(def code, def question, def order, def types) {
 		def column = new SurveyTableColumn(code: code, question: question, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 		question.addColumn(column)
 		question.save(failOnError: true)
 		return column
 	}
 	
-	def static newTableRow(def question, def order, def types, def elements) {
-		inc++
+	def static newTableRow(def code, def question, def order, def types, def elements) {
 		def row = new SurveyTableRow(code: code, question: question, order: order, typeCodeString: Utils.unsplit(types), surveyElements: elements).save(failOnError: true)
 		question.addRow(row)
 		question.save(failOnError: true)
 		return row
 	}
 	
-	def static newCheckboxQuestion(def section, def order, def types) {
-		inc++
+	def static newCheckboxQuestion(def code, def section, def order, def types) {
 		def question = new SurveyCheckboxQuestion(code: code, section: section, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 		section.addQuestion(question)
 		section.save(failOnError: true)
 		return question
 	}
 	
-	def static newCheckboxOption(def question, def order, def types) {
-		return newCheckboxOption(question, order, types, null)
+	def static newCheckboxOption(def code, def question, def order, def types) {
+		return newCheckboxOption(code, question, order, types, null)
 	}
 	
-	def static newCheckboxOption(def question, def order, def types, def element) {
-		inc++
+	def static newCheckboxOption(def code, def question, def order, def types, def element) {
 		def option = new SurveyCheckboxOption(code: code, question: question, order: order, typeCodeString: Utils.unsplit(types), surveyElement: element).save(failOnError: true)
 		question.addOption(option)
 		question.save(failOnError: true)
 		return option
 	}
 
+	// TODO why no code here?
+	def static newSurveyElement(def question, def dataElement) {
+		def element = newSurveyElement(question, dataElement, [:])
+	}
+	
+	// TODO why no code here?
+	def static newSurveyElement(def question, def dataElement, def headers) {
+		def element = new SurveyElement(surveyQuestion: question, dataElement: dataElement, headers: headers).save(failOnError: true, flush: true)
+		if (question instanceof SurveySimpleQuestion) {
+			question.surveyElement = element
+			question.save(failOnError: true, flush: true)
+		}
+		return element;
+	}
 }

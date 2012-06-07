@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Importable;
@@ -17,7 +18,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="ReportProgram")
-@Table(name="dhsst_report_program")
+@Table(name="dhsst_report_program", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class ReportProgram extends ReportEntity implements Exportable {
 

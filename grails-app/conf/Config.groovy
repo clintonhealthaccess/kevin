@@ -220,6 +220,9 @@ survey.export.skip.levels=["National", "Sector"]
 info.group.level="District"
 dsr.group.level="District"
 
+file.upload.available.charset=["UTF-8", "ISO-8859-1"]
+file.upload.delimiter=","
+
 /**
  * Configuration file override
  */

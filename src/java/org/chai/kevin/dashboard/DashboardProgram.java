@@ -18,7 +18,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="DashboardProgram")
 @Table(name="dhsst_dashboard_program", uniqueConstraints = {
-	@UniqueConstraint(columnNames={"program"})
+	@UniqueConstraint(columnNames={"program"}),
+	@UniqueConstraint(columnNames={"code"})
 })
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DashboardProgram extends DashboardEntity implements Exportable {

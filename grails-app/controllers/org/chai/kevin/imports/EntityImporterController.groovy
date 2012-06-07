@@ -25,13 +25,9 @@ class EntityImporterController extends AbstractController {
 		if (!cmd.hasErrors()) {
 			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",clazz="+cmd.entityClass+")")
 
-			EntityImporter importer = new EntityImporter(
-				sessionFactory, errorManager, clazz
-			);
-			if(cmd.file.getContentType().equals(FILE_TYPE_ZIP))
-				importer.importZipFiles(cmd.file.getInputStream())
-			if(cmd.file.getContentType().equals(FILE_TYPE_CSV))
-				importer.importCsvFile(cmd.file.getName(),cmd.file.getInputStream())
+			EntityImporter importer = new EntityImporter(sessionFactory, errorManager, clazz);
+			if (cmd.file.getContentType().equals(FILE_TYPE_ZIP)) importer.importZipFiles(cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
+			if (cmd.file.getContentType().equals(FILE_TYPE_CSV)) importer.importCsvFile(cmd.file.getName(), cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
 			
 			cmd.file.getInputStream().close();
 			
@@ -54,17 +50,16 @@ class EntityImporterController extends AbstractController {
 class EntityImporterCommand {
 
 	String entityClass;
+	String encoding;
+	Character delimiter;
 	CommonsMultipartFile file;
 	
 	static constraints = {
+		file(blank:false, nullable:false, validator: {val, obj ->
+			return !val.empty
+		})
+		delimiter(blank:false,nullable:false)
+		encoding(blank:false,nullable:false)
 		entityClass(blank:false,nullable:false)
-//		file(blank:false,nullable:false, validator: { val, obj ->
-//			final String FILE_TYPE = "text/csv";
-//			boolean valid = true;
-//			if(val != null)
-//				if(!val.contentType.equals(FILE_TYPE))
-//					return valid=false;
-//			return valid;
-//		})
 	}
 }

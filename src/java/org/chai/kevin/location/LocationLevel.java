@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
@@ -22,7 +23,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="LocationLevel")
-@Table(name="dhsst_location_location_level")
+@Table(name="dhsst_location_location_level", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class LocationLevel extends Orderable<Integer> implements Exportable {
 
