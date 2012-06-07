@@ -183,6 +183,7 @@ beans = {
 	
 	valueService(ValueService) {
 		sessionFactory = ref("sessionFactory")
+		languageService = ref("languageService")
 	}
 	
 	expressionService(ExpressionService) {

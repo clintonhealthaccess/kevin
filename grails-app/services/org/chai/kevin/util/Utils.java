@@ -93,7 +93,7 @@ public class Utils {
 	}
 		
 	@SuppressWarnings("unused")
-	private static boolean matches(String text, String value) {
+	public static boolean matches(String text, String value) {
 		if (value == null) return false;
 		return value.matches("(?i).*"+text+".*");
 	}
