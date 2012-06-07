@@ -12,15 +12,15 @@
 				<h3 class="title"><g:message code="import.title"/></h3>
 				<div class="clear"></div>
 			</div>
-				<g:form url="[controller:'normalizedImporter', action:'uploader']" useToken="true" method="post" enctype="multipart/form-data">
-					<g:selectFromList name="dataElement.id" label="${message(code:'dataelement.label')}" bean="${normalizedImporter}" field="dataElement" optionKey="id" multiple="false"
+				<g:form url="[controller:'nominativeImporter', action:'uploader']" useToken="true" method="post" enctype="multipart/form-data">
+					<g:selectFromList name="dataElement.id" label="${message(code:'dataelement.label')}" bean="${nominativeImporter}" field="dataElement" optionKey="id" multiple="false"
 					ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'DataElement'])}"
 					from="${dataElements}" value="${normalizedImporter?.dataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 					
-					<g:selectFromList name="period.id" label="${message(code:'period.label')}" bean="${normalizedImporter}" field="period" optionKey="id" multiple="false"
+					<g:selectFromList name="period.id" label="${message(code:'period.label')}" bean="${nominativeImporter}" field="period" optionKey="id" multiple="false"
 					from="${periods}" value="${normalizedImporter?.period?.id}" optionValue="startDate" />
 					
-					<g:file name="file" label="${message(code:'import.file.label')}" bean="${normalizedImporter}" field="file"/>
+					<g:file name="file" label="${message(code:'import.file.label')}" bean="${nominativeImporter}" field="file"/>
 					<div class="row">
 						<button type="submit"><g:message code="import.button.import.label"/></button>
 					</div>

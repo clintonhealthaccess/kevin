@@ -14,4 +14,8 @@ class PeriodService {
 		}
 	}
 	
+	Period getPeriodByCode(def code){
+		return Period.findByCode(code);
+	}
+	
 }

@@ -27,20 +27,29 @@
  */
 package org.chai.kevin.importer
 
-import org.chai.kevin.AbstractController;
+
+import java.io.InputStreamReader
+
+import org.chai.kevin.AbstractController
 import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.DataService;
+import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.data.Type;
+import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValueService;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest
+import org.springframework.web.multipart.commons.CommonsMultipartFile
+
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-class ImportExporterController extends AbstractController {
+class NominativeImporterController extends AbstractController {
 	
 	LocationService locationService;
 	ValueService valueService;
@@ -48,44 +57,62 @@ class ImportExporterController extends AbstractController {
 	SessionFactory sessionFactory;
 	PlatformTransactionManager transactionManager;
 	
-	final String IMPORT_FORM = "importExporter";
+	final String IMPORT_FORM = "nominativeImport";
 	final String IMPORT_OUTPUT = "importOutput";
 	
 	def importer = {
 		this.getModel(null,null,IMPORT_FORM);
 	}
 	
-	def uploader = { ImportExporterCommand cmd ->
+	def uploader = { NormalizedImporterCommand cmd ->
 		ImporterErrorManager errorManager = new ImporterErrorManager();
 		errorManager.setNumberOfSavedRows(0)
 		errorManager.setNumberOfUnsavedRows(0)
 		errorManager.setNumberOfRowsSavedWithError(0)
-
-		if (cmd.file.getContentType().equals(FILE_TYPE_ZIP) || cmd.file.getContentType().equals(FILE_TYPE_CSV)) {
-			ImportExporter importer = new ImportExporter(
-					locationService, valueService, dataService,
-					sessionFactory, transactionManager,
-					errorManager
-					);
+		if (!cmd.hasErrors()) {
+			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",period="+cmd.period+",dataElement="+cmd.dataElement+")")
+			
+			NominativeDataImporter importer = new NominativeDataImporter(
+				locationService, valueService, dataService,
+				sessionFactory, transactionManager,
+				errorManager, cmd.dataElement, cmd.period
+			);
 			if(cmd.file.getContentType().equals(FILE_TYPE_ZIP))
 				importer.importZipFiles(cmd.file.getInputStream())
 			if(cmd.file.getContentType().equals(FILE_TYPE_CSV))
 				importer.importCsvFile(cmd.file.getName(),cmd.file.getInputStream())
 			cmd.file.getInputStream().close();
-
+			
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 		}else{
 			this.getModel(cmd,errorManager,IMPORT_FORM);
-		}
+		}	
 	}
+
 	def getModel(def cmd,ImporterErrorManager errorManager,String view) {
+		if(log.isDebugEnabled()) log.debug("getModel(cmd="+cmd+",errorManager="+errorManager+",view="+view+")")
+		
+		List<Period> periods = Period.list([cache: true])
+		List<RawDataElement> dataElements =[]
+		if (cmd?.dataElement != null) dataElements << cmd.dataElement
 		render (view: '/import/'+view, model:[
-					importExporter: cmd,
+					periods: periods,
+					dataElements: dataElements,
+					normalizedImporter: cmd,
 					errorManager: errorManager
 				])
 	}
-
 }
-class ImportExporterCommand{
+
+class NormalizedImporterCommand {
+
+	Period period;
 	CommonsMultipartFile file;
+	RawDataElement dataElement;
+
+	static constraints = {
+		period(blank:false,nullable:false)
+		dataElement(blank:false,nullable:false)
+		
+	}
 }

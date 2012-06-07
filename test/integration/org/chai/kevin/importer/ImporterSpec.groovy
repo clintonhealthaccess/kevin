@@ -97,7 +97,7 @@ class ImporterSpec extends IntegrationTests {
 		importerErrorManager.setNumberOfUnsavedRows(0)
 		importerErrorManager.setNumberOfRowsSavedWithError(0)
 		
-		NormalizedDataImporter importer = new NormalizedDataImporter(
+		NominativeDataImporter importer = new NominativeDataImporter(
 			locationService, valueService, dataService,
 			sessionFactory, transactionManager,
 			importerErrorManager, dataElement, Period.list()[0]
@@ -129,7 +129,7 @@ class ImporterSpec extends IntegrationTests {
 		importerErrorManager.setNumberOfUnsavedRows(0)
 		importerErrorManager.setNumberOfRowsSavedWithError(0)
 		
-		NormalizedDataImporter importer = new NormalizedDataImporter(
+		NominativeDataImporter importer = new NominativeDataImporter(
 			locationService, valueService, dataService,
 			sessionFactory, transactionManager,
 			importerErrorManager, dataElement, Period.list()[0]
@@ -164,7 +164,7 @@ class ImporterSpec extends IntegrationTests {
 		importerErrorManagerBool.setNumberOfUnsavedRows(0)
 		importerErrorManagerBool.setNumberOfRowsSavedWithError(0)
 		
-		NormalizedDataImporter importer = new NormalizedDataImporter(
+		NominativeDataImporter importer = new NominativeDataImporter(
 			locationService, valueService, dataService,
 			sessionFactory, transactionManager,
 			importerErrorManagerBool, dataBoolElement, Period.list()[0]
@@ -194,7 +194,7 @@ class ImporterSpec extends IntegrationTests {
 		importerErrorManagerDate.setNumberOfUnsavedRows(0)
 		importerErrorManagerDate.setNumberOfRowsSavedWithError(0)
 		
-		NormalizedDataImporter importer = new NormalizedDataImporter(
+		NominativeDataImporter importer = new NominativeDataImporter(
 			locationService, valueService, dataService,
 			sessionFactory, transactionManager,
 			importerErrorManagerDate, dataDateElement, Period.list()[0]
@@ -224,7 +224,7 @@ class ImporterSpec extends IntegrationTests {
 		importerErrorManagerNumber.setNumberOfUnsavedRows(0)
 		importerErrorManagerNumber.setNumberOfRowsSavedWithError(0)
 		
-		NormalizedDataImporter importer = new NormalizedDataImporter(
+		NominativeDataImporter importer = new NominativeDataImporter(
 			locationService, valueService, dataService,
 			sessionFactory, transactionManager,
 			importerErrorManagerNumber, dataNumberElement, Period.list()[0]
@@ -258,7 +258,7 @@ class ImporterSpec extends IntegrationTests {
 		importerErrorManagerEnum.setNumberOfUnsavedRows(0)
 		importerErrorManagerEnum.setNumberOfRowsSavedWithError(0)
 		
-		NormalizedDataImporter importer = new NormalizedDataImporter(
+		NominativeDataImporter importer = new NominativeDataImporter(
 			locationService, valueService, dataService,
 			sessionFactory, transactionManager,
 			importerErrorManagerEnum, dataEnumElement, Period.list()[0]
@@ -287,7 +287,7 @@ class ImporterSpec extends IntegrationTests {
 		importerErrorManagerCode.setNumberOfUnsavedRows(0)
 		importerErrorManagerCode.setNumberOfRowsSavedWithError(0)
 		
-		NormalizedDataImporter importer = new NormalizedDataImporter(
+		NominativeDataImporter importer = new NominativeDataImporter(
 			locationService, valueService, dataService,
 			sessionFactory, transactionManager,
 			importerErrorManagerCode, dataCodeElement, Period.list()[0]

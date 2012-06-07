@@ -56,10 +56,10 @@ import org.supercsv.prefs.CsvPreference;
  * @author Jean Kahigiso M.
  *
  */
-public class NormalizedDataImporter extends Importer {
+public class NominativeDataImporter extends Importer {
 	
 	private static final Integer NUMBER_OF_LINES_TO_IMPORT = 100;
-	private static final Log log = LogFactory.getLog(NormalizedDataImporter.class);
+	private static final Log log = LogFactory.getLog(NominativeDataImporter.class);
 	
 	private LocationService locationService;
 	private DataService dataService;
@@ -80,7 +80,7 @@ public class NormalizedDataImporter extends Importer {
 		return transactionTemplate;
 	}
 	
-	public NormalizedDataImporter(LocationService locationService,
+	public NominativeDataImporter(LocationService locationService,
 			ValueService valueService, DataService dataService, 
 			SessionFactory sessionFactory, PlatformTransactionManager transactionManager,
 			ImporterErrorManager manager, RawDataElement rawDataElement,
@@ -183,7 +183,7 @@ public class NormalizedDataImporter extends Importer {
 			if (importedLines < numberOfLinesToImport) values = readFileAsMap.read(headers);
 		}
 		
-		saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, positions, code, sanitizer);
+		this.saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, positions, code, sanitizer);
 		return values == null;
 	}
 	
@@ -206,6 +206,7 @@ public class NormalizedDataImporter extends Importer {
 	/* (non-Javadoc)
 	 * @see org.chai.kevin.importer.Importer#importData(java.lang.String, java.io.Reader)
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void importData(final String fileName, final Reader reader) throws IOException {
 		if (log.isDebugEnabled()) log.debug("importData(FileName:"+fileName+"Reader:" + reader + ")");
@@ -242,8 +243,6 @@ public class NormalizedDataImporter extends Importer {
 					try {
 						return importData(fileName,readFileAsMap,NUMBER_OF_LINES_TO_IMPORT, sanitizer,  headers, positions);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 						return true;
 					}
 				}

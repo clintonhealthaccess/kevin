@@ -88,9 +88,9 @@ class ExporterService {
 	private final static String DATA_LOCATION_CODE = "Data Location Code";
 	private final static String DATA_LOCATION_NAME = "Data Location Name";
 	private final static String DATA_CLASS = "Data Class";
-	private final static String DATA_ID = "Data Id";
+	private final static String DATA_CODE = "Data Id";
 	private final static String DATA_NAME = "Data Name";
-	private final static String PERIOD_ID = "Period Id";
+	private final static String PERIOD_CODE = "Period Code";
 	private final static String PERIOD = "Period";
 	private final static String DATA_VALUE = "Data Value";
 	private final static String DATA_VALUE_ADDRESS = "Data Value Address";
@@ -167,10 +167,10 @@ class ExporterService {
 		basicInfo.add(location.code)
 		basicInfo.add(languageService.getText(location.getNames()))
 		basicInfo.add(languageService.getText(location.type.getNames()))
-		basicInfo.add(period.id+"")
+		basicInfo.add(period.code+"")
 		basicInfo.add("[ "+period.startDate.toString()+" - "+period.endDate.toString()+" ]")
 		basicInfo.add(data.class.simpleName)
-		basicInfo.add(data.id+"")
+		basicInfo.add(data.code+"")
 		basicInfo.add(languageService.getText(data.getNames()))
 		return basicInfo;
 	}
@@ -182,10 +182,10 @@ class ExporterService {
 		headers.add(DATA_LOCATION_CODE);
 		headers.add(DATA_LOCATION_NAME);
 		headers.add(LOCATION_TYPE);
-		headers.add(PERIOD_ID);
+		headers.add(PERIOD_CODE);
 		headers.add(PERIOD);
 		headers.add(DATA_CLASS);
-		headers.add(DATA_ID);
+		headers.add(DATA_CODE);
 		headers.add(DATA_NAME);
 		headers.add(DATA_VALUE);
 		headers.add(DATA_VALUE_ADDRESS);

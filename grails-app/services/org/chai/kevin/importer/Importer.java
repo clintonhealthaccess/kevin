@@ -58,7 +58,7 @@ public abstract class Importer {
 	
 	private static final Log log = LogFactory.getLog(Importer.class);
 	static final String LOCATION_CODE_HEADER = "code";
-	static final String DATA_HEADER = "data";
+	static final String DATA_CODE_HEADER = "data";
 	static final String VALUE_HEADER = "data_value";
 	
 	protected ValueService valueService;

@@ -51,7 +51,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  * @author Jean Kahigiso M.
  *
  */
-class NormalizedImporterControllerSpec extends IntegrationTests {
+class NominativeImporterControllerSpec extends IntegrationTests {
 	
 	// there is no rollback so each element inserted is kept between tests
 	static transactional = false
@@ -94,7 +94,7 @@ class NormalizedImporterControllerSpec extends IntegrationTests {
 		importerErrorManagerDate.setNumberOfUnsavedRows(0)
 		importerErrorManagerDate.setNumberOfRowsSavedWithError(0)
 		
-		NormalizedDataImporter importer = new NormalizedDataImporter(
+		NominativeDataImporter importer = new NominativeDataImporter(
 			locationService, valueService, dataService,
 			sessionFactory, transactionManager,
 			importerErrorManagerDate, dataDateElement, Period.list()[0]
