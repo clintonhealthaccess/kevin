@@ -56,7 +56,7 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity(name="Enum")
 @Table(name="dhsst_enum", uniqueConstraints={@UniqueConstraint(columnNames="code")})
-@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class Enum implements Exportable, Importable {
 
 	private Long id;
@@ -78,6 +78,7 @@ public class Enum implements Exportable, Importable {
 		
 	@OneToMany(mappedBy="enume", targetEntity=EnumOption.class, fetch=FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
+	@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 	public List<EnumOption> getEnumOptions() {
 		return enumOptions;
 	}
