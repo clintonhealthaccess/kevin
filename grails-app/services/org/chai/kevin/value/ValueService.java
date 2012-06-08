@@ -28,29 +28,34 @@ package org.chai.kevin.value;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Entity;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.util.Utils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Conjunction;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -61,6 +66,7 @@ public class ValueService {
 	private static final Log log = LogFactory.getLog(ValueService.class);
 	
 	private SessionFactory sessionFactory;
+	private LanguageService languageService;
 	
 	@Transactional(readOnly=false)
 	public <T extends StoredValue> T save(T value) {
@@ -86,35 +92,79 @@ public class ValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=true)
-	public <T extends DataValue> List<T> listDataElementValues(DataElement<T> data, DataLocation dataLocation, Period period, Map<String, Object> params) {
-		if (log.isDebugEnabled()) log.debug("listDataElementValues(data="+data+", period="+period+", dataLocation="+dataLocation+")");
-		Criteria criteria = getListCriteria(data, dataLocation, period);
+	public <T extends DataValue> List<T> searchDataElementValues(String text, DataElement<T> data, DataLocation dataLocation, Period period, Map<String, Object> params) {
+		if (log.isDebugEnabled()) log.debug("searchDataElementValues(text="+text+", data="+data+", period="+period+", dataLocation="+dataLocation+")");
+		Criteria criteria = getCriteria(data, dataLocation, period);
+		addSortAndLimitCriteria(criteria, params);
+		addSearchCriteria(criteria, text);
 		
-		criteria.createAlias("location", "location");
-		criteria.addOrder(Order.asc("location.code"));
+		List<T> result = criteria.list();
+		filterList(result, text);
+		
+		if (log.isDebugEnabled()) log.debug("searchDataElementValues(...)=");
+		return result;
+	}
+	
+	private <T extends DataValue> void filterList(List<T> list, String text) {
+		for (String chunk : StringUtils.split(text)) {
+			for (DataValue element : new ArrayList<T>(list)) {
+				if (!Utils.matches(chunk, element.getLocation().getNames().get(languageService.getCurrentLanguage()))) list.remove(element);
+				if (!Utils.matches(chunk, element.getLocation().getCode())) list.remove(element);
+			}
+		}
+	}
+	
+	private void addSearchCriteria(Criteria criteria, String text) {
+		Conjunction textRestrictions = Restrictions.conjunction();
+		for (String chunk : StringUtils.split(text)) {
+			Disjunction disjunction = Restrictions.disjunction();		
+			disjunction.add(Restrictions.ilike("location.code", chunk, MatchMode.ANYWHERE));
+			disjunction.add(Restrictions.ilike("location.names.jsonText", chunk, MatchMode.ANYWHERE));
+			textRestrictions.add(disjunction);
+		}
+		criteria.add(textRestrictions);
+	}
+	
+	private void addSortAndLimitCriteria(Criteria criteria, Map<String, Object> params) {
+		if (params.containsKey("sort")) {
+			criteria.addOrder(params.get("order").equals("asc")?Order.asc(params.get("sort")+""):Order.desc(params.get("sort")+""));
+		}
+		else {
+			criteria.addOrder(Order.asc("location.code"));
+		}
 		
 		if (params.get("offset") != null) criteria.setFirstResult((Integer)params.get("offset"));
 		if (params.get("max") != null) criteria.setMaxResults((Integer)params.get("max"));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Transactional(readOnly=true)
+	public <T extends DataValue> List<T> listDataElementValues(DataElement<T> data, DataLocation dataLocation, Period period, Map<String, Object> params) {
+		if (log.isDebugEnabled()) log.debug("listDataElementValues(data="+data+", period="+period+", dataLocation="+dataLocation+")");
+		Criteria criteria = getCriteria(data, dataLocation, period);
+		addSortAndLimitCriteria(criteria, params);
 		
 		List<T> result = criteria.list();
 		if (log.isDebugEnabled()) log.debug("listDataElementValues(...)=");
 		return result;
 	}
 	
-	public <T extends DataValue> Long countDataElementValues(DataElement<T> data, DataLocation dataLocation, Period period) {
+	public <T extends DataValue> Long countDataElementValues(String text, DataElement<T> data, DataLocation dataLocation, Period period) {
 		if (log.isDebugEnabled()) log.debug("listDataElementValues(data="+data+", period="+period+", dataLocation="+dataLocation+")");
-		Criteria criteria = getListCriteria(data, dataLocation, period);
+		Criteria criteria = getCriteria(data, dataLocation, period);
+		if (text != null) addSearchCriteria(criteria, text);
 		
 		Long result = (Long)criteria.setProjection(Projections.count("id")).uniqueResult();
 		if (log.isDebugEnabled()) log.debug("listDataElementValues(...)=");
 		return result;
 	}
 	
-	private <T extends DataValue> Criteria getListCriteria(DataElement<T> data, DataLocation dataLocation, Period period) {
+	private <T extends DataValue> Criteria getCriteria(DataElement<T> data, DataLocation dataLocation, Period period) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(data.getValueClass());
 		criteria.add(Restrictions.eq("data", data));
 		if (period != null) criteria.add(Restrictions.eq("period", period));
 		if (dataLocation != null) criteria.add(Restrictions.eq("location", dataLocation));
+		criteria.createAlias("location", "location");
 		return criteria;
 	}
 	
@@ -201,6 +251,10 @@ public class ValueService {
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+	
+	public void setLanguageService(LanguageService languageService) {
+		this.languageService = languageService;
 	}
 	
 }
