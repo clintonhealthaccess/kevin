@@ -70,6 +70,23 @@ public class UtilUnitSpec extends UnitSpec {
 		Utils.containsId("\$1+\$2", 2)
 		!Utils.containsId("1+2", 2)
 		!Utils.containsId("1+2", 2)
+		
+		Utils.containsId("\$10218[_].test\n", 10218)
+		Utils.containsId("\$10218\n", 10218)
+		Utils.containsId(
+			"(\$10218[_].basic.monthly_targets.july + \n" +
+			"\$10218[_].basic.monthly_targets.august + \n" +
+			"\$10218[_].basic.monthly_targets.september + \n" +
+			"\$10218[_].basic.monthly_targets.october + \n" +
+			"\$10218[_].basic.monthly_targets.november + \n" +
+			"\$10218[_].basic.monthly_targets.december + \n" +
+			"\$10218[_].basic.monthly_targets.january + \n" +
+			"\$10218[_].basic.monthly_targets.february + \n" +
+			"\$10218[_].basic.monthly_targets.march + \n" +
+			"\$10218[_].basic.monthly_targets.april+ \n" +
+			"\$10218[_].basic.monthly_targets.may + \n" +
+			"\$10218[_].basic.monthly_targets.june) == \n" +
+			"\$10218[_].basic.targets.target_number_of_cases", 10218)
 	}
 	
 	def "test parse date"() {

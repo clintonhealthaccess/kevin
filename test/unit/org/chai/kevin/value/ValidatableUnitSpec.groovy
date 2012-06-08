@@ -31,6 +31,7 @@ class ValidatableUnitSpec extends UnitSpec {
 		then:
 		validatable.getSkippedPrefixes().equals(new HashSet([""]))
 	}
+	
 	def "test is tree valid"() {
 		setup:
 		def value
@@ -64,6 +65,41 @@ class ValidatableUnitSpec extends UnitSpec {
 		validatable.isTreeValid("[0]") == false
 		validatable.isTreeValid("[0].key1") == false
 		validatable.isTreeValid("[0].key2") == true
+	}
+	
+	def "test is valid"() {
+		setup:
+		def value
+		def type
+		def validatable
+		
+		when:
+		value = Value.VALUE_LIST([new Value("{\"value\":10, \"invalid\":\"1\"}"), Value.VALUE_NUMBER(10)])
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		validatable = new ValidatableValue(value, type)
+		
+		then:
+		validatable.isValid("[0]") == false
+		validatable.isValid("[1]") == true
+		
+		when:
+		value = Value.VALUE_LIST([new Value("{\"value\":10, \"invalid\":\"1\", \"warning\":\"1\"}"), Value.VALUE_NUMBER(10)])
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		validatable = new ValidatableValue(value, type)
+		
+		then:
+		validatable.isValid("[0]") == true
+		validatable.isValid("[1]") == true
+		
+		when:
+		value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":new Value("{\"value\":10, \"invalid\":\"1\"}"), "key2":Value.VALUE_NUMBER(10)])])
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["key1": Type.TYPE_NUMBER(), "key2": Type.TYPE_NUMBER()]))
+		validatable = new ValidatableValue(value, type)
+		
+		then:
+		validatable.isValid("[0]") == true
+		validatable.isValid("[0].key1") == false
+		validatable.isValid("[0].key2") == true
 	}
 	
 	def "test is tree complete"() {

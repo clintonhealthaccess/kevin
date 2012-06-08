@@ -148,9 +148,7 @@ class EditPlanningController extends AbstractController {
 						validatable.invalidPrefixes.each { invalidPrefix ->
 							pre (
 								prefix: invalidPrefix,
-								valid: validatable.isValid(invalidPrefix),
 								errors: g.renderUserErrors(element: planningType.formElement, validatable: validatable, suffix: invalidPrefix, location: location)
-
 							)
 						}
 					},

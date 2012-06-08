@@ -31,7 +31,7 @@ public class FormValidationService {
 		
 		Set<String> result = new HashSet<String>();
 		if (validatable!= null) {
-			result.addAll(validationService.getPrefixes(expression, prefixes, validatable, dataLocation, locator, true));
+			result.addAll(validationService.getPrefixes("$"+element.getId(), expression, prefixes, validatable, dataLocation, locator, true));
 		}
 		
 		if (log.isDebugEnabled()) log.debug("getSkippedPrefix(...)="+result);
@@ -66,7 +66,7 @@ public class FormValidationService {
 			
 			Set<String> prefixes = new HashSet<String>();
 			prefixes.add(prefix);
-			if (validatable != null) result.addAll(validationService.getPrefixes(expression, prefixes, validatable, dataLocation, locator, false));
+			if (validatable != null) result.addAll(validationService.getPrefixes("$"+validationRule.getFormElement().getId(), expression, prefixes, validatable, dataLocation, locator, false));
 		}
 		if (log.isDebugEnabled()) log.debug("getInvalidPrefix(...)="+result);
 		return result;

@@ -161,7 +161,7 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 					
 					// we add them again
 					$.each(element.invalid, function(index, invalid) {
-						if (!invalid.valid) $('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).addClass('errors');
+						$('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).addClass('errors');
 						$('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).children('.error-list').html(invalid.errors);
 						$('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).parents('.element-list-row').first().addClass('row-errors');
 					});
