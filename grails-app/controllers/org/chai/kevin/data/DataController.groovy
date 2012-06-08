@@ -85,6 +85,41 @@ class DataController extends AbstractController {
 	}
 	
 	// TODO move to DataElementController
+	def search = {
+		adaptParamsForList()
+		
+		def data = dataService.getData(params.int('data'), DataElement.class)
+		if (data == null) {
+			response.sendError(404)
+		}
+		else {
+			List<Period> periods = Period.list([cache: true])
+			def period = Period.get(params.int('period'))
+			if (period == null) period = Period.list()[Period.count() - 1]
+			
+			def values = valueService.searchDataElementValues(
+				params.q,
+				data,
+				null,
+				period,
+				params
+			)
+			def valueCount = valueService.countDataElementValues(params.q, data, null, period)
+			
+			render (view: '/entity/list', model:[
+				data: data,
+				periods: periods,
+				selectedPeriod: period,
+				entities: values,
+				entityCount: valueCount,
+				template: "value/data"+data.class.simpleName+"List",
+				code: 'dataelementvalue.label',
+				search: true
+			])
+		}
+	}
+	
+	// TODO move to DataElementController
 	def dataElementValueList = {
 		adaptParamsForList()
 		
@@ -97,17 +132,13 @@ class DataController extends AbstractController {
 			def period = Period.get(params.int('period'))
 			if (period == null) period = Period.list()[Period.count() - 1]
 			
-			def values = []
-			def valueCount = 0
-			if (period != null) {
-				 values.addAll(valueService.listDataElementValues(
-					data,
-					null,
-					period,
-					params
-				))
-				valueCount = valueService.countDataElementValues(data, null, period)
-			}
+			def values = valueService.listDataElementValues(
+				data,
+				null,
+				period,
+				params
+			)
+			def valueCount = valueService.countDataElementValues(null, data, null, period)
 			
 			render (view: '/entity/list', model:[
 				data: data,

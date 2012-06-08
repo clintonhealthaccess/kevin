@@ -61,7 +61,7 @@ class DataService {
 	}
 	
 	public Enum findEnumByCode(String code) {
-		return Enum.findByCode(code)
+		return Enum.findByCode(code, [cache: true])
 	}
 	
 	// this exists because Groovy Calculation.list() doesn't return anything

@@ -11,18 +11,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.Value;
-import org.codehaus.groovy.grails.commons.GrailsApplication;
 
 import com.ibm.jaql.json.type.JsonValue;
-import com.ibm.jaql.lang.Jaql;
 import com.ibm.jaql.lang.JaqlQuery;
-import com.ibm.jaql.lang.util.JaqlUtil;
 
 public class JaqlService {
 
 	private static final Log log = LogFactory.getLog(JaqlService.class);
 	
-	public GrailsApplication grailsApplication;
+	public JaqlService jaqlService;
 	
 	public static JsonValue jsonValue(String expression, Map<String, String> variables) {
 		Map<String, JsonValue> valueMap = new HashMap<String, JsonValue>();
@@ -92,12 +89,12 @@ public class JaqlService {
 		return value;
 	}
 	
-	public void setGrailsApplication(GrailsApplication grailsApplication) {
-		this.grailsApplication = grailsApplication;
+	public void setJaqlService(JaqlService jaqlService) {
+		this.jaqlService = jaqlService;
 	}
 	
 	// for internal call through transactional proxy
 	public JaqlService getMe() {
-		return grailsApplication.getMainContext().getBean(JaqlService.class);
+		return jaqlService;
 	}
 }

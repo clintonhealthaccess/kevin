@@ -10,7 +10,7 @@
 			<thead>
 				<tr>
 					<th><g:message code="dataelementvalue.location.label"/></th>
-					<th><g:message code="dataelementvalue.status.label"/></th>
+					<g:sortableColumn property="status" title="${message(code: 'dataelementvalue.status.label')}" params="[data: data.id, period: selectedPeriod.id, q: params.q]"/>
 					<th><g:message code="dataelementvalue.value.label"/></th>
 				</tr>
 			</thead>
