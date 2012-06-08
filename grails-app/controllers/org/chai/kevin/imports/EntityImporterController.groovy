@@ -3,7 +3,6 @@ package org.chai.kevin.imports
 import org.chai.kevin.AbstractController
 import org.chai.kevin.imports.EntityImporter;
 import org.chai.kevin.imports.ImporterErrorManager;
-import org.chai.kevin.imports.NormalizedDataImporter;
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 
 class EntityImporterController extends AbstractController {

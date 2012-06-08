@@ -25,16 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.chai.kevin.imports;
 
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
+import org.chai.kevin.PeriodService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.imports.GeneralDataImporter;
 import org.chai.kevin.imports.ImporterErrorManager;
 import org.chai.kevin.value.ValueService;
+import org.hibernate.SessionFactory;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
@@ -42,11 +46,16 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  *
  */
 class GeneralImporterController extends AbstractController {
+	
 	LocationService locationService;
 	ValueService valueService;
 	DataService dataService;
+	SessionFactory sessionFactory;
+	PeriodService periodService;
+	PlatformTransactionManager transactionManager;
+	
 	final String IMPORT_FORM = "generalImport";
-	final String IMPORT_OUTPUT = "importOutput";	
+	final String IMPORT_OUTPUT = "importOutput";
 	
 	def importer = {
 		this.getModel(null,null,IMPORT_FORM);
@@ -54,32 +63,25 @@ class GeneralImporterController extends AbstractController {
 	
 	def uploader = { GeneralImporterCommand cmd ->
 		ImporterErrorManager errorManager = new ImporterErrorManager();
-		errorManager.setNumberOfSavedRows(0)
-		errorManager.setNumberOfUnsavedRows(0)
-		errorManager.setNumberOfRowsSavedWithError(0)
+
 		if (!cmd.hasErrors()) {
-			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",period="+cmd.period+")")
-			
 			GeneralDataImporter importer = new GeneralDataImporter(
-				locationService, valueService, dataService,
-				errorManager, cmd.period
-				);			
+					locationService, valueService, dataService,
+					sessionFactory, transactionManager,
+					errorManager,periodService
+					);
 			if (cmd.file.getContentType().equals(FILE_TYPE_ZIP)) importer.importZipFiles(cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
 			if (cmd.file.getContentType().equals(FILE_TYPE_CSV)) importer.importCsvFile(cmd.file.getName(), cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
 			cmd.file.getInputStream().close();
-				
+
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 		}else{
 			this.getModel(cmd,errorManager,IMPORT_FORM);
 		}
 	}
-	
 	def getModel(def cmd,ImporterErrorManager errorManager,String view) {
-		if(log.isDebugEnabled()) log.debug("getModel(cmd="+cmd+",errorManager="+errorManager+",view="+view+")")
-		List<Period> periods = Period.list([cache: true])
 		render (view: '/import/'+view, model:[
-					periods: periods,
-					generalImporter: cmd,
+					importExporter: cmd,
 					errorManager: errorManager
 				])
 	}
@@ -92,7 +94,7 @@ class GeneralImporterCommand {
 	String encoding;
 	Character delimiter;
 	CommonsMultipartFile file;
-	
+	//TODO validate zip
 	static constraints = {
 		file(blank:false, nullable:false, validator: {val, obj ->
 			return !val.empty

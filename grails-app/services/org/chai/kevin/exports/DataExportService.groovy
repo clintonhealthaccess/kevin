@@ -83,12 +83,13 @@ class DataExportService {
 	def surveyExportService;
 	
 	private final static String CSV_FILE_EXTENSION = ".csv";
-	private final static String LOCATION_TYPE = "Health Facility Type";
-	private final static String HEALTH_FACILITY_CODE = "Health Facility Code";
-	private final static String HEALTH_FACILITY_NAME = "Health Facility Name";
-	private final static String DATA_ELEMENT_ID = "Data Element Id";
-	private final static String DATA_ELEMENT_NAME = "Data Element Name";
-	private final static String DATA_ELEMENT_CODE = "Data Element Code";
+	private final static String LOCATION_TYPE = "Data Location Type";
+	private final static String DATA_LOCATION_CODE = "Data Location Code";
+	private final static String DATA_LOCATION_NAME = "Data Location Name";
+	private final static String DATA_CLASS = "Data Class";
+	private final static String DATA_CODE = "Data Id";
+	private final static String DATA_NAME = "Data Name";
+	private final static String PERIOD_CODE = "Period Code";
 	private final static String PERIOD = "Period";
 	private final static String DATA_VALUE = "Data Value";
 	private final static String DATA_VALUE_ADDRESS = "Data Value Address";
@@ -163,14 +164,14 @@ class DataExportService {
 			if (parent != null) basicInfo.add(languageService.getText(parent.getNames()));
 			else basicInfo.add("");
 		}
+		basicInfo.add(location.code)
 		basicInfo.add(languageService.getText(location.getNames()))
 		basicInfo.add(languageService.getText(location.type.getNames()))
-
-		basicInfo.add(location.code)
+		basicInfo.add(period.code+"")
 		basicInfo.add("[ "+period.startDate.toString()+" - "+period.endDate.toString()+" ]")
-		basicInfo.add(data.id+"")
+		basicInfo.add(data.class.simpleName)
+		basicInfo.add(data.code+"")
 		basicInfo.add(languageService.getText(data.getNames()))
-		basicInfo.add(data.code)
 		return basicInfo;
 	}
 	
@@ -178,13 +179,14 @@ class DataExportService {
 		List<String> headers = new ArrayList<String>();
 		for (LocationLevel level : locationService.listLevels())
 			headers.add(languageService.getText(level.getNames()));
-		headers.add(HEALTH_FACILITY_CODE);
-		headers.add(HEALTH_FACILITY_NAME);
+		headers.add(DATA_LOCATION_CODE);
+		headers.add(DATA_LOCATION_NAME);
 		headers.add(LOCATION_TYPE);
+		headers.add(PERIOD_CODE);
 		headers.add(PERIOD);
-		headers.add(DATA_ELEMENT_ID);
-		headers.add(DATA_ELEMENT_NAME);
-		headers.add(DATA_ELEMENT_CODE);
+		headers.add(DATA_CLASS);
+		headers.add(DATA_CODE);
+		headers.add(DATA_NAME);
 		headers.add(DATA_VALUE);
 		headers.add(DATA_VALUE_ADDRESS);
 		return headers;

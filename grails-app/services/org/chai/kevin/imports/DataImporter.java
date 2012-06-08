@@ -31,31 +31,50 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.Sanitizer;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValueService;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * @author Jean Kahigiso M.
  *
  */
 public abstract class DataImporter extends FileImporter {
-	
-	static final String CODE_HEADER = "code";
-	static final String DATA_ELEMENT_HEADER = "raw_data_element";
+
+	private static final Log log = LogFactory.getLog(DataImporter.class);
+	static final String LOCATION_CODE_HEADER = "code";
+	static final String DATA_CODE_HEADER = "data";
 	static final String VALUE_HEADER = "data_value";
 	
 	protected ValueService valueService;
+	protected PlatformTransactionManager transactionManager;
+	protected TransactionTemplate transactionTemplate;
 	
-	public DataImporter(ValueService valueService) {
+	protected TransactionTemplate getTransactionTemplate() {
+		if (transactionTemplate == null) {
+			transactionTemplate = new TransactionTemplate(transactionManager);
+			transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+		}
+		return transactionTemplate;
+	}
+	
+	public DataImporter(ValueService valueService,PlatformTransactionManager transactionManager) {
 		super();
 		this.valueService = valueService;
+		this.transactionManager = transactionManager;
 	}
 
 	protected class ImportSanitizer implements Sanitizer {
@@ -78,6 +97,7 @@ public abstract class DataImporter extends FileImporter {
 		private Integer numberOfErrorInRows;
 		
 		private Enum getAndStoreEnum(String code) {
+			if (log.isDebugEnabled()) log.debug("++enumMap :"+enumMap);
 			if (!enumMap.containsKey(code)) {
 				Enum enume = dataService.findEnumByCode(code);
 				enumMap.put(code, enume);
@@ -95,6 +115,11 @@ public abstract class DataImporter extends FileImporter {
 		
 		public void setNumberOfErrorInRows(Integer numberOfErrorInRows) {
 			this.numberOfErrorInRows = numberOfErrorInRows;
+		}
+		
+		public void setType(String header,Type type){
+			types.clear();
+			types.put(header, type);
 		}
 	
 		@Override
@@ -117,6 +142,7 @@ public abstract class DataImporter extends FileImporter {
 				return null;
 			}
 		}
+		
 	
 		private String validateImportEnum(String fileName, String header, Object value) {
 			Enum enume = getAndStoreEnum(types.get(header).getEnumCode());
@@ -173,12 +199,18 @@ public abstract class DataImporter extends FileImporter {
 		
 	}
 	
-	protected static List<String> getLineNumberString(Integer lineNumber) {
-		List<String> result = new ArrayList<String>();
-		for (int i = 0; i <= lineNumber; i++) {
-			result.add("["+i+"]");
+	protected void saveAndMergeIfNotNull(RawDataElementValue rawDataElementValue, Map<String,Object> positionsValueMap, ImportSanitizer sanitizer) {
+		if (rawDataElementValue != null) {
+			if (log.isDebugEnabled()) log.debug("merging with data from map of header and data "+ positionsValueMap);
+			if (log.isTraceEnabled()) log.trace("value before merge" + rawDataElementValue.getValue());
+			rawDataElementValue.setValue(
+				rawDataElementValue.getData().getType().mergeValueFromMap(rawDataElementValue.getValue(), positionsValueMap, "", new HashSet<String>(), sanitizer, true)
+			);
+			if (log.isTraceEnabled()) log.trace("value after merge " + rawDataElementValue.getValue());
+			
+			valueService.save(rawDataElementValue);
+			if (log.isTraceEnabled()) log.trace("saved rawDataElement: "+ rawDataElementValue.getValue());
 		}
-		return result;
 	}
 	
 }

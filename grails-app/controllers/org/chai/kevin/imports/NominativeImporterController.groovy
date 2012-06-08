@@ -36,8 +36,6 @@ import org.chai.kevin.Period;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.imports.ImporterErrorManager;
-import org.chai.kevin.imports.NormalizedDataImporter;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValueService;
@@ -51,7 +49,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile
  * @author Jean Kahigiso M.
  *
  */
-class NormalizedImporterController extends AbstractController {
+class NominativeImporterController extends AbstractController {
 	
 	LocationService locationService;
 	ValueService valueService;
@@ -59,19 +57,19 @@ class NormalizedImporterController extends AbstractController {
 	SessionFactory sessionFactory;
 	PlatformTransactionManager transactionManager;
 	
-	final String IMPORT_FORM = "normalizedImport";
+	final String IMPORT_FORM = "nominativeImport";
 	final String IMPORT_OUTPUT = "importOutput";
 	
 	def importer = {
 		this.getModel(null,null,IMPORT_FORM);
 	}
 	
-	def uploader = { NormalizedImporterCommand cmd ->
+	def uploader = { NominativeImporterCommand cmd ->
 		ImporterErrorManager errorManager = new ImporterErrorManager();
 		if (!cmd.hasErrors()) {
 			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",period="+cmd.period+",dataElement="+cmd.dataElement+")")
-		
-			NormalizedDataImporter importer = new NormalizedDataImporter(
+			
+			NominativeDataImporter importer = new NominativeDataImporter(
 				locationService, valueService, dataService,
 				sessionFactory, transactionManager,
 				errorManager, cmd.dataElement, cmd.period
@@ -93,22 +91,22 @@ class NormalizedImporterController extends AbstractController {
 		List<RawDataElement> dataElements =[]
 		if (cmd?.dataElement != null) dataElements << cmd.dataElement
 		render (view: '/import/'+view, model:[
-			periods: periods,
-			dataElements: dataElements,
-			normalizedImporter: cmd,
-			errorManager: errorManager
-		])
+					periods: periods,
+					dataElements: dataElements,
+					normalizedImporter: cmd,
+					errorManager: errorManager
+				])
 	}
 }
 
-class NormalizedImporterCommand {
+class NominativeImporterCommand {
 
 	Period period;
 	CommonsMultipartFile file;
 	String encoding;
 	Character delimiter;
 	RawDataElement dataElement;
-
+	//TODO validate zip file
 	static constraints = {
 		file(blank:false, nullable:false, validator: {val, obj ->
 			return !val.empty

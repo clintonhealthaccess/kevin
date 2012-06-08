@@ -34,6 +34,7 @@ import org.chai.kevin.Period;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.imports.NominativeDataImporter;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
@@ -51,11 +52,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  * @author Jean Kahigiso M.
  *
  */
-class NormalizedImporterControllerSpec extends IntegrationTests {
+class NominativeImporterControllerSpec extends IntegrationTests {
 	
-	def normalizedImporterController
-	// there is no rollback so each element inserted is kept between tests	
-	
+
 	//TODO find a way to test a controller using  CommonsMultipartFile
 /*
 	def "get uploader"(){

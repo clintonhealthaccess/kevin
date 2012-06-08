@@ -184,6 +184,10 @@ environments {
 			}
 			
 			off 'ExpressionLog'
+			
+			trace 'org.chai.kevin.imports.GeneralDataImporter'
+			trace 'org.chai.kevin.imports.DataImporter'
+			debug 'org.chai.kevin.data.Type'
 		}
 	}
 }

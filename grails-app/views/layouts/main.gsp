@@ -111,7 +111,7 @@
 	  						<li><a class="${controllerName=='user'?'active':''}" href="${createLink(controller: 'userList', action:'list')}"><g:message code="user.label"/></a></li>
 							<li><a class="${controllerName=='expression'?'active':''}" href="${createLink(controller: 'expression', action:'test')}"><g:message code="expression.test.label"/></a></li>
 							<li><a class="${controllerName=='generalImporter'?'active':''}" href="${createLink(controller: 'generalImporter', action:'importer')}"><g:message code="import.general.data.label" /></a></li>
-							<li><a class="${controllerName=='normalizedImporter'?'active':''}" href="${createLink(controller: 'normalizedImporter', action:'importer')}"><g:message code="import.normalized.data.label" /></a></li>
+							<li><a class="${controllerName=='nominativeImporter'?'active':''}" href="${createLink(controller: 'nominativeImporter', action:'importer')}"><g:message code="import.nominative.data.label" /></a></li>
 							<li><a class="${controllerName=='dataExport'?'active':''}" href="${createLink(controller: 'dataExport', action:'list')}"><g:message code="dataexport.label" /></a></li>
 	  					
 	  					</ul>
