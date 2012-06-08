@@ -149,13 +149,18 @@ class DataExportServiceSpec extends IntegrationTests {
 		when:
 		def lines = dataExportService.getExportLineForValue(locations[0],period,dataElementMap)
 		def periodString = "[ "+(period.startDate).toString()+" - "+(period.endDate).toString()+" ]";
-		def listDataList=["Rwanda","North","Burera","","Kivuye HC","Health Center","Kivuye HC"]
+		def listDataList=["Rwanda","North","Burera",""]
+		listDataList.add(locations[0].code);
+		listDataList.add(locations[0].names.en);
+		listDataList.add(locations[0].type.names.en);
+		listDataList.add(period.code);
 		listDataList.add(periodString);
-		listDataList.add(dataElementMap.id+"");
-		listDataList.add("");
+		listDataList.add(dataElementMap.class.simpleName);
 		listDataList.add(dataElementMap.code);
+		listDataList.add("");
 		listDataList.add("value");
 		listDataList.add("[0].key1");
+		
 		def listOfList=[]
 		listOfList.add(listDataList)
 		
@@ -178,11 +183,15 @@ class DataExportServiceSpec extends IntegrationTests {
 		when:
 		def lines = dataExportService.getExportLineForValue(locations[0],period,dataElementDate)
 		def periodString = "[ "+(period.startDate).toString()+" - "+(period.endDate).toString()+" ]";
-		def listDataList=["Rwanda","North","Burera","","Kivuye HC","Health Center","Kivuye HC"]
+		def listDataList=["Rwanda","North","Burera",""]
+		listDataList.add(locations[0].code);
+		listDataList.add(locations[0].names.en);
+		listDataList.add(locations[0].type.names.en);
+		listDataList.add(period.code);
 		listDataList.add(periodString);
-		listDataList.add(dataElementDate.id+"");
-		listDataList.add("");
+		listDataList.add(dataElementDate.class.simpleName);
 		listDataList.add(dataElementDate.code);
+		listDataList.add("");
 		listDataList.add(Utils.formatDate(date));
 		listDataList.add("");
 		def listOfList=[]
@@ -206,11 +215,15 @@ class DataExportServiceSpec extends IntegrationTests {
 		when:
 		def lines = dataExportService.getExportLineForValue(locations[0],period,normalizedDataElement)
 		def periodString = "[ "+(period.startDate).toString()+" - "+(period.endDate).toString()+" ]";
-		def listDataList=["Rwanda","North","Burera","","Kivuye HC","Health Center","Kivuye HC"]
+		def listDataList=["Rwanda","North","Burera",""]
+		listDataList.add(locations[0].code);
+		listDataList.add(locations[0].names.en);
+		listDataList.add(locations[0].type.names.en);
+		listDataList.add(period.code);
 		listDataList.add(periodString);
-		listDataList.add(normalizedDataElement.id+"");
-		listDataList.add("");
+		listDataList.add(normalizedDataElement.class.simpleName);
 		listDataList.add(normalizedDataElement.code);
+		listDataList.add("");
 		listDataList.add("1.0");
 		listDataList.add("");
 		def listOfList=[]
