@@ -34,6 +34,7 @@ import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.RawDataElementControllerSpec;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.Period;
+import org.chai.kevin.PeriodService;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.imports.GeneralDataImporter;
@@ -66,6 +67,7 @@ class DataImporterSpec extends IntegrationTests {
 	DataService dataService;
 	SessionFactory sessionFactory;
 	PlatformTransactionManager transactionManager;
+	PeriodService periodService;
 
 	def importerService;
 
@@ -89,7 +91,7 @@ class DataImporterSpec extends IntegrationTests {
 		Period.executeUpdate("delete Period")
 	}
 		
-	def "get normalized import string data from csv"(){
+	def "get nominative import string data from csv"(){
 		when:
 		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1": Type.TYPE_STRING()]))
 		def csvString = 
@@ -146,7 +148,7 @@ class DataImporterSpec extends IntegrationTests {
 	}
 	
 	
-	def "get normalized import bool data from csv"(){
+	def "get nominative import bool data from csv"(){
 		when:
 		def typeBool = Type.TYPE_LIST(Type.TYPE_MAP(["marital_status": Type.TYPE_BOOL()]))
 		
@@ -176,7 +178,7 @@ class DataImporterSpec extends IntegrationTests {
 				
 	}
 	
-	def "get normalized import date data from csv"(){
+	def "get nominative import date data from csv"(){
 		when:
 		def typeDate = Type.TYPE_LIST(Type.TYPE_MAP(["birth_date": Type.TYPE_DATE()]))
 		def csvDateString =
@@ -200,7 +202,7 @@ class DataImporterSpec extends IntegrationTests {
 		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].birth_date").getDateValue().equals(new SimpleDateFormat("dd-MM-yyyy").parse("15-08-1971"));
 	}
 	
-	def "get normalized import number data from csv"(){
+	def "get nominative import number data from csv"(){
 		when:
 		def typeNumber = Type.TYPE_LIST(Type.TYPE_MAP(["age": Type.TYPE_NUMBER()]))
 		
@@ -228,7 +230,7 @@ class DataImporterSpec extends IntegrationTests {
 	
 	
 	
-	def "get normalized import enum data from csv"(){
+	def "get nominative import enum data from csv"(){
 		when:
 		def enumeGender = newEnume("gender");
 		def enumGenderOption1 = newEnumOption(enumeGender,"male");
@@ -257,7 +259,7 @@ class DataImporterSpec extends IntegrationTests {
 		Enum.findByCode("gender").enumOptions.contains(EnumOption.findByValue(typeEnum.getValue(RawDataElementValue.list()[0].value, "[1].gender").getEnumValue()))
 	}
 	
-	def "get normalized import wrong code from csv"(){
+	def "get nominative import wrong code from csv"(){
 		when:
 		def typeCode = Type.TYPE_LIST(Type.TYPE_MAP(["string": Type.TYPE_STRING()]))
 		
@@ -401,16 +403,17 @@ class DataImporterSpec extends IntegrationTests {
 		when:
 		def type = Type.TYPE_STRING()
 		def dataElement = newRawDataElement(CODE(7), type)
-		
+		def period = Period.list()[0];
 		def csvString =
-			"code,raw_data_element,data_value\n"+
-			BUTARO+","+dataElement.code+",value\n"
+			"code,period,data,data_value,value_address\n"+
+			BUTARO+","+period.code+","+dataElement.code+",value,\n"
 			
 		def importerErrorManager = new ImporterErrorManager();
 		
 		GeneralDataImporter importer = new GeneralDataImporter(
 			locationService, valueService, dataService,
-			importerErrorManager,  Period.list()[0]
+			sessionFactory, transactionManager,
+			importerErrorManager, periodService
 			);
 
 		importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
@@ -427,21 +430,23 @@ class DataImporterSpec extends IntegrationTests {
 	def "get general import bool data from csv"(){
 		when:
 		def type = Type.TYPE_BOOL()
+		def period = Period.list()[0];
 		def dataElementOne = newRawDataElement(CODE(8), type)
 		def dataElementTwo = newRawDataElement(CODE(9), type)
 		def dataElementThree = newRawDataElement(CODE(10), type)
 		
 		def csvString =
-			"code,raw_data_element,data_value\n"+
-			BUTARO+","+dataElementOne.code+",1\n"+
-			BUTARO+","+dataElementTwo.code+",0\n"+
-			BUTARO+","+dataElementThree.code+",N\n"
+			"code,period,data,data_value,value_address\n"+
+			BUTARO+","+period.code+","+dataElementOne.code+",1,\n"+
+			BUTARO+","+period.code+","+dataElementTwo.code+",0,\n"+
+			BUTARO+","+period.code+","+dataElementThree.code+",,\n"
 			
 		def importerErrorManager = new ImporterErrorManager();
 		
 		GeneralDataImporter importer = new GeneralDataImporter(
 			locationService, valueService, dataService,
-			importerErrorManager,  Period.list()[0]
+			sessionFactory, transactionManager,
+			importerErrorManager, periodService
 			);
 
 		importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
@@ -456,6 +461,7 @@ class DataImporterSpec extends IntegrationTests {
 		
 	def "get general import enum data from csv"(){
 		when:
+		def period = Period.list()[0];
 		def enumeGender = newEnume("gender");
 		def enumGenderOption1 = newEnumOption(enumeGender,"male");
 		def enumGenderOption2 = newEnumOption(enumeGender,"female");
@@ -464,20 +470,19 @@ class DataImporterSpec extends IntegrationTests {
 		def dataElementTwo = newRawDataElement(CODE(12), type)
 		
 		def csvString =
-		"code,raw_data_element,data_value\n"+
-		BUTARO+","+dataElementOne.code+",female\n"+
-		BUTARO+","+dataElementTwo.code+",Male\n"
+		"code,period,data,data_value,value_address\n"+
+		BUTARO+","+period.code+","+dataElementOne.code+",female,\n"+
+		BUTARO+","+period.code+","+dataElementTwo.code+",Male,\n"
 
 		def importerErrorManager = new ImporterErrorManager();
-		
 		GeneralDataImporter importer = new GeneralDataImporter(
 			locationService, valueService, dataService,
-			importerErrorManager,  Period.list()[0]
+			sessionFactory, transactionManager,
+			importerErrorManager, periodService
 			);
 
 		importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
-						
-			
+							
 		then:
 		importerErrorManager.errors.size() == 1
 		EnumOption.findByValue(type.getValue(RawDataElementValue.list()[0].value, "").getEnumValue())!=null
@@ -487,23 +492,24 @@ class DataImporterSpec extends IntegrationTests {
 	
 	def "get general import number data from csv"(){
 		when:
+		def period = Period.list()[0];
 		def type = Type.TYPE_NUMBER()
 		def dataElementOne = newRawDataElement(CODE(13), type)
 		def dataElementTwo = newRawDataElement(CODE(14), type)
 		
-		def csvNumberString =
-		"code,raw_data_element,data_value\n"+
-		BUTARO+","+dataElementOne.code+",zz\n"+
-		BUTARO+","+dataElementTwo.code+",44\n"
+		def csvString =
+		"code,period,data,data_value,value_address\n"+
+		BUTARO+","+period.code+","+dataElementOne.code+",zz,\n"+
+		BUTARO+","+period.code+","+dataElementTwo.code+",44,\n"
 	
 		def importerErrorManager = new ImporterErrorManager();
-		
 		GeneralDataImporter importer = new GeneralDataImporter(
 			locationService, valueService, dataService,
-			importerErrorManager,  Period.list()[0]
+			sessionFactory, transactionManager,
+			importerErrorManager, periodService
 			);
 
-		importer.importData("File Name",new CsvMapReader(new StringReader(csvNumberString), CsvPreference.EXCEL_PREFERENCE))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
 							
 		then:
 		importerErrorManager.errors.size() == 1
@@ -514,23 +520,24 @@ class DataImporterSpec extends IntegrationTests {
 	
 	def "get general import date data from csv"(){
 		when:
+		def period = Period.list()[0];
 		def type = Type.TYPE_DATE()
 		def dataElementOne = newRawDataElement(CODE(15), type)
 		def dataElementTwo = newRawDataElement(CODE(16), type)
 		
-		def csvDateString =
-		"code,raw_data_element,data_value\n"+
-		BUTARO+","+dataElementOne.code+",15-08-1971\n"+
-		BUTARO+","+dataElementTwo.code+",44\n"
+		def csvString =
+		"code,period,data,data_value,value_address\n"+
+		BUTARO+","+period.code+","+dataElementOne.code+",15-08-1971,\n"+
+		BUTARO+","+period.code+","+dataElementTwo.code+",44,\n"
 		
 		def importerErrorManager = new ImporterErrorManager();
-		
 		GeneralDataImporter importer = new GeneralDataImporter(
 			locationService, valueService, dataService,
-			importerErrorManager,  Period.list()[0]
+			sessionFactory, transactionManager,
+			importerErrorManager, periodService
 			);
 
-		importer.importData("File Name",new CsvMapReader(new StringReader(csvDateString), CsvPreference.EXCEL_PREFERENCE))
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
 			
 		then:
 		importerErrorManager.errors.size() == 1
@@ -538,54 +545,59 @@ class DataImporterSpec extends IntegrationTests {
 		type.getValue(RawDataElementValue.list()[1].value, "").getDateValue()==null
 	}
 	
-	def "get general import wrong code and raw_data_element from csv"(){
+	def "get general import wrong code, period and data_element from csv"(){
 		when:
+		def period = Period.list()[0];
 		def type = Type.TYPE_STRING()
 		def dataElement = newRawDataElement(CODE(17), type)
 		def csvCodeString =
-		"code,raw_data_element,data_value\n"+
-		"BUTERO,"+dataElement.code+",Text1\n"+
-		BUTARO+","+dataElement.code+",Text2\n"+
-		BUTARO+","+"Code"+",Text2\n"
+		"code,period,data,data_value,value_address\n"+
+		"BURARO"+","+period.code+","+dataElement.code+",Text1,\n"+ //Wrong facility code
+		KIVUYE+","+period.code+","+dataElement.code+",Text2,\n"+ //Correct row
+		BUTARO+","+period.code+","+"xxxxxx"+",Text4,\n"+ //Code data element code
+		BUTARO+","+"period"+","+dataElement.code+",Text3,\n" //Wrong Period code
+		
 		
 		def importerErrorManager = new ImporterErrorManager();
-		
 		GeneralDataImporter importer = new GeneralDataImporter(
 			locationService, valueService, dataService,
-			importerErrorManager,  Period.list()[0]
+			sessionFactory, transactionManager,
+			importerErrorManager, periodService
 			);
-
+		
 		importer.importData("File Name",new CsvMapReader(new StringReader(csvCodeString), CsvPreference.EXCEL_PREFERENCE))
 			
 		then:
-		importerErrorManager.errors.size() == 2
 		RawDataElementValue.list().size()==1
 		//check if the first row was skipped and the second was taken as the first and an error was saved
 		RawDataElementValue.list()[0].value.equals(Value.VALUE_STRING("Text2"))
+		importerErrorManager.errors.size() == 3
 		//please change this error msg code if it is changed in ImporterService
 		importerErrorManager.errors[0].messageCode.equals("import.error.message.unknown.data.location");
 		importerErrorManager.errors[1].messageCode.equals("import.error.message.unknown.raw.data.element");
+		importerErrorManager.errors[2].messageCode.equals("import.error.message.unknown.period");
+		
 	}
 	
-	def "get general import data being override from csv"(){
+	def "general import data being override from csv"(){
 		when:
+		def period = Period.list()[0];
 		def type = Type.TYPE_STRING()
 		def dataElement = newRawDataElement(CODE(18), type)
-		def csvCodeString =
-		"code,raw_data_element,data_value\n"+
-		BUTARO+","+dataElement.code+",overrideStringOne\n"+
-		BUTARO+","+dataElement.code+",overrideStringTwo\n"
+		
+		def csvString =
+		"code,period,data,data_value,value_address\n"+
+		BUTARO+","+period.code+","+dataElement.code+",overrideStringOne,\n"+
+		BUTARO+","+period.code+","+dataElement.code+",overrideStringTwo,\n"
 		
 		def importerErrorManager = new ImporterErrorManager();
-		
 		GeneralDataImporter importer = new GeneralDataImporter(
 			locationService, valueService, dataService,
-			importerErrorManager,  Period.list()[0]
+			sessionFactory, transactionManager,
+			importerErrorManager, periodService
 			);
-
-		importer.importData("File Name",new CsvMapReader(new StringReader(csvCodeString), CsvPreference.EXCEL_PREFERENCE))
-			
-			
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
+	
 		then:
 		importerErrorManager.errors.size() == 1
 		RawDataElementValue.list().size()==1
@@ -593,6 +605,111 @@ class DataImporterSpec extends IntegrationTests {
 		RawDataElementValue.list()[0].value.equals(Value.VALUE_STRING("overrideStringTwo"))
 		//please change this error msg code if it is changed in ImporterService
 		importerErrorManager.errors[0].messageCode.equals("import.error.message.data.duplicated");
+	}
+	
+	def "general import nominative data with same value address"(){
+		when:
+		def period = Period.list()[0];
+		def type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(2), type)
+		def csvString =
+			"code,period,data,data_value,value_address\n"+
+			BUTARO+","+period.code+","+dataElement.code+",1,[1]\n"+
+			BUTARO+","+period.code+","+dataElement.code+",1,[0]\n";
+
+		def importerErrorManager = new ImporterErrorManager();
+		GeneralDataImporter importer = new GeneralDataImporter(
+			locationService, valueService, dataService,
+			sessionFactory, transactionManager,
+			importerErrorManager, periodService
+			);
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
+		
+		then:
+		RawDataElementValue.list().size() == 1
+		RawDataElementValue.list()[0].value.listValue.size() == 2
+		RawDataElementValue.list()[0].value.listValue[0].numberValue == 1d
+		RawDataElementValue.list()[0].value.listValue[1].numberValue == 1d
+	}
+	
+	
+	def "general import nominative data with same value address, but defferent data location from csv"(){
+		when:
+		def period = Period.list()[0];
+		def type = Type.TYPE_LIST(Type.TYPE_MAP(["marital_status": Type.TYPE_BOOL()]))
+		def dataElement = newRawDataElement(CODE(2), type)
+		def csvString =
+			"code,period,data,data_value,value_address\n"+
+			BUTARO+","+period.code+","+dataElement.code+",1,[0].marital_status\n"+
+			BUTARO+","+period.code+","+dataElement.code+",,[2].marital_status\n"+
+			BUTARO+","+period.code+","+dataElement.code+",0,[1].marital_status\n"+
+			KIVUYE+","+period.code+","+dataElement.code+",,[2].marital_status\n"+
+			KIVUYE+","+period.code+","+dataElement.code+",1,[0].marital_status\n"+
+			KIVUYE+","+period.code+","+dataElement.code+",0,[1].marital_status\n";
+
+		def importerErrorManager = new ImporterErrorManager();
+		GeneralDataImporter importer = new GeneralDataImporter(
+			locationService, valueService, dataService,
+			sessionFactory, transactionManager,
+			importerErrorManager, periodService
+			);
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
+		
+		then:
+		RawDataElementValue.list().size() == 2
+		importerErrorManager.errors.size() == 2
+		RawDataElementValue.list()[0].value.listValue.size() == 3
+		type.getValue(RawDataElementValue.list()[0].value, "[0].marital_status").getBooleanValue().equals(true)
+		type.getValue(RawDataElementValue.list()[0].value, "[1].marital_status").getBooleanValue().equals(false)
+		RawDataElementValue.list()[0].value.listValue[2].mapValue['marital_status'].isNull()
+		RawDataElementValue.list()[1].value.listValue.size() == 3
+		type.getValue(RawDataElementValue.list()[1].value, "[0].marital_status").getBooleanValue().equals(true)
+		type.getValue(RawDataElementValue.list()[1].value, "[1].marital_status").getBooleanValue().equals(false)
+		RawDataElementValue.list()[1].value.listValue[2].mapValue['marital_status'].isNull()
+	}
+	
+	def "general import list data with skipped indexes"(){
+		setup:
+		def period = Period.list()[0];
+		def type = Type.TYPE_LIST(Type.TYPE_MAP(["marital_status": Type.TYPE_BOOL()]))
+		def dataElement = newRawDataElement(CODE(2), type)
+		
+		def importerErrorManager = new ImporterErrorManager();
+		GeneralDataImporter importer = new GeneralDataImporter(
+			locationService, valueService, dataService,
+			sessionFactory, transactionManager,
+			importerErrorManager, periodService
+		);
+	
+		when: "first import, third line"	
+		def csvString =
+		"code,period,data,data_value,value_address\n"+
+		BUTARO+","+period.code+","+dataElement.code+",1,[2].marital_status\n";
+
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
+		
+		then:
+		RawDataElementValue.list().size() == 1
+		importerErrorManager.errors.size() == 0
+		RawDataElementValue.list()[0].value.listValue.size() == 3
+		type.getValue(RawDataElementValue.list()[0].value, "[0]").mapValue['marital_status'].isNull()
+		type.getValue(RawDataElementValue.list()[0].value, "[1]").mapValue['marital_status'].isNull()
+		type.getValue(RawDataElementValue.list()[0].value, "[2].marital_status").getBooleanValue().equals(true)
+		
+		when: "second import, first line"
+		csvString =
+		"code,period,data,data_value,value_address\n"+
+		BUTARO+","+period.code+","+dataElement.code+",1,[0].marital_status\n";
+		
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvString), CsvPreference.EXCEL_PREFERENCE))
+		
+		then:
+		RawDataElementValue.list().size() == 1
+		importerErrorManager.errors.size() == 0
+		RawDataElementValue.list()[0].value.listValue.size() == 3
+		type.getValue(RawDataElementValue.list()[0].value, "[0].marital_status").getBooleanValue().equals(true)
+		type.getValue(RawDataElementValue.list()[0].value, "[1]").mapValue['marital_status'].isNull()
+		type.getValue(RawDataElementValue.list()[0].value, "[2].marital_status").getBooleanValue().equals(true)
 	}
 		
 }

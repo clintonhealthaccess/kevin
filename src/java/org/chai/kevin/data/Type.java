@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.Stack;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
@@ -27,6 +29,8 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.json.JSONValue;
 import org.chai.kevin.util.Utils;
@@ -34,6 +38,8 @@ import org.chai.kevin.value.Value;
 
 @Embeddable
 public class Type extends JSONValue implements Exportable {
+	
+	private static final Log log = LogFactory.getLog(Type.class);
 	
 	private static final String TYPE_STRING = "type";
 	private static final String ENUM_CODE = "enum_code";
@@ -279,16 +285,30 @@ public class Type extends JSONValue implements Exportable {
 		
 	}
 	
+	/**
+	 * @param oldValue
+	 * @param map
+	 * @param prefix
+	 * @param attributes
+	 * @param sanitizer
+	 * 
+	 * @deprecated use mergeValueFromMap(...)
+	 * @return
+	 */
 	@Transient
-
+	@Deprecated
 	// TODO write javadoc
 	public Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String prefix, Set<String> attributes, Sanitizer sanitizer) {
-		return mergeValueFromMap(oldValue, map, prefix, prefix, attributes, sanitizer);
+		return mergeValueFromMap(oldValue, map, prefix, prefix, attributes, sanitizer, false);
+	}
+	
+	public Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String prefix, Set<String> attributes, Sanitizer sanitizer, boolean forImport) {
+		return mergeValueFromMap(oldValue, map, prefix, prefix, attributes, sanitizer, forImport);
 	}
 	
 	@Transient
 	// TODO write javadoc
-	private Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String prefix, String genericPrefix, Set<String> attributes, Sanitizer sanitizer) {
+	private Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String prefix, String genericPrefix, Set<String> attributes, Sanitizer sanitizer, boolean forImport) {
 
 		try {
 			// first we construct the jsonobject containing the value only
@@ -310,30 +330,49 @@ public class Type extends JSONValue implements Exportable {
 					break;
 				case LIST:
 					JSONArray array1 = new JSONArray();
-					if (!map.containsKey(prefix)) {
-						// we modify existing lines
-						// we don't modify the list but merge the values inside it
-						if (!oldValue.isNull()) { 
-
-							List<Integer> indexList = Type.getIndexList(map, prefix+".indexes");
-							for (int i = 0; i < oldValue.getListValue().size(); i++) {
-								if (indexList.size() > i) array1.add(getListType().mergeValueFromMap(oldValue.getListValue().get(i), map, prefix+"["+indexList.get(i)+"]", genericPrefix+"[_]", attributes, sanitizer).getJsonObject());
+					if (forImport) {
+						// we look for the biggest index in the map
+						Integer biggestIndex = oldValue.isNull()?null:oldValue.getListValue().size()-1;
+						
+						Pattern pattern = Pattern.compile("^"+Pattern.quote(prefix)+"\\[(\\d*)\\]");
+						if (log.isDebugEnabled()) log.debug("looking for index in map with pattern: "+pattern);
+						for (String mapPrefix : map.keySet()) {
+							Matcher matcher = pattern.matcher(mapPrefix);
+							if (matcher.find()) {
+								Integer currentIndex = Integer.parseInt(matcher.group(1));
+								if (biggestIndex == null || currentIndex > biggestIndex) biggestIndex = currentIndex;
+							}
+						}
+						
+						// we merge the values
+						if (biggestIndex != null) {
+							for (int i = 0; i <= biggestIndex; i++) {
+								Value oldListValue = getListValueAtIndex(oldValue, i);
+								array1.add(getListType().mergeValueFromMap(oldListValue, map, prefix+"["+i+"]", genericPrefix+"[_]", attributes, sanitizer, forImport).getJsonObject());
 							}
 						}
 					}
 					else {
-						// we add a new line to the list
-						// the list gets modified with the new indexes
-						List<Integer> filteredIndexList = Type.getIndexList(map, prefix);
-						
-						for (Integer index : filteredIndexList) {
-							Value oldListValue = null;
-							if (oldValue.isNull()) oldListValue = Value.NULL_INSTANCE();
-							else {
-								if (index < oldValue.getListValue().size()) oldListValue = oldValue.getListValue().get(index);
-								else oldListValue = Value.NULL_INSTANCE();
+						if (!map.containsKey(prefix)) {
+							// we modify existing lines
+							// we don't modify the list but merge the values inside it
+							if (!oldValue.isNull()) { 
+	
+								List<Integer> indexList = Type.getIndexList(map, prefix+".indexes");
+								for (int i = 0; i < oldValue.getListValue().size(); i++) {
+									if (indexList.size() > i) array1.add(getListType().mergeValueFromMap(oldValue.getListValue().get(i), map, prefix+"["+indexList.get(i)+"]", genericPrefix+"[_]", attributes, sanitizer, forImport).getJsonObject());
+								}
 							}
-							array1.add(getListType().mergeValueFromMap(oldListValue, map, prefix+"["+index+"]", genericPrefix+"[_]", attributes, sanitizer).getJsonObject());
+						}
+						else {
+							// we add a new line to the list
+							// the list gets modified with the new indexes
+							List<Integer> filteredIndexList = Type.getIndexList(map, prefix);
+							
+							for (Integer index : filteredIndexList) {
+								Value oldListValue = getListValueAtIndex(oldValue, index);
+								array1.add(getListType().mergeValueFromMap(oldListValue, map, prefix+"["+index+"]", genericPrefix+"[_]", attributes, sanitizer, forImport).getJsonObject());
+							}
 						}
 					}
 					if (array1.size() == 0) object.put(Value.VALUE_STRING, JSONNull.getInstance());
@@ -351,7 +390,7 @@ public class Type extends JSONValue implements Exportable {
 							oldMapValue = oldValue.getMapValue().get(entry.getKey());
 							if (oldMapValue == null) oldMapValue = Value.NULL_INSTANCE();
 						}
-						element.put(Value.MAP_VALUE, elementMap.get(entry.getKey()).mergeValueFromMap(oldMapValue, map, prefix+"."+entry.getKey(), genericPrefix+"."+entry.getKey(), attributes, sanitizer).getJsonObject());
+						element.put(Value.MAP_VALUE, elementMap.get(entry.getKey()).mergeValueFromMap(oldMapValue, map, prefix+"."+entry.getKey(), genericPrefix+"."+entry.getKey(), attributes, sanitizer, forImport).getJsonObject());
 						array.add(element);
 					}
 					object.put(Value.VALUE_STRING, array);
@@ -376,6 +415,16 @@ public class Type extends JSONValue implements Exportable {
 		} catch (JSONException e) {
 			return null;
 		}
+	}
+
+	private Value getListValueAtIndex(Value oldValue, Integer index) {
+		Value oldListValue = null;
+		if (oldValue.isNull()) oldListValue = Value.NULL_INSTANCE();
+		else {
+			if (index < oldValue.getListValue().size()) oldListValue = oldValue.getListValue().get(index);
+			else oldListValue = Value.NULL_INSTANCE();
+		}
+		return oldListValue;
 	}
 	
 	private Object jsonFromString(Object value) {

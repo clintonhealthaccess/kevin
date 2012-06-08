@@ -401,6 +401,51 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		then:
 		value.equals(Value.NULL_INSTANCE())
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['[3]':10d], '', new HashSet([]), sanitizer, true)
+		
+		then:
+		value.listValue.size() == 4
+		value.listValue[0].isNull()
+		value.listValue[1].isNull()
+		value.listValue[2].isNull()
+		value.listValue[3].numberValue == 10d
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		def oldValue = Value.VALUE_LIST([Value.VALUE_NUMBER(5d)])
+		value = type.mergeValueFromMap(oldValue, ['[3]':10d], '', new HashSet([]), sanitizer, true)
+		
+		then:
+		value.listValue.size() == 4
+		value.listValue[0].numberValue == 5d
+		value.listValue[1].isNull()
+		value.listValue[2].isNull()
+		value.listValue[3].numberValue == 10d
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		oldValue = Value.VALUE_LIST([Value.VALUE_NUMBER(5d),Value.VALUE_NUMBER(10d)])
+		value = type.mergeValueFromMap(oldValue, ['[0]':15d], '', new HashSet([]), sanitizer, true)
+		
+		then:
+		value.listValue.size() == 2
+		value.listValue[0].numberValue == 15d
+		value.listValue[1].numberValue == 10d
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["list": Type.TYPE_LIST(Type.TYPE_NUMBER())]))
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['[1].list[3]':10d], '', new HashSet([]), sanitizer, true)
+		
+		then:
+		value.listValue.size() == 2
+		value.listValue[0].mapValue['list'].isNull()
+		value.listValue[1].mapValue['list'].listValue[0].isNull()
+		value.listValue[1].mapValue['list'].listValue[1].isNull()
+		value.listValue[1].mapValue['list'].listValue[2].isNull()
+		value.listValue[1].mapValue['list'].listValue[3].numberValue == 10d
 	}
 	
 	def "test equal"() {

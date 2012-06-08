@@ -63,33 +63,22 @@ public class NominativeDataImporter extends DataImporter {
 	
 	private LocationService locationService;
 	private DataService dataService;
-	private PlatformTransactionManager transactionManager;
 	private SessionFactory sessionFactory;
 	
 	private ImporterErrorManager manager;
 	private RawDataElement rawDataElement;
 	private Period period;
 	
-	private TransactionTemplate transactionTemplate;
-	
-	private TransactionTemplate getTransactionTemplate() {
-		if (transactionTemplate == null) {
-			transactionTemplate = new TransactionTemplate(transactionManager);
-			transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
-		}
-		return transactionTemplate;
-	}
-	
+
 	public NominativeDataImporter(LocationService locationService,
 			ValueService valueService, DataService dataService, 
 			SessionFactory sessionFactory, PlatformTransactionManager transactionManager,
 			ImporterErrorManager manager, RawDataElement rawDataElement,
 			Period period) {
-		super(valueService);
+		super(valueService,transactionManager);
 		this.locationService = locationService;
 		this.dataService = dataService;
 		this.sessionFactory = sessionFactory;
-		this.transactionManager = transactionManager;
 		this.manager = manager;
 		this.rawDataElement = rawDataElement;
 		this.period = period;
@@ -107,13 +96,16 @@ public class NominativeDataImporter extends DataImporter {
 	 * @param positions
 	 * @throws IOException
 	 */
-	private boolean importData(String fileName,ICsvMapReader readFileAsMap,Integer numberOfLinesToImport, ImportSanitizer sanitizer, String[] headers, Map<String, Integer> positions) throws IOException {
+	private boolean importData(String fileName,ICsvMapReader readFileAsMap,Integer numberOfLinesToImport, ImportSanitizer sanitizer, String[] headers, Map<String,Integer> positions) throws IOException {
 
-		DataLocation dataLocation=null;
-		RawDataElementValue rawDataElementValue= null;	
-		String code=null;
+		// keep location in memory between rows to optimize
+		String code = null;
+		DataLocation dataLocation = null;
 		
+		// keep value in memory between rows to optimize
+		RawDataElementValue rawDataElementValue = null;	
 		Map<String,Object> positionsValueMap = new HashMap<String, Object>();
+		
 		Map<String,String> values = readFileAsMap.read(headers);
 		
 		int importedLines = 0;
@@ -130,9 +122,9 @@ public class NominativeDataImporter extends DataImporter {
 				// or we change location
 				
 				// first we save the data of the preceding lines
-				if (dataLocation != null) {
+				if (rawDataElementValue != null) {
 					// we merge and save the current data
-					saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, positions, code, sanitizer);
+					saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, sanitizer);
 					
 					// clear the value map since we are reading a line for a new location
 					positionsValueMap.clear();
@@ -183,24 +175,8 @@ public class NominativeDataImporter extends DataImporter {
 			if (importedLines < numberOfLinesToImport) values = readFileAsMap.read(headers);
 		}
 		
-		this.saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, positions, code, sanitizer);
+		saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, sanitizer);
 		return values == null;
-	}
-	
-	private void saveAndMergeIfNotNull(RawDataElementValue rawDataElementValue, Map<String,Object> positionsValueMap, Map<String, Integer> positions, String code, ImportSanitizer sanitizer) {
-		if (rawDataElementValue != null) {
-			positionsValueMap.put("", getLineNumberString(positions.get(code)-1));
-
-			if (log.isDebugEnabled()) log.debug("merging with data from map of header and data "+ positionsValueMap);
-			if (log.isTraceEnabled()) log.trace("value before merge" + rawDataElementValue.getValue());
-			rawDataElementValue.setValue(
-				rawDataElement.getType().mergeValueFromMap(rawDataElementValue.getValue(), positionsValueMap, "", new HashSet<String>(), sanitizer)
-			);
-			if (log.isTraceEnabled()) log.trace("value after merge " + rawDataElementValue.getValue());
-			
-			valueService.save(rawDataElementValue);
-			if (log.isTraceEnabled()) log.trace("saved rawDataElement: "+ rawDataElementValue.getValue());
-		}
 	}
 	
 	/* (non-Javadoc)
