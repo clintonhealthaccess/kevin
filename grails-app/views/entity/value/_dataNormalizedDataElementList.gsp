@@ -10,7 +10,12 @@
 			<thead>
 				<tr>
 					<th><g:message code="dataelementvalue.location.label"/></th>
-					<g:sortableColumn property="status" title="${message(code: 'dataelementvalue.status.label')}" params="[data: data.id, period: selectedPeriod.id, q: params.q]"/>
+					<g:if test="${data != null}">
+						<g:sortableColumn property="status" title="${message(code: 'dataelementvalue.status.label')}" params="[data: data.id, period: selectedPeriod.id, q: params.q]"/>
+					</g:if>
+					<g:else>
+						<th><g:message code="dataelementvalue.status.label"/></th>
+					</g:else>
 					<th><g:message code="dataelementvalue.value.label"/></th>
 				</tr>
 			</thead>
