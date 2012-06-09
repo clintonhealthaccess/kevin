@@ -2,15 +2,12 @@ package org.chai.kevin.value;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.value.SumPartialValue;
-import org.chai.kevin.value.Value;
 
 public class SumValue extends CalculationValue<SumPartialValue> {
 
@@ -24,6 +21,11 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 
 	@Override
 	public Value getValue() {
+		if (getLocation().collectsData()) {
+			if (getCalculationPartialValues().size() > 1) throw new IllegalStateException("calculation for DataLocation does not contain only one partial value");
+			if (getCalculationPartialValues().size() == 0) return Value.NULL_INSTANCE();
+			return getCalculationPartialValues().get(0).getValue();
+		}
 		Double value = 0d;
 		for (SumPartialValue partialValue : getCalculationPartialValues()) {
 			if (!partialValue.getValue().isNull()) value += partialValue.getValue().getNumberValue().doubleValue();

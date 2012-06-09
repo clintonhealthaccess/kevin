@@ -66,6 +66,8 @@ class DataController extends AbstractController {
 		}
 		else {
 			valueService.deleteValues(data, null, null)
+			refreshValueService.flushCaches()
+			
 			flash.message = message(code: 'data.values.deleted')
 			redirect(uri: getTargetURI())
 		}
@@ -79,6 +81,7 @@ class DataController extends AbstractController {
 		else {
 			if (data instanceof NormalizedDataElement) refreshValueService.refreshNormalizedDataElement(data)
 			else if (data instanceof Calculation) refreshValueService.refreshCalculation(data)
+			refreshValueService.flushCaches()
 			
 			redirect(uri: getTargetURI())
 		}

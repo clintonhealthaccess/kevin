@@ -3,7 +3,6 @@ package org.chai.kevin.value;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,8 +13,6 @@ import org.chai.kevin.JaqlService;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.value.AggregationPartialValue;
-import org.chai.kevin.value.Value;
 
 import com.ibm.jaql.json.type.JsonValue;
 
@@ -43,9 +40,14 @@ public class AggregationValue extends CalculationValue<AggregationPartialValue> 
 			}
 		}
 		Map<String, String> stringValues = new HashMap<String, String>();
-		for (Entry<String, Double> entry : values.entrySet()) {
-			stringValues.put(entry.getKey(), entry.getValue().toString());
+		for (String expression : getData().getPartialExpressions()) {
+			if (values.containsKey(expression)) stringValues.put(expression, values.get(expression).toString());
+			else {
+				if (getLocation().collectsData()) return Value.NULL_INSTANCE();
+				else stringValues.put(expression, "0");
+			}
 		}
+		
 		JsonValue value = JaqlService.jsonValue(getData().getExpression(), stringValues);
 		
 		String stringValue = null;

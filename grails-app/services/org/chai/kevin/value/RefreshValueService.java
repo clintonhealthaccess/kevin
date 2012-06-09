@@ -210,10 +210,10 @@ public class RefreshValueService {
 	
 	@Transactional(readOnly = false)
 	public void refreshCalculation(Calculation<?> calculation) {
-		Map<String, NormalizedDataElement> dependenciesMap = expressionService.getDataInExpression(calculation.getExpression(), NormalizedDataElement.class);
+		Map<String, DataElement> dependenciesMap = expressionService.getDataInExpression(calculation.getExpression(), DataElement.class);
 		
 		Date latestDependency = null;
-		for (NormalizedDataElement dependency : dependenciesMap.values()) {
+		for (DataElement<?> dependency : dependenciesMap.values()) {
 			Date dependencyDate = refreshDataElement(dependency, new ArrayList<NormalizedDataElement>());
 			if (latestDependency == null || (dependencyDate != null && dependencyDate.after(latestDependency))) latestDependency = dependencyDate;
 		}
