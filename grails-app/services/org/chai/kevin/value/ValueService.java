@@ -108,8 +108,9 @@ public class ValueService {
 	private <T extends DataValue> void filterList(List<T> list, String text) {
 		for (String chunk : StringUtils.split(text)) {
 			for (DataValue element : new ArrayList<T>(list)) {
-				if (!Utils.matches(chunk, element.getLocation().getNames().get(languageService.getCurrentLanguage()))) list.remove(element);
-				if (!Utils.matches(chunk, element.getLocation().getCode())) list.remove(element);
+				if (!Utils.matches(chunk, element.getLocation().getNames().get(languageService.getCurrentLanguage())) 
+					&&
+					!Utils.matches(chunk, element.getLocation().getCode())) list.remove(element);
 			}
 		}
 	}
