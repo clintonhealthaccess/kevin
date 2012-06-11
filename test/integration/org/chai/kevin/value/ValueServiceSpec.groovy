@@ -286,6 +286,29 @@ class ValueServiceSpec extends IntegrationTests {
 		valueService.searchDataElementValues(BUTARO, normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2])
 	}
 	
+	def "test search normalized value on name and code"() {
+		setup:
+		setupLocationTree()
+		def kivuye = DataLocation.findByCode(KIVUYE)
+		def butaro = DataLocation.findByCode(BUTARO)
+		kivuye.names = j(['en': 'loc1'])
+		butaro.names = j(['en': 'loc2'])
+		kivuye.save(failOnError: true)
+		butaro.save(failOnError: true)
+		
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+""):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		refreshNormalizedDataElement()
+		
+		when:
+		def value1 = NormalizedDataElementValue.list().find {it.location.code == KIVUYE}
+		def value2 = NormalizedDataElementValue.list().find {it.location.code == BUTARO}
+		
+		then:
+		valueService.searchDataElementValues("loc1", normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value1])
+		valueService.searchDataElementValues("loc2", normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2])
+	}
+	
 	def "test search normalized value with order"() {
 		setup:
 		setupLocationTree()
