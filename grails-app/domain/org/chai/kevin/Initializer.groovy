@@ -1237,7 +1237,7 @@ class Initializer {
 			planningType: planningType,
 			type: PlanningCostType.INCOMING,
 			dataElement: planningElement1,
-			names: j(["en":"Salaries"])
+			names: j(["en":"Group - Salaries"])
 		).save(failOnError: true)
 	
 		def planningElement2 = new NormalizedDataElement(
@@ -1250,7 +1250,7 @@ class Initializer {
 			planningType: planningType,
 			type: PlanningCostType.OUTGOING,
 			dataElement: planningElement2,
-			names: j(["en":"Patient"])
+			names: j(["en":"Group - Patient"])
 		).save(failOnError: true)
 		
 		planningType.costs << planningCost1

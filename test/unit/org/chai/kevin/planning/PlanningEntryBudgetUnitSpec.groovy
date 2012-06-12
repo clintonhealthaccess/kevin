@@ -21,10 +21,10 @@ class PlanningEntryBudgetUnitSpec extends UnitSpec {
 		]
 		def planningType = new PlanningType(costs: planningCosts)
 		def validatable = new ValidatableValue(value, type)
-		def planningEntryBudget = new PlanningEntryBudget([:], null, planningType, validatable, 0, null)
+		def planningEntryBudget = new PlanningEntryBudget([:], null, planningType, validatable, 0, null, null)
 		
 		then:
-		planningEntryBudget.getSum(PlanningCostType.OUTGOING) == 0d
+		planningEntryBudget.getSum(PlanningCostType.OUTGOING, planningCosts) == 0d
 		
 	}
 	
