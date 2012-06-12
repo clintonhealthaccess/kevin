@@ -24,9 +24,6 @@
 								<g:message code="planning.budget.budget"/>: <g:i18n field="${location.names}"/>
 							</h4>
 							<div class="budget">
-								<p id="js_budget-warning" class="context-message warning ${budgetNeedsUpdate?'':'hidden'}">
-									<g:message code="planning.budget.update"/> <a href="${createLink(controller:'editPlanning', action:'updateBudget', params:[location:location.id, planning:planning.id])}"><g:message code="planning.budget.update.link"/></a>.
-								</p>
 								<g:if test="${!planningLists.find {!it.planningEntryBudgetList.empty}}">
 									<p class="context-message warning">
 										<a href="${createLink(controller:'editPlanning', action:'overview', params:[location:location.id, planning:planning.id])}"><g:message code="planning.budget.enteractivity.link"/></a> <g:message code="planning.budget.enteractivity.instructions"/>
@@ -74,7 +71,7 @@
 																				either OUTGOING or INCOMING or both
 																			-->
 																			<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
-																				<tr id="planning-${planningType.id}-${budgetPlanningEntry.lineNumber}" class="tree-sign js_foldable budget-entry">
+																				<tr class="tree-sign js_foldable budget-entry">
 																					<td>
 																						<span class="js_foldable-toggle" style="margin-left: 20px;"> <a href="#">&zwnj;</a> </span>
 																						<span>
@@ -88,14 +85,14 @@
 																							</a>
 																						</span>
 																					</td>
-																					<td><g:formatNumber number="${budgetPlanningEntry.incoming}" format="#,###"/></td>
-																					<td><g:formatNumber number="${budgetPlanningEntry.outgoing}" format="#,###"/></td>
-																					<td><g:formatNumber number="${budgetPlanningEntry.difference}" format="#,###"/></td>
+																					<td><g:formatNumber number="${budgetPlanningEntry.getIncoming(planningType.costs)}" format="#,###"/></td>
+																					<td><g:formatNumber number="${budgetPlanningEntry.getOutgoing(planningType.costs)}" format="#,###"/></td>
+																					<td><g:formatNumber number="${budgetPlanningEntry.getDifference(planningType.costs)}" format="#,###"/></td>
 																					<td class="status ${!budgetPlanningEntry.invalidSections.empty?'invalid':!budgetPlanningEntry.incompleteSections.empty?'incomplete':'complete'}" title=""></td>
 																				</tr>
 																				<tr class="sub-tree js_foldable-container hidden">
 																					<td colspan="7" class="bucket">
-																						<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, margin: 40]"/>
+																						<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, margin: 40, currentGroups: []]"/>
 																					</td>
 																				</tr>
 																			</g:each>
@@ -106,7 +103,7 @@
 															<g:else>
 																<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
 																	<td colspan="7" class="bucket">
-																		<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, margin: 20]"/>
+																		<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, margin: 20, currentGroups: []]"/>
 																	</td>
 																</g:each>
 															</g:else>

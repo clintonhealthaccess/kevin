@@ -1,8 +1,11 @@
 package org.chai.kevin.planning
 
+import org.chai.kevin.LanguageService;
+import org.chai.kevin.Translation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormElement;
+import org.chai.kevin.util.JSONUtils;
 
 import grails.plugin.spock.UnitSpec;
 
@@ -44,6 +47,55 @@ class PlanningTypeUnitSpec extends UnitSpec {
 		
 		then:
 		planningType.getType("[_].doesnotexist") == null
+	}
+	
+	def "build groups works properly"() {
+		setup:
+		def planningType
+		def languageService = Mock(LanguageService)
+		languageService.getCurrentLanguage() >> "en"
+		
+		when:
+		planningType = new PlanningType(costs: [
+			new PlanningCost(id: 1, names: j(["en": "Test1"])),
+			new PlanningCost(id: 2, names: j(["en": "Test2"]))
+		])
+		planningType.buildGroupHierarchy(languageService)
+		
+		then:
+		planningType.getGroups([]) == null 
+		planningType.getPlanningCostsInGroup([])*.names.en == ["Test1", "Test2"]
+		planningType.getPlanningCosts([])*.names.en == ["Test1", "Test2"]
+		
+		when:
+		planningType = new PlanningType(costs: [
+			new PlanningCost(id: 1, names: j(["en": "Group - Test1"])),
+			new PlanningCost(id: 2, names: j(["en": "Group - Test2"]))
+		])
+		planningType.buildGroupHierarchy(languageService)
+		
+		then:
+		planningType.getGroups([]).equals(["Group"])
+		planningType.getPlanningCostsInGroup([]) == null
+		planningType.getPlanningCostsInGroup(["Group"])*.names.en == ["Group - Test1", "Group - Test2"]
+		planningType.getPlanningCosts([])*.names.en == ["Group - Test1", "Group - Test2"]
+		
+		when:
+		planningType = new PlanningType(costs: [
+			new PlanningCost(id: 1, names: j(["en": "Test1"])),
+			new PlanningCost(id: 2, names: j(["en": "Group - Test2"]))
+		])
+		planningType.buildGroupHierarchy(languageService)
+		
+		then:
+		planningType.getGroups([]).equals(["Group"])
+		planningType.getPlanningCostsInGroup([])*.names.en == ["Test1"]
+		planningType.getPlanningCostsInGroup(["Group"])*.names.en == ["Group - Test2"]
+		planningType.getPlanningCosts([])*.names.en == ["Test1", "Group - Test2"]
+	}
+
+	static j(def map) {
+		return new Translation(jsonText: JSONUtils.getJSONFromMap(map));
 	}
 	
 }

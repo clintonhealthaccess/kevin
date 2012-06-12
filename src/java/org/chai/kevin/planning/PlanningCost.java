@@ -1,5 +1,7 @@
 package org.chai.kevin.planning;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -17,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.NormalizedDataElement;
@@ -146,4 +149,26 @@ public class PlanningCost extends Orderable<Integer> {
 		return "PlanningCost[getId()=" + getId() + ", getNames()=" + getNames() + ", getType()=" + getType() + "]";
 	}
 
+	private List<String> splitName(LanguageService languageService) {
+		String name = getNames().get(languageService.getCurrentLanguage());
+		String[] groupsInNameArray = name.split("-");
+		List<String> groupsInName = new ArrayList<String>();
+		for (String group : groupsInNameArray) {
+			groupsInName.add(group.trim());
+		}
+		return groupsInName;
+	}
+
+	@Transient
+	public List<String> getGroups(LanguageService languageService) {
+		List<String> groupsInName = splitName(languageService);
+		groupsInName.remove(groupsInName.size() - 1);
+		return groupsInName;
+	}
+	
+	@Transient
+	public String getDisplayName(LanguageService languageService) {
+		List<String> groupsInName = splitName(languageService);
+		return groupsInName.get(groupsInName.size() -1);
+	}
 }
