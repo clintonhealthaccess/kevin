@@ -36,10 +36,10 @@
 						<div class="hidden manage-list dropdown-list js_dropdown-list">
 							<ul>
 								<li>
-									<a href="${createLink(controller:'formValidationRule', action:'list', params:['formElement.id': planningType.formElement?.id])}"><g:message code="default.list.label" args="[message(code:'formelement.validationrule.label')]" /></a>
+									<a href="${createLink(controller:'planningCost', action:'list', params:['planningType.id':planningType.id])}"><g:message code="default.list.label" args="[message(code:'planning.planningcost.label')]" /></a>
 								</li>
 								<li>
-									<a href="${createLink(controller:'planningCost', action:'list', params:['planningType.id':planningType.id])}"><g:message code="default.list.label" args="[message(code:'planning.planningcost.label')]" /></a>
+									<a href="${createLink(controller:'formValidationRule', action:'list', params:['formElement.id': planningType.formElement?.id])}"><g:message code="default.list.label" args="[message(code:'formelement.validationrule.label')]" /></a>
 								</li>
 							</ul>
 						</div>

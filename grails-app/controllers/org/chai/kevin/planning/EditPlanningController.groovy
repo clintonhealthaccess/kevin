@@ -189,6 +189,24 @@ class EditPlanningController extends AbstractController {
 		}
 	}
 	
+	def output = {
+		def planningOutput = PlanningOutput.get(params.int('planningOutput'))
+		def location = DataLocation.get(params.int('location'))
+		
+		if (validate(planningOutput.planning, location)) {
+			planningService.submitIfNeeded(planningOutput.planning, location)
+			planningService.refreshOutputTableIfNeeded(planningOutput, location)
+			
+			def outputTable = planningService.getPlanningOutputTable(planningOutput, location)
+			
+			render (view: '/planning/output', model: [
+				planningOutput: planningOutput,
+				location: location,
+				outputTable: outputTable
+			])
+		}
+	}
+	
 	def planningList = {
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocation.get(params.int('location'))
