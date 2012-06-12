@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.location.DataLocation;
@@ -15,6 +16,8 @@ import org.chai.kevin.value.RawDataElementValue;
 
 public class PlanningList {
 
+	private LanguageService languageService;
+	
 	private final PlanningType planningType;
 	private final Map<String, Enum> enums;
 	
@@ -29,13 +32,14 @@ public class PlanningList {
 	public PlanningList(PlanningType planningType, DataLocation dataLocation, 
 			FormEnteredValue formEnteredValue, RawDataElementValue rawDataElementValue,
 			Map<PlanningCost, NormalizedDataElementValue> budgetValues,
-			Map<String, Enum> enums) {
+			Map<String, Enum> enums, LanguageService languageService) {
 		this.planningType = planningType;
 		this.formEnteredValue = formEnteredValue;
 		this.rawDataElementValue = rawDataElementValue;
 		this.dataLocation = dataLocation;
 		this.budgetValues = budgetValues;
 		this.enums = enums;
+		this.languageService = languageService;
 	}
 	
 	public FormEnteredValue getFormEnteredValue() {
@@ -48,7 +52,7 @@ public class PlanningList {
 			if (rawDataElementValue != null && !rawDataElementValue.getValue().isNull()) {
 				for (int i = 0; i < rawDataElementValue.getValue().getListValue().size(); i++) {
 					PlanningEntry planningEntry = getPlanningEntry(rawDataElementValue.getValue().getListValue().get(i).getAttribute(PlanningEntry.UUID));
-					if (planningEntry != null) planningBudgetEntries.add(new PlanningEntryBudget(budgetValues, dataLocation, planningType, formEnteredValue.getValidatable(), planningEntry.getLineNumber(), enums));
+					if (planningEntry != null) planningBudgetEntries.add(new PlanningEntryBudget(budgetValues, dataLocation, planningType, formEnteredValue.getValidatable(), planningEntry.getLineNumber(), enums, languageService));
 				}
 			}
 		}
@@ -108,7 +112,7 @@ public class PlanningList {
 	private Double getSum(PlanningCostType costType) {
 		Double result = 0d;
 		for (PlanningEntryBudget line : getPlanningEntryBudgetList()) {
-			result += line.getSum(costType);
+			result += line.getSum(costType, planningType.getCosts());
 		}
 		return result;
 	}

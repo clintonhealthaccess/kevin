@@ -22,6 +22,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.Type;
@@ -216,6 +217,52 @@ public class PlanningType {
 		return result;
 	}
 
+	private Map<List<String>, List<PlanningCost>> planningCostsInGroup = new HashMap<List<String>, List<PlanningCost>>();
+	private Map<List<String>, List<PlanningCost>> planningCosts = new HashMap<List<String>, List<PlanningCost>>();
+	private Map<List<String>, List<String>> groupHierarchy = new HashMap<List<String>, List<String>>();
+	
+	public void buildGroupHierarchy(LanguageService languageService) {
+		buildGroupHierarchy(languageService, new ArrayList<String>(), getCosts());
+	}
+	
+	private void buildGroupHierarchy(LanguageService languageService, List<String> groups, List<PlanningCost> planningCosts) {
+		for (PlanningCost planningCost : planningCosts) {
+			List<String> groupsInName = planningCost.getGroups(languageService);
+			addPlanningCostToGroup(groupsInName, planningCost);
+		}
+	}
+
+	private void addPlanningCostToGroup(List<String> groups, PlanningCost planningCost) {
+		addToMap(planningCostsInGroup, groups, planningCost);
+		
+		List<String> currentGroups = new ArrayList<String>();
+		for (String group : groups) {
+			addToMap(planningCosts, new ArrayList<String>(currentGroups), planningCost);
+			addToMap(groupHierarchy, new ArrayList<String>(currentGroups), group);
+			currentGroups.add(group);
+		}
+		addToMap(planningCosts, new ArrayList<String>(currentGroups), planningCost);
+	}
+
+	private <T> void addToMap(Map<List<String>, List<T>> map, List<String> groups, T element) {
+		if (!map.containsKey(groups)) {
+			map.put(groups, new ArrayList<T>());
+		}
+		if (!map.get(groups).contains(element)) map.get(groups).add(element);
+	}
+	
+	public List<String> getGroups(List<String> groups) {
+		return groupHierarchy.get(groups);
+	}
+	
+	public List<PlanningCost> getPlanningCostsInGroup(List<String> groups) {
+		return planningCostsInGroup.get(groups);
+	}
+	
+	public List<PlanningCost> getPlanningCosts(List<String> groups) {
+		return planningCosts.get(groups);
+	}
+	
 	public String toString(){
 		return "PlanningType[getId()=" + getId() + ", getNames()=" + getNames() + "]";
 	}

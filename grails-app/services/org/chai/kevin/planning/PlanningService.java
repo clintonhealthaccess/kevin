@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
@@ -37,6 +38,7 @@ public class PlanningService {
 
 	static final String SUBMITTED = "submitted";
 
+	private LanguageService languageService;
 	private LocationService locationService;
 	private FormValidationService formValidationService;
 	private FormElementService formElementService;
@@ -98,7 +100,7 @@ public class PlanningService {
 			costValues.put(planningCost, valueService.getDataElementValue(planningCost.getDataElement(), location, type.getPeriod()));
 		}
 		
-		return new PlanningList(type, location, formEnteredValue, rawDataElementValue, costValues, getEnums(type));
+		return new PlanningList(type, location, formEnteredValue, rawDataElementValue, costValues, getEnums(type), languageService);
 	}
 	
 	private Map<String, Enum> getEnums(PlanningType type) {
@@ -204,6 +206,10 @@ public class PlanningService {
 		for (PlanningCost cost : planning.getPlanningCosts()) {
 			refreshValueService.refreshNormalizedDataElement(cost.getDataElement(), location, cost.getPlanningType().getPeriod());
 		}
+	}
+	
+	public void setLanguageService(LanguageService languageService) {
+		this.languageService = languageService;
 	}
 	
 	public void setFormValidationService(FormValidationService formValidationService) {

@@ -35,6 +35,7 @@ import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.JaqlService
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardPercentageService
@@ -205,6 +206,7 @@ beans = {
 	}
 
 	planningService(PlanningService) {
+		languageService = ref("languageService")
 		formValidationService = ref("formValidationService")
 		formElementService = ref("formElementService")
 		valueService = ref("valueService")

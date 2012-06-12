@@ -3,6 +3,7 @@ package org.chai.kevin.planning
 import java.util.Map;
 
 import org.chai.kevin.AbstractController;
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.Period;
@@ -167,7 +168,11 @@ class EditPlanningController extends AbstractController {
 		if (validate(planning, location)) {
 			planningService.submitIfNeeded(planning, location)
 			planningService.refreshBudgetIfNeeded(planning, location)
-			
+
+			planning.planningTypes.each {
+				it.buildGroupHierarchy(languageService)
+			}
+						
 			def planningLists = planning.planningTypes.collect {
 				planningService.getPlanningList(it, location)
 			}

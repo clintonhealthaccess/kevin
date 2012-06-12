@@ -22,7 +22,7 @@ class PlanningListUnitSpec extends UnitSpec {
 		formElement.getId() >> 0
 		def planningType = Mock(PlanningType)
 		planningType.getFormElement() >> formElement
-		def planningList = new PlanningList(planningType, null, formEnteredValue, null, null, null)
+		def planningList = new PlanningList(planningType, null, formEnteredValue, null, null, null, null)
 		
 		when:
 		def planningEntry = planningList.getOrCreatePlanningEntry(0)
@@ -44,7 +44,7 @@ class PlanningListUnitSpec extends UnitSpec {
 		def planningType = Mock(PlanningType)
 		planningType.getMaxNumber() >> 1
 		planningType.getFormElement() >> formElement
-		def planningList = new PlanningList(planningType, null, formEnteredValue, null, null, null)
+		def planningList = new PlanningList(planningType, null, formEnteredValue, null, null, null, null)
 		
 		expect:
 		planningList.getOrCreatePlanningEntry(0) != null
