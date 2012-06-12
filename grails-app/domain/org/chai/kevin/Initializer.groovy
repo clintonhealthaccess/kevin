@@ -59,6 +59,8 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.planning.Planning;
 import org.chai.kevin.planning.PlanningCost;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
+import org.chai.kevin.planning.PlanningOutput;
+import org.chai.kevin.planning.PlanningOutputColumn;
 import org.chai.kevin.planning.PlanningSkipRule;
 import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.reports.ReportProgram
@@ -1256,6 +1258,25 @@ class Initializer {
 		planningType.costs << planningCost1
 		planningType.costs << planningCost2
 		planningType.save(failOnError: true)
+		
+		def planningOutput1 = new PlanningOutput(
+			planning: planning,
+			fixedHeader: '[_].basic.activity',
+			dataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
+			names: j(["en": "Follow-up"])
+		).save(failOnError: true)
+		
+		planning.planningOutputs << planningOutput1
+		planning.save(failOnError: true)
+		
+		def planningOutputColumn = new PlanningOutputColumn(
+			planningOutput: planningOutput1,
+			normalizedDataElement: planningElement2,
+			names: j(["en": "Test"])
+		)
+		planningOutputColumn.save(failOnError: true)
+		planningOutput1.columns << planningOutputColumn
+		planningOutput1.save(failOnError: true)
 		
 		new FormEnteredValue(
 			formElement: formElement,

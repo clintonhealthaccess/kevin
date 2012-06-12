@@ -569,6 +569,29 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		
 	}
 	
+	def "get planning output table"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_LIST([Value.VALUE_MAP(["key0": Value.VALUE_STRING("123"), "key1": Value.VALUE_NUMBER(1)])]))
+		def planningOutput = newPlanningOutput(planning, dataElement, "[_].key0")
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
+		newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, Value.VALUE_LIST([Value.VALUE_NUMBER(1)]))
+		def planningColumn = newPlanningOutputColumn(planningOutput, normalizedDataElement)
+		
+		when:
+		def outputTable = planningService.getPlanningOutputTable(planningOutput, DataLocation.findByCode(BUTARO))
+		
+		then:
+		outputTable.headerType.equals(Type.TYPE_ENUM(CODE(1)))
+		outputTable.rows.equals([Value.VALUE_STRING("123")])
+		outputTable.getValueType(planningColumn).equals(Type.TYPE_NUMBER())
+		outputTable.getValue(0, planningColumn).equals(Value.VALUE_NUMBER(1))
+	}
+	
 //	TODO think about how to make that test pass
 //	def "submit creates raw data element value - does not transfer non-submitted values"() {
 //		setup:

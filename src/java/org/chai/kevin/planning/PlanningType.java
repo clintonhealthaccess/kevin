@@ -47,9 +47,6 @@ public class PlanningType {
 	private Integer maxNumber;
 	private Map<String, Translation> sectionDescriptions = new HashMap<String, Translation>();
 	
-	// TODO have that be the elements of the first MAP inside the LIST	 
-	//	private List<String> sections;
-	
 	// only accepts element of LIST<MAP> type
 	private FormElement formElement;
 	
