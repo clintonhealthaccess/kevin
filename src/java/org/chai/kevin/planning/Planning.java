@@ -33,7 +33,8 @@ public class Planning {
 	private Period period;
 	private String typeCodeString;
 	private List<PlanningType> planningTypes = new ArrayList<PlanningType>();
-	private List<PlanningSkipRule> skipRules = new ArrayList<PlanningSkipRule>(); 
+	private List<PlanningSkipRule> skipRules = new ArrayList<PlanningSkipRule>();
+	private List<PlanningOutput> planningOutputs = new ArrayList<PlanningOutput>();
 	private Translation names = new Translation();
 	private Translation overviewHelps = new Translation();
 	private Translation budgetHelps = new Translation();
@@ -48,6 +49,16 @@ public class Planning {
 	
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	@OneToMany(mappedBy="planning", targetEntity=PlanningOutput.class)
+	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	public List<PlanningOutput> getPlanningOutputs() {
+		return planningOutputs;
+	}
+	
+	public void setPlanningOutputs(List<PlanningOutput> planningOutputs) {
+		this.planningOutputs = planningOutputs;
 	}
 	
 	@OneToMany(mappedBy="planning", targetEntity=PlanningSkipRule.class)

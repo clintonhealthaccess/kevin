@@ -112,6 +112,8 @@ abstract class AbstractEntityController extends AbstractController {
 		bindParams(entity)
 		if (log.isDebugEnabled()) log.debug('bound params, entity: '+entity)
 		
+		// TODO this should be not necessary once the unique 
+		// validation constraints is fixed in grails
 		def codeIsValid = true
 		if (params.containsKey("code")){
 			String code = (String) params.get("code");

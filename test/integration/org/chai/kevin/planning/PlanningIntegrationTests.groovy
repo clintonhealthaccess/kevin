@@ -48,4 +48,18 @@ abstract class PlanningIntegrationTests extends IntegrationTests {
 		return skipRule
 	}
 	
+	static def newPlanningOutput(def planning, def dataElement, def fixedHeader) {
+		def planningOutput = new PlanningOutput(planning: planning, dataElement: dataElement, fixedHeader: fixedHeader).save(failOnError: true)
+		planning.planningOutputs << planningOutput
+		planning.save(failOnError: true)
+		return planningOutput
+	}
+	
+	static def newPlanningOutputColumn(def planningOutput, def normalizedDataElement) {
+		def planningOutputColumn = new PlanningOutputColumn(planningOutput: planningOutput, normalizedDataElement: normalizedDataElement).save(failOnError: true)
+		planningOutput.columns << planningOutputColumn
+		planningOutput.save(failOnError: true)
+		return planningOutputColumn
+	}
+	
 }

@@ -11,12 +11,8 @@
 		<div id="content" class="push"/>
 			<div id="planning">
 				<div class="main">  
-	
-				<ul class="horizontal tab-navigation">
-					<li><a class="${selected=='undertakings'?'selected':''}" href="${createLink(controller:'editPlanning', action:'overview', params:[planning: planningType.planning.id, location: location.id])}"><g:message code="planning.tabs.undertakings"/></a></li>
-					<li><a class="selected" href="#"><g:message code="planning.tabs.new" args="[i18n(field:planningType.names)]"/></a></li>
-					<li><a class="${selected=='budget'?'selected':''}" href="${createLink(controller:'editPlanning', action:'budget', params:[planning: planningType.planning.id, location: location.id])}"><g:message code="planning.tabs.budget"/></a></li>
-				</ul>
+				
+				<g:render template="/planning/planningTabs" model="[planning: planningType.planning, location: location, selected: "undertakings"]"/>
 		    	<g:render template="/templates/help" model="[content: i18n(field: planningType.newHelps)]"/>
 					
 				<div id="questions">

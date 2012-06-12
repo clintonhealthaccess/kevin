@@ -35,7 +35,7 @@ class PlanningCostControllerSpec extends PlanningIntegrationTests {
 		planningCostController.modelAndView == null
 	}
 	
-	def "create planning type works ok"() {
+	def "create planning cost works ok"() {
 		setup:
 		def period = newPeriod()
 		def planning = newPlanning(period, [])
