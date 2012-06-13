@@ -6,6 +6,7 @@
 			<th><g:message code="planning.planningoutput.dataelement.label"/></th>
 			<th><g:message code="planning.planningoutput.fixedheader.label"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'planning.planningoutput.planningoutputcolumn.label')]"/></th>
+			<th><g:message code="entity.order.label"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
 	</thead>
@@ -30,6 +31,7 @@
 				<td><g:i18n field="${planningOutput.dataElement.names}"/></td>
 				<td>${planningOutput.fixedHeader}</td>
 				<td>${planningOutput.columns.size()}</td>
+				<td>${planningOutput.order}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 
 						<a class="selected manage-btn" href="#"><g:message code="entity.list.manage.label"/></a>

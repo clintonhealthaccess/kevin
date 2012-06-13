@@ -41,7 +41,7 @@
 													</td>
 													<g:each in="${planningOutput.columns}" var="column">
 														<td>
-															<g:value value="${outputTable.getValue(rowIndex, column)}" type="${outputTable.getValueType(column)}"/>
+															<g:value value="${outputTable.getValue(rowIndex, column)}" type="${outputTable.getValueType(column)}" format="#,###"/>
 														</td>
 													</g:each>
 												</tr>
