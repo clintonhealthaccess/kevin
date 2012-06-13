@@ -137,6 +137,7 @@ class ValueTagLib {
 		
 		def type = attrs['type']
 		def value = attrs['value']
+		def format = attrs['format']
 		def enums = attrs['enums']
 		def nullText = attrs['nullText']
 		
@@ -155,6 +156,9 @@ class ValueTagLib {
 						if (option == null) result = value.enumValue
 						else result = languageService.getText(option.names)
 					}
+					break;
+				case (ValueType.NUMBER):
+					result = formatNumber(format, value.numberValue)
 					break;
 				case (ValueType.MAP):
 					// TODO
