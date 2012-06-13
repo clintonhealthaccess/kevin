@@ -2,6 +2,7 @@ package org.chai.kevin.planning
 
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.Translation;
+import org.chai.kevin.UnitTests;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormElement;
@@ -9,7 +10,7 @@ import org.chai.kevin.util.JSONUtils;
 
 import grails.plugin.spock.UnitSpec;
 
-class PlanningTypeUnitSpec extends UnitSpec {
+class PlanningTypeUnitSpec extends UnitTests {
 
 	def "test get sections"() {
 		when:
@@ -52,8 +53,8 @@ class PlanningTypeUnitSpec extends UnitSpec {
 	def "build groups works properly"() {
 		setup:
 		def planningType
-		def languageService = Mock(LanguageService)
-		languageService.getCurrentLanguage() >> "en"
+		def languageService = new LanguageService()
+		languageService.metaClass.getCurrentLanguage = {"en"}
 		
 		when:
 		planningType = new PlanningType(costs: [
@@ -94,8 +95,4 @@ class PlanningTypeUnitSpec extends UnitSpec {
 		planningType.getPlanningCosts([])*.names.en == ["Test1", "Group - Test2"]
 	}
 
-	static j(def map) {
-		return new Translation(jsonText: JSONUtils.getJSONFromMap(map));
-	}
-	
 }
