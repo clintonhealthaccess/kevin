@@ -1,6 +1,7 @@
 package org.chai.kevin.planning;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.AttributeOverride;
@@ -13,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.chai.kevin.Translation;
@@ -24,6 +26,7 @@ public class PlanningOutput {
 
 	private Long id;
 	
+	private Integer order;
 	private Planning planning;
 	private DataElement<?> dataElement;
 	private String fixedHeader;
@@ -42,6 +45,16 @@ public class PlanningOutput {
 		this.id = id;
 	}
 
+	@Basic
+	@Column(name="ordering")
+	public Integer getOrder() {
+		return order;
+	}
+	
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+	
 	@ManyToOne(targetEntity=Planning.class)
 	public Planning getPlanning() {
 		return planning;
@@ -61,12 +74,18 @@ public class PlanningOutput {
 	}
 
 	@OneToMany(targetEntity=PlanningOutputColumn.class, mappedBy="planningOutput")
+	@OrderBy("order")
 	public List<PlanningOutputColumn> getColumns() {
 		return columns;
 	}
 
 	public void setColumns(List<PlanningOutputColumn> columns) {
 		this.columns = columns;
+	}
+	
+	public void addColumn(PlanningOutputColumn column) {
+		columns.add(column);
+		Collections.sort(columns);
 	}
 	
 	@Embedded

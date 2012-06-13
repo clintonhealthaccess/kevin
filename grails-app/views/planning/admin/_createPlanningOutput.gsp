@@ -1,4 +1,4 @@
-<div class="entity-form-container togglable">
+v<div class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">
 			<g:message code="default.new.label" args="[message(code:'planningtype.label')]"/>
@@ -18,6 +18,8 @@
 		<g:selectFromList name="dataElement.id" label="${message(code:'planning.planningoutput.dataelement.label')}" bean="${planningOutput}" field="dataElement" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'DataElement'])}"
 			from="${dataElements}" value="${planningOutput?.dataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+	
+		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${planningOutput}" field="order"/>
 	
 		<g:if test="${planningOutput.id != null}">
 			<input type="hidden" name="id" value="${planningOutput.id}"></input>

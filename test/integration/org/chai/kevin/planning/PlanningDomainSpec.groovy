@@ -259,4 +259,21 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		then:
 		thrown ValidationException
 	}
+	
+	def "planning column output order"() {
+		setup:
+		def period = newPeriod()
+		def planning = newPlanning(period, [])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		def planningOutput = newPlanningOutput(planning, dataElement, planning)
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
+		
+		when:
+		def column1 = newPlanningOutputColumn(planningOutput, normalizedDataElement, 2).save(failOnError:true)
+		def column2 = newPlanningOutputColumn(planningOutput, normalizedDataElement, 1).save(failOnError:true)
+		
+		then:
+		planningOutput.columns.equals([column2, column1])
+	}
+	
 }

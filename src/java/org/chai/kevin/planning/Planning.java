@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -53,6 +54,7 @@ public class Planning {
 	
 	@OneToMany(mappedBy="planning", targetEntity=PlanningOutput.class)
 	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	@OrderBy("order")
 	public List<PlanningOutput> getPlanningOutputs() {
 		return planningOutputs;
 	}
