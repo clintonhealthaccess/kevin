@@ -150,7 +150,7 @@ public class PlanningCost extends Orderable<Integer> {
 	}
 
 	private List<String> splitName(LanguageService languageService) {
-		String name = getNames().get(languageService.getCurrentLanguage());
+		String name = languageService.getText(names);
 		String[] groupsInNameArray = name.split("-");
 		List<String> groupsInName = new ArrayList<String>();
 		for (String group : groupsInNameArray) {
