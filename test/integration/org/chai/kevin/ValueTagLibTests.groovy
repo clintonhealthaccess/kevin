@@ -123,6 +123,26 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 		), '10%'
 	}
 	
+	def testValueNumber() {
+		
+		assertEquals applyTemplate(
+			'<g:value value="${value}" type="${type}"/>',
+			[
+				'value': Value.VALUE_NUMBER(10),
+				'type': Type.TYPE_NUMBER()
+			]
+		), '10'
+		
+		assertEquals applyTemplate(
+			'<g:value value="${value}" type="${type}" format="${format}"/>',
+			[
+				'value': Value.VALUE_NUMBER(0.1d),
+				'type': Type.TYPE_NUMBER(),
+				'format': '##%'
+			]
+		), '10%'
+	}
+	
 	def testValueWithNullEnums() {
 		
 		assertEquals applyTemplate(

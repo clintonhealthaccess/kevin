@@ -55,11 +55,15 @@ abstract class PlanningIntegrationTests extends IntegrationTests {
 		return planningOutput
 	}
 	
-	static def newPlanningOutputColumn(def planningOutput, def normalizedDataElement) {
-		def planningOutputColumn = new PlanningOutputColumn(planningOutput: planningOutput, normalizedDataElement: normalizedDataElement).save(failOnError: true)
-		planningOutput.columns << planningOutputColumn
+	static def newPlanningOutputColumn(def planningOutput, def normalizedDataElement, def order) {
+		def planningOutputColumn = new PlanningOutputColumn(planningOutput: planningOutput, normalizedDataElement: normalizedDataElement, order: order).save(failOnError: true)
+		planningOutput.addColumn(planningOutputColumn)
 		planningOutput.save(failOnError: true)
 		return planningOutputColumn
+	}
+	
+	static def newPlanningOutputColumn(def planningOutput, def normalizedDataElement) {
+		return newPlanningOutputColumn(planningOutput, normalizedDataElement, null)
 	}
 	
 }
