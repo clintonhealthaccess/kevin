@@ -151,21 +151,22 @@ public class ExpressionService {
 					
 					sessionFactory.getCurrentSession().evict(dataValue);
 				}
-//				if (expressionLog.isDebugEnabled()) expressionLog.debug("values and types: valueMap={"+valueMap+"}", typeMap={"+typeMap+"}");
+				if (expressionLog.isTraceEnabled()) expressionLog.trace("values and types: valueMap={"+valueMap+"}, typeMap={"+typeMap+"}");
 				
 				try {
 					if (expressionLog.isInfoEnabled()) expressionLog.info("no null values found, evaluating expression");
 					statusValuePair.value = jaqlService.evaluate(expression, type, valueMap, typeMap);
 					statusValuePair.status = Status.VALID;
 				} catch (IllegalArgumentException e) {
-					if (expressionLog.isErrorEnabled()) expressionLog.error("expression={"+expression+"}, type={"+type+"}, period={"+period+"}, dataLocation={"+dataLocation+"}, valueMap={"+valueMap+"}, typeMap={"+typeMap+"}", e);
-					log.warn("there was an error evaluating expression: "+expression, e);
+					if (expressionLog.isErrorEnabled()) expressionLog.error("expression={"+expression+"}", e);
+					if (expressionLog.isTraceEnabled()) expressionLog.trace("type={"+type+"}, period={"+period+"}, dataLocation={"+dataLocation+"}, valueMap={"+valueMap+"}, typeMap={"+typeMap+"}");
+					if (log.isWarnEnabled()) log.warn("there was an error evaluating expression: "+expression, e);
 					statusValuePair.value = Value.NULL_INSTANCE();
 					statusValuePair.status = Status.ERROR;
 				}
 			}
 		}
-		expressionLog.info("returning result={"+statusValuePair+"}");
+		if (expressionLog.isInfoEnabled()) expressionLog.info("returning result={"+statusValuePair+"}");
 		return statusValuePair;
 	}
 
@@ -200,7 +201,7 @@ public class ExpressionService {
             	data = dataService.getData(Long.parseLong(placeholder.replace("$", "")), clazz);
             }
             catch (NumberFormatException e) {
-            	log.error("wrong format for dataelement: "+placeholder);
+            	if (log.isErrorEnabled()) log.error("wrong format for dataelement: "+placeholder);
             }
 
             dataInExpression.put(placeholder, data);
