@@ -15,6 +15,7 @@ import org.chai.kevin.value.Value;
 class TableLine extends Line {
 	
 	protected List<Line> lines;
+	private boolean openByDefault = false;
 	
 	protected TableLine(List<Line> lines) {
 		super(null, new ArrayList<String>());
@@ -122,6 +123,14 @@ class TableLine extends Line {
 		return type;
 	}
 
+	public boolean isOpenByDefault() {
+		return openByDefault;
+	}
+	
+	public void setOpenByDefault(boolean openByDefault) {
+		this.openByDefault = openByDefault;
+	}
+	
 	@Override
 	public String getTemplate() {
 		return "tableLine";

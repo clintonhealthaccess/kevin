@@ -284,6 +284,36 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		
 	}
 	
+	def "budget table with null header"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def formElement = newFormElement(dataElement)
+		def planningType = newPlanningType(j(["en": "Planning Type"]), formElement, "[_].key0", planning, null)
+		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([:]))
+		def planningCost = newPlanningCost(j(["en": "Planning Cost"]), PlanningCostType.INCOMING, normalizedDataElement, planningType)
+		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
+			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.NULL_INSTANCE(), "key1":Value.VALUE_NUMBER(10)])])
+		)
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
+		planningController.params.planning = planning.id
+		planningController.budget()
+		def budgetTable = planningController.modelAndView.model.budgetTable
+		
+		then:
+		budgetTable != null
+		budgetTable.tableLine.lines.size() == 1
+		budgetTable.tableLine.lines[0].displayName == "Planning Type"
+		budgetTable.tableLine.lines[0].lines[0].displayName == null
+		budgetTable.tableLine.lines[0].lines[0].lines[0].displayName == "Planning Cost"
+	}
+	
 	def "budget table with no fixed header"() {
 		setup:
 		setupLocationTree()

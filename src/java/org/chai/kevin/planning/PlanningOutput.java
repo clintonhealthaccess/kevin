@@ -30,9 +30,11 @@ public class PlanningOutput {
 	private Planning planning;
 	private DataElement<?> dataElement;
 	private String fixedHeader;
+	private Boolean displayTotal = false;
 	
 	private List<PlanningOutputColumn> columns = new ArrayList<PlanningOutputColumn>();
 	private Translation names = new Translation();
+	private Translation captions = new Translation();
 	private Translation helps = new Translation();
 
 	@Id
@@ -53,6 +55,15 @@ public class PlanningOutput {
 	
 	public void setOrder(Integer order) {
 		this.order = order;
+	}
+	
+	@Basic
+	public Boolean getDisplayTotal() {
+		return displayTotal;
+	}
+	
+	public void setDisplayTotal(Boolean displayTotal) {
+		this.displayTotal = displayTotal;
 	}
 	
 	@ManyToOne(targetEntity=Planning.class)
@@ -96,6 +107,16 @@ public class PlanningOutput {
 	
 	public void setNames(Translation names) {
 		this.names = names;
+	}
+	
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonCaptions", nullable = false)) })
+	public Translation getCaptions() {
+		return captions;
+	}
+	
+	public void setCaptions(Translation captions) {
+		this.captions = captions;
 	}
 	
 	@Embedded

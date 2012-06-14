@@ -82,6 +82,7 @@ class PlanningOutputController extends AbstractEntityController {
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
 		if (params.helps!=null) entity.helps = params.helps
+		if (params.captions!=null) entity.captions = params.captions
 	}
 
 	def list = {

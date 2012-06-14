@@ -71,6 +71,7 @@ class LanguageService {
 	}
 
 	String getStringValue(Value value, Type type, def enums = null, def format = null, def zero = null) {
+		if (value == null || value.isNull()) return null
 		def result;
 		switch (type.type) {
 			case (ValueType.ENUM):

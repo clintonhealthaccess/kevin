@@ -54,7 +54,7 @@
 														<td>
 															<a href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:entry.lineNumber])}">
 																<g:if test="${planningType.fixedHeader != null && !planningType.fixedHeader.empty}">
-																	<g:value value="${entry.fixedHeaderValue}" type="${entry.type.fixedHeaderType}" nullText="none entered"/>
+																	<g:value value="${entry.fixedHeaderValue}" type="${entry.type.fixedHeaderType}" nullText="message(code:'planning.none.entered')"/>
 																</g:if>
 																<g:else>
 																	<g:i18n field="${planningType.names}"/>

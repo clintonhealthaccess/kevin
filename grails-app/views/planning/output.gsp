@@ -24,7 +24,7 @@
 							</h4>
 							<div>
 								<div class="table-wrap left clear">
-									<g:table table="${outputTable}" nullText="none entered"/>
+									<g:table table="${outputTable}" nullText="message(code:'table.tag.header.none.entered')"/>
 						    	</div>
 						    </div>
 					    </div>

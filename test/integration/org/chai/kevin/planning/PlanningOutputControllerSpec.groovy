@@ -44,12 +44,18 @@ class PlanningOutputControllerSpec extends PlanningIntegrationTests {
 		planningOutputController.params['planning.id'] = planning.id
 		planningOutputController.params['dataElement.id'] = dataElement.id
 		planningOutputController.params['fixedHeader'] = '[_].key'
+		planningOutputController.params["names"] = ["en": "Name"]
+		planningOutputController.params["helps"] = ["en": "Help"]
+		planningOutputController.params["captions"] = ["en": "Caption"]
 		planningOutputController.saveWithoutTokenCheck()
 
 		then:
 		PlanningOutput.count() == 1
 		PlanningOutput.list()[0].planning.equals(planning)
 		PlanningOutput.list()[0].dataElement.equals(dataElement)
+		PlanningOutput.list()[0].names.en == "Name"
+		PlanningOutput.list()[0].helps.en == "Help"
+		PlanningOutput.list()[0].captions.en == "Caption"
 	}
 	
 }

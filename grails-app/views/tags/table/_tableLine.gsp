@@ -1,5 +1,5 @@
 <tr class="tree-sign js_foldable ${line.cssClasses.join(' ')}">
-	<td class="${line.href==null?'js_foldable-toggle':''}">
+	<td class="${line.href==null?'js_foldable-toggle':''} ${line.openByDefault?'toggled':''}">
 		<g:if test="${line.href != null}">
 			<span class="js_foldable-toggle" style="margin-left: ${margin}px;"> <a href="#">&zwnj;</a> </span>
 			<span>
@@ -20,7 +20,7 @@
 		</td>
 	</g:each>
 </tr>
-<tr class="sub-tree js_foldable-container hidden">
+<tr class="sub-tree js_foldable-container ${line.openByDefault?'':'hidden'}">
 	<td colspan="7" class="bucket">
 		<g:if test="${line.lines.empty}">
 			<div class="empty-line italic" style="margin-left: ${margin+20}px"><g:message code="table.tag.aggregate.line.empty"/></div>

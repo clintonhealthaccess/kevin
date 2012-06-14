@@ -214,7 +214,9 @@ class EditPlanningController extends AbstractController {
 					entryLines << line
 				}	
 			}
-			planningListLines << new AggregateLine(languageService.getText(planningList.planningType.namesPlural), entryLines, ['standout'])
+			def line = new AggregateLine(languageService.getText(planningList.planningType.namesPlural), entryLines, ['standout'])
+			line.openByDefault = true
+			planningListLines << line
 		}
 		
 		def columns = [
@@ -222,7 +224,7 @@ class EditPlanningController extends AbstractController {
 			message(code: 'planning.budget.table.outgoing'), 
 			message(code: 'planning.budget.table.difference')
 		]
-		return new Table(columns, planningListLines, ['budget'])
+		return new Table("", columns, planningListLines, true, ['budget'])
 	}
 	
 	def getCostLines(def entry, def planningList) {
@@ -279,7 +281,12 @@ class EditPlanningController extends AbstractController {
 			lines << new NumberLine(languageService.getStringValue(value, outputTable.getHeaderType()), values, types);
 		}
 		def columns = outputTable.planningOutput.columns.collect {i18n(field: it.names)}
-		return new Table(columns, lines, []);
+		return new Table(
+			languageService.getText(outputTable.planningOutput.captions),
+			columns, lines, 
+			outputTable.planningOutput.displayTotal, 
+			['budget']
+		);
 	}
 	
 	def planningList = {

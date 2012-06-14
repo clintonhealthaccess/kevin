@@ -10,6 +10,7 @@ v<div class="entity-form-container togglable">
 	
 		<g:i18nInput name="names" bean="${planningOutput}" value="${planningOutput.names}" label="${message(code:'entity.name.label')}" field="names"/>
 
+		<g:i18nTextarea name="captions" bean="${planningOutput}" value="${planningOutput.captions}" label="${message(code:'planning.planningoutput.caption.label')}" field="captions" height="150"  width="300" maxHeight="150" />
 		<g:i18nTextarea name="helps" bean="${planningOutput}" value="${planningOutput.helps}" label="${message(code:'planning.planningoutput.help.label')}" field="helps" height="150"  width="300" maxHeight="150" />
 
 		<g:selectFromList name="fixedHeader" label="${message(code:'planning.planningoutput.fixedheader.label')}" bean="${planningOutput}" field="fixedHeader" multiple="false"
@@ -18,6 +19,11 @@ v<div class="entity-form-container togglable">
 		<g:selectFromList name="dataElement.id" label="${message(code:'planning.planningoutput.dataelement.label')}" bean="${planningOutput}" field="dataElement" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'DataElement'])}"
 			from="${dataElements}" value="${planningOutput?.dataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+	
+		<div class="row">
+			<label><g:message code="planning.planningoutput.displaytotal.label"/></label>
+			<g:checkBox name="displayTotal" value="${planningOutput.displayTotal}" />
+		</div>
 	
 		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${planningOutput}" field="order"/>
 	
