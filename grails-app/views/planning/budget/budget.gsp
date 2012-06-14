@@ -30,7 +30,7 @@
 									</p>
 								</g:if>
 								<div class="table-wrap left clear">
-									<g:table table="${budgetTable}" nullText="message(code:'table.tag.header.none.entered')"/>
+									<g:table table="${budgetTable}" nullText="${message(code:'table.tag.header.none.entered')}"/>
 									<br />
 								</div>
 							</div>
