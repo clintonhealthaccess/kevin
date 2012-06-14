@@ -24,30 +24,7 @@
 							</h4>
 							<div>
 								<div class="table-wrap left clear">
-									<table class="nested push-top-10">
-						    			<thead>
-						    				<tr>
-												<th></th>
-												<g:each in="${planningOutput.columns}" var="column">
-													<th><g:i18n field="${column.names}"/></th>
-												</g:each>
-											</tr>
-						    			</thead>
-						    			<tbody>
-						    				<g:each in="${outputTable.rows}" status="rowIndex" var="row">
-							    				<tr>
-													<td>
-														<g:value value="${row}" type="${outputTable.headerType}" nullText="none entered"/>
-													</td>
-													<g:each in="${planningOutput.columns}" var="column">
-														<td>
-															<g:value value="${outputTable.getValue(rowIndex, column)}" type="${outputTable.getValueType(column)}" format="#,###"/>
-														</td>
-													</g:each>
-												</tr>
-											</g:each>
-						    			</tbody>
-						    		</table>
+									<g:table table="${outputTable}" nullText="none entered"/>
 						    	</div>
 						    </div>
 					    </div>
