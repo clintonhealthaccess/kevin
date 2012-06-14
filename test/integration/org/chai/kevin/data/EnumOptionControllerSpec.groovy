@@ -17,7 +17,7 @@ class EnumOptionControllerSpec extends IntegrationTests {
 		enumOptionController.modelAndView == null
 	}
 	
-	def "create enum option"() {
+	def "create enum option and list"() {
 		setup: 
 		def enume = newEnume(CODE("the code one"), "My Enum one", "Enum one for test one");
 		enumOptionController = new EnumOptionController()
@@ -31,9 +31,18 @@ class EnumOptionControllerSpec extends IntegrationTests {
 		enumOptionController.saveWithoutTokenCheck()
 		
 		then:
+		EnumOption.count() == 1
 		EnumOption.list()[0].enume.equals(enume)
 		EnumOption.list()[0].names.en.equals("Name")
 		EnumOption.list()[0].descriptions.en.equals("Description")
+		
+		when:
+		enumOptionController.params["enume.id"] = enume.id
+		enumOptionController.list()
+		
+		then:
+		enumOptionController.modelAndView.model.entities.size() == 1
+		enumOptionController.modelAndView.model.entityCount == 1
 	}
 	
 	def "search and list option"(){
@@ -68,5 +77,29 @@ class EnumOptionControllerSpec extends IntegrationTests {
 		
 	}
 	
+	def "delete enum option and list"() {
+		setup:
+		def enume = newEnume(CODE("the code one"), "My Enum one", "Enum one for test one");
+		def option2 = newEnumOption(enume, v("\"absent\""), o("en":1, "fr":2))
+		def option1 = newEnumOption(enume, v("\"testion\""), o("en":2, "fr":1))
+		
+		enumOptionController = new EnumOptionController()
+		
+		when:
+		enumOptionController.params["id"]=option2.id
+		enumOptionController.delete()
+		
+		then:
+		EnumOption.count() == 1
+		
+		when:
+		enumOptionController.params["enume.id"]=enume.id
+		enumOptionController.list()
+		
+		then:
+		enumOptionController.modelAndView != null
+		enumOptionController.modelAndView.model.entities.size() == 1
+		enumOptionController.modelAndView.model.entityCount == 1
+	}
 	
 }

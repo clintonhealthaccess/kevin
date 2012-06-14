@@ -74,11 +74,15 @@ class EnumOptionController extends AbstractEntityController {
 //	}
 
 	def saveEntity(def entity) {
+		entity.enume.addEnumOption(entity)
 		entity.save()
+		entity.enume.save()
 	}
 	
 	def deleteEntity(def entity) {
+		entity.enume.enumOptions.remove(entity)
 		entity.delete()
+		entity.enume.save()
 	}
 	
 	def bindParams(def entity) {

@@ -253,6 +253,34 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		
 	}
 	
+	def "output table"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def formElement = newFormElement(dataElement)
+		def planningType = newPlanningType(j(["en": "Planning Type"]), formElement, "[_].key0", planning, null)
+		def planningOutput = newPlanningOutput(planning, dataElement, "[_].key0")
+		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
+			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
+		)
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
+		planningController.params.planningOutput = planningOutput.id
+		planningController.output()
+		def outputTable = planningController.modelAndView.model.outputTable
+		
+		then:
+		outputTable != null
+		outputTable.tableLine.lines.size() == 1
+		outputTable.tableLine.lines[0].displayName == "value"
+		
+	}
+	
 	def "budget table with null values"() {
 		setup:
 		setupLocationTree()
