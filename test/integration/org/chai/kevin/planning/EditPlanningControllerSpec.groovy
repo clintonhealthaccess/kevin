@@ -5,6 +5,7 @@ import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
@@ -40,7 +41,6 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		then:
 		FormEnteredValue.count() == 1
 		FormEnteredValue.list()[0].value.listValue[0].mapValue['key1'].numberValue == 123d
-		FormEnteredValue.list()[0].value.listValue[0].getAttribute('uuid') != null
 		FormEnteredValue.list()[0].value.getAttribute('submitted') == "false"
 		jsonResult.id == planningType.id
 		jsonResult.lineNumber == 0
@@ -168,7 +168,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		jsonResult.elements[0].skipped[0] == '[0].key1'
 	}
 	
-	def "edit planning entry creates line and sets uuid"() {
+	def "edit planning entry creates line"() {
 		setup:
 		setupLocationTree()
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
@@ -189,7 +189,6 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		
 		then:
 		FormEnteredValue.count() == 1
-		FormEnteredValue.list()[0].value.listValue[0].getAttribute('uuid') != null
 	}
 	
 	def "accessing index page redirects to proper page - normal user to summary page"() {
@@ -252,6 +251,97 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.modelAndView.model.currentPlanning.equals(planning)
 		planningController.modelAndView.model.summaryPage != null
 		
+	}
+	
+	def "budget table with null values"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def formElement = newFormElement(dataElement)
+		def planningType = newPlanningType(j(["en": "Planning Type"]), formElement, "[_].key0", planning, null)
+		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([:]))
+		def planningCost = newPlanningCost(j(["en": "Planning Cost"]), PlanningCostType.INCOMING, normalizedDataElement, planningType)
+		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
+			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
+		)
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
+		planningController.params.planning = planning.id
+		planningController.budget()
+		def budgetTable = planningController.modelAndView.model.budgetTable
+		
+		then:
+		budgetTable != null
+		budgetTable.tableLine.lines.size() == 1
+		budgetTable.tableLine.lines[0].displayName == "Planning Type"
+		budgetTable.tableLine.lines[0].lines[0].displayName == "value"
+		budgetTable.tableLine.lines[0].lines[0].lines[0].displayName == "Planning Cost"
+		
+	}
+	
+	def "budget table with no fixed header"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def formElement = newFormElement(dataElement)
+		def planningType = newPlanningType(j(["en": "Planning Type"]), formElement, null, planning, null)
+		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([:]))
+		def planningCost = newPlanningCost(j(["en": "Planning Cost"]), PlanningCostType.INCOMING, normalizedDataElement, planningType)
+		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
+			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
+		)
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
+		planningController.params.planning = planning.id
+		planningController.budget()
+		def budgetTable = planningController.modelAndView.model.budgetTable
+		
+		then:
+		budgetTable != null
+		budgetTable.tableLine.lines.size() == 1
+		budgetTable.tableLine.lines[0].displayName == "Planning Type"
+		budgetTable.tableLine.lines[0].lines[0].displayName == "Planning Type 1"
+		budgetTable.tableLine.lines[0].lines[0].lines[0].displayName == "Planning Cost"
+	}
+	
+	
+	def "budget table with max number 1"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def formElement = newFormElement(dataElement)
+		def planningType = newPlanningType(j(["en": "Planning Type"]), formElement, "[_].key0", planning, 1)
+		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([:]))
+		def planningCost = newPlanningCost(j(["en": "Planning Cost"]), PlanningCostType.INCOMING, normalizedDataElement, planningType)
+		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
+			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
+		)
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
+		planningController.params.planning = planning.id
+		planningController.budget()
+		def budgetTable = planningController.modelAndView.model.budgetTable
+		
+		then:
+		budgetTable != null
+		budgetTable.tableLine.lines.size() == 1
+		budgetTable.tableLine.lines[0].displayName == "Planning Type"
+		budgetTable.tableLine.lines[0].lines[0].displayName == "Planning Cost"
 	}
 	
 	def "access budget page when budget is not updated does not redirect"() {

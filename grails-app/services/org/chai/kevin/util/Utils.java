@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,20 +41,17 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.Exportable;
-import org.chai.kevin.LanguageService;
-import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.data.EnumService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.Value;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author Jean Kahigiso M.
@@ -63,7 +61,6 @@ public class Utils {
 	
 	private final static String DATE_FORMAT = "dd-MM-yyyy";
 	private final static String DATE_FORMAT_TIME = "dd-MM-yyyy hh:mm:ss";
-	private final static String CSV_FILE_EXTENSION = ".csv";
 	private final static String ZIP_FILE_EXTENSION = ".zip";
 	
 	public final static String CODE_DELIMITER = "~";
@@ -92,7 +89,6 @@ public class Utils {
 		return StringUtils.join(result, ',');
 	}
 		
-	@SuppressWarnings("unused")
 	public static boolean matches(String text, String value) {
 		if (value == null) return false;
 		return value.matches("(?i).*"+text+".*");
@@ -106,10 +102,18 @@ public class Utils {
 		return result;
 	}
 	
+	public static String formatNumber(String format, Number value) {
+		if (format == null) format = "#";
+		
+		DecimalFormat frmt = new DecimalFormat(format);
+		return frmt.format(value.doubleValue()).toString();
+	}
+	
 	public static String formatDate(Date date) {
 		if (date == null) return null;
 		return new SimpleDateFormat(DATE_FORMAT).format(date);
 	}
+	
 	public static String formatDateWithTime(Date date) {
 		if (date == null) return null;
 		return new SimpleDateFormat(DATE_FORMAT_TIME).format(date);

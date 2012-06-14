@@ -44,4 +44,8 @@ public class PlanningOutputTable {
 		return columns.get(column).getValue().getListValue().get(row);
 	}
 	
+	public PlanningOutput getPlanningOutput() {
+		return planningOutput;
+	}
+	
 }

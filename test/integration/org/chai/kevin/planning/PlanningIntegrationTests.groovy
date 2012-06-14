@@ -18,10 +18,13 @@ abstract class PlanningIntegrationTests extends IntegrationTests {
 		return new Planning(period: period, typeCodeString: Utils.unsplit(types), active: active).save(failOnError: true)
 	}
 	
-	static def newPlanningType(def formElement, def fixedHeader, def planning) {
+	static def newPlanningType(def names, def formElement, def fixedHeader, def planning, def maxNumber) {
 		def planningType = new PlanningType(
+			names: names,
+			namesPlural: names,
 			formElement: formElement,
 			fixedHeader: fixedHeader,
+			maxNumber: maxNumber,
 			planning: planning
 		).save(failOnError: true)
 		planning.planningTypes << planningType
@@ -29,8 +32,17 @@ abstract class PlanningIntegrationTests extends IntegrationTests {
 		return planningType
 	}
 	
+	static def newPlanningType(def formElement, def fixedHeader, def planning) {
+		return newPlanningType(j([:]), formElement, fixedHeader, planning, null)
+	}
+	
 	static def newPlanningCost(def type, def dataElement, def planningType) {
+		return newPlanningCost(j([:]), type, dataElement, planningType)
+	}
+	
+	static def newPlanningCost(def names, def type, def dataElement, def planningType) {
 		def planningCost = new PlanningCost(
+			names: names,
 			type: type,
 			dataElement: dataElement,
 			planningType: planningType

@@ -1,12 +1,20 @@
 package org.chai.kevin.planning
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.LanguageService;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 import org.chai.kevin.Period;
+import org.chai.kevin.table.AggregateLine;
+import org.chai.kevin.table.Line;
+import org.chai.kevin.table.NumberLine;
+import org.chai.kevin.table.Table;
 import org.chai.kevin.value.Value;
 
 class EditPlanningController extends AbstractController {
@@ -169,10 +177,6 @@ class EditPlanningController extends AbstractController {
 			planningService.submitIfNeeded(planning, location)
 			planningService.refreshBudgetIfNeeded(planning, location)
 
-			planning.planningTypes.each {
-				it.buildGroupHierarchy(languageService)
-			}
-						
 			def planningLists = planning.planningTypes.collect {
 				planningService.getPlanningList(it, location)
 			}
@@ -180,14 +184,67 @@ class EditPlanningController extends AbstractController {
 			render (view: '/planning/budget/budget', model: [
 				planning: planning,
 				location: location,
-				budgetNeedsUpdate: false,
-				planningLists: planningLists,
-				incoming: planningLists.sum {it.incoming},
-				outgoing: planningLists.sum {it.outgoing},
-				difference: planningLists.sum {it.difference}
+				emptyBudget: !planningLists.find {!it.empty},
+				budgetTable: getBudgetTable(planningLists, location),
 			])
 		}
 	}
+	
+	def getBudgetTable(def planningLists, def location) {
+		def planningListLines = []
+		planningLists.each { planningList ->
+			def entryLines = []
+			
+			def i = 0
+			planningList.planningEntryBudgetList.each { entry ->
+				i++
+				
+				def costLines = getCostLines(entry, planningList)
+				if (planningList.planningType.maxNumber == 1) entryLines.addAll(costLines)
+				else {
+					def header
+					if (planningList.planningType.fixedHeader == null || planningList.planningType.fixedHeader.empty) {
+						header = languageService.getText(planningList.planningType.names) + (planningList.planningType.maxNumber!=1?(' ' + i):'')
+					} 
+					else {
+						header = languageService.getStringValue(entry.fixedHeaderValue, planningList.planningType.fixedHeaderType)
+					}
+					def line = new AggregateLine(header, costLines, ['budget-entry'])
+					line.href = createLink(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber: entry.lineNumber])
+					entryLines << line
+				}	
+			}
+			planningListLines << new AggregateLine(languageService.getText(planningList.planningType.namesPlural), entryLines, ['standout'])
+		}
+		
+		def columns = [
+			message(code: 'planning.budget.table.incoming'), 
+			message(code: 'planning.budget.table.outgoing'), 
+			message(code: 'planning.budget.table.difference')
+		]
+		return new Table(columns, planningListLines, ['budget'])
+	}
+	
+	def getCostLines(def entry, def planningList) {
+		def types = [Type.TYPE_NUMBER(), Type.TYPE_NUMBER(), Type.TYPE_NUMBER()]
+		
+		def costLines = []
+		planningList.planningType.costs.each { cost ->
+			def values = null
+			def budgetCost = entry.getBudgetCost(cost)
+			if (budgetCost != null && !budgetCost.hidden) {
+				if (cost.type == PlanningCostType.INCOMING) values = [budgetCost.value, Value.VALUE_NUMBER(0), budgetCost.value]
+				else values = [Value.VALUE_NUMBER(0), budgetCost.value, Value.VALUE_NUMBER(0-budgetCost.value.numberValue)]
+			}
+			else if (budgetCost == null) {
+				if (cost.type == PlanningCostType.INCOMING) values = [null, Value.VALUE_NUMBER(0), Value.VALUE_NUMBER(0)]
+				else values = [Value.VALUE_NUMBER(0), null, Value.VALUE_NUMBER(0)]
+			}
+			if (values != null) costLines << new NumberLine(languageService.getText(cost.names), values, types)
+		}
+		return costLines
+	}
+	
 	
 	def output = {
 		def planningOutput = PlanningOutput.get(params.int('planningOutput'))
@@ -202,9 +259,27 @@ class EditPlanningController extends AbstractController {
 			render (view: '/planning/output', model: [
 				planningOutput: planningOutput,
 				location: location,
-				outputTable: outputTable
+				outputTable: getOutputTable(outputTable)
 			])
 		}
+	}
+	
+	def getOutputTable(def outputTable) {
+		def lines = []
+		def rows = outputTable.getRows();
+		for (int i = 0; i < rows.size(); i++) {
+			def value = rows.get(i);
+			
+			def values = []
+			def types =[]
+			outputTable.planningOutput.columns.each { column ->
+				values << outputTable.getValue(i, column);
+				types << outputTable.getValueType(column);
+			}
+			lines << new NumberLine(languageService.getStringValue(value, outputTable.getHeaderType()), values, types);
+		}
+		def columns = outputTable.planningOutput.columns.collect {i18n(field: it.names)}
+		return new Table(columns, lines, []);
 	}
 	
 	def planningList = {

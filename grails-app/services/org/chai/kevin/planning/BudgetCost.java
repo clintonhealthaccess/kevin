@@ -2,6 +2,7 @@ package org.chai.kevin.planning;
 
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.value.NormalizedDataElementValue;
+import org.chai.kevin.value.Value;
 
 public class BudgetCost {
 	
@@ -16,11 +17,11 @@ public class BudgetCost {
 	}
 
 	public Boolean isHidden() {
-		return planningCost.getHideIfZero() == null ? false: planningCost.getHideIfZero() && getValue() == 0d;
+		return planningCost.getHideIfZero() == null ? false: planningCost.getHideIfZero() && getValue().getNumberValue().doubleValue() == 0d;
 	}
 	
-	public Double getValue() {
-		return value.getValue().getListValue().get(planningEntry.getLineNumber()).getNumberValue().doubleValue();
+	public Value getValue() {
+		return value.getValue().getListValue().get(planningEntry.getLineNumber());
 	}
 	
 	public PlanningEntry getPlanningEntry() {
