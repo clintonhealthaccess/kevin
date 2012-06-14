@@ -89,8 +89,6 @@ grails.project.dependency.resolution = {
 		
         runtime 'mysql:mysql-connector-java:5.1.13'
 		
-//		compile ("net.bull.javamelody:javamelody-core:1.31.0")
-
 //		test"org.codehaus.geb:geb-spock:0.6.0"
 //		test("org.seleniumhq.selenium:selenium-firefox-driver:latest.release")
 //		test("org.seleniumhq.selenium:selenium-chrome-driver:2.0rc2")
@@ -113,7 +111,6 @@ grails.project.dependency.resolution = {
 		compile ":springcache:1.3.1"
 		compile ":compass-sass:0.7"
 		compile ":google-analytics:1.0"
-		compile ":grails-melody:1.13"
 		compile ":quartz:1.0-RC2"
 		compile ":constraints:0.8.0"
 		compile ":cached-resources:1.0"
