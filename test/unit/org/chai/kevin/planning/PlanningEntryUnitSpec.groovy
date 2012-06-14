@@ -29,25 +29,6 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		planningEntry.getValue("[_].key1") == null
 	}
 	
-	def "set uuid"() {
-		setup:
-		def planningEntry = null
-		
-		when:
-		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]);
-		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_STRING()]))
-		planningEntry = new PlanningEntry(new ValidatableValue(value, type), 0)
-
-		then:
-		planningEntry.getUuid() == null
-		
-		when:
-		planningEntry.setUuid("uuid")
-				
-		then:
-		value.listValue[0].getAttribute("uuid") == 'uuid'
-	}
-	
 	def "get invalid sections"() {
 		setup:
 		def planningEntry = null
@@ -69,27 +50,6 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		
 		then:
 		planningEntry.getInvalidSections().empty
-	}
-	
-	def "merge value does not reset attributes"() {
-		setup:
-		def planningEntry = null
-		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":new Value("{\"value\":\"test\", \"invalid\":\"1\"}"), "key2":Value.VALUE_STRING("value")])]);
-		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_STRING(), "key2":Type.TYPE_STRING()]))
-		type.setAttribute(value, "[0]", "uuid", "true")
-				
-		when:
-		def planningType = Mock(PlanningType)
-		planningType.getId() >> 1
-		def formElement = Mock(FormElement)
-		formElement.getId() >> 0
-		planningType.getFormElement() >> formElement
-		planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
-		planningEntry.mergeValues(["elements[0].value[0].key1":"value", "elements[0].value":"[0]"])
-		
-		then:
-		planningEntry.validatable.value.jsonValue.contains("uuid")
-		
 	}
 	
 	def "get fixed header value"() {

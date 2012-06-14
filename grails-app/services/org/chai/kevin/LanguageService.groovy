@@ -30,7 +30,10 @@ package org.chai.kevin
 
 import org.apache.commons.lang.LocaleUtils;
 import org.chai.kevin.Translation;
+import org.chai.kevin.data.Type;
+import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.Value;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -39,6 +42,8 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 class LanguageService {
+	
+	def dataService
 	
 	static transactional = false
 	
@@ -63,6 +68,36 @@ class LanguageService {
 		if (text != null) text = text.toString()
 		if (text == null) return "";
 		return text.toString();
+	}
+
+	String getStringValue(Value value, Type type, def enums = null, def format = null, def zero = null) {
+		def result;
+		switch (type.type) {
+			case (ValueType.ENUM):
+				def enume = null
+				 
+				if (enums == null) enume = dataService.findEnumByCode(type.enumCode);
+				else enume = enums?.get(type.enumCode)
+				
+				if (enume == null) result = value.enumValue
+				else {
+					def option = enume?.getOptionForValue(value.enumValue)
+					if (option == null) result = value.enumValue
+					else result = getText(option.names)
+				}
+				break;
+			case (ValueType.NUMBER):
+				if (zero != null && value.numberValue == 0) result = zero
+				else result = Utils.formatNumber(format, value.numberValue)
+				break;
+			case (ValueType.MAP):
+				// TODO
+			case (ValueType.LIST):
+				// TODO
+			default:
+				result = value.stringValue
+		}
+		return result;
 	}
 	
 }

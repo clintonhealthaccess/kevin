@@ -1284,6 +1284,7 @@ class Initializer {
 			value: Value.VALUE_LIST([
 				Value.VALUE_MAP([
 					"basic": Value.VALUE_MAP([
+						"description": Value.VALUE_STRING("Test - Activity"),
 						"activity": Value.VALUE_STRING("value1"), 
 						"instances": Value.VALUE_NUMBER(10)
 					])

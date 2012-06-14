@@ -206,7 +206,6 @@ beans = {
 	}
 
 	planningService(PlanningService) {
-		languageService = ref("languageService")
 		formValidationService = ref("formValidationService")
 		formElementService = ref("formElementService")
 		valueService = ref("valueService")

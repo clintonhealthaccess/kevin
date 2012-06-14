@@ -38,7 +38,6 @@ public class PlanningService {
 
 	static final String SUBMITTED = "submitted";
 
-	private LanguageService languageService;
 	private LocationService locationService;
 	private FormValidationService formValidationService;
 	private FormElementService formElementService;
@@ -100,7 +99,7 @@ public class PlanningService {
 			costValues.put(planningCost, valueService.getDataElementValue(planningCost.getDataElement(), location, type.getPeriod()));
 		}
 		
-		return new PlanningList(type, location, formEnteredValue, rawDataElementValue, costValues, getEnums(type), languageService);
+		return new PlanningList(type, location, formEnteredValue, rawDataElementValue, costValues, getEnums(type));
 	}
 	
 	@Transactional(readOnly=true)
@@ -223,10 +222,6 @@ public class PlanningService {
 		for (PlanningOutputColumn column : planningOutput.getColumns()) {
 			refreshValueService.refreshNormalizedDataElement(column.getNormalizedDataElement(), location, planningOutput.getPlanning().getPeriod());
 		}
-	}
-	
-	public void setLanguageService(LanguageService languageService) {
-		this.languageService = languageService;
 	}
 	
 	public void setFormValidationService(FormValidationService formValidationService) {

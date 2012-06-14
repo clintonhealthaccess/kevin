@@ -115,7 +115,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		then:
 		planningTypeBudget.planningEntryBudgetList.size() == 1
 		planningTypeBudget.planningEntryBudgetList[0].budgetCosts.size() == 1
-		planningTypeBudget.planningEntryBudgetList[0].getBudgetCost(planningCost).value == 2.0d
+		planningTypeBudget.planningEntryBudgetList[0].getBudgetCost(planningCost).value.equals(Value.VALUE_NUMBER(2d))
 	}
 	
 	def "get budget lines when data element has null value"() {
@@ -209,7 +209,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		planningTypeBudget.planningEntryBudgetList.size() == 2
 		planningTypeBudget.planningEntryBudgetList[0].budgetCosts.size() == 0
 		planningTypeBudget.planningEntryBudgetList[1].budgetCosts.size() == 1
-		planningTypeBudget.planningEntryBudgetList[1].getBudgetCost(planningCost).value == 2d
+		planningTypeBudget.planningEntryBudgetList[1].getBudgetCost(planningCost).value.equals(Value.VALUE_NUMBER(2d))
 	}
 	
 	def "add planning entry"() {
