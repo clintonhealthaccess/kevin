@@ -16,9 +16,13 @@ class FctController extends AbstractController {
 	
 	public FctTarget getFctTarget(def program){
 		def fctTarget = null
-		if(params.int('fctTarget') != null)
+		if(params.int('fctTarget') != null){
 			fctTarget = FctTarget.get(params.int('fctTarget'))
-		else{
+			if(!fctTarget.program.equals(program))
+				fctTarget = null
+		}
+		
+		if(fctTarget == null){
 			def targets = fctService.getFctTargets(program)
 			Collections.sort(targets);
 			if(targets != null && !targets.empty)

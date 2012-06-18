@@ -17,7 +17,8 @@
 				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params]"/>
 			</div>
 			<div class="main">
-				<g:render template="/templates/topLevelReportTabs" model="[linkParams:params]"/>
+				<g:topLevelReportTabs linkParams="${params}" exclude="${['fctTarget']}" />
+				
 				<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>			
 				<ul id="questions">
 		            <li class="question push-20">

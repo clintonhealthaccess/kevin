@@ -1,4 +1,5 @@
 <div class="filter">
+	
 	<span class="dropdown js_dropdown">
 		<g:if test="${currentProgram != null}">
 			<a href="#" class="program selected" data-program="${currentProgram.id}" data-type="program"> 
@@ -9,7 +10,7 @@
 			<a href="#" class="program selected" data-type="program"> 
 				<g:message code="filter.program.noselection.label" />
 			</a>
-		</g:else>		
+		</g:else>
 		<div class="hidden dropdown-list js_dropdown-list">
 			<g:if test="${programTree != null && !programTree.empty}">
 				<ul>	

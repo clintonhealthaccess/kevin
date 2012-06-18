@@ -1,9 +1,8 @@
 <r:require module="foldable" />
 <li class="${current?.id == program?.id ? 'current':''} js_foldable foldable">	
 	<% def programLinkParams = new HashMap(linkParams) %>
-	<% programLinkParams.remove("dashboardEntity") %>		
 	<% programLinkParams['program'] = program.id+"" %>
-	<% linkParams = programLinkParams %>		
+	<% linkParams = programLinkParams %>	
 	<g:if test="${program.children != null && !program.children.empty && !programTree.disjoint(program.children)}">
 		<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a>
 	</g:if>

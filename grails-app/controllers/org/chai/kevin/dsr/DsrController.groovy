@@ -50,14 +50,23 @@ class DsrController extends AbstractController {
 	
 	public DsrTargetCategory getDsrTargetCategory(def program){
 		def dsrTargetCategory = null
-		if(params.int('dsrCategory') != null)
-			dsrTargetCategory = DsrTargetCategory.get(params.int('dsrCategory'))
-		else{
+			
+		if(params.int('dsrCategory') != null){
+			dsrTargetCategory = DsrTargetCategory.get(params.int('dsrCategory'))			
+			def dsrTargets = dsrTargetCategory.targets
+			if(dsrTargets != null && dsrTargets.empty){
+				if(!dsrTargets.first().program.equals(program))
+					dsrTargetCategory = null
+			}
+		}			
+		
+		if(dsrTargetCategory == null){
 			def categories = dsrService.getTargetCategories(program)
 			Collections.sort(categories);
 			if(categories != null && !categories.empty)
 				dsrTargetCategory = categories.first()
 		}
+		
 		return dsrTargetCategory
 	}	
 	

@@ -3,6 +3,7 @@ package org.chai.kevin
 import grails.test.GroovyPagesTestCase;
 
 import org.chai.kevin.IntegrationTests
+import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardIntegrationTests
 import org.chai.kevin.dsr.DsrIntegrationTests
 import org.chai.kevin.location.DataLocation;
@@ -22,15 +23,26 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		DashboardIntegrationTests.setupDashboardTree()
 		def program = ReportProgram.findByCode(IntegrationTests.PROGRAM1)
 		
+		def controller = new UserController()
+		controller.request.params.put('program', program.id)
+		controller.request.params.put('dashboardEntity', 3)
+		controller.request.params.put('dsrCategory', 4)
+		controller.request.params.put('fctTarget', 5)
+		
 		def html = applyTemplate(
-			'<g:programFilter selected="${program}" selectedTargetClass="${target}"/>',
+			'<g:programFilter linkParams="${params}" selected="${program}" selectedTargetClass="${target}" exclude="${excludeParams}"/>',
 			[
+				'params': controller.request.params,
 				'program': program,
-				'target': DashboardTarget.class
+				'target': DashboardTarget.class,
+				'excludeParams': ['dashboardEntity', 'dsrCategory', 'fctTarget']
 			]
 		)
 		
 		assertTrue html.contains("href=\"/test?program="+program.id+"\"")
+		assertTrue !html.contains("dashboardEntity="+3+"\"")
+		assertTrue !html.contains("dsrCategory="+4+"\"")
+		assertTrue !html.contains("fctTarget="+5+"\"")
 	}
 	
 	def testLocationFilter() {
@@ -137,5 +149,27 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		assertTrue html.contains('<input type="hidden" name="param1" value="123"/>')
 		assertTrue html.contains('<input type="hidden" name="param2" value="123"/>')
 		assertTrue html.contains('<input type="hidden" name="param2" value="456"/>')
+	}	
+	
+	def testTopLevelReportTabsFilter() {
+		def period = IntegrationTests.newPeriod()
+		IntegrationTests.setupProgramTree()
+		DashboardIntegrationTests.setupDashboardTree()
+		def program = ReportProgram.findByCode(IntegrationTests.PROGRAM1)
+		
+		def controller = new UserController()
+		controller.request.params.put('program', program.id)
+		controller.request.params.put('dashboardEntity', 3)
+		
+		def html = applyTemplate(
+			'<g:topLevelReportTabs linkParams="${params}" exclude="${excludeParams}" />',
+			[
+				'params': controller.request.params,
+				'excludeParams': ['dashboardEntity']
+			]
+		)
+
+		assertTrue html.contains("href=\"/test?program="+program.id+"\"")
+		assertTrue !html.contains("dashboardEntity="+3+"\"")
 	}
 }
