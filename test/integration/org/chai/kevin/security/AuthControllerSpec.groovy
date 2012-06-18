@@ -1,44 +1,65 @@
 package org.chai.kevin.security
 
+import javax.servlet.ServletRequest;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.apache.shiro.web.util.WebUtils;
 import org.chai.kevin.IntegrationTests;
 
 class AuthControllerSpec extends IntegrationTests {
 
 	def authController
 	
-	def setup() {
-//		SecurityUtils.securityManager.
+	def "users get redirected to correct page after signin"() {
+		setup:
+		authController = new AuthController()
+		def user = new User(code: 'not_important', username: 'test', email:'test@test.com', passwordHash: new Sha256Hash('1234').toString(), uuid: 'uuid', active: true, confirmed: true).save(failOnError: true)
+		setupSecurityManager(user)
+		
+		when:
+		authController.params.username = 'test'
+		authController.params.password = '1234'
+		authController.params.targetUri = '/user/list'
+		authController.signIn()
+		
+		then:
+		authController.response.redirectedUrl == '/user/list' 	
 	}
 	
-//	def "users get redirected to correct page after signin"() {
-//		setup:
-//		authController = new AuthController()
-//		new User(username: 'test', email:'test@test.com', passwordHash: new Sha256Hash('1234').toString(), uuid: 'uuid', active: true, confirmed: true).save(failOnError: true)
-//		def subject = [login: { authToken -> true }, getSession: { arg -> null }] as Subject
-//		ThreadContext.put( ThreadContext.SECURITY_MANAGER_KEY, [ getSubject: { subject } ] as SecurityManager )
-//		SecurityUtils.metaClass.static.getSubject = { subject }
-//		
-//		when:
-//		authController.params.username = 'test'
-//		authController.params.password = '1234'
-//		authController.params.targetUri = '/user/list'
-//		authController.signIn()
-//		
-//		then:
-//		authController.response.redirectedUrl == '/user/list' 	
-//	}
-	
-	def "inactive users cannot login"() {
+	def "users that have default language set get redirected to correct page after signin"() {
+		setup:
+		authController = new AuthController()
+		def user = new User(defaultLanguage: 'fr', code: 'not_important', username: 'test', email:'test@test.com', passwordHash: new Sha256Hash('1234').toString(), uuid: 'uuid', active: true, confirmed: true).save(failOnError: true)
+		setupSecurityManager(user)
 		
+		when:
+		authController.params.username = 'test'
+		authController.params.password = '1234'
+		authController.params.targetUri = '/user/list'
+		authController.signIn()
+		
+		then:
+		authController.response.redirectedUrl == '/user/list?lang=fr'
 	}
 	
-	def "unconfirmed users cannot login"() {
+	def "users that have default language set get redirected to correct page after signin - with language already set"() {
+		setup:
+		authController = new AuthController()
+		def user = new User(defaultLanguage: 'fr', code: 'not_important', username: 'test', email:'test@test.com', passwordHash: new Sha256Hash('1234').toString(), uuid: 'uuid', active: true, confirmed: true).save(failOnError: true)
+		setupSecurityManager(user)
 		
+		when:
+		authController.params.username = 'test'
+		authController.params.password = '1234'
+		authController.params.targetUri = '/user/list?lang=de&test=test'
+		authController.signIn()
+		
+		then:
+		authController.response.redirectedUrl == '/user/list?lang=fr&test=test'
 	}
 	
 	def "register with wrong email address"() {

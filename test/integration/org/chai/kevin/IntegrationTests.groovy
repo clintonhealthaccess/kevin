@@ -33,10 +33,13 @@ import grails.plugin.springcache.annotations.CacheFlush;
 
 import java.util.Date
 
+import javax.servlet.ServletRequest;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.apache.shiro.web.util.WebUtils;
 import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.Aggregation;
@@ -380,9 +383,10 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def setupSecurityManager(def user) {
-		def subject = [getPrincipal: { user?.uuid }, isAuthenticated: { user==null?false:true }] as Subject
+		def subject = [getPrincipal: { user?.uuid }, isAuthenticated: { user==null?false:true }, login: { token -> null }] as Subject
 		ThreadContext.put( ThreadContext.SECURITY_MANAGER_KEY, [ getSubject: { subject } ] as SecurityManager )
 		SecurityUtils.metaClass.static.getSubject = { subject }
+		WebUtils.metaClass.static.getSavedRequest = { ServletRequest request -> null }
 	}
 	
 	static def g(def types) {

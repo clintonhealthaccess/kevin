@@ -153,25 +153,31 @@ class AuthController {
             authToken.rememberMe = true
         }
         
-        // If a controller redirected to this page, redirect back
-        // to it. Otherwise redirect to the root URI.
-        def targetURI = getTargetURI()
-        
-        // Handle requests saved by Shiro filters.
-        def savedRequest = WebUtils.getSavedRequest(request)
-        if (savedRequest) {
-            targetURI = savedRequest.requestURI - request.contextPath
-            if (savedRequest.queryString) targetURI = targetURI + '?' + savedRequest.queryString
-        }
-        
         try{
             // Perform the actual login. An AuthenticationException
             // will be thrown if the username is unrecognised or the
             // password is incorrect.
             SecurityUtils.subject.login(authToken)
-
-            if (log.isInfoEnabled()) log.info "Redirecting to '${targetURI}'."
-            redirect(uri: targetURI)
+			
+			// If a controller redirected to this page, redirect back
+			// to it. Otherwise redirect to the root URI.
+			String targetURI = getTargetURI()
+			
+			// Handle requests saved by Shiro filters.
+			def savedRequest = WebUtils.getSavedRequest(request)
+			if (savedRequest) {
+				targetURI = savedRequest.requestURI - request.contextPath
+				if (savedRequest.queryString) targetURI = targetURI + '?' + savedRequest.queryString
+			}
+			
+			// append the user preferred language
+			def redirectURI = targetURI
+			
+			def language = User.findByUuid(SecurityUtils.subject.principal, [cache: true]).defaultLanguage
+			if (language) redirectURI = replaceParam(redirectURI, 'lang', language)
+			
+            if (log.isInfoEnabled()) log.info "Redirecting to '${redirectURI}'."
+            redirect(uri: redirectURI)
         }
         catch (AuthenticationException ex){
             // Authentication failed, so display the appropriate message
@@ -196,6 +202,26 @@ class AuthController {
         }
     }
 
+	def replaceParam(def uriToReplace, def paramToReplace, def newValue) {
+		def splitURI = uriToReplace.split('\\?', 2)
+		
+		def uri = splitURI[0]
+		def uriParams = splitURI.size() == 2 ? splitURI[1].split('&') : []
+		
+		def found = false
+		uriParams = uriParams.collect { param ->
+			def map = param.split('=', 2)
+			if (map[0] == paramToReplace) {
+				found = true
+				return 'lang='+newValue
+			}
+			else return map[0]+(map.size() == 2 ? ('='+map[1]) : '')
+		}
+		if (!found) uriParams << 'lang='+newValue
+		
+		return uri + '?' + uriParams.join('&')
+	}
+	
     def signOut = {
         // Log the user out of the application.
         SecurityUtils.subject?.logout()

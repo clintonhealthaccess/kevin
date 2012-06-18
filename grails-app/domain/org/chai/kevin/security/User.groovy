@@ -12,6 +12,7 @@ class User {
 	String permissionString = ''
 	Boolean confirmed = false
 	Boolean active = false
+	String defaultLanguage
 	String uuid
 	
 	String firstname, lastname, location
@@ -44,6 +45,7 @@ class User {
 		lastname(nullable: true)
 		location(nullable: true)
 		uuid(nullable: false, blank: false, unique: true)
+		defaultLanguage(nullable: true)
     }
 	
 	static mapping = {

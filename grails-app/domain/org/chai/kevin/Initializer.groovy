@@ -108,7 +108,7 @@ class Initializer {
 		surveyAllReadonly.addToPermissions("editSurvey:print")
 		surveyAllReadonly.save()
 
-		def user = new User(code:"dhsst",username: "dhsst", email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), active: true, confirmed: true, uuid:'dhsst_uuid')
+		def user = new User(code:"dhsst",username: "dhsst", email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), active: true, confirmed: true, uuid:'dhsst_uuid', defaultLanguage:'fr')
 		user.addToRoles(reportAllReadonly)
 		user.addToRoles(surveyAllReadonly)
 		// access to site
