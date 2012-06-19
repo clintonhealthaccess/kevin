@@ -37,6 +37,7 @@ import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.LocationService
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.chai.kevin.reports.ReportEntity
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.security.User;
@@ -50,6 +51,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 public abstract class AbstractController {
 
+	LanguageService langaugeService;
 	ReportService reportService;
 	LocationService locationService;
 	protected final static String FILE_TYPE_ZIP="application/zip";
@@ -116,6 +118,23 @@ public abstract class AbstractController {
 		LocationLevel level = null
 		level = LocationLevel.get(params.int('level'));
 		return level
+	}
+	
+	def getReportDescriptions(def reportEntities){
+		def entityDescriptions = []
+		for(def entity : reportEntities){
+			if(entity != null && entity instanceof ReportEntity){
+				ReportEntity reportEntity = (ReportEntity) entity
+				def name = languageService.getText(reportEntity.names)
+				def description = languageService.getText(reportEntity.descriptions)
+				if(description != null)
+					 entityDescriptions.add(name + " - " + description)
+				else
+					entityDescriptions.add(name)
+			}
+		}
+		def descriptions = entityDescriptions.join("<br><br>")
+		return descriptions
 	}
 	
 	def adaptParamsForList() {

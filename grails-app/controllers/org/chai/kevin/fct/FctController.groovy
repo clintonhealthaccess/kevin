@@ -3,10 +3,12 @@ package org.chai.kevin.fct
 import java.util.Collections;
 
 import org.chai.kevin.AbstractController
+import org.chai.kevin.LanguageService
 import org.chai.kevin.Period
 import org.chai.kevin.location.DataLocationType
 import org.chai.kevin.location.Location
 import org.chai.kevin.location.LocationLevel
+import org.chai.kevin.reports.ReportEntity
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 
@@ -25,7 +27,7 @@ class FctController extends AbstractController {
 				fctTarget = targets.first()				
 		}
 		return fctTarget
-	}
+	}		
 	
 //	def getLevel(){
 //		LocationLevel level = null
@@ -49,14 +51,19 @@ class FctController extends AbstractController {
 		Location location = getLocation()
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 
-		FctTarget fctTarget = getFctTarget(program)			
+		FctTarget fctTarget = getFctTarget(program)
 		def skipLevels = fctService.getSkipLocationLevels()
 		def locationTree = location.collectTreeWithDataLocations(skipLevels, dataLocationTypes).asList()
 		LocationLevel level = locationService.getLevelAfter(location.getLevel(), skipLevels)
 		
 		FctTable fctTable = null;
+		def fctDescriptions = null;
 		if (period != null && program != null && fctTarget != null && location != null && dataLocationTypes != null) {					
 			fctTable = fctService.getFctTable(location, program, fctTarget, period, level, dataLocationTypes);
+						
+			def reportEntities = [program, fctTarget]
+			if(fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty) reportEntities.addAll(fctTable.targetOptions)
+			fctDescriptions = getReportDescriptions(reportEntities)
 		}
 		
 		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root program: "+program)				
@@ -64,6 +71,7 @@ class FctController extends AbstractController {
 		[
 			fctTable: fctTable,
 			currentTarget: fctTarget,
+			currentDescriptions: fctDescriptions,
 			currentPeriod: period,
 			currentProgram: program,
 			selectedTargetClass: FctTarget.class,
@@ -73,5 +81,5 @@ class FctController extends AbstractController {
 			skipLevels: skipLevels,
 			currentChildLevel: level
 		]
-	}
+	}		
 }

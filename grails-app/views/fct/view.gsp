@@ -18,13 +18,13 @@
 			</div>
 			<div class="main">
 				<g:render template="/templates/topLevelReportTabs" model="[linkParams:params]"/>				
-				<g:if test="${fctTable != null && fctTable.hasData()}">
-					<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>			
+				<g:if test="${fctTable != null && fctTable.hasData()}">					
+					<g:render template="/templates/help" model="[content: currentDescriptions]"/>												
 					<ul id="questions">
 			            <li class="question push-20">
 			                <g:render template="/templates/reportTableHeader" model="[table:'program', linkParams:params]"/>	                																
-							<g:render template="/fct/reportTargetFilter" model="[linkParams:params]"/>
-		              		<g:render template="/fct/reportProgramTable" model="[linkParams:params]"/>	
+							<g:render template="/fct/reportTargetFilter" model="[linkParams:params]"/>							
+		              		<g:render template="/fct/reportProgramTable" model="[linkParams:params]"/>
 		              	</li>
 		              	<li class="question push-10">
 		                	<g:render template="/templates/reportTableHeader" model="[table:'location', linkParams:params]"/>
