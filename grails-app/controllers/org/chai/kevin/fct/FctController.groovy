@@ -18,8 +18,10 @@ class FctController extends AbstractController {
 		def fctTarget = null
 		if(params.int('fctTarget') != null){
 			fctTarget = FctTarget.get(params.int('fctTarget'))
-			if(!fctTarget.program.equals(program))
-				fctTarget = null
+			if(fctTarget != null){
+				if(!fctTarget.program.equals(program))
+					fctTarget = null
+			}			
 		}
 		
 		if(fctTarget == null){
@@ -52,18 +54,25 @@ class FctController extends AbstractController {
 		ReportProgram program = getProgram(FctTarget.class)
 		Location location = getLocation()
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()
-
-		FctTarget fctTarget = getFctTarget(program)			
+		FctTarget fctTarget = getFctTarget(program)
+		
 		def skipLevels = fctService.getSkipLocationLevels()
 		def locationTree = location.collectTreeWithDataLocations(skipLevels, dataLocationTypes).asList()
 		LocationLevel level = locationService.getLevelAfter(location.getLevel(), skipLevels)
 		
 		FctTable fctTable = null;
-		if (period != null && program != null && fctTarget != null && location != null && dataLocationTypes != null) {					
+		if (period != null && program != null && location != null && dataLocationTypes != null && fctTarget != null ) {
+			
+			def reportParams = [period:period.id, program:program.id, location:location.id, dataLocationTypes:dataLocationTypes.collect{ it.id }.sort(), fctTarget:fctTarget.id]
+			def redirectParams = getRedirectParams(reportParams)
+			def newParams = redirectIfDifferent(redirectParams)
+			if(newParams != null && !newParams.empty)
+				 redirect(controller: newParams['controller'], action: newParams['action'], params: newParams)
+						
 			fctTable = fctService.getFctTable(location, program, fctTarget, period, level, dataLocationTypes);
 		}
 		
-		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root program: "+program)				
+		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+", root program: "+program+", root location: "+location)				
 		
 		[
 			fctTable: fctTable,
