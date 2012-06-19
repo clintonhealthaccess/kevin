@@ -47,23 +47,7 @@ class DashboardController extends AbstractController {
 	
 	def index = {
 		redirect (action: 'view', params: params)
-	}
-		
-//	protected def redirectIfDifferent(def period, def program, def location) {
-//		if (period.id+'' != params['period'] || program.id+'' != params['program'] || location.id+'' != params['location'] ) {
-//			
-//			if (log.isInfoEnabled()) {
-//				log.info ("redirecting to action: "+params['action']+
-//					", period: "+period.id+
-//					", program: "+program.id+
-//					", location: "+location.id);
-//			}
-//			
-//			redirect (controller: 'dashboard', action: params['action'],
-//				params: [period: period.id, program: program.id, location: location.id]);
-//	
-//		}
-//	}
+	}		
 	
 	private def getDashboardEntity(def program) {		
 		DashboardEntity entity = dashboardService.getDashboardProgram(program)
@@ -124,7 +108,7 @@ class DashboardController extends AbstractController {
 		DashboardEntity dashboardEntity = getDashboardEntity(program)
 		
 		def dashboard = null
-		if (period != null && program != null && dashboardEntity != null && location != null && dataLocationTypes != null) {			
+		if (period != null && program != null && location != null && dataLocationTypes != null && dashboardEntity != null) {			
 			
 			if (log.isInfoEnabled()){
 				log.info("compare dashboard for period: "+period.id+
@@ -132,7 +116,12 @@ class DashboardController extends AbstractController {
 					", program:"+program.id+
 					", dashboardEntity: " + dashboardEntity.id);
 			}
-			redirectIfDifferent(period, program, location)
+			
+			def reportParams = [period:period.id, program:program.id, location:location.id, dataLocationTypes:dataLocationTypes.collect{ it.id }.sort(), dashboardEntity:dashboardEntity.id]
+			def redirectParams = getRedirectParams(reportParams)
+			def newParams = redirectIfDifferent(redirectParams)
+			if(newParams != null && !newParams.empty)
+				 redirect(controller: newParams['controller'], action: newParams['action'], params: newParams)			
 			
 			def table = (String) params.get("table")			
 			if(table == 'program')

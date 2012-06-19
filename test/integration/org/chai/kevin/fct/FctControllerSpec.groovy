@@ -39,6 +39,10 @@ class FctControllerSpec extends FctIntegrationTests {
 		model.fctTable.hasData() == true
 	}
 		
+	def "get fct with with invalid parameters, default to period, root program, root location, location types, category, and target"(){
+		//TODO combine invalid parameter tests below into one
+	}
+	
 	def "get fct with no program and no location, default to root program and root location"() {
 		setup:
 		setupLocationTree()

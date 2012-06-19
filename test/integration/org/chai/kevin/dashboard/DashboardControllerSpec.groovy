@@ -175,4 +175,32 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		compareValues[0].value == getPercentage(percentageCompareValue)
 	}
 
+	//TODO change redirect to controller action?
+//	class FooController {
+//		def text = {
+//			render "bar"
+//		}
+//	
+//		def someRedirect = {
+//			redirect(action:"bar")
+//		}
+//	}
+	
+//	class FooControllerTests extends GroovyTestCase {
+//		void testText() {
+//			def fc = new FooController()
+//			fc.text()
+//			assertEquals "bar", fc.response.contentAsString
+//		}
+//	
+//		void testSomeRedirect() {
+//	
+//			def fc = new FooController()
+//			fc.someRedirect()
+//			assertEquals "/foo/bar", fc.response.redirectedUrl
+//		}
+//	}
+	
+	
+	
 }

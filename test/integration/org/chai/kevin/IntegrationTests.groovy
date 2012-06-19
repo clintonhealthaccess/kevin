@@ -110,6 +110,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 	
 	static String PROGRAM3 = "Program3"
 	
+	static String CATEGORY1 = "Category1"
+	
 	// TODO get rid of this
 	def static inc = 0;
 	def static code = ""+inc;

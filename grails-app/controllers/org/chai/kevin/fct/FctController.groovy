@@ -25,10 +25,11 @@ class FctController extends AbstractController {
 		}
 		
 		if(fctTarget == null){
-			def targets = fctService.getFctTargets(program)
-			Collections.sort(targets);
-			if(targets != null && !targets.empty)
-				fctTarget = targets.first()				
+			def targets = fctService.getFctTargets(program)			
+			if(targets != null && !targets.empty){
+				Collections.sort(targets);
+				fctTarget = targets.first()			
+			}	
 		}
 		return fctTarget
 	}

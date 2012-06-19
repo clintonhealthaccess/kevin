@@ -64,9 +64,10 @@ class DsrController extends AbstractController {
 		
 		if(dsrTargetCategory == null){
 			def categories = dsrService.getTargetCategories(program)
-			Collections.sort(categories);
-			if(categories != null && !categories.empty)
+			if(categories != null && !categories.empty){
+				Collections.sort(categories);
 				dsrTargetCategory = categories.first()
+			}
 		}
 		
 		return dsrTargetCategory
@@ -89,9 +90,10 @@ class DsrController extends AbstractController {
 		def locationTree = location.collectTreeWithDataLocations(skipLevels, dataLocationTypes).asList()				
 		
 		def dsrTable = null		
-		if (period != null && program != null && location != null && dataLocationTypes != null && dsrCategory != null) {
+		if (period != null && program != null && location != null && dataLocationTypes != null) {
 			
-			def reportParams = [period:period.id, program:program.id, location:location.id, dataLocationTypes:dataLocationTypes.collect{ it.id }.sort(), dsrCategory:dsrCategory.id]
+			def reportParams = [period:period.id, program:program.id, location:location.id, dataLocationTypes:dataLocationTypes.collect{ it.id }.sort()]
+			if(dsrCategory != null) reportParams.put(dsrCategory, dsrCategory.id)
 			def redirectParams = getRedirectParams(reportParams)
 			def newParams = redirectIfDifferent(redirectParams)
 			if(newParams != null && !newParams.empty)
