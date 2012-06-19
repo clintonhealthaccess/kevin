@@ -62,13 +62,14 @@ class FctController extends AbstractController {
 		LocationLevel level = locationService.getLevelAfter(location.getLevel(), skipLevels)
 		
 		FctTable fctTable = null;
-		if (period != null && program != null && location != null && dataLocationTypes != null && fctTarget != null ) {
+		if (period != null && program != null && location != null && dataLocationTypes != null) {
 			
-			def reportParams = [period:period.id, program:program.id, location:location.id, dataLocationTypes:dataLocationTypes.collect{ it.id }.sort(), fctTarget:fctTarget.id]
+			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
+				'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'fctTarget':fctTarget?fctTarget.id:null]
 			def redirectParams = getRedirectParams(reportParams)
 			def newParams = redirectIfDifferent(redirectParams)
 			if(newParams != null && !newParams.empty)
-				 redirect(controller: newParams['controller'], action: newParams['action'], params: newParams)
+				redirect(controller: 'fct', action: 'view', params: newParams)
 						
 			fctTable = fctService.getFctTable(location, program, fctTarget, period, level, dataLocationTypes);
 		}

@@ -84,19 +84,24 @@ public abstract class AbstractController {
 	
 	def getLocation(){
 		Location location = Location.get(params.int('location'))
-		if (location == null) location = locationService.getRootLocation()
+		//TODO add skips and types to method
+		//TODO if location != null, get location tree, and if the location tree doesn't contain the location, return root location
+		if (location == null)
+			location = locationService.getRootLocation()
 		return location
-	}	
+	}
 	
 	public Set<DataLocationType> getLocationTypes() {
 		Set<DataLocationType> dataLocationTypes = new HashSet<DataLocationType>()
 		if (params.list('dataLocationTypes') != null && !params.list('dataLocationTypes').empty) {
 			def types = params.list('dataLocationTypes')
-			dataLocationTypes.addAll(types.collect{ DataLocationType.get(it) })
+			dataLocationTypes.addAll(types.collect{ DataLocationType.get(it) } - null)
+		}		
+		
+		if(dataLocationTypes == null || dataLocationTypes.empty){
+			dataLocationTypes.addAll(ConfigurationHolder.config.site.datalocationtype.checked.collect{ DataLocationType.findByCode(it) } - null)
 		}
-		else {
-			dataLocationTypes.addAll(ConfigurationHolder.config.site.datalocationtype.checked.collect{ DataLocationType.findByCode(it) })
-		}
+		
 		return dataLocationTypes.sort()
 	}
 	
@@ -125,7 +130,7 @@ public abstract class AbstractController {
 	}	
 	
 	def getRedirectParams(def reportParams){
-		def redirectParams = [controller:params['controller'], action:params['action']]
+		def redirectParams = [:]
 		for(def reportParam : reportParams){
 			if(params.get(reportParam.key) != null)
 				redirectParams.put(reportParam.key, reportParam.value)
@@ -139,15 +144,17 @@ public abstract class AbstractController {
 		for(def param : params){
 			def key = param.key						
 			def urlValue = null
-			if(key == 'dataLocationTypes') 
+			if(key == 'controller' || key == 'action') 
+				continue
+			else if(key == 'dataLocationTypes') 
 				urlValue = params.list(key).toString()
 			else 
 				urlValue = params[key].toString()		
 			def redirectValue = redirectParams[key].toString()
 			if(urlValue != redirectValue)
 				redirect = true
-			newParams.put(key, redirectParams[key])
-		}		
+			if(redirectParams[key] != null) newParams.put(key, redirectParams[key])
+		}
 		if(!redirect) return null				
 		if(redirect){
 			if (log.isInfoEnabled()) {

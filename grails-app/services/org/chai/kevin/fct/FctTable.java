@@ -76,6 +76,10 @@ public class FctTable extends ReportTable<FctTargetOption, CalculationLocation> 
 		return targets;
 	}
 	
+	public List<CalculationLocation> getTopLevelLocations(){
+		return topLevelLocations;
+	}
+	
 	public Set<CalculationLocation> getLocations(){
 		return valueMap.keySet();
 	}	

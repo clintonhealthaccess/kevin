@@ -60,28 +60,28 @@ class DashboardController extends AbstractController {
 		Period period = getPeriod()									
 		ReportProgram program = getProgram(DashboardTarget.class)
 		Location location = getLocation()
-		Set<DataLocationType> dataLocationTypes = getLocationTypes()
-		
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()		
 		def dashboardEntity = getDashboardEntity(program)
+		
 		def skipLevels = dashboardService.getSkipLocationLevels();
 		
 		def programDashboard = null
 		def locationDashboard = null
 		if (period != null && program != null && location != null && dataLocationTypes != null && dashboardEntity != null ) {			
 			
-			def reportParams = [period:period.id, program:program.id, location:location.id, dataLocationTypes:dataLocationTypes.collect{ it.id }.sort(), dashboardEntity:dashboardEntity.id]
+			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
+				'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'dashboardEntity':dashboardEntity.id]
 			def redirectParams = getRedirectParams(reportParams)
 			def newParams = redirectIfDifferent(redirectParams)
 			if(newParams != null && !newParams.empty)
-				 redirect(controller: newParams['controller'], action: newParams['action'], params: newParams)
+				redirect(controller: 'dashboard', action: 'view', params: newParams)
 			
 			programDashboard = dashboardService.getProgramDashboard(location, program, period, dataLocationTypes);
 			locationDashboard = dashboardService.getLocationDashboard(location, program, period, dataLocationTypes, false);			
 
 		}
 		if (log.isDebugEnabled()){
-			 log.debug('program dashboard: '+programDashboard+", root program: "+program)
-			 log.debug('location dashboard: '+locationDashboard+", root location: "+location)
+			 log.debug('program dashboard: '+programDashboard+", location dashboard: "+locationDashboard+", root program: "+program+", root location: "+location)
 		}
 		
 		[
@@ -103,25 +103,15 @@ class DashboardController extends AbstractController {
 		Period period = getPeriod()	
 		ReportProgram program = getProgram(DashboardTarget.class)
 		Location location = getLocation()
-		Set<DataLocationType> dataLocationTypes = getLocationTypes()
-		
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()		
 		DashboardEntity dashboardEntity = getDashboardEntity(program)
 		
 		def dashboard = null
 		if (period != null && program != null && location != null && dataLocationTypes != null && dashboardEntity != null) {			
 			
-			if (log.isInfoEnabled()){
-				log.info("compare dashboard for period: "+period.id+
-					", location: "+location.id+
-					", program:"+program.id+
-					", dashboardEntity: " + dashboardEntity.id);
-			}
-			
-			def reportParams = [period:period.id, program:program.id, location:location.id, dataLocationTypes:dataLocationTypes.collect{ it.id }.sort(), dashboardEntity:dashboardEntity.id]
-			def redirectParams = getRedirectParams(reportParams)
-			def newParams = redirectIfDifferent(redirectParams)
-			if(newParams != null && !newParams.empty)
-				 redirect(controller: newParams['controller'], action: newParams['action'], params: newParams)			
+			if (log.isDebugEnabled()){
+				log.debug("compare dashboard for dashboardEntity: "+dashboardEntity+", root program: "+program+", root location: "+location)
+			}						
 			
 			def table = (String) params.get("table")			
 			if(table == 'program')

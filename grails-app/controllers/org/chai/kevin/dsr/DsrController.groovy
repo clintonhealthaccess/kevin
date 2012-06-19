@@ -92,12 +92,12 @@ class DsrController extends AbstractController {
 		def dsrTable = null		
 		if (period != null && program != null && location != null && dataLocationTypes != null) {
 			
-			def reportParams = [period:period.id, program:program.id, location:location.id, dataLocationTypes:dataLocationTypes.collect{ it.id }.sort()]
-			if(dsrCategory != null) reportParams.put(dsrCategory, dsrCategory.id)
+			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
+						'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'dsrCategory':dsrCategory?dsrCategory.id:null]
 			def redirectParams = getRedirectParams(reportParams)
 			def newParams = redirectIfDifferent(redirectParams)
-			if(newParams != null && !newParams.empty)
-				 redirect(controller: newParams['controller'], action: newParams['action'], params: newParams)
+			if(newParams != null && !newParams.empty) 
+				redirect(controller: 'dsr', action: 'view', params: newParams)
 			
 			dsrTable = dsrService.getDsrTable(location, program, period, dataLocationTypes, dsrCategory);			
 		}
