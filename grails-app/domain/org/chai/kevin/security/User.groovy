@@ -8,14 +8,17 @@ class User {
     String username
 	// TODO get rid of this
 	String code
+	String uuid
     String passwordHash = ''
 	String permissionString = ''
 	Boolean confirmed = false
 	Boolean active = false
 	String defaultLanguage
-	String uuid
 	
-	String firstname, lastname, location
+	String location
+	
+	String phoneNumber
+	String firstname, lastname, organisation 
 	
     static hasMany = [ roles: Role ]
 
@@ -40,11 +43,13 @@ class User {
     static constraints = {
 		email(email:true, unique: true, nullable: true)
         username(nullable: false, blank: false, unique: true)
-		code(nullable: false, blank: false, unique: true)
-		firstname(nullable: true)
-		lastname(nullable: true)
-		location(nullable: true)
 		uuid(nullable: false, blank: false, unique: true)
+		code(nullable: false, blank: false, unique: true)
+		firstname(nullable: false, blank: false)
+		lastname(nullable: false, blank: false)
+		phoneNumber(phoneNumber: true, nullable: false, blank: false)
+		organisation(nullable: false, blank: false)
+		location(nullable: true)
 		defaultLanguage(nullable: true)
     }
 	

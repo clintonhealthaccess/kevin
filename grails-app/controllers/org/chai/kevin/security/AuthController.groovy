@@ -40,7 +40,7 @@ class AuthController {
 			render(view:'register', model:[register: cmd])
 		}
 		else {
-			def user = new User(code: cmd.email, username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'', firstname: cmd.firstname, lastname: cmd.lastname, location: cmd.location, uuid: UUID.randomUUID().toString()).save()
+			def user = new User(code: cmd.email, username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'', firstname: cmd.firstname, lastname: cmd.lastname, organisation: cmd.organisation, phoneNumber: cmd.phoneNumber, uuid: UUID.randomUUID().toString()).save()
 			RegistrationToken token = new RegistrationToken(token: RandomStringUtils.randomAlphabetic(20), user: user, used: false).save()
 			def url = createLink(absolute: true, controller:'auth', action:'confirmRegistration', params:[token:token.token])
 			
@@ -49,7 +49,7 @@ class AuthController {
 				to contactEmail
 				from getFromEmail()
 				subject "Registration received from ${user.email}"
-				body "Registration received from ${user.email}, first name: ${user.firstname}, last name: ${user.lastname}"
+				body "Registration received from ${user.email}, first name: ${user.firstname}, last name: ${user.lastname}, organisation: ${user.organisation}, phone number: ${user.phoneNumber}"
 			}
 			
 			if (log.isDebugEnabled()) log.debug("sending email to: ${user.email}, token: ${token.token}, url: ${url}")
@@ -344,13 +344,15 @@ class NewPasswordCommand {
 class RegisterCommand extends NewPasswordCommand {
 	String firstname
 	String lastname
-	String location
+	String organisation
 	String email
+	String phoneNumber
 	
 	static constraints = {
 		firstname(nullable:false, blank:false)
 		lastname(nullable:false, blank:false)
-		location(nullable:false, blank:false)
+		organisation(nullable:false, blank:false)
+		phoneNumber(nullable:false, blank:false, phoneNumber: true)
 		email(blank:false, email:true, validator: {val, obj ->
 			return User.findByEmail(val) == null && User.findByUsername(val) == null
 		})

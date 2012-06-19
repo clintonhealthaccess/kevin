@@ -51,6 +51,10 @@ class DataUserControllerSpec extends IntegrationTests{
 		userController.params.email="exemple@exemple.com";
 		userController.params.code ="exemple";
 		userController.params.username ="exemple";
+		userController.params.firstname ="first";
+		userController.params.lastname ="last";
+		userController.params.phoneNumber ="+250 11 111 11 11";
+		userController.params.organisation ="org";
 		userController.params.password = "exemple";
 		userController.params.repeat = "exemple";
 		userController.params.permissionString = "*";
@@ -77,6 +81,10 @@ class DataUserControllerSpec extends IntegrationTests{
 		when:
 		userController.params.email="exemple@exemple.com";
 		userController.params.username ="exemple";
+		userController.params.firstname ="first";
+		userController.params.lastname ="last";
+		userController.params.phoneNumber ="+250 11 111 11 11";
+		userController.params.organisation ="org";
 		userController.params.password = "exemple";
 		userController.params.repeat = "exemple1";
 		userController.params.permissionString = "*";

@@ -31,10 +31,13 @@
 			</ul>
 			
 			<ul class="locales" id="top_nav">
-			  <shiro:user>
-					<li><a class="${controllerName=='auth'?'active':''}" href="${createLinkWithTargetURI(controller: 'auth', action:'newPassword')}"><g:message code="header.navigation.password"/></a></li>
-  				</li>
-  			</shiro:user>
+				<shiro:user>
+					<li>
+						<a class="${controllerName=='auth'?'active':''}" href="${createLinkWithTargetURI(controller: 'account', action:'editAccount')}">
+							<g:message code="header.navigation.myaccount"/> : ${user.firstname} ${user.lastname}
+						</a>
+					</li>
+				</shiro:user>
 				<shiro:user>
 					<li>
 						<a class="no-link" href="${createLink(controller: 'auth', action: 'signOut')}"><g:message code="header.labels.logout"/></a>
