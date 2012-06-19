@@ -45,6 +45,14 @@
 						<div class="error-list"><g:renderErrors bean="${register}" field="phoneNumber" /></div>
 					</td></tr>
 					
+					<tr>
+						<td><label><g:message code="register.language.label"/></label></td>
+						<td>
+							<g:select name="defaultLanguage" from="${languages}" value="${register?.defaultLanguage}" optionValue="displayLanguage"/>
+							<div class="error-list"><g:renderErrors bean="${register}" field="defaultLanguage" /></div>
+						</td>
+					</tr>
+					
 					<tr><td>
 						<label><g:message code="register.password.label"/></label></td>
 					<td>

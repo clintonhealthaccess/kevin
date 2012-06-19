@@ -88,6 +88,7 @@ class AuthControllerSpec extends IntegrationTests {
 		authController.params.firstname = 'first'
 		authController.params.lastname = 'last'
 		authController.params.organisation = 'org'
+		authController.params.defaultLanguage = 'fr'
 		authController.params.phoneNumber = '+250 11 111 11 11'
 		authController.params.password = '1234'
 		authController.params.repeat = '1234'
@@ -200,6 +201,7 @@ class AuthControllerSpec extends IntegrationTests {
 		authController.params.firstname = 'first'
 		authController.params.lastname = 'last'
 		authController.params.organisation = 'org'
+		authController.params.defaultLanguage = 'fr'
 		authController.params.phoneNumber = '+250 11 111 11 11'
 		authController.params.password = '1234'
 		authController.params.repeat = '1234'
@@ -210,6 +212,7 @@ class AuthControllerSpec extends IntegrationTests {
 		User.findByEmail('test@test.com').code == 'test@test.com'
 		User.findByEmail('test@test.com').firstname == 'first'
 		User.findByEmail('test@test.com').lastname == 'last'
+		User.findByEmail('test@test.com').defaultLanguage == 'fr'
 		User.findByEmail('test@test.com').organisation == 'org'
 		User.findByEmail('test@test.com').phoneNumber == '+250 11 111 11 11'
 		User.findByEmail('test@test.com').passwordHash == new Sha256Hash('1234').toString()

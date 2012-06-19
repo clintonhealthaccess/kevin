@@ -10,6 +10,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class AuthController {
 	
+	def languageService
     def shiroSecurityManager
 
 	def getTargetURI() {
@@ -27,7 +28,7 @@ class AuthController {
     def index = { redirect(action: "login", params: params) }
 
 	def register = {
-		render (view:'register', model:[register: null])
+		render (view:'register', model:[register: null, languages: languageService.availableLocales])
 	}
 	
 	// this will disappear once we have a real registration mechanism
@@ -37,10 +38,13 @@ class AuthController {
 		if (cmd.hasErrors()) {
 			if (log.isDebugEnabled()) log.debug("command has errors: "+cmd)
 
-			render(view:'register', model:[register: cmd])
+			render(view:'register', model:[register: cmd, languages: languageService.availableLocales])
 		}
 		else {
-			def user = new User(code: cmd.email, username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'', firstname: cmd.firstname, lastname: cmd.lastname, organisation: cmd.organisation, phoneNumber: cmd.phoneNumber, uuid: UUID.randomUUID().toString()).save()
+			def user = new User(code: cmd.email, username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'',
+				firstname: cmd.firstname, lastname: cmd.lastname, organisation: cmd.organisation,
+				phoneNumber: cmd.phoneNumber, defaultLanguage: cmd.defaultLanguage, uuid: UUID.randomUUID().toString()).save()
+				
 			RegistrationToken token = new RegistrationToken(token: RandomStringUtils.randomAlphabetic(20), user: user, used: false).save()
 			def url = createLink(absolute: true, controller:'auth', action:'confirmRegistration', params:[token:token.token])
 			
@@ -347,12 +351,14 @@ class RegisterCommand extends NewPasswordCommand {
 	String organisation
 	String email
 	String phoneNumber
+	String defaultLanguage
 	
 	static constraints = {
 		firstname(nullable:false, blank:false)
 		lastname(nullable:false, blank:false)
 		organisation(nullable:false, blank:false)
 		phoneNumber(nullable:false, blank:false, phoneNumber: true)
+		defaultLanguage(nullable:true)
 		email(blank:false, email:true, validator: {val, obj ->
 			return User.findByEmail(val) == null && User.findByUsername(val) == null
 		})
