@@ -17,33 +17,31 @@
 				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params]"/>
 			</div>
 			<div class="main">
-				<g:topLevelReportTabs linkParams="${params}" exclude="${['fctTarget']}" />
-				
-				<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>			
-				<ul id="questions">
-		            <li class="question push-20">
-		                <g:render template="/templates/reportTableHeader" model="[table:'program', linkParams:params]"/>	                																
-						<g:if test="${fctTable != null && fctTable.hasData()}">
+				<g:topLevelReportTabs linkParams="${params}" exclude="${['fctTarget']}" />								
+				<g:if test="${fctTable != null && fctTable.hasData()}">
+					<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>			
+					<ul id="questions">
+			            <li class="question push-20">
+			                <g:render template="/templates/reportTableHeader" model="[table:'program', linkParams:params]"/>	                																
 							<g:render template="/fct/reportTargetFilter" model="[linkParams:params]"/>
-	              			<g:render template="/fct/reportProgramTable" model="[linkParams:params]"/>
-	              		</g:if>
-	              		<g:else><div><g:message code="fct.report.table.noselection.label"/></div></g:else>	
-	              	</li>	              	
-	              	<li class="question push-10">
-	                	<g:render template="/templates/reportTableHeader" model="[table:'location', linkParams:params]"/>
-	                	<g:if test="${fctTable != null && fctTable.hasData()}">	                	              								
-							<p><g:message code="fct.report.datalocationtype"/>: 
-								<g:each in="${currentLocationTypes}" var="dataLocationType" status="i">						
-									<g:i18n field="${dataLocationType.names}" />
-									<g:if test="${i != currentLocationTypes.size()-1}">, </g:if>
-								</g:each>
-							</p>
-							<br />
-	              			<g:render template="/fct/reportLocationBarChart" model="[linkParams:params]"/>
-	              		</g:if>
-	              		<g:else><div><g:message code="fct.report.table.noselection.label"/></div></g:else>
-			    	</li>			    	
-	        	</ul>	
+		              		<g:render template="/fct/reportProgramTable" model="[linkParams:params]"/>	
+		              	</li>
+		              	<li class="question push-10">
+		                	<g:render template="/templates/reportTableHeader" model="[table:'location', linkParams:params]"/>
+		                	<p><g:message code="fct.report.datalocationtype"/>: 
+									<g:each in="${currentLocationTypes}" var="dataLocationType" status="i">						
+										<g:i18n field="${dataLocationType.names}" />
+										<g:if test="${i != currentLocationTypes.size()-1}">, </g:if>
+									</g:each>
+								</p>
+								<br />
+		              			<g:render template="/fct/reportLocationBarChart" model="[linkParams:params]"/>
+				    	</li>
+		        	</ul>
+	        	</g:if>
+	        	<g:else>
+	        		<p class="nav-help"><g:message code="fct.report.table.noselection.label"/></p>
+	        	</g:else>
             </div>					
 		</div>		
 	</body>
