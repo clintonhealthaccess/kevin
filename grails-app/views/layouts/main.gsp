@@ -1,3 +1,6 @@
+<%@ page import="org.apache.shiro.SecurityUtils" %>
+<%@ page import="org.chai.kevin.security.User" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,6 +35,9 @@
 			
 			<ul class="locales" id="top_nav">
 				<shiro:user>
+					<%
+						def user = User.findByUuid(SecurityUtils.subject.principal, [cache: true])
+					%>
 					<li>
 						<a class="${controllerName=='auth'?'active':''}" href="${createLinkWithTargetURI(controller: 'account', action:'editAccount')}">
 							<g:message code="header.navigation.myaccount"/> : ${user.firstname} ${user.lastname}
