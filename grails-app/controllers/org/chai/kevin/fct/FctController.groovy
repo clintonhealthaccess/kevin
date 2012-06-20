@@ -61,12 +61,12 @@ class FctController extends AbstractController {
 		if (period != null && program != null && fctTarget != null && location != null && dataLocationTypes != null) {					
 			fctTable = fctService.getFctTable(location, program, fctTarget, period, level, dataLocationTypes);
 						
-			def reportEntities = [program, fctTarget]
-			if(fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty) reportEntities.addAll(fctTable.targetOptions)
-			fctDescriptions = getReportDescriptions(reportEntities)
+//			def reportEntities = [program, fctTarget]
+//			if(fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty) reportEntities.addAll(fctTable.targetOptions)
+			fctDescriptions = getReportDescriptions([program, fctTarget])
 		}
 		
-		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root program: "+program)				
+		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root program: "+program)
 		
 		[
 			fctTable: fctTable,
