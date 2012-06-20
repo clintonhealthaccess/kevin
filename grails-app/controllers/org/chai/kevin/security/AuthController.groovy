@@ -6,6 +6,7 @@ import org.apache.shiro.authc.AuthenticationException
 import org.apache.shiro.authc.UsernamePasswordToken
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.apache.shiro.web.util.WebUtils
+import org.chai.kevin.security.User.UserType;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class AuthController {
@@ -41,9 +42,9 @@ class AuthController {
 			render(view:'register', model:[register: cmd, languages: languageService.availableLocales])
 		}
 		else {
-			def user = new User(code: cmd.email, username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'',
+			def user = new User(userType: UserType.OTHER, code: cmd.email, username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'',
 				firstname: cmd.firstname, lastname: cmd.lastname, organisation: cmd.organisation,
-				phoneNumber: cmd.phoneNumber, defaultLanguage: cmd.defaultLanguage, uuid: UUID.randomUUID().toString()).save()
+				phoneNumber: cmd.phoneNumber, defaultLanguage: cmd.defaultLanguage, uuid: UUID.randomUUID().toString()).save(failOnError: true)
 				
 			RegistrationToken token = new RegistrationToken(token: RandomStringUtils.randomAlphabetic(20), user: user, used: false).save()
 			def url = createLink(absolute: true, controller:'auth', action:'confirmRegistration', params:[token:token.token])

@@ -71,8 +71,8 @@ import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram
-import org.chai.kevin.security.DataUser;
 import org.chai.kevin.security.User;
+import org.chai.kevin.security.User.UserType;
 
 abstract class IntegrationTests extends IntegrationSpec {
 	
@@ -207,27 +207,27 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}	
 			
 	static def newUser(def username, def uuid) {
-		return new User(code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
+		return new User(userType: UserType.OTHER, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
 	}
 	
 	static def newUser(def username, def active, def confirmed) {
-		return new User(code: 'not_important', username: username, email: username,
+		return new User(userType: UserType.OTHER, code: 'not_important', username: username, email: username,
 			passwordHash: '', active: active, confirmed: confirmed, uuid: 'uuid', firstname: 'first', lastname: 'last',
 			organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
 	}
 	
 	static def newUser(def username, def passwordHash, def active, def confirmed) {
-		return new User(code: 'not_important', username: username, email: username,
+		return new User(userType: UserType.OTHER, code: 'not_important', username: username, email: username,
 			passwordHash: passwordHash, active: active, confirmed: confirmed, uuid: 'uuid', firstname: 'first', lastname: 'last',
 			organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
 	}
 	
-	static def newSurveyUser(def username, def uuid, def dataLocationId) {
-		return new DataUser(code: username, username: username, landingPage: HomeController.SURVEY_LANDING_PAGE, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
+	static def newSurveyUser(def username, def uuid, def locationId) {
+		return new User(userType: UserType.SURVEY, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
 	}
 	
-	static def newPlanningUser(def username, def uuid, def dataLocationId) {
-		return new DataUser(code: username, username: username, landingPage: HomeController.PLANNING_LANDING_PAGE, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
+	static def newPlanningUser(def username, def uuid, def locationId) {
+		return new User(userType: UserType.PLANNING, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
 	}
 	
 	static def newReportProgram(def code) {

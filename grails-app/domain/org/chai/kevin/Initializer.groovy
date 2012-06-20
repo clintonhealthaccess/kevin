@@ -64,9 +64,9 @@ import org.chai.kevin.planning.PlanningOutputColumn;
 import org.chai.kevin.planning.PlanningSkipRule;
 import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.reports.ReportProgram
-import org.chai.kevin.security.DataUser;
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.Role;
+import org.chai.kevin.security.User.UserType;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
@@ -108,23 +108,23 @@ class Initializer {
 		surveyAllReadonly.addToPermissions("editSurvey:print")
 		surveyAllReadonly.save()
 
-		def user = new User(code:"dhsst", username: "dhsst", firstname: "Dhsst", lastname: "Dhsst", email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), active: true, confirmed: true, uuid:'dhsst_uuid', defaultLanguage:'fr', phoneNumber: '+250 11 111 11 11', organisation:'org')
+		def user = new User(userType: UserType.OTHER,code:"dhsst", username: "dhsst", firstname: "Dhsst", lastname: "Dhsst", email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), active: true, confirmed: true, uuid:'dhsst_uuid', defaultLanguage:'fr', phoneNumber: '+250 11 111 11 11', organisation:'org')
 		user.addToRoles(reportAllReadonly)
 		user.addToRoles(surveyAllReadonly)
 		// access to site
 		user.save(failOnError: true)
 
-		def admin = new User(code:"admin", firstname: "Super", lastname: "Admin", username: "admin", email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), active: true, confirmed: true, uuid:'admin_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
+		def admin = new User(userType: UserType.OTHER, code:"admin", firstname: "Super", lastname: "Admin", username: "admin", email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), active: true, confirmed: true, uuid:'admin_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
 		admin.addToPermissions("*")
 		admin.save(failOnError: true)
 
-		def butaro = new DataUser(code:"butaro",username: "butaro", firstname: "butaro", lastname: "butaro", landingPage: HomeController.SURVEY_LANDING_PAGE, dataLocationId: DataLocation.findByCode("Butaro DH").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'butaro_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
+		def butaro = new User(userType: UserType.SURVEY, code:"butaro",username: "butaro", firstname: "butaro", lastname: "butaro", locationId: DataLocation.findByCode("Butaro DH").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'butaro_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
 		butaro.addToPermissions("editSurvey:view")
 		butaro.addToPermissions("editSurvey:*:"+DataLocation.findByCode("Butaro DH").id)
 		butaro.addToPermissions("menu:survey")
 		butaro.save(failOnError: true)
 		
-		def kivuye = new DataUser(code:"kivuye",username: "kivuye", firstname: "kivuye", lastname: "kivuye", landingPage: HomeController.PLANNING_LANDING_PAGE, dataLocationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
+		def kivuye = new User(userType: UserType.PLANNING, code:"kivuye",username: "kivuye", firstname: "kivuye", lastname: "kivuye", locationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
 		kivuye.addToPermissions("editPlanning:view")
 		kivuye.addToPermissions("editPlanning:*:"+DataLocation.findByCode("Kivuye HC").id)
 		kivuye.addToPermissions("menu:planning")

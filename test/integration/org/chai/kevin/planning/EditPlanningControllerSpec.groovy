@@ -206,7 +206,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 	def "accessing index page redirects to proper page - data entry user to own planning page"() {
 		setup:
 		setupLocationTree()
-		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
+		setupSecurityManager(newPlanningUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], true)
 		planningController = new EditPlanningController()
@@ -217,6 +217,21 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		then:
 		planningController.response.redirectedUrl == '/editPlanning/overview/'+DataLocation.findByCode(BUTARO).id+'?planning='+planning.id
 	}
+	
+	def "access to view action redirects to 404 if no active survey with SurveyUser"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newPlanningUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
+		def period = newPeriod()
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.view()
+		
+		then:
+		planningController.response.redirectedUrl == null
+	}
+	
 	def "summary page works when no params"() {
 		setup:
 		planningController = new EditPlanningController()

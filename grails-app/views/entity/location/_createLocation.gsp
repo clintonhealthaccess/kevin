@@ -16,7 +16,7 @@
 			from="${levels}" value="${location.level?.id}" values="${levels.collect{i18n(field:it.names)}}" optionKey="id"/>
 
 		<g:selectFromList name="parent.id" label="${message(code:'location.parent.label')}" bean="${location}" field="parent" optionKey="id" multiple="false"
-			ajaxLink="${createLink(controller:'location', action:'getAjaxData')}"
+			ajaxLink="${createLink(controller:'location', action:'getAjaxData', params: [class: 'Location'])}"
 			from="${locations}" value="${location.parent?.id}" values="${locations.collect{i18n(field:it.names)}}" />
 
 		<g:if test="${location.id != null}">

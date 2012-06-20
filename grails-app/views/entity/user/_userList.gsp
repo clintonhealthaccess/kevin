@@ -1,4 +1,4 @@
-<div class="table-wrap">
+<div class="main">
 	<table class="listing">
 		<thead>
 			<tr>

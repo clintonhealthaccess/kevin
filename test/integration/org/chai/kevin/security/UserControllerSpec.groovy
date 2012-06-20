@@ -29,6 +29,7 @@ package org.chai.kevin.security
 
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.location.DataLocation;
 
 /**
  * @author Jean Kahigiso M.
@@ -44,6 +45,7 @@ class UserControllerSpec extends IntegrationTests{
 		userController = new UserController();
 		
 		when: 
+		userController.params.userType="OTHER";
 		userController.params.email="exemple@exemple.com";
 		userController.params.code ="exemple";
 		userController.params.username ="exemple";
@@ -71,6 +73,7 @@ class UserControllerSpec extends IntegrationTests{
 		userController = new UserController();
 		
 		when:
+		userController.params.userType="OTHER";
 		userController.params.email="exemple@exemple.com";
 		userController.params.username ="exemple";
 		userController.params.firstname ="first";
@@ -167,4 +170,28 @@ class UserControllerSpec extends IntegrationTests{
 		User.findByUsername("myuser1")!=null;
 		User.findByUsername("myuser1").passwordHash == '';
 	}
+	
+	def "search and list user result test"(){
+		
+		setup:
+		setupLocationTree()
+		def dataLocation = DataLocation.findByCode(KIVUYE);
+		def user = newUser("user",UUID.randomUUID().toString());
+		def surveyUser = newSurveyUser("surveyUser",UUID.randomUUID().toString(),dataLocation.id);
+		userController = new UserController()
+		
+		when:
+		userController.params.q = "survey";
+		userController.search()
+		
+		then:
+		userController.modelAndView.model.entities.equals([surveyUser])
+		
+		when:
+		userController.list()
+		
+		then:
+		userController.modelAndView.model.entities.equals([user,surveyUser])
+	}
+	
 }
