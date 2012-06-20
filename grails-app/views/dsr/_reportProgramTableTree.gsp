@@ -7,7 +7,7 @@
 			<g:each in="${dsrTable.targets}" var="target">
 				<td>
 					<g:if test="${dsrTable.getReportValue(location, target) != null}">
-						<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.dataElement.type}" format="${target.format}"/>
+						<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.calculationElement.type}" format="${target.format}"/>
 					</g:if>
 					<g:else>
 						<div class="report-value-na"><g:message code="report.value.na"/></div>
@@ -24,7 +24,11 @@
 				<span style="margin-left: ${level*20}px;"><g:i18n field="${location.names}"/></span>
 			</td>
 			<g:each in="${dsrTable.targets}" var="target">
-				<td></td>
+				<td>
+					<g:if test="${dsrTable.getReportValue(location, target) != null}">
+						<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.calculationElement.type}" format="${target.format}"/>
+					</g:if>					
+				</td>
 			</g:each>
 		</tr>
 		<tr class="sub-tree js_foldable-container hidden"

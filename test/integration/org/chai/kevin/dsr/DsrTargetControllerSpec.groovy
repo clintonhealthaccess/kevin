@@ -38,24 +38,81 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 	def dataService
 	def dsrService	
 	
-	def "save target saves target"() {
+	def "create target with average calculation element"(){
 		setup:
 		setupLocationTree()
 		def program = newReportProgram(CODE(1))
-		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
+		def average = newAverage("1", CODE(2))
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
 		
 		when:
-		dsrTargetController.params.code = CODE(2)
-		dsrTargetController.params['dataElement.id'] = dataElement.id+""
+		dsrTargetController.params.code = CODE(4)
+		dsrTargetController.params['calculationElement.id'] = average.id+""
 		dsrTargetController.params['program.id'] = program.id+""
-		dsrTargetController.params.typeCodes = [DISTRICT_HOSPITAL_GROUP]
 		dsrTargetController.saveWithoutTokenCheck()
 		
 		then:
 		DsrTarget.count() == 1
-		DsrTarget.list()[0].dataElement.equals(dataElement)
+		DsrTarget.list()[0].calculationElement.equals(average)				
+	}
+	
+	def "create target with sum calculation element"(){
+		setup:
+		setupLocationTree()
+		def program = newReportProgram(CODE(1))
+		def sum = newSum("1", CODE(2))
+		dsrTargetController = new DsrTargetController()
+		dsrTargetController.dataService = dataService
+		
+		when:
+		dsrTargetController.params.code = CODE(5)
+		dsrTargetController.params['calculationElement.id'] = sum.id+""
+		dsrTargetController.params['program.id'] = program.id+""
+		dsrTargetController.saveWithoutTokenCheck()
+		
+		then:
+		DsrTarget.count() == 1
+		DsrTarget.list()[0].calculationElement.equals(sum)
+	}
+	
+	def "create target with raw data element calculation element"() {
+		setup:
+		setupLocationTree()
+		def program = newReportProgram(CODE(1))
+		def rawDataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		dsrTargetController = new DsrTargetController()
+		dsrTargetController.dataService = dataService
+		
+		when:
+		dsrTargetController.params.code = CODE(3)
+		dsrTargetController.params['calculationElement.id'] = rawDataElement.id+""
+		dsrTargetController.params['program.id'] = program.id+""
+		dsrTargetController.saveWithoutTokenCheck()
+		
+		then:
+		DsrTarget.count() == 1
+		DsrTarget.list()[0].calculationElement.equals(rawDataElement)				
+	}
+	
+	def "create target with normalized data element calculation element"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def program = newReportProgram(CODE(1))
+		def normalizedDataElement = newNormalizedDataElement(CODE(4), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
+		dsrTargetController = new DsrTargetController()
+		dsrTargetController.dataService = dataService
+		
+		when:
+		dsrTargetController.params.code = CODE(5)
+		dsrTargetController.params['calculationElement.id'] = normalizedDataElement.id+""
+		dsrTargetController.params['program.id'] = program.id+""
+		dsrTargetController.saveWithoutTokenCheck()
+		
+		then:
+		DsrTarget.count() == 1
+		DsrTarget.list()[0].calculationElement.equals(normalizedDataElement)
 	}
 	
 	def "delete target" () {
@@ -73,6 +130,6 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		
 		then:
 		DsrTarget.count() == 0
-	}
+	}	
 	
 }

@@ -13,9 +13,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.Period;
+import org.chai.kevin.data.Average;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Data;
+import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
@@ -23,7 +28,9 @@ import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
 import org.springframework.cache.annotation.Cacheable;
@@ -42,27 +49,47 @@ public class DsrService {
 	@Transactional(readOnly = true)
 	public DsrTable getDsrTable(Location location, ReportProgram program, Period period, Set<DataLocationType> types, DsrTargetCategory category) {
 		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",location="+location+",program="+program+",types="+types+",category="+category+")");
-				
-		List<DataLocation> dataLocations = location.collectDataLocations(null, types);
+
+		Set<LocationLevel> skips = reportService.getSkipLocationLevels(skipLevels);		
+		List<Location> treeLocations = location.collectTreeWithDataLocations(skips, types);
+		List<DataLocation> dataLocations = location.collectDataLocations(skips, types);
 		
 		List<DsrTarget> targets = new ArrayList<DsrTarget>();
 		if(category != null) targets.addAll(category.getTargets());
 		else targets.addAll(reportService.getReportTargets(DsrTarget.class, program));
 		
-		Map<DataLocation, Map<DsrTarget, Value>> valueMap = new HashMap<DataLocation, Map<DsrTarget, Value>>();		
+		Map<CalculationLocation, Map<DsrTarget, Value>> valueMap = new HashMap<CalculationLocation, Map<DsrTarget, Value>>();		
 		List<DsrTargetCategory> targetCategories = new ArrayList<DsrTargetCategory>();
 		
 		if(dataLocations.isEmpty() || targets.isEmpty())
 			return new DsrTable(valueMap, targets, targetCategories);
 		Collections.sort(targets);
-		
-		for (DataLocation dataLocation : dataLocations) {
-			Map<DsrTarget, Value> targetMap = new HashMap<DsrTarget, Value>();			
-			for (DsrTarget target : targets) {
-				targetMap.put(target, getDsrValue(target, dataLocation, period));
+				
+		for (DsrTarget target : targets) {
+			Calculation calculation = dataService.getData(target.getCalculationElement().getId(), Calculation.class);
+			if(calculation != null){				
+				for(Location treeLocation : treeLocations){					
+					if(!valueMap.containsKey(treeLocation))
+						valueMap.put(treeLocation, new HashMap<DsrTarget, Value>());	
+					valueMap.get(treeLocation).put(target, getDsrValue(calculation, treeLocation, period, types));
+				}
+				for(DataLocation dataLocation : dataLocations){					
+					if(!valueMap.containsKey(dataLocation))
+						valueMap.put(dataLocation, new HashMap<DsrTarget, Value>());	
+					valueMap.get(dataLocation).put(target, getDsrValue(calculation, dataLocation, period, types));
+				}	
 			}
-			valueMap.put(dataLocation, targetMap);
-		}	
+			else{
+				DataElement dataElement = dataService.getData(target.getCalculationElement().getId(), DataElement.class);
+				if(dataElement != null){
+					for(DataLocation dataLocation : dataLocations){										
+						if(!valueMap.containsKey(dataLocation))
+							valueMap.put(dataLocation, new HashMap<DsrTarget, Value>());	
+						valueMap.get(dataLocation).put(target, getDsrValue(dataElement, dataLocation, period));
+					}	
+				}				
+			}
+		}				
 			
 		targetCategories = getTargetCategories(program);
 		Collections.sort(targetCategories);
@@ -72,14 +99,21 @@ public class DsrService {
 		return dsrTable;
 	}
 
-	private Value getDsrValue(DsrTarget target, DataLocation dataLocation, Period period){
+	private Value getDsrValue(DataElement dataElement, DataLocation dataLocation, Period period){
 		Value value = null;
-		
-		DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), dataLocation, period);
+		DataValue dataValue = valueService.getDataElementValue(dataElement, dataLocation, period);
 		if (dataValue != null) value = dataValue.getValue();
 		
 		return value;
 	}
+	
+	private Value getDsrValue(Calculation calculation, CalculationLocation location, Period period, Set<DataLocationType> types) {
+		Value value = null;	
+		CalculationValue<?> calculationValue = valueService.getCalculationValue(calculation, location, period, types);
+		if (calculationValue != null)
+			value = calculationValue.getValue();
+		return value;
+	}	
 	
 	public List<DsrTargetCategory> getTargetCategories(ReportProgram program){
 		Set<DsrTargetCategory> categories = new HashSet<DsrTargetCategory>();

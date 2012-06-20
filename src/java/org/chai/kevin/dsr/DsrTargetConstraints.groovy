@@ -34,7 +34,8 @@ package org.chai.kevin.dsr;
 
 constraints = {
 	code (nullable: false, blank: false, unique: true)
-	dataElement (nullable: false)
+//	dataElement (nullable: false)
+	calculationElement (nullable: false)
 //	category(nullable: false)
 	program (nullable: false)
 }
