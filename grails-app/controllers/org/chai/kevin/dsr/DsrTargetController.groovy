@@ -34,6 +34,8 @@ package org.chai.kevin.dsr;
  */
 
 import grails.plugin.springcache.annotations.CacheFlush
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.reports.ReportProgram;
@@ -66,7 +68,8 @@ class DsrTargetController extends AbstractEntityController {
 			target: entity,
 			programs: ReportProgram.list(),
 			categories: DsrTargetCategory.list(),
-			dataElements: entity.dataElement!=null?[entity.dataElement]:[]
+//			dataElements: entity.dataElement!=null?[entity.dataElement]:[],
+			data: entity.data!=null?[entity.data]:[]
 		]
 	}
 
@@ -84,8 +87,9 @@ class DsrTargetController extends AbstractEntityController {
 
 	def bindParams(def entity) {
 		bindData(entity, params, [exclude:'dataElement.id'])
-		if (params.int('dataElement.id')) entity.dataElement = dataService.getData(params.int('dataElement.id'), DataElement.class)
-
+//		if (params.int('dataElement.id')) entity.dataElement = dataService.getData(params.int('dataElement.id'), DataElement.class)
+		if (params.int('data.id')) entity.data = dataService.getData(params.int('data.id'), Data.class)
+		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names

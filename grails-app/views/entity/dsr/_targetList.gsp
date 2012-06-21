@@ -5,7 +5,7 @@
 			<th><g:message code="entity.code.label"/></th>
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="dsr.target.program.label"/></th>
-			<th><g:message code="dsr.target.dataelement.label"/></th>
+			<th><g:message code="dsr.target.calculationelement.label"/></th>
 			<th><g:message code="dsr.target.category.label"/></th>
 			<th><g:message code="entity.order.label"/></th>
 		</tr>
@@ -33,7 +33,7 @@
 				<td>
 					<g:i18n field="${target.program.names}"/>
 				</td>
-				<td>${target.dataElement.code}</td>
+				<td>${target.data.code}</td>
 				<td>
 					<g:i18n field="${target.category?.names}"/>
 				</td>
