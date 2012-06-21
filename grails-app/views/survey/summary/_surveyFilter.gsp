@@ -1,8 +1,8 @@
 <%@ page import="org.chai.kevin.survey.summary.SurveySummaryPage" %>
 
-<div class="filter">
+<div class="left">
 	<span class="js_dropdown dropdown">
-		<a class="survey selected" href="#"> 
+		<a class="survey js_dropdown-link nice-button with-highlight" href="#"> 
 			<g:if test="${currentSection != null}">
 				<g:i18n field="${currentSection.names}" />
 			</g:if> 
@@ -16,7 +16,7 @@
 				<g:message code="default.select.label" args="[message(code:'survey.label')]" />
 			</g:else>
 		</a>
-		<div class="hidden dropdown-list js_dropdown-list">
+		<div class="dropdown-list js_dropdown-list push-top-10">
 			<ul>
 				<g:each in="${surveys}" var="survey">
 					<li class="js_foldable foldable ${currentSurvey?.id==survey.id?'current':''}">
@@ -29,13 +29,13 @@
 								<li class="js_foldable foldable ${currentProgram?.id==program.id?'current':''}">
 									<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a> 
 									<a class="item ${currentProgram?.id == program.id?'opened':''}" href="${createLink(controller:'surveySummary', action:'summaryPage', params:[location: currentLocation?.id, program: program.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc'])}">
-										<span><g:i18n field="${program.names}" /></span>
+										<g:i18n field="${program.names}" />
 									</a>
 									<ul class="js_foldable-container foldable-container">
 										<g:each in="${program.getSections()}" var="section">
 											<li class="js_foldable foldable ${currentSection?.id==section.id?'current':''}">
 												<a class="item ${currentSection?.id == section.id?'opened':''}" href="${createLink(controller:'surveySummary', action:'summaryPage', params:[location: currentLocation?.id, section: section.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc'])}">
-													<span><g:i18n field="${section.names}" /></span>
+													<g:i18n field="${section.names}" />
 												</a>
 											</li>
 										</g:each>

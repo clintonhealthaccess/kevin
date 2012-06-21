@@ -1,16 +1,14 @@
-<div class="filter">
+<div class="left">
 	<span class="dropdown js_dropdown">
-		<g:if test="${currentPlanning != null}">
-			<a class="survey selected" href="#" data-type="planning" data-planning="${currentPlanning.id}">
-				<g:i18n field="${currentPlanning.names}"/>
-			</a>
-		</g:if>
-		<g:else>
-			<a class="survey selected" href="#" data-type="planning">
-				<g:message code="default.select.label" args="[message(code:'planning.label')]" />
-			</a>
-		</g:else> 
-		<div class="hidden dropdown-list js_dropdown-list">
+		<a class="survey js_dropdown-link nice-button with-highlight" href="#" >
+			<g:if test="${currentPlanning != null}">
+					<g:i18n field="${currentPlanning.names}"/>
+			</g:if>
+			<g:else>
+					<g:message code="default.select.label" args="[message(code:'planning.label')]" />
+			</g:else> 
+		</a>
+		<div class="dropdown-list js_dropdown-list push-top-10">
 			<ul>
 				<g:each in="${plannings}" var="planning">
 					<li>

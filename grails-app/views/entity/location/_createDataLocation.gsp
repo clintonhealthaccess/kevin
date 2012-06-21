@@ -16,7 +16,7 @@
 			from="${types}" value="${location.type?.id}" values="${types.collect{i18n(field:it.names)}}" optionKey="id"/>
 
 		<g:selectFromList name="location.id" label="${message(code:'datalocation.location.label')}" bean="${location}" field="location" optionKey="id" multiple="false"
-			ajaxLink="${createLink(controller:'location', action:'getAjaxData')}"
+			ajaxLink="${createLink(controller:'location', action:'getAjaxData', params: [class: 'Location'])}"
 			from="${locations}" value="${location.location?.id}" values="${locations.collect{i18n(field:it.names)}}" />
 
 		<g:if test="${location.id != null}">

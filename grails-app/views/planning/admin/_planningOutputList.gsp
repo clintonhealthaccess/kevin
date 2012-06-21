@@ -34,8 +34,8 @@
 				<td>${planningOutput.order}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 
-						<a class="selected manage-btn" href="#"><g:message code="entity.list.manage.label"/></a>
-						<div class="hidden manage-list dropdown-list js_dropdown-list">
+						<a class="js_dropdown-link with-highlight" href="#"><g:message code="entity.list.manage.label"/></a>
+						<div class="dropdown-list js_dropdown-list">
 							<ul>
 								<li>
 									<a href="${createLink(controller:'planningOutputColumn', action:'list', params:['planningOutput.id':planningOutput.id])}"><g:message code="default.list.label" args="[message(code:'planning.planningoutput.planningoutputcolumn.label')]" /></a>

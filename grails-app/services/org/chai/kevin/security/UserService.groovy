@@ -54,9 +54,9 @@ class UserService {
 		List<User> users =[];
 		
 		if(params['sort']!=null)
-			users= criteria.addOrder(Order.asc(params['sort'])).list()
+			users = criteria.addOrder(Order.asc(params['sort'])).list()
 		else
-			users= criteria.addOrder(Order.asc("id")).list()
+			users = criteria.addOrder(Order.asc("id")).list()
 		
 		StringUtils.split(text).each { chunk ->
 			users.retainAll { user ->
@@ -64,7 +64,7 @@ class UserService {
 				Utils.matches(chunk, user.email) ||
 				Utils.matches(chunk, user.firstname) ||
 				Utils.matches(chunk, user.lastname) ||
-				Utils.matches(chunk, user.location)
+				Utils.matches(chunk, user.organisation)
 			}
 		}
 		return users
@@ -85,7 +85,7 @@ class UserService {
 			disjunction.add(Restrictions.ilike("email", chunk, MatchMode.ANYWHERE))
 			disjunction.add(Restrictions.ilike("firstname", chunk, MatchMode.ANYWHERE))
 			disjunction.add(Restrictions.ilike("lastname", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("location", chunk, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("organisation", chunk, MatchMode.ANYWHERE))
 			
 			textRestrictions.add(disjunction)
 		}

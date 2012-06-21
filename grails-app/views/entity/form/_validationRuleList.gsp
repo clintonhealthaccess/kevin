@@ -43,8 +43,8 @@
 				<td><g:i18n field="${validationRule.messages}" /></td>
 				<td>
 					<div class="js_dropdown dropdown"> 
-						<a class="selected manage-btn" href="#"><g:message code="entity.list.manage.label"/></a>
-						<div class="hidden manage-list dropdown-list js_dropdown-list">
+						<a class="js_dropdown-link with-highlight" href="#"><g:message code="entity.list.manage.label"/></a>
+						<div class="dropdown-list js_dropdown-list">
 							<ul>
 								<li>
 							 		<a href="${createLinkWithTargetURI(controller:'formValidationRule', action:'copy', params:[id: validationRule.id])}"><g:message code="formelement.validationrule.clone.label" /> </a>

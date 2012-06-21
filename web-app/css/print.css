@@ -42,7 +42,7 @@ label { display: block; font-weight: bold; }
 /* line 81, ../../src/stylesheets/print.sass */
 #print-questions .question-container h4 { font-weight: normal; margin-top: 14px; margin-bottom: 4px; }
 /* line 85, ../../src/stylesheets/print.sass */
-#print-questions .question-container h4 .question-number { padding-right: 5px; font-weight: bold; }
+#print-questions .question-container h4 .nice-title-number { padding-right: 5px; font-weight: bold; }
 /* line 89, ../../src/stylesheets/print.sass */
 #print-questions .block-with-height { height: 30px; }
 /* line 92, ../../src/stylesheets/print.sass */

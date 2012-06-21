@@ -1,21 +1,16 @@
 package org.chai.kevin.planning
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.chai.kevin.AbstractController;
-import org.chai.kevin.LanguageService;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.planning.PlanningCost.PlanningCostType;
-import org.chai.kevin.Period;
-import org.chai.kevin.table.AggregateLine;
-import org.chai.kevin.table.Line;
-import org.chai.kevin.table.NumberLine;
-import org.chai.kevin.table.Table;
-import org.chai.kevin.value.Value;
+import org.chai.kevin.AbstractController
+import org.chai.kevin.Period
+import org.chai.kevin.data.Type
+import org.chai.kevin.location.DataLocation
+import org.chai.kevin.location.Location
+import org.chai.kevin.planning.PlanningCost.PlanningCostType
+import org.chai.kevin.security.User.UserType;
+import org.chai.kevin.table.AggregateLine
+import org.chai.kevin.table.NumberLine
+import org.chai.kevin.table.Table
+import org.chai.kevin.value.Value
 
 class EditPlanningController extends AbstractController {
 	
@@ -32,7 +27,7 @@ class EditPlanningController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("planning.view, params:"+params)
 		def user = getUser()
 
-		if (user.hasProperty('dataLocation') && user.dataLocation != null) {
+		if (user.userType == UserType.PLANNING) {
 			Planning planning = Planning.get(params.int('planning'))
 
 			if (planning == null) {
@@ -43,7 +38,7 @@ class EditPlanningController extends AbstractController {
 				response.sendError(404)
 			}
 			else {
-				redirect (action: 'overview', params: [planning: planning?.id, location: user.dataLocation.id])
+				redirect (action: 'overview', params: [planning: planning?.id, location: user.location.id])
 			}
 		}
 		else {

@@ -1,4 +1,4 @@
-<ul class="horizontal" id="tab-subnav">
+<ul class="horizontal tab-subnav">
 	<li>
 		<a class="${selected=='overview'?'selected':''}" href="${createLink(controller:'editPlanning', action:'overview', params:[planning: planning.id, location: location.id])}">
 			<g:message code="planning.overview.tabs.overview"/>
