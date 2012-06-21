@@ -87,14 +87,14 @@
 		<div id="navigation">
 		<div class="wrapper">
 			<ul id="main-menu" class="menu">
+				<shiro:hasPermission permission="menu:reports">
+					<li><a class="${controllerName=='dashboard'?'active':''}" href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.reports"/></a></li>
+				</shiro:hasPermission>
 				<shiro:hasPermission permission="menu:survey">
 					<li><a class="${controllerName=='editSurvey'||controllerName=='surveySummary'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey"/></a></li>
 				</shiro:hasPermission>
 				<shiro:hasPermission permission="menu:planning">
 					<li><a class="${controllerName=='editPlanning'?'active':''}" href="${createLink(controller: 'editPlanning', action:'view')}"><g:message code="header.navigation.planning"/></a></li>
-				</shiro:hasPermission>
-				<shiro:hasPermission permission="menu:reports">
-					<li><a class="${controllerName=='dashboard'?'active':''}" href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.reports"/></a></li>
 				</shiro:hasPermission>
 				<shiro:hasPermission permission="menu:admin">
 	  				<li><a class="${controllerName!=null && org.chai.kevin.AbstractEntityController.class.isAssignableFrom(grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).getClazz())?'active':''}" href="#"  onclick="return false;"><g:message code="header.navigation.administration"/></a>
