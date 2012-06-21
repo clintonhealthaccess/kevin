@@ -1,23 +1,40 @@
 package org.chai.kevin.security
 
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.util.Utils;
 
 class User {
+
+	enum UserType {PLANNING, SURVEY, OTHER
+		
+		String getKey() { return name(); }
+		
+	}
+	
+	// TODO get rid of this, it is the uuid
+	String code
 	
 	String email
     String username
-	// TODO get rid of this
-	String code
+	String uuid
     String passwordHash = ''
 	String permissionString = ''
 	Boolean confirmed = false
 	Boolean active = false
-	String uuid
+	String defaultLanguage	
+	String firstname, lastname, organisation, phoneNumber
+	Long locationId
+	UserType userType
 	
-	String firstname, lastname, location
+	static hasMany = [ roles: Role ]
 	
-    static hasMany = [ roles: Role ]
-
+	def getLocation () {
+		def location = Location.get(locationId) 
+		if (location == null) location = DataLocation.get(locationId)
+		return location
+	}
+	
 	def getPermissions() {
 		return Utils.split(permissionString)
 	}
@@ -37,13 +54,31 @@ class User {
 	}
 	
     static constraints = {
+		// TODO get rid of this, it is the uuid
+		code(nullable: false, blank: false, unique: true)
+		
 		email(email:true, unique: true, nullable: true)
         username(nullable: false, blank: false, unique: true)
-		code(nullable: false, blank: false, unique: true)
-		firstname(nullable: true)
-		lastname(nullable: true)
-		location(nullable: true)
 		uuid(nullable: false, blank: false, unique: true)
+		firstname(nullable: false, blank: false)
+		lastname(nullable: false, blank: false)
+		phoneNumber(phoneNumber: true, nullable: false, blank: false)
+		organisation(nullable: false, blank: false)
+		defaultLanguage(nullable: true)
+		
+		userType(nullable: false, blank: false)
+		locationId(nullable: true, 
+			validator: {val, obj -> 
+				if (obj.userType != UserType.OTHER) {
+					if (val == null) return false
+					else {
+						def location = DataLocation.get(val)
+						if (location == null || (!(location instanceof DataLocation))) return false
+					}
+				}
+				return true
+			}
+		)
     }
 	
 	static mapping = {

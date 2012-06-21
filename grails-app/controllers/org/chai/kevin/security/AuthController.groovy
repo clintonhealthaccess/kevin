@@ -6,10 +6,12 @@ import org.apache.shiro.authc.AuthenticationException
 import org.apache.shiro.authc.UsernamePasswordToken
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.apache.shiro.web.util.WebUtils
+import org.chai.kevin.security.User.UserType;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class AuthController {
 	
+	def languageService
     def shiroSecurityManager
 
 	def getTargetURI() {
@@ -27,7 +29,7 @@ class AuthController {
     def index = { redirect(action: "login", params: params) }
 
 	def register = {
-		render (view:'register', model:[register: null])
+		render (view:'register', model:[register: null, languages: languageService.availableLocales])
 	}
 	
 	// this will disappear once we have a real registration mechanism
@@ -37,10 +39,13 @@ class AuthController {
 		if (cmd.hasErrors()) {
 			if (log.isDebugEnabled()) log.debug("command has errors: "+cmd)
 
-			render(view:'register', model:[register: cmd])
+			render(view:'register', model:[register: cmd, languages: languageService.availableLocales])
 		}
 		else {
-			def user = new User(code: cmd.email, username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'', firstname: cmd.firstname, lastname: cmd.lastname, location: cmd.location, uuid: UUID.randomUUID().toString()).save()
+			def user = new User(userType: UserType.OTHER, code: cmd.email, username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'',
+				firstname: cmd.firstname, lastname: cmd.lastname, organisation: cmd.organisation,
+				phoneNumber: cmd.phoneNumber, defaultLanguage: cmd.defaultLanguage, uuid: UUID.randomUUID().toString()).save(failOnError: true)
+				
 			RegistrationToken token = new RegistrationToken(token: RandomStringUtils.randomAlphabetic(20), user: user, used: false).save()
 			def url = createLink(absolute: true, controller:'auth', action:'confirmRegistration', params:[token:token.token])
 			
@@ -49,7 +54,7 @@ class AuthController {
 				to contactEmail
 				from getFromEmail()
 				subject "Registration received from ${user.email}"
-				body "Registration received from ${user.email}, first name: ${user.firstname}, last name: ${user.lastname}"
+				body "Registration received from ${user.email}, first name: ${user.firstname}, last name: ${user.lastname}, organisation: ${user.organisation}, phone number: ${user.phoneNumber}"
 			}
 			
 			if (log.isDebugEnabled()) log.debug("sending email to: ${user.email}, token: ${token.token}, url: ${url}")
@@ -153,25 +158,31 @@ class AuthController {
             authToken.rememberMe = true
         }
         
-        // If a controller redirected to this page, redirect back
-        // to it. Otherwise redirect to the root URI.
-        def targetURI = getTargetURI()
-        
-        // Handle requests saved by Shiro filters.
-        def savedRequest = WebUtils.getSavedRequest(request)
-        if (savedRequest) {
-            targetURI = savedRequest.requestURI - request.contextPath
-            if (savedRequest.queryString) targetURI = targetURI + '?' + savedRequest.queryString
-        }
-        
         try{
             // Perform the actual login. An AuthenticationException
             // will be thrown if the username is unrecognised or the
             // password is incorrect.
             SecurityUtils.subject.login(authToken)
-
-            if (log.isInfoEnabled()) log.info "Redirecting to '${targetURI}'."
-            redirect(uri: targetURI)
+			
+			// If a controller redirected to this page, redirect back
+			// to it. Otherwise redirect to the root URI.
+			String targetURI = getTargetURI()
+			
+			// Handle requests saved by Shiro filters.
+			def savedRequest = WebUtils.getSavedRequest(request)
+			if (savedRequest) {
+				targetURI = savedRequest.requestURI - request.contextPath
+				if (savedRequest.queryString) targetURI = targetURI + '?' + savedRequest.queryString
+			}
+			
+			// append the user preferred language
+			def redirectURI = targetURI
+			
+			def language = User.findByUuid(SecurityUtils.subject.principal, [cache: true]).defaultLanguage
+			if (language) redirectURI = replaceParam(redirectURI, 'lang', language)
+			
+            if (log.isInfoEnabled()) log.info "Redirecting to '${redirectURI}'."
+            redirect(uri: redirectURI)
         }
         catch (AuthenticationException ex){
             // Authentication failed, so display the appropriate message
@@ -196,6 +207,26 @@ class AuthController {
         }
     }
 
+	def replaceParam(def uriToReplace, def paramToReplace, def newValue) {
+		def splitURI = uriToReplace.split('\\?', 2)
+		
+		def uri = splitURI[0]
+		def uriParams = splitURI.size() == 2 ? splitURI[1].split('&') : []
+		
+		def found = false
+		uriParams = uriParams.collect { param ->
+			def map = param.split('=', 2)
+			if (map[0] == paramToReplace) {
+				found = true
+				return 'lang='+newValue
+			}
+			else return map[0]+(map.size() == 2 ? ('='+map[1]) : '')
+		}
+		if (!found) uriParams << 'lang='+newValue
+		
+		return uri + '?' + uriParams.join('&')
+	}
+	
     def signOut = {
         // Log the user out of the application.
         SecurityUtils.subject?.logout()
@@ -318,13 +349,17 @@ class NewPasswordCommand {
 class RegisterCommand extends NewPasswordCommand {
 	String firstname
 	String lastname
-	String location
+	String organisation
 	String email
+	String phoneNumber
+	String defaultLanguage
 	
 	static constraints = {
 		firstname(nullable:false, blank:false)
 		lastname(nullable:false, blank:false)
-		location(nullable:false, blank:false)
+		organisation(nullable:false, blank:false)
+		phoneNumber(nullable:false, blank:false, phoneNumber: true)
+		defaultLanguage(nullable:true)
 		email(blank:false, email:true, validator: {val, obj ->
 			return User.findByEmail(val) == null && User.findByUsername(val) == null
 		})

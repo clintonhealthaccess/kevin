@@ -1,8 +1,8 @@
 <g:set var="type" value="${surveyPage.dataLocation.type}"/>
 
-<div id="question-${question.id}" class="question question-table" data-question="${question.id}">
-	<h4>
-		<span class="question-number">${surveyPage.getQuestionNumber(question)}</span><g:i18n field="${question.names}" />
+<div id="question-${question.id}" class="question question-table ${surveyPage.enteredQuestions[question].skipped?'hidden':''} ${!surveyPage.enteredQuestions[question].complete?'incomplete':''} ${surveyPage.enteredQuestions[question].invalid?'invalid':''}" data-question="${question.id}">
+	<h4 class="nice-title">
+		<span class="nice-title-image">${surveyPage.getQuestionNumber(question)}</span><g:i18n field="${question.names}" />
 	</h4>
 	
 	<g:ifText field="${i18n(field: question.descriptions)}">

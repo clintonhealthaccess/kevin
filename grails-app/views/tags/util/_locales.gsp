@@ -4,7 +4,7 @@
 			${locale}
 		</a>
 	</g:each>
-		<a href="#" id="show-all-language" class="toggle-link ${i==0?'no-link':''}" data-toggle="${locale}" >
-			<g:message code="entity.locales.all"/>
-		</a>
+	<a href="#" id="js_show-all-language" class="toggle-link ${i==0?'no-link':''}" data-toggle="${locale}" >
+		<g:message code="entity.locales.all"/>
+	</a>
 </div>

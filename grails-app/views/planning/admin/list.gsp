@@ -10,8 +10,8 @@
 	
 </head>
 <body>
-	<div class="heading">
-		<ul class="inline-list">
+	<div class="heading1-bar">
+		<ul class="horizontal">
 			<li>
 				<a href="${createLink(controller: 'planning', action:'list')}"><g:message code="planning.label"/></a>
 			</li>

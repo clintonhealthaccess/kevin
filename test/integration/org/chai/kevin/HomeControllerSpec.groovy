@@ -36,4 +36,19 @@ class HomeControllerSpec extends IntegrationTests {
 		homeController.response.redirectedUrl == "/editPlanning/view"
 	}
 	
+	def "other users get redirected to landing page"() {
+		setup:
+		setupLocationTree()
+		def dataLocation = DataLocation.findByCode(KIVUYE);
+		def user = newUser("myuser1", UUID.randomUUID().toString());
+		setupSecurityManager(user)
+		homeController = new HomeController()
+		
+		when:
+		homeController.index()
+		
+		then:
+		homeController.response.redirectedUrl == "/dashboard/view"
+	}
+	
 }

@@ -1,6 +1,7 @@
 package org.chai.kevin.location
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.util.JSONUtils;
 
 class LocationControllerSpec extends IntegrationTests {
 
@@ -47,6 +48,54 @@ class LocationControllerSpec extends IntegrationTests {
 		then:
 		Location.findByCode(RWANDA) == null
 		Location.count() == 0
+	}
+	
+	def "get ajax data with class - Location"() {
+		setup:
+		setupLocationTree()
+		locationController = new LocationController()
+		def jsonResult
+		
+		when:
+		locationController.params.term = ''
+		locationController.params['class'] = 'Location'
+		locationController.getAjaxData()
+		jsonResult = JSONUtils.getMapFromJSON(locationController.response.contentAsString)
+	
+		then:
+		jsonResult.elements.size() == 3
+	}
+	
+	def "get ajax data with class - DataLocation"() {
+		setup:
+		setupLocationTree()
+		locationController = new LocationController()
+		def jsonResult
+	
+		when:
+		locationController.params.term = ''
+		locationController.params['class'] = 'DataLocation'
+		locationController.getAjaxData()
+		jsonResult = JSONUtils.getMapFromJSON(locationController.response.contentAsString)
+		
+		then:
+		jsonResult.elements.size() == 2
+	}
+	
+	def "get ajax data with class - CalculationLocation"() {
+		setup:
+		setupLocationTree()
+		locationController = new LocationController()
+		def jsonResult
+	
+		when:
+		locationController.params.term = ''
+		locationController.params['class'] = 'CalculationLocation'
+		locationController.getAjaxData()
+		jsonResult = JSONUtils.getMapFromJSON(locationController.response.contentAsString)
+		
+		then:
+		jsonResult.elements.size() == 5
 	}
 	
 }

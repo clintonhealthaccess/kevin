@@ -35,8 +35,8 @@
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${normalizedDataElement.lastValueChanged}"/></td>
   				<td>
 					<div class="js_dropdown dropdown"> 
-						<a class="selected manage-btn" href="#"><g:message code="entity.list.manage.label"/></a>
-						<div class="hidden manage-list dropdown-list js_dropdown-list">
+						<a class="js_dropdown-link with-highlight" href="#"><g:message code="entity.list.manage.label"/></a>
+						<div class="dropdown-list js_dropdown-list">
 							<ul>
 								<li>
   									<a href="${createLink(controller:'data', action:'dataElementValueList', params:[data:normalizedDataElement.id])}">

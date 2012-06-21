@@ -1,6 +1,6 @@
 <div class="entity-list">
-	<div id="entities">
-		<div class="heading">
+	<div>
+		<div class="heading1-bar">
 	     	<g:message code="default.list.label" args="[entityName]" />
 	     	<g:if test="${!search}">
 		     	<span class="right">

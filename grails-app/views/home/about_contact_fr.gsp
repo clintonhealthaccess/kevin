@@ -5,7 +5,7 @@
         <title><g:message code="about.page.title" /></title>
     </head>
     <body>
-    	<div class="subnav">
+    	<div class="heading1-bar">
     	
     	</div>
 		<div class="main">
