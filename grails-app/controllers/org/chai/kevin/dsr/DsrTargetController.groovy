@@ -86,7 +86,7 @@ class DsrTargetController extends AbstractEntityController {
 	}
 
 	def bindParams(def entity) {
-		bindData(entity, params, [exclude:'dataElement.id'])
+		bindData(entity, params, [exclude:'data.id'])
 //		if (params.int('dataElement.id')) entity.dataElement = dataService.getData(params.int('dataElement.id'), DataElement.class)
 		if (params.int('data.id')) entity.data = dataService.getData(params.int('data.id'), Data.class)
 		
