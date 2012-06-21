@@ -24,16 +24,16 @@
 					</div>
 				</g:if>
 				<div>
-					<h3 class="form-heading">
+					<h3 class="heading1">
 						<g:i18n field="${surveyPage.section.names}" />
 					</h3>
 				</div>
 				<div id="js_survey">
 					<g:form url="[controller:'editSurvey', action:'save', params: [location: surveyPage.location.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
 					
-						<ol id="questions">
+						<ol>
 							<g:each in="${surveyPage.getQuestions(surveyPage.section)}" var="question" status="i">
-								<li class="question-container ${surveyPage.enteredQuestions[question].skipped?'hidden':''} ${!surveyPage.enteredQuestions[question].complete?'incomplete':''} ${surveyPage.enteredQuestions[question].invalid?'invalid':''}">
+								<li class="question-container">
 									<g:render template="/survey/question/${question.getType().getTemplate()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, questionNumber: i+1, showHints: SecurityUtils.subject.isPermitted('admin')]" />
 								</li> 
 							</g:each>
@@ -95,11 +95,11 @@
 						if (value.skipped == true) $('#question-'+value.id).parents('.question-container').addClass('hidden')
 						else $('#question-'+value.id).parents('.question-container').removeClass('hidden')
 						
-						if (value.complete == true) $('#question-'+value.id).parents('.question-container').removeClass('incomplete')
-						else $('#question-'+value.id).parents('.question-container').addClass('incomplete')
+						if (value.complete == true) $('#question-'+value.id).removeClass('incomplete')
+						else $('#question-'+value.id).addClass('incomplete')
 						
-						if (value.invalid == false) $('#question-'+value.id).parents('.question-container').removeClass('invalid')
-						else $('#question-'+value.id).parents('.question-container').addClass('invalid')
+						if (value.invalid == false) $('#question-'+value.id).removeClass('invalid')
+						else $('#question-'+value.id).addClass('invalid')
 					});
 				}
 				else {

@@ -47,6 +47,10 @@ class LanguageService {
 	
 	static transactional = false
 	
+	List<Locale> getAvailableLocales() {
+		return getAvailableLanguages().collect {LocaleUtils.toLocale(it)}
+	}
+	
 	List<String> getAvailableLanguages() {
 		List<String> languages = ConfigurationHolder.config.site.languages;
 		return languages;

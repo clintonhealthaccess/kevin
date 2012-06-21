@@ -1,4 +1,4 @@
-<div class="entity-form-container togglable" id="add-dashboard-target">
+<div class="entity-form-container togglable">
 	
 	<div class="entity-form-header">
 		<h3 class="title">
