@@ -88,7 +88,7 @@
 		<div class="wrapper">
 			<ul id="main-menu" class="menu">
 				<shiro:hasPermission permission="menu:survey">
-					<li><a class="${controllerName=='editSurvey'||controllerName=='summary'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey"/></a></li>
+					<li><a class="${controllerName=='editSurvey'||controllerName=='surveySummary'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey"/></a></li>
 				</shiro:hasPermission>
 				<shiro:hasPermission permission="menu:planning">
 					<li><a class="${controllerName=='editPlanning'?'active':''}" href="${createLink(controller: 'editPlanning', action:'view')}"><g:message code="header.navigation.planning"/></a></li>
@@ -129,15 +129,17 @@
 	  		</ul>
 	  	</div>
 	</div>
+
+	<div id="flash">
+		<g:if test="${flash.message}">
+			<!-- TODO add error class if it's an error -->
+			<div class="message js_help">${flash.message} <a href="#" class="delete-link js_hide-help">Turn off</a></div>
+		</g:if>	
+	</div>
 		
 	<div id="content">
-	  <g:if test="${flash.message}">
-  		<!-- TODO add error class if it's an error -->
-  		<div class="message js_help">${flash.message} <a href="#" class="delete-link js_hide-help">Turn off</a></div>
-    </g:if>
-	  <div class="wrapper">
+		<div class="wrapper">
 			<g:layoutBody />
-			<div class=clear></div>
 		</div>
 	</div>
 

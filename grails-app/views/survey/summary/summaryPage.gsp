@@ -9,7 +9,7 @@
 	</head>
 	<body>
 		<div>
-			<div class="subnav">
+			<div class="filter-bar">
 				<g:render template="/survey/summary/surveyFilter"/>
 				<g:locationFilter linkParams="${[survey: currentSurvey?.id, program: currentProgram?.id, section: currentSection?.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc']}" 
 					selected="${currentLocation}" selectedTypes="${currentLocationTypes}" skipLevels="${locationSkipLevels}"/>

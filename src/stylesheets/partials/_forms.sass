@@ -40,7 +40,7 @@
     > h6
       margin-top: 5px
       
-  .horizontal li
+  .horizontal > li
     margin-bottom: 5px
   
   h5
@@ -236,13 +236,22 @@ select
   &:hover, &:focus
     background: $filler + #030303
     border-color: $primary
+    
+.entity-form-container h5
+  color: #888
+  font-size: 16px
+  font-weight: bold
+  margin-top: 20px
 
 .entity-form-container
   float: left
   width: 100%
   
   .entity-form-header
-
+    color: #888
+    font-size: 11px
+    padding: 10px 15px 30px
+    
     .title
       float: left
       color: $primary
@@ -252,11 +261,9 @@ select
       padding: 4px
     
       a
+        font-size: 11px
         padding: 2px
     
-      a.no-link
-        font-weight: bold
-        
   .forms-container 
     width: 100%
         
@@ -366,6 +373,30 @@ ul.filtered
   li:hover
     background-color: yellow
 
+
+.add-row, .element-list-add
+  background: url('../images/icons/toggle_plus.png') no-repeat 10px center $filler
+  border: 1px solid $filler - #222
+  display: inline-block
+  font-size: 12px
+  font-weight: bold
+  margin-top: 10px
+  padding: 8px 20px 7px 35px
+  text-decoration: none
+  +border-radius(3px)
+  +box-shadow(#eee, 0, 2px, 1px)
+  +text-shadow(#fff, 0, 1px, 0)
+  &:hover, &:focus
+    background: url('../images/icons/toggle_plus.png') no-repeat 10px center $yes
+    border: 1px solid $yes - #292929
+    color: #fff
+    +box-shadow(#ccc, 0, 2px, 1px)
+    +text-shadow($yes - #333, 0, 1px, 0)
+  &:active
+    position: relative
+    top: 1px
+    +box-shadow(#ccc, 0, 1px, 1px)
+
 // start fterrier:
 .element
   margin-bottom: 4px
@@ -440,10 +471,6 @@ ul.element-map
     color: $primary
     padding-left: 10px
 
-.inline-list li
-  display: inline
-  float: left
-  
 form.search-form
   background: $filler
   border: 1px solid $filler - #111

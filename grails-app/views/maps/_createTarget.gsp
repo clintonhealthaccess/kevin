@@ -1,4 +1,4 @@
-<div id="add-maps-target" class="entity-form-container">
+<div class="entity-form-container">
 
 	<div class="entity-form-header">
 		<h3 class="title">

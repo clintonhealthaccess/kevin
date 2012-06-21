@@ -5,7 +5,7 @@
 		<title><g:message code="register.title"/></title>
 	</head>
 	<body>
-		<h3 class="subnav center"><g:message code="register.header.label"/></h3>
+		<h3 class="heading1-bar text-center"><g:message code="register.header.label"/></h3>
 			<g:form action="sendRegistration" class="nice-form">
 	    
 			<table class="listing">

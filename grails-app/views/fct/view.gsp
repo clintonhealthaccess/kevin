@@ -13,23 +13,25 @@
 	</head>
 	<body>
 		<div id="report">
-			<div class="subnav">			
+			<div class="filter-bar">			
 				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params]"/>
 			</div>
 			<div class="main">
 				<g:render template="/templates/topLevelReportTabs" model="[linkParams:params]"/>
 				<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>			
-				<ul id="questions">
-		            <li class="question push-20">
-		                <g:render template="/templates/reportTableHeader" model="[table:'program', linkParams:params]"/>	                																
+				<ul>
+		            <li class="push-20">
+		            	<g:render template="/templates/reportTitle" model="[title: i18n(field:currentProgram.names)+' x '+i18n(field:currentLocation.names), file: 'star_small.png']"/>
+		            
 						<g:if test="${fctTable != null && fctTable.hasData()}">
 							<g:render template="/fct/reportTargetFilter" model="[linkParams:params]"/>
 	              			<g:render template="/fct/reportProgramTable" model="[linkParams:params]"/>
 	              		</g:if>
 	              		<g:else><div><g:message code="fct.report.table.noselection.label"/></div></g:else>	
 	              	</li>	              	
-	              	<li class="question push-10">
-	                	<g:render template="/templates/reportTableHeader" model="[table:'location', linkParams:params]"/>
+	              	<li class="push-10">
+	                	<g:render template="/templates/reportTitle" model="[title: i18n(field:currentProgram.names), file: 'marker_small.png']"/>
+	                	
 	                	<g:if test="${fctTable != null && fctTable.hasData()}">	                	              								
 							<p><g:message code="fct.report.datalocationtype"/>: 
 								<g:each in="${currentLocationTypes}" var="dataLocationType" status="i">						

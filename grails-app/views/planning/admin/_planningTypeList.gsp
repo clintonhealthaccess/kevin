@@ -32,8 +32,8 @@
 				<td>${planningType.costs.size()}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 
-						<a class="selected manage-btn" href="#"><g:message code="entity.list.manage.label"/></a>
-						<div class="hidden manage-list dropdown-list js_dropdown-list">
+						<a class="js_dropdown-link with-highlight" href="#"><g:message code="entity.list.manage.label"/></a>
+						<div class="dropdown-list js_dropdown-list">
 							<ul>
 								<li>
 									<a href="${createLink(controller:'planningCost', action:'list', params:['planningType.id':planningType.id])}"><g:message code="default.list.label" args="[message(code:'planning.planningcost.label')]" /></a>

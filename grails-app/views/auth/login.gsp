@@ -5,7 +5,7 @@
 		<title><g:message code="login.title"/></title>
 	</head>
 	<body>
-		<h3 class="subnav center"><g:message code="login.header.label"/></h3>
+		<h3 class="heading1-bar text-center"><g:message code="login.header.label"/></h3>
 		<div class="form-box">
 			<g:form action="signIn" class="nice-form login-form">
 				<input type="hidden" name="targetURI" value="${targetURI}" />
