@@ -14,7 +14,7 @@
     </head>
     <body>
     	<div id="maps">
-			<div class="subnav">
+			<div class="heading1-bar">
 				<g:periodFilter linkParams="${[location: currentLocation?.id, program: currentProgram?.id]}" selected="${currentPeriod}"/>
 				<g:locationFilter linkParams="${[period: currentPeriod.id, program: currentProgram?.id]}" selected="${currentLocation}"/>
 								

@@ -1,6 +1,6 @@
 <%@page import="org.chai.kevin.util.Utils"%>
 
-<div id="create-data-element" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">
 			<g:message code="default.new.label" args="[message(code:'normalizeddataelement.label')]"/>
@@ -29,7 +29,7 @@
 						</g:each>
 					</div>
 					<g:each in="${periods}" var="period" status="i">
-						<div class="expression-period ${i!=0?'hidden':''}" id="expression-period-${period.id}">
+						<div class="expression-period ${i!=0?'hidden':''}">
 							<g:each in="${types}" var="group">
 								<label for="expressionMap[${period.id}][${group.code}]">${group.code}</label> 
 								<textarea name="expressionMap[${period.id}][${group.code}]" rows="4">${normalizedDataElement.getExpression(period, group.code)}</textarea>

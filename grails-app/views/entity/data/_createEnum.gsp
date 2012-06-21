@@ -1,4 +1,4 @@
-<div id="add-enum" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title"><g:message code="enum.label"/></h3>
 		<g:locales/>
@@ -14,10 +14,10 @@
 		</g:if>
 		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${enumeration}" field="code" />
 	
-		<table id="enum-option">
+		<table>
 			<g:each in="${enumeration.enumOptions}" status="i" var="option">
 				<tr class="white-box">
-					<td id="enum-option-${option.id}">
+					<td>
 						<g:render template="/entity/data/enumOption" model="[option: option]" />
 					</td>
 				</tr>

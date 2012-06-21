@@ -6,7 +6,7 @@
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>
-    	<div class="explanation-heading">
+    	<div class="explanation-heading1-bar">
     		Applies to:
     		<g:each in="${explanation.types}" var="group" status="i">
     			<span>${group.name}</span><g:if test="${i < explanation.types.size() - 1}">,</g:if>

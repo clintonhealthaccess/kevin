@@ -1,3 +1,6 @@
+<%@ page import="org.apache.shiro.SecurityUtils" %>
+<%@ page import="org.chai.kevin.security.User" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,10 +34,16 @@
 			</ul>
 			
 			<ul class="locales" id="top_nav">
-			  <shiro:user>
-					<li><a class="${controllerName=='auth'?'active':''}" href="${createLinkWithTargetURI(controller: 'auth', action:'newPassword')}"><g:message code="header.navigation.password"/></a></li>
-  				</li>
-  			</shiro:user>
+				<shiro:user>
+					<%
+						def user = User.findByUuid(SecurityUtils.subject.principal, [cache: true])
+					%>
+					<li>
+						<a class="${controllerName=='auth'?'active':''}" href="${createLinkWithTargetURI(controller: 'account', action:'editAccount')}">
+							<g:message code="header.navigation.myaccount"/> : ${user.firstname} ${user.lastname}
+						</a>
+					</li>
+				</shiro:user>
 				<shiro:user>
 					<li>
 						<a class="no-link" href="${createLink(controller: 'auth', action: 'signOut')}"><g:message code="header.labels.logout"/></a>
@@ -78,14 +87,14 @@
 		<div id="navigation">
 		<div class="wrapper">
 			<ul id="main-menu" class="menu">
+				<shiro:hasPermission permission="menu:reports">
+					<li><a class="${controllerName=='dashboard'?'active':''}" href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.reports"/></a></li>
+				</shiro:hasPermission>
 				<shiro:hasPermission permission="menu:survey">
-					<li><a class="${controllerName=='editSurvey'||controllerName=='summary'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey"/></a></li>
+					<li><a class="${controllerName=='editSurvey'||controllerName=='surveySummary'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey"/></a></li>
 				</shiro:hasPermission>
 				<shiro:hasPermission permission="menu:planning">
 					<li><a class="${controllerName=='editPlanning'?'active':''}" href="${createLink(controller: 'editPlanning', action:'view')}"><g:message code="header.navigation.planning"/></a></li>
-				</shiro:hasPermission>
-				<shiro:hasPermission permission="menu:reports">
-					<li><a class="${controllerName=='dashboard'?'active':''}" href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.reports"/></a></li>
 				</shiro:hasPermission>
 				<shiro:hasPermission permission="menu:admin">
 	  				<li><a class="${controllerName!=null && org.chai.kevin.AbstractEntityController.class.isAssignableFrom(grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).getClazz())?'active':''}" href="#"  onclick="return false;"><g:message code="header.navigation.administration"/></a>
@@ -108,7 +117,7 @@
 	  						<li><a class="${controllerName=='locationLevel'?'active':''}" href="${createLink(controller: 'locationLevel', action:'list')}"><g:message code="locationlevel.label"/></a></li>
 	  						<li><a class="${controllerName=='dataLocation'?'active':''}" href="${createLink(controller: 'dataLocation', action:'list')}"><g:message code="datalocation.label"/></a></li>
 	  						<li><a class="${controllerName=='dataLocationType'?'active':''}" href="${createLink(controller: 'dataLocationType', action:'list')}"><g:message code="datalocationtype.label"/></a></li>
-	  						<li><a class="${controllerName=='user'?'active':''}" href="${createLink(controller: 'userList', action:'list')}"><g:message code="user.label"/></a></li>
+	  						<li><a class="${controllerName=='user'?'active':''}" href="${createLink(controller: 'user', action:'list')}"><g:message code="user.label"/></a></li>
 							<li><a class="${controllerName=='expression'?'active':''}" href="${createLink(controller: 'expression', action:'test')}"><g:message code="expression.test.label"/></a></li>
 							<li><a class="${controllerName=='generalImporter'?'active':''}" href="${createLink(controller: 'generalImporter', action:'importer')}"><g:message code="import.general.data.label" /></a></li>
 							<li><a class="${controllerName=='nominativeImporter'?'active':''}" href="${createLink(controller: 'nominativeImporter', action:'importer')}"><g:message code="import.nominative.data.label" /></a></li>
@@ -120,15 +129,17 @@
 	  		</ul>
 	  	</div>
 	</div>
+
+	<div id="flash">
+		<g:if test="${flash.message}">
+			<!-- TODO add error class if it's an error -->
+			<div class="message js_help">${flash.message} <a href="#" class="delete-link js_hide-help">Turn off</a></div>
+		</g:if>	
+	</div>
 		
 	<div id="content">
-	  <g:if test="${flash.message}">
-  		<!-- TODO add error class if it's an error -->
-  		<div class="message js_help">${flash.message} <a href="#" class="delete-link js_hide-help">Turn off</a></div>
-    </g:if>
-	  <div class="wrapper">
+		<div class="wrapper">
 			<g:layoutBody />
-			<div class=clear></div>
 		</div>
 	</div>
 
