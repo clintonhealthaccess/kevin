@@ -66,7 +66,7 @@ public class DsrService {
 		Collections.sort(targets);
 				
 		for (DsrTarget target : targets) {
-			Calculation calculation = dataService.getData(target.getCalculationElement().getId(), Calculation.class);
+			Calculation calculation = dataService.getData(target.getData().getId(), Calculation.class);
 			if(calculation != null){				
 				for(Location treeLocation : treeLocations){					
 					if(!valueMap.containsKey(treeLocation))
@@ -80,7 +80,7 @@ public class DsrService {
 				}	
 			}
 			else{
-				DataElement dataElement = dataService.getData(target.getCalculationElement().getId(), DataElement.class);
+				DataElement dataElement = dataService.getData(target.getData().getId(), DataElement.class);
 				if(dataElement != null){
 					for(DataLocation dataLocation : dataLocations){										
 						if(!valueMap.containsKey(dataLocation))

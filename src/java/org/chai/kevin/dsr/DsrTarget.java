@@ -58,7 +58,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class DsrTarget extends AbstractReportTarget implements Exportable, Importable {
 	
 	private Long id;
-	private Data<StoredValue> calculationElement; //this can be either a calculation or a data element
+	private Data<StoredValue> data; //this can be either a calculation or a data element
 	private DsrTargetCategory category;
 	private String format;
 	
@@ -72,12 +72,12 @@ public class DsrTarget extends AbstractReportTarget implements Exportable, Impor
 	}	
 	
 	@ManyToOne(targetEntity=Data.class, optional=false)
-	public Data<StoredValue> getCalculationElement() {
-		return calculationElement;
+	public Data<StoredValue> getData() {
+		return data;
 	}
 
-	public void setCalculationElement(Data<StoredValue> calculationElement) {
-		this.calculationElement = calculationElement;
+	public void setData(Data<StoredValue> data) {
+		this.data = data;
 	}	
 
 	@ManyToOne(targetEntity=DsrTargetCategory.class)

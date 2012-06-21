@@ -17,9 +17,9 @@
 		<g:selectFromList name="category.id" label="${message(code:'dsr.target.category.label')}" bean="${target}" field="category" optionKey="id" multiple="false"
 			from="${categories}" value="${target.category?.id}" values="${categories.collect{i18n(field:it.names)}}" />
 	
-		<g:selectFromList name="calculationElement.id" label="${message(code:'dsr.target.calculationelement.label')}" bean="${target}" field="calculationElement" optionKey="id" multiple="false"
+		<g:selectFromList name="data.id" label="${message(code:'dsr.target.calculationelement.label')}" bean="${target}" field="data" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'Data'])}"
-			from="${calculationElements}" value="${target.calculationElement?.id}" values="${calculationElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+			from="${data}" value="${target.data?.id}" values="${data.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 
 		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${target}" field="order"/>
 		

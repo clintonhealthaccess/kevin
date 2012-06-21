@@ -897,7 +897,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Accountant"]), descriptions:j(["en":"Accountant"]),
 					program: hmr,
-					calculationElement: NormalizedDataElement.findByCode("Constant 10"),
+					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 8,
 					code: "Accountant"
 					).save(failOnError:true)
@@ -905,7 +905,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Days Of Nurse Training"]), descriptions:j(["en":"Days Of Nurse Training"]),
 					program: hmr,
-					calculationElement: NormalizedDataElement.findByCode("Constant 20"),
+					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 1,
 					code: "Days Of Nurse Training"
 					).save(failOnError:true)
@@ -913,7 +913,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"A0"]), descriptions:j(["en":"A0"]),
 					program: hmr,
-					calculationElement: RawDataElement.findByCode("CODE1"),
+					data: RawDataElement.findByCode("CODE1"),
 					order: 1,
 					code: "A0"
 					).save(failOnError:true)
@@ -921,7 +921,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"A1"]), descriptions:j(["en":"A1"]),
 					program: hmr,
-					calculationElement: NormalizedDataElement.findByCode("TRUE"),
+					data: NormalizedDataElement.findByCode("TRUE"),
 					order: 2,
 					code: "A1"
 					).save(failOnError:true)
@@ -929,7 +929,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"A2"]), descriptions:j(["en":"A2"]),
 					program: hmr,
-					calculationElement: NormalizedDataElement.findByCode("FALSE"),
+					data: NormalizedDataElement.findByCode("FALSE"),
 					order: 3,
 					code:"A2"
 					).save(failOnError:true)
@@ -937,7 +937,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"A3"]), descriptions:j(["en":"A3"]),
 					program: hmr,
-					calculationElement: dsrAverage,
+					data: dsrAverage,
 					order: 4,
 					code: "A3"
 					).save(failOnError:true)
@@ -945,7 +945,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"A4"]), descriptions:j(["en":"A4"]),
 					program: hmr,
-					calculationElement: dsrSum,
+					data: dsrSum,
 					order: 5,
 					code: "A4"
 					).save(failOnError:true)
@@ -953,7 +953,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Testing Category Human Resource"]), descriptions:j(["en":"Testing Category Human Resource"]),
 					program: hmr,
-					calculationElement: NormalizedDataElement.findByCode("Constant 20"),
+					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 4,
 					code: "Testing Category Human Resource"
 					).save(failOnError:true)
@@ -961,7 +961,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"In-Facility Birth Ratio"]), descriptions:j(["en":"In-Facility Birth Ratio"]),
 					program: servDeliv,
-					calculationElement: NormalizedDataElement.findByCode("Constant 20"),
+					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 6,
 					code: "In-Facility Birth Ratio"
 					).save(failOnError:true)
@@ -969,7 +969,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Mental Health Service"]), descriptions:j(["en":"Mental Health Service"]),
 					program: servDeliv,
-					calculationElement: NormalizedDataElement.findByCode("Constant 20"),
+					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 11,
 					code: "Mental Health Service"
 					).save(failOnError:true)
@@ -977,7 +977,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Malaria Rapid Test"]), descriptions:j(["en":"Malaria Rapid Test"]),
 					program: servDeliv,
-					calculationElement: NormalizedDataElement.findByCode("Constant 20"),
+					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 7,
 					code: "Malaria Rapid Test"
 					).save(failOnError:true)
@@ -985,7 +985,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"HIV Rapid Test"]), descriptions:j(["en":"HIV Rapid Test"]),
 					program: servDeliv,
-					calculationElement: NormalizedDataElement.findByCode("Constant 10"),
+					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 9,
 					code: "HIV Rapid Test"
 					).save(failOnError:true)
@@ -993,7 +993,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"TB Stain Test"]), descriptions:j(["en":"TB Stain Test"]),
 					program: servDeliv,
-					calculationElement: NormalizedDataElement.findByCode("Constant 20"),
+					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 10,
 					code: "TB Stain Test"
 					).save(failOnError:true)
@@ -1001,7 +1001,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Catchment Population per CHW"]), descriptions:j(["en":"Catchment Population per CHW"]),
 					program: servDeliv,
-					calculationElement: NormalizedDataElement.findByCode("Constant 10"),
+					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 12,
 					code: "Catchment Population per CHW"
 					).save(failOnError:true)
@@ -1009,7 +1009,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Consultation Room"]), descriptions:j(["en":"Consultation Room"]),
 					program: instCap,
-					calculationElement: NormalizedDataElement.findByCode("Constant 10"),
+					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 1,
 					code: "Consultation Room"
 					).save(failOnError:true)
@@ -1017,7 +1017,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Facility Water Status"]), descriptions:j(["en":"Facility Water Status"]),
 					program: instCap,
-					calculationElement: NormalizedDataElement.findByCode("Constant 10"),
+					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
 					code: "Facility Water Status"
 					).save(failOnError:true)
@@ -1025,7 +1025,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Incinerator Availability"]), descriptions:j(["en":"Incinerator Availability"]),
 					program: instCap,
-					calculationElement: NormalizedDataElement.findByCode("Constant 10"),
+					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 2,
 					code: "Incinerator Availability"
 					).save(failOnError:true)
@@ -1033,7 +1033,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Facility Power Status"]), descriptions:j(["en":"Facility Power Status"]),
 					program: instCap,
-					calculationElement: NormalizedDataElement.findByCode("Constant 10"),
+					data: NormalizedDataElement.findByCode("Constant 10"),
 					code: "Facility Power Status"
 					).save(failOnError:true)
 

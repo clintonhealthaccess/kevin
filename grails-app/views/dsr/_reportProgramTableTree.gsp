@@ -7,7 +7,7 @@
 			<g:each in="${dsrTable.targets}" var="target">
 				<td>
 					<g:if test="${dsrTable.getReportValue(location, target) != null}">
-						<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.calculationElement.type}" format="${target.format}"/>
+						<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.data.type}" format="${target.format}"/>
 					</g:if>
 					<g:else>
 						<div class="report-value-na"><g:message code="report.value.na"/></div>
@@ -26,7 +26,7 @@
 			<g:each in="${dsrTable.targets}" var="target">
 				<td>
 					<g:if test="${dsrTable.getReportValue(location, target) != null}">
-						<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.calculationElement.type}" format="${target.format}"/>
+						<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.data.type}" format="${target.format}"/>
 					</g:if>					
 				</td>
 			</g:each>

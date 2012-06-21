@@ -69,7 +69,7 @@ class DsrTargetController extends AbstractEntityController {
 			programs: ReportProgram.list(),
 			categories: DsrTargetCategory.list(),
 //			dataElements: entity.dataElement!=null?[entity.dataElement]:[],
-			calculationElements: entity.calculationElement!=null?[entity.calculationElement]:[]
+			data: entity.data!=null?[entity.data]:[]
 		]
 	}
 
@@ -88,7 +88,7 @@ class DsrTargetController extends AbstractEntityController {
 	def bindParams(def entity) {
 		bindData(entity, params, [exclude:'dataElement.id'])
 //		if (params.int('dataElement.id')) entity.dataElement = dataService.getData(params.int('dataElement.id'), DataElement.class)
-		if (params.int('calculationElement.id')) entity.calculationElement = dataService.getData(params.int('calculationElement.id'), Data.class)
+		if (params.int('data.id')) entity.data = dataService.getData(params.int('data.id'), Data.class)
 		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967

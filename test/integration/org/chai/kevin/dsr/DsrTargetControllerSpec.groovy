@@ -48,13 +48,13 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		
 		when:
 		dsrTargetController.params.code = CODE(4)
-		dsrTargetController.params['calculationElement.id'] = average.id+""
+		dsrTargetController.params['data.id'] = average.id+""
 		dsrTargetController.params['program.id'] = program.id+""
 		dsrTargetController.saveWithoutTokenCheck()
 		
 		then:
 		DsrTarget.count() == 1
-		DsrTarget.list()[0].calculationElement.equals(average)				
+		DsrTarget.list()[0].data.equals(average)				
 	}
 	
 	def "create target with sum calculation element"(){
@@ -67,13 +67,13 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		
 		when:
 		dsrTargetController.params.code = CODE(5)
-		dsrTargetController.params['calculationElement.id'] = sum.id+""
+		dsrTargetController.params['data.id'] = sum.id+""
 		dsrTargetController.params['program.id'] = program.id+""
 		dsrTargetController.saveWithoutTokenCheck()
 		
 		then:
 		DsrTarget.count() == 1
-		DsrTarget.list()[0].calculationElement.equals(sum)
+		DsrTarget.list()[0].data.equals(sum)
 	}
 	
 	def "create target with raw data element calculation element"() {
@@ -86,13 +86,13 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		
 		when:
 		dsrTargetController.params.code = CODE(3)
-		dsrTargetController.params['calculationElement.id'] = rawDataElement.id+""
+		dsrTargetController.params['data.id'] = rawDataElement.id+""
 		dsrTargetController.params['program.id'] = program.id+""
 		dsrTargetController.saveWithoutTokenCheck()
 		
 		then:
 		DsrTarget.count() == 1
-		DsrTarget.list()[0].calculationElement.equals(rawDataElement)				
+		DsrTarget.list()[0].data.equals(rawDataElement)				
 	}
 	
 	def "create target with normalized data element calculation element"() {
@@ -106,13 +106,13 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		
 		when:
 		dsrTargetController.params.code = CODE(5)
-		dsrTargetController.params['calculationElement.id'] = normalizedDataElement.id+""
+		dsrTargetController.params['data.id'] = normalizedDataElement.id+""
 		dsrTargetController.params['program.id'] = program.id+""
 		dsrTargetController.saveWithoutTokenCheck()
 		
 		then:
 		DsrTarget.count() == 1
-		DsrTarget.list()[0].calculationElement.equals(normalizedDataElement)
+		DsrTarget.list()[0].data.equals(normalizedDataElement)
 	}
 	
 	def "delete target" () {

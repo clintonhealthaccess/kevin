@@ -33,7 +33,7 @@
 				<td>
 					<g:i18n field="${target.program.names}"/>
 				</td>
-				<td>${target.calculationElement.code}</td>
+				<td>${target.data.code}</td>
 				<td>
 					<g:i18n field="${target.category?.names}"/>
 				</td>

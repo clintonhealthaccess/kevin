@@ -8,12 +8,12 @@ import org.chai.kevin.util.Utils;
 
 abstract class DsrIntegrationTests extends IntegrationTests {
 	
-	static def newDsrTarget(def code, def order, def calculationElement, def format, def program, def category) {
+	static def newDsrTarget(def code, def order, def data, def format, def program, def category) {
 		def target = new DsrTarget(names: [:],
 			code: code,
 			order: order,
 			format: format,
-			calculationElement: calculationElement,
+			data: data,
 			program: program,
 			category: category
 		).save(failOnError: true)
@@ -25,16 +25,16 @@ abstract class DsrIntegrationTests extends IntegrationTests {
 		return target
 	}
 	
-	static def newDsrTarget(def code, def calculationElement, def program) {
-		return newDsrTarget(code, null, calculationElement, null, program, null)
+	static def newDsrTarget(def code, def data, def program) {
+		return newDsrTarget(code, null, data, null, program, null)
 	}
 	
-	static def newDsrTarget(def code, def order, def calculationElement, def program) {
-		return newDsrTarget(code, order, calculationElement, null, program, null)
+	static def newDsrTarget(def code, def order, def data, def program) {
+		return newDsrTarget(code, order, data, null, program, null)
 	}
 	
-	static def newDsrTarget(def code, def order, def calculationElement, def program, def category) {
-		return newDsrTarget(code, order, calculationElement, null, program, category)
+	static def newDsrTarget(def code, def order, def data, def program, def category) {
+		return newDsrTarget(code, order, data, null, program, category)
 	}
 	
 	static def newDsrTargetCategory(def code, def order) {
