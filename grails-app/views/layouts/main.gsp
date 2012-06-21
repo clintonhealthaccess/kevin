@@ -78,17 +78,35 @@
 		<div id="navigation">
 		<div class="wrapper">
 			<ul id="main-menu" class="menu">
+				<g:set var="controllerClass" value="${grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).getClazz()}" />	
+				<!-- Survey -->
 				<shiro:hasPermission permission="menu:survey">
 					<li><a class="${controllerName=='editSurvey'||controllerName=='summary'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey"/></a></li>
 				</shiro:hasPermission>
+				<!-- Planning -->
 				<shiro:hasPermission permission="menu:planning">
 					<li><a class="${controllerName=='editPlanning'?'active':''}" href="${createLink(controller: 'editPlanning', action:'view')}"><g:message code="header.navigation.planning"/></a></li>
 				</shiro:hasPermission>
-				<shiro:hasPermission permission="menu:reports">
-					<li><a class="${controllerName=='dashboard'?'active':''}" href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.reports"/></a></li>
+				<!-- Reports -->
+				<shiro:hasPermission permission="menu:reports">				
+					<g:set var="isDashboard" value="${org.chai.kevin.dashboard.DashboardController.class.isAssignableFrom(controllerClass)}" />
+					<g:set var="isDsr" value="${org.chai.kevin.dsr.DsrController.class.isAssignableFrom(controllerClass)}" />
+					<g:set var="isFct" value="${org.chai.kevin.fct.FctController.class.isAssignableFrom(controllerClass)}" />
+					<g:set var="isReports" value="${isDashboard || isDsr || isReports}" />				
+					<li><a class="${controllerName!=null && isReports ?'active':''}" href="#"  onclick="return false;">
+									<g:message code="header.navigation.reports"/></a>
+						<ul class="submenu">
+							<li><a class="${controllerName=='dashboard'?'active':''}" href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.reports.dashboard"/></a></li>
+							<li><a class="${controllerName=='dsr'?'active':''}" href="${createLink(controller: 'dsr', action:'view')}"><g:message code="header.navigation.reports.dsr"/></a></li>
+							<li><a class="${controllerName=='fct'?'active':''}" href="${createLink(controller: 'fct', action:'view')}"><g:message code="header.navigation.reports.fct"/></a></li>
+						</ul>
+					</li>
 				</shiro:hasPermission>
+				<!-- Admin -->
 				<shiro:hasPermission permission="menu:admin">
-	  				<li><a class="${controllerName!=null && org.chai.kevin.AbstractEntityController.class.isAssignableFrom(grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).getClazz())?'active':''}" href="#"  onclick="return false;"><g:message code="header.navigation.administration"/></a>
+					<g:set var="isAdmin" value="${org.chai.kevin.AbstractEntityController.class.isAssignableFrom(controllerClass)}" />					
+	  				<li><a class="${controllerName!=null && isAdmin?'active':''}" href="#"  onclick="return false;">
+	  								<g:message code="header.navigation.administration"/></a>
 	  					<ul class="submenu">
 	  						<li><a class="${controllerName=='rawDataElement'?'active':''}" href="${createLink(controller: 'rawDataElement', action:'list')}"><g:message code="rawdataelement.label"/></a></li>
 	  						<li><a class="${controllerName=='normalizedDataElement'?'active':''}" href="${createLink(controller: 'normalizedDataElement', action:'list')}"><g:message code="normalizeddataelement.label"/></a></li>
