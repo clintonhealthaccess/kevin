@@ -5,7 +5,7 @@
 		<title><g:message code="myaccount.title"/></title>
 	</head>
 	<body>
-		<h3 class="heading1-bar text-center"><g:message code="myaccount.header.label"/></h3>
+		<h3 class="heading2-bar text-center"><g:message code="myaccount.header.label"/></h3>
 		<g:form action="saveAccount" class="nice-form">
 			<input type="hidden" name="targetURI" value="${targetURI}" />
     

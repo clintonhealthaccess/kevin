@@ -1,11 +1,11 @@
 <div class="splash-box splash-${size}-columns left">
-	<div class="splash-box-link">
-		<a class="nice-button survey splash-button" href="${link}">${title}</a>
-	</div>
-	
-	<div class="splash-box-image">
-		<a href="${link}">
+	<a href="${link}">
+		<span class="splash-box-text">
+			${title}
+		</span>
+		
+		<span class="splash-box-image">
 			<img width="240" height="180" src="${resource(dir:'images',file: image)}"/>
-		</a>
-	</div>
+		</span>
+	</a>
 </div>

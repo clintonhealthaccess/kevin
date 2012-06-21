@@ -9,8 +9,9 @@
 			<g:if test="${dataLocationTypes != null && !dataLocationTypes.isEmpty()}">
 				<div class="js_dropdown-list dropdown-list push-top-10" id="js_location-type-filter">
 					<ul>
-						<li><a id="js_checkall" class="dropdown-check" href="#"><g:message code="filter.datalocationtype.checkall"/></a>
-							<a id="js_uncheckall" class="dropdown-check" href="#" ><g:message code="filter.datalocationtype.uncheckall"/></a>
+						<li>
+							<a id="js_checkall" class="nice-button2" href="#"><g:message code="filter.datalocationtype.checkall"/></a>
+							<a id="js_uncheckall" class="nice-button2" href="#" ><g:message code="filter.datalocationtype.uncheckall"/></a>
 							<g:each in="${dataLocationTypes}" var="type">
 								<li>								
 									<input class="js_data-location-type-checkbox js_dropdown-ignore" name="dataLocationTypes" type="checkbox" value="${type.id}" 

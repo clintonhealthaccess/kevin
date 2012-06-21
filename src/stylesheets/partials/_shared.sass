@@ -184,7 +184,20 @@ ul.horizontal
     background: url("../images/icons/datalocation.png") no-repeat 14px 50% #fcfcfc
     &:hover, &:focus
       background: url("../images/icons/datalocation_hover.png") no-repeat 14px 50% #fcfcfc
-         
+
+.nice-button2
+  text-decoration: none
+  background: $filler
+  border: 1px solid $dropdown - #111
+  display: inline-block 
+  margin-bottom: 3px
+  padding: 4px 4px
+  text-align: center
+  width: 42%
+  +border-radius(3px)
+  &:hover, &:focus
+    border-color: $primary_light
+      
 .with-highlight
   &:hover, &:focus, &.dropdown-selected
     background-color: $primary !important
@@ -235,21 +248,12 @@ ul.horizontal
         &:hover
           color: $primary_dark
           
-  .dropdown-check
-    background: $filler
-    border: 1px solid $dropdown - #111
-    display: inline-block 
-    margin-bottom: 3px
-    padding: 4px 4px
-    text-align: center
-    width: 42%
-    +border-radius(3px)
-    &:hover, &:focus
-      border-color: $primary_light
-
 .splash-box
+  a
+    text-decoration: none
+
   background: url('../images/bg/body_bg.png')
-  
+  text-align: center
   position: relative
   padding: 10px
   margin: 20px
@@ -257,13 +261,12 @@ ul.horizontal
   +border-radius(3px)
   +box-shadow(#ccc 0 0 2px)
   
-  .splash-box-link
+  .splash-box-text
     padding-top: 11px
     margin-right: 5px
     margin-bottom: 20px
     float: left
-    a
-      font-size: 20px !important
+    font-size: 20px !important
           
   .splash-box-image
     float: right
@@ -271,9 +274,17 @@ ul.horizontal
     background: white
     +box-shadow(#ccc 0 0 2px)
     right: 20px
-    opacity: 0.6
-    &:hover, &:focus
+    opacity: 0.5
+  
+  &:hover, &:focus
+    cursor: pointer
+    +box-shadow(#ccc - #333 0 0 2px)
+    +transition(all 0.3s)
+    .splash-box-image
       opacity: 1
+      +transition(all 0.3s)
+    a
+      color: $primary - #666
       +transition(all 0.3s)
 
 .splash-two-columns
@@ -281,25 +292,12 @@ ul.horizontal
   
 .splash-three-columns
   width: 250px
-  .splash-box-link
+  .splash-box-image
+    margin-top: 10px
+  .splash-box-text
     text-align: center
     float: none
 
-.splash-button
-  color: white
-  background-color: $primary !important
-  position: relative
-  text-decoration: none
-  z-index: 5
-  +border-radius(3px)
-  +box-shadow($primary - #222 0 2px 9px 0 inset)
-  +text-shadow($primary - #333 0 1px 0)
-  &:hover, &:focus
-    color: white
-    background-color: $primary_dark !important
-    +box-shadow($primary - #222, 0, -3px, 8px, 6px, inset)
-    +transition(all 0.3s)
-  
 .paginateButtons
   .step
     background: $filler
