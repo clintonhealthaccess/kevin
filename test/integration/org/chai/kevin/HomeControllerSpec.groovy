@@ -48,7 +48,7 @@ class HomeControllerSpec extends IntegrationTests {
 		homeController.index()
 		
 		then:
-		homeController.response.redirectedUrl == "/dashboard/view"
+		homeController.response.redirectedUrl == "/home/landingPage"
 	}
 	
 }
