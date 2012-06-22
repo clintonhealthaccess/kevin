@@ -46,6 +46,24 @@ class FilterTagLib {
 	def locationService;
 	def reportService;
 
+	def topLevelReportTabs = {attrs, body ->
+		def model = new HashMap(attrs)
+		if (model.linkParams == null) model << [linkParams: [:]]
+		else{
+			def linkParams = model.linkParams
+			def exclude = attrs['exclude']
+			if (exclude != null){
+				def filteredLinkParams = new HashMap(linkParams)
+				for(def param : linkParams){
+					if(exclude.contains(param.key))
+						filteredLinkParams.remove(param.key)
+				}
+				model << [linkParams: filteredLinkParams]
+			}
+		}		
+		out << render(template:'/templates/topLevelReportTabs', model:model)
+	}
+	
 	def periodFilter = {attrs, body ->
 		Period.withTransaction {
 			def model = new HashMap(attrs)
@@ -61,7 +79,7 @@ class FilterTagLib {
 
 	def programFilter = {attrs, body ->
 		ReportProgram.withTransaction {
-			def model = new HashMap(attrs)
+			def model = new HashMap(attrs)			
 			def program = attrs['selected']
 			def programRoot = reportService.getRootProgram()
 			def programTree = reportService.getProgramTree(attrs['selectedTargetClass']).asList()
@@ -71,7 +89,20 @@ class FilterTagLib {
 					programRoot: programRoot,
 					programTree: programTree			
 				]
+			
 			if (model.linkParams == null) model << [linkParams: [:]]
+			else{
+				def linkParams = model.linkParams
+				def exclude = attrs['exclude']
+				if (exclude != null){
+					def filteredLinkParams = new HashMap(linkParams)
+					for(def param : linkParams){
+						if(exclude.contains(param.key))
+							filteredLinkParams.remove(param.key)
+					}
+					model << [linkParams: filteredLinkParams]
+				}
+			}	
 			out << render(template:'/tags/filter/programFilter', model:model)
 		}
 	}
@@ -122,9 +153,9 @@ class FilterTagLib {
 //	}
 		
 	def linkParamFilter = {attrs, body ->
-		def model = new HashMap(attrs)
-		if (model.linkParams == null) model << [linkParams: [:]]
-			out << render(template:'/templates/linkParamFilter', model:model)
+		def model = new HashMap(attrs)		
+		if (model.linkParams == null) model << [linkParams: [:]]		
+		out << render(template:'/templates/linkParamFilter', model:model)
 	}
 	
 	// attrs['skipLevels'] is only needed for reports with both top-level locationFilter & levelFilter
@@ -180,5 +211,4 @@ class FilterTagLib {
 		if (level != null) params.put("level", level.id);
 		return params;
 	}
-
 }

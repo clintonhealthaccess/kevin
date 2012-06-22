@@ -21,22 +21,22 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
+		dashboardController.params.period = period.id
 		dashboardController.params.location = Location.findByCode(RWANDA).id
 		dashboardController.params.program = ReportProgram.findByCode(ROOT)
-		dashboardController.params.period = period.id
 		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
 		
 		then:
-		model.dashboardEntity.equals(DashboardProgram.findByCode(ROOT))
 		model.currentPeriod.equals(period)
+		model.dashboardEntity.equals(DashboardProgram.findByCode(ROOT))
 		model.currentLocation.equals(Location.findByCode(RWANDA))
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.programDashboard.hasData() == true
 		model.locationDashboard.hasData() == true
 	}		
 	
-	def "get root dashboard"(){
+	def "get dashboard with no parameters, default to period, root program, root location, location types, and dashboard entity"(){
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
@@ -46,18 +46,69 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		dashboardController.params.location = Location.findByCode(RWANDA).id
-		dashboardController.params.period = period.id
-		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
 		
 		then:
-		model.dashboardEntity.equals(DashboardProgram.findByCode(ROOT))
 		model.currentPeriod.equals(period)
+		model.dashboardEntity.equals(DashboardProgram.findByCode(ROOT))
 		model.currentLocation.equals(Location.findByCode(RWANDA))
-		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.programDashboard.hasData() == true
 		model.locationDashboard.hasData() == true
+	}
+	
+	def "get dashboard with invalid parameters, redirect to default period, root program, root location, location types, and dashboard entity"(){
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		def program = newReportProgram(PROGRAM1)
+		def dashboardProgram = newDashboardProgram(PROGRAM1, program, 1)
+		def calculation = newAverage("1", CODE(2))
+		def target = newDashboardTarget(TARGET1, calculation, program, 1)
+		dashboardController = new DashboardController()
+		refresh()
+		
+		when:
+		dashboardController.params.period = -1
+		dashboardController.params.program = -1
+		dashboardController.params.dashboardEntity = -1
+		dashboardController.params.location = -1
+		dashboardController.params.dataLocationTypes = [-1, -2]
+		def model = dashboardController.view()
+		
+		then:
+		dashboardController.response.redirectedUrl.contains("/dashboard/view/")
+		dashboardController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"?")
+		dashboardController.response.redirectedUrl.contains("dashboardEntity="+dashboardProgram.id)
+		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
+		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
+	}
+	
+	def "get dashboard with invalid parameters, redirect with correct parameter"(){
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		def program = newReportProgram(PROGRAM1)
+		def dashboardProgram = newDashboardProgram(PROGRAM1, program, 1)
+		def calculation = newAverage("1", CODE(2))
+		def target = newDashboardTarget(TARGET1, calculation, program, 1)
+		dashboardController = new DashboardController()
+		refresh()
+		
+		when: "valid location parameter"
+		dashboardController.params.period = -1
+		dashboardController.params.program = -1
+		dashboardController.params.dashboardEntity = -1
+		dashboardController.params.location = Location.findByCode(BURERA).id
+		dashboardController.params.dataLocationTypes = [-1, -2]
+		def model = dashboardController.view()
+		
+		then:
+		dashboardController.response.redirectedUrl.contains("/dashboard/view/")
+		dashboardController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(BURERA).id+"?")
+		dashboardController.response.redirectedUrl.contains("dashboardEntity="+dashboardProgram.id)
+		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
+		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
 	
 	def "get dashboard with null dashboard program for report program"(){
@@ -71,49 +122,22 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		dashboardController.params.location = Location.findByCode(RWANDA).id
+		dashboardController.params.period = period.id
 		dashboardController.params.program = program.id
-		dashboardController.params.period = period.id
-		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
-		def model = dashboardController.view()
-		
-		then:
-		model.dashboardEntity == null
-		model.currentPeriod.equals(period)
-		model.currentProgram.equals(program)
-		model.currentLocation.equals(Location.findByCode(RWANDA))		
-		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
-		model.programDashboard == null
-		model.locationDashboard == null
-	}
-	
-	def "get dashboard with invalid program parameter"() {
-		setup:
-		def period = newPeriod()
-		setupLocationTree()
-		def program = newReportProgram(PROGRAM1)
-		def calculation = newAverage("1", CODE(2))
-		def target = newDashboardTarget(TARGET1, calculation, program, 1)
-		dashboardController = new DashboardController()
-		refresh()
-		
-		when:
 		dashboardController.params.location = Location.findByCode(RWANDA).id
-		dashboardController.params.program = program.id+1
-		dashboardController.params.period = period.id
 		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
 		
 		then:
-		model.dashboardEntity == null
 		model.currentPeriod.equals(period)
 		model.currentProgram.equals(program)
+		model.dashboardEntity == null
 		model.currentLocation.equals(Location.findByCode(RWANDA))
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.programDashboard == null
 		model.locationDashboard == null
 	}
-		
+	
 	def "get program compare dashboard"() {
 		setup:
 		def period = newPeriod()
