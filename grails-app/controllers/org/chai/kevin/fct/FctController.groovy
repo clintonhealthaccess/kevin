@@ -75,8 +75,6 @@ class FctController extends AbstractController {
 				redirect(controller: 'fct', action: 'view', params: newParams)
 						
 			fctTable = fctService.getFctTable(location, program, fctTarget, period, level, dataLocationTypes);
-						
-			fctDescriptions = getReportDescriptions([program, fctTarget])
 		}
 		
 		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+", root program: "+program+", root location: "+location)				
@@ -84,7 +82,6 @@ class FctController extends AbstractController {
 		[
 			fctTable: fctTable,
 			currentTarget: fctTarget,
-			currentDescriptions: fctDescriptions,
 			currentPeriod: period,
 			currentProgram: program,
 			selectedTargetClass: FctTarget.class,

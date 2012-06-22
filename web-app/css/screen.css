@@ -998,6 +998,9 @@ textarea.login-field { width: 400px; height: 50px; text-align: left; }
 /* line 57, ../../src/stylesheets/partials/_report.sass */
 .report-value-false { color: #444444; }
 
+/* line 61, ../../src/stylesheets/partials/_report.sass */
+.report-help { vertical-align: middle; }
+
 /* line 1, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph { font-size: 11px; width: 970px; }
 /* line 4, ../../src/stylesheets/partials/_graphs.sass */

@@ -12,6 +12,8 @@
 					</option>
 				</g:each>
 			</select>
+			<g:render template="/templates/help_tooltip" 
+				model="[names: i18n(field: currentCategory.names), descriptions: i18n(field: currentCategory.descriptions)]" />			
 		</g:form>
 	</g:if>
 </div>

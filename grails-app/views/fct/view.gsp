@@ -19,7 +19,7 @@
 			<div class="main">
 				<g:topLevelReportTabs linkParams="${params}" exclude="${['fctTarget']}" />								
 				<g:if test="${fctTable != null && fctTable.hasData()}">
-					<g:render template="/templates/help" model="[content: currentDescriptions]"/>			
+					<g:render template="/templates/help" model="[content: i18n(field:currentProgram.descriptions)]"/>			
 					<ul>
 			            <li class="push-20">
 			                <g:render template="/templates/reportTitle" model="[title: i18n(field:currentProgram.names), file: 'star_small.png']"/>			                             																

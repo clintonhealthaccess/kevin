@@ -51,7 +51,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 public abstract class AbstractController {
 
-	LanguageService langaugeService;
+	LanguageService languageService;
 	ReportService reportService;
 	LocationService locationService;
 	protected final static String FILE_TYPE_ZIP="application/zip";
@@ -131,12 +131,14 @@ public abstract class AbstractController {
 		for(def entity : reportEntities){
 			if(entity != null && entity instanceof ReportEntity){
 				ReportEntity reportEntity = (ReportEntity) entity
-				def name = languageService.getText(reportEntity.names)
-				def description = languageService.getText(reportEntity.descriptions)
-				if(description != null)
-					 entityDescriptions.add(name + " - " + description)
-				else
-					entityDescriptions.add(name)
+				if(reportEntity != null){
+					def name = languageService.getText(reportEntity.names)
+					def description = languageService.getText(reportEntity.descriptions)
+					if(description != null && description != "" && description != name)
+						 entityDescriptions.add(name + " - " + description)
+					else
+						entityDescriptions.add(name)
+				}				
 			}
 		}
 		def descriptions = entityDescriptions.join("<br><br>")
