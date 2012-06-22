@@ -43,13 +43,15 @@ public class FctService {
 	public FctTable getFctTable(Location location, ReportProgram program, FctTarget target, Period period, LocationLevel level, Set<DataLocationType> types) {		
 		if (log.isDebugEnabled()) 
 			log.debug("getFctTable(period="+period+",location="+location+",level="+level+",program="+program+",target="+target+")");				
-		
-		List<FctTargetOption> targetOptions = target.getTargetOptions();
-		
+				
 		Map<CalculationLocation, Map<FctTargetOption, Value>> valueMap = new HashMap<CalculationLocation, Map<FctTargetOption, Value>>();
+		List<FctTargetOption> targetOptions = new ArrayList<FctTargetOption>();
 		List<FctTarget> targets = new ArrayList<FctTarget>();
 		List<CalculationLocation> topLevelLocations = new ArrayList<CalculationLocation>();
 		
+		if(target == null)
+			return new FctTable(valueMap, targetOptions, targets, topLevelLocations);
+		targetOptions = target.getTargetOptions();
 		if(targetOptions.isEmpty())
 			return new FctTable(valueMap, targetOptions, targets, topLevelLocations);
 		Collections.sort(targetOptions);
