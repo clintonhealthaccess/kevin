@@ -6,7 +6,7 @@ import org.apache.shiro.authc.AuthenticationException
 import org.apache.shiro.authc.UsernamePasswordToken
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.apache.shiro.web.util.WebUtils
-import org.chai.kevin.security.User.UserType;
+import org.chai.kevin.security.UserType;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class AuthController {

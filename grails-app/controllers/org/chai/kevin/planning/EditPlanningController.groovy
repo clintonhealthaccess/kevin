@@ -6,7 +6,7 @@ import org.chai.kevin.data.Type
 import org.chai.kevin.location.DataLocation
 import org.chai.kevin.location.Location
 import org.chai.kevin.planning.PlanningCost.PlanningCostType
-import org.chai.kevin.security.User.UserType;
+import org.chai.kevin.security.UserType;
 import org.chai.kevin.table.AggregateLine
 import org.chai.kevin.table.NumberLine
 import org.chai.kevin.table.Table

@@ -155,6 +155,25 @@ class UserControllerSpec extends IntegrationTests{
 		User.findByUsername("myuser1").uuid == uuid;
 	}
 	
+	def "saving sets permissions"(){
+		setup:
+		setupLocationTree()
+		userController = new UserController();
+		def uuid = UUID.randomUUID().toString();
+		def location = DataLocation.findByCode(BUTARO)
+		def user = newSurveyUser("myuser1",uuid,location.id);
+
+		when:
+		userController.params.id = user.id
+		userController.params.userType = "PLANNING";
+		userController.save();
+		
+		then:
+		User.count() == 1;
+		User.findByUsername("myuser1")!=null;
+		User.findByUsername("myuser1").permissions.equals(s(['editPlanning:view','editPlanning:*:'+location.id,'menu:planning']))
+	}
+	
 	def "cannot change password hash"(){
 		setup:
 		userController = new UserController();

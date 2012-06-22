@@ -1,4 +1,4 @@
-<%@ page import="org.chai.kevin.security.User.UserType" %>
+<%@ page import="org.chai.kevin.security.UserType" %>
 
 <div class="entity-form-container">
 	
