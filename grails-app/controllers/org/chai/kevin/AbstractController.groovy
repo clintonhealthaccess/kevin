@@ -86,20 +86,25 @@ public abstract class AbstractController {
 	
 	def getLocation(){
 		Location location = Location.get(params.int('location'))
-		if (location == null) location = locationService.getRootLocation()
+		//TODO add skips and types to method
+		//TODO if location != null, get location tree, and if the location tree doesn't contain the location, return root location
+		if (location == null)
+			location = locationService.getRootLocation()
 		return location
-	}		
+	}
 	
 	public Set<DataLocationType> getLocationTypes() {
-		Set<DataLocationType> types = null
+		Set<DataLocationType> dataLocationTypes = new HashSet<DataLocationType>()
 		if (params.list('dataLocationTypes') != null && !params.list('dataLocationTypes').empty) {
-			def dataLocationTypes = params.list('dataLocationTypes')
-			types = new HashSet<DataLocationType>(dataLocationTypes.collect{ DataLocationType.get(it) })
+			def types = params.list('dataLocationTypes')
+			dataLocationTypes.addAll(types.collect{ DataLocationType.get(it) } - null)
+		}		
+		
+		if(dataLocationTypes == null || dataLocationTypes.empty){
+			dataLocationTypes.addAll(ConfigurationHolder.config.site.datalocationtype.checked.collect{ DataLocationType.findByCode(it) } - null)
 		}
-		else {
-			types = new HashSet<DataLocationType>(ConfigurationHolder.config.site.datalocationtype.checked.collect {DataLocationType.findByCode(it)})
-		}
-		return types
+		
+		return dataLocationTypes.sort()
 	}
 	
 	public Set<Period> getPeriods() {
@@ -114,6 +119,7 @@ public abstract class AbstractController {
 		return periods
 		
 	}
+	
 	def getLevel(){
 		LocationLevel level = null
 		level = LocationLevel.get(params.int('level'));
@@ -140,5 +146,45 @@ public abstract class AbstractController {
 	def adaptParamsForList() {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
+	}	
+	
+	def getRedirectParams(def reportParams){
+		def redirectParams = [:]
+		for(def reportParam : reportParams){
+			if(params.get(reportParam.key) != null)
+				redirectParams.put(reportParam.key, reportParam.value)
+		}
+		return redirectParams
+	}
+	
+	protected def redirectIfDifferent(def redirectParams) {		
+		boolean redirect = false
+		def newParams = [:]
+		for(def param : params){
+			def key = param.key						
+			def urlValue = null
+			if(key == 'controller' || key == 'action') 
+				continue
+			else if(key == 'dataLocationTypes') 
+				urlValue = params.list(key).toString()
+			else 
+				urlValue = params[key].toString()		
+			def redirectValue = redirectParams[key].toString()
+			if(urlValue != redirectValue)
+				redirect = true
+			if(redirectParams[key] != null) newParams.put(key, redirectParams[key])
+		}
+		if(!redirect) return null				
+		if(redirect){
+			if (log.isInfoEnabled()) {
+				log.info ("redirecting to controller: "+ params['controller']+
+					", action: "+params['action']+
+					", period: "+newParams['period']+
+					", program: "+newParams['program']+
+					", location: "+newParams['location']+
+					", dataLocationTypes: "+newParams['dataLocationTypes']);
+			}
+			return newParams;									
+		}
 	}
 }

@@ -86,6 +86,7 @@ grails.web.disable.multipart=false
 // request parameters to mask when logging exceptions
 grails.exceptionresolver.params.exclude = ['password']
 
+//LOGGING
 // set per-environment serverURL stem for creating absolute links
 environments {
 	development {
@@ -98,6 +99,7 @@ environments {
 	}
 }
 
+//MAIL
 environments {
 	production {
 		grails.mail.host = "smtp.gmail.com"
@@ -120,17 +122,21 @@ environments {
 	}
 }
 
+//RESOURCES
 environments {
 	production {
 		grails.resources.cdn.enabled = true
 		// grails.resources.cdn.url = "http://static.mydomain.com/"
 		// grails.resources.work.dir="/static/directory/"
+		grails.resources.processing.enabled = true
 	}
 	development {
 		grails.resources.cdn.enabled = false
+		grails.resources.processing.enabled = false
 	}
 	test {
 		grails.resources.cdn.enabled = false
+		grails.resources.processing.enabled = false
 	}
 }
 

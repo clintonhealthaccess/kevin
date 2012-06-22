@@ -18,13 +18,20 @@ class FctController extends AbstractController {
 	
 	public FctTarget getFctTarget(def program){
 		def fctTarget = null
-		if(params.int('fctTarget') != null)
+		if(params.int('fctTarget') != null){
 			fctTarget = FctTarget.get(params.int('fctTarget'))
-		else{
-			def targets = fctService.getFctTargets(program)
-			Collections.sort(targets);
-			if(targets != null && !targets.empty)
-				fctTarget = targets.first()				
+			if(fctTarget != null){
+				if(!fctTarget.program.equals(program))
+					fctTarget = null
+			}			
+		}
+		
+		if(fctTarget == null){
+			def targets = fctService.getFctTargets(program)			
+			if(targets != null && !targets.empty){
+				Collections.sort(targets);
+				fctTarget = targets.first()			
+			}	
 		}
 		return fctTarget
 	}		
@@ -50,23 +57,29 @@ class FctController extends AbstractController {
 		ReportProgram program = getProgram(FctTarget.class)
 		Location location = getLocation()
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()
-
 		FctTarget fctTarget = getFctTarget(program)
+		
 		def skipLevels = fctService.getSkipLocationLevels()
 		def locationTree = location.collectTreeWithDataLocations(skipLevels, dataLocationTypes).asList()
 		LocationLevel level = locationService.getLevelAfter(location.getLevel(), skipLevels)
 		
 		FctTable fctTable = null;
 		def fctDescriptions = null;
-		if (period != null && program != null && fctTarget != null && location != null && dataLocationTypes != null) {					
+		if (period != null && program != null && fctTarget != null && location != null && dataLocationTypes != null) {
+
+			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
+				'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'fctTarget':fctTarget?fctTarget.id:null]
+			def redirectParams = getRedirectParams(reportParams)
+			def newParams = redirectIfDifferent(redirectParams)
+			if(newParams != null && !newParams.empty)
+				redirect(controller: 'fct', action: 'view', params: newParams)
+						
 			fctTable = fctService.getFctTable(location, program, fctTarget, period, level, dataLocationTypes);
 						
-//			def reportEntities = [program, fctTarget]
-//			if(fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty) reportEntities.addAll(fctTable.targetOptions)
 			fctDescriptions = getReportDescriptions([program, fctTarget])
 		}
 		
-		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root program: "+program)
+		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+", root program: "+program+", root location: "+location)				
 		
 		[
 			fctTable: fctTable,

@@ -19,7 +19,8 @@
 				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params]"/>
 			</div>
 			<div class="main">
-				<g:render template="/templates/topLevelReportTabs" model="[linkParams:params]"/>
+				<g:topLevelReportTabs linkParams="${params}" exclude="${['dashboardEntity']}" />
+				
 				<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>
 				<ul class="clearfix">
   					<li class="push-20">
