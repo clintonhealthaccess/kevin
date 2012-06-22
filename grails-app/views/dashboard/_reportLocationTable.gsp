@@ -57,7 +57,7 @@
 </g:if>
 </table>
 <!-- comparison value -->
-<div class="horizontal-graph-average" data-entity="${dashboardEntity.id}">
+<div class="horizontal-graph-avg hidden" data-entity="${dashboardEntity.id}">
 	<div class="horizontal-graph-tip tooltip" style="left: 63%;" title="63%" data-percentage="63">?</div>
 	<div class="horizontal-graph-marker"></div>
 </div>
