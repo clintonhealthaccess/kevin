@@ -1,17 +1,14 @@
-<div class="filter">
-	
+<div class="left">
 	<span class="dropdown js_dropdown">
-		<g:if test="${currentProgram != null}">
-			<a href="#" class="program selected" data-program="${currentProgram.id}" data-type="program"> 
+		<a href="#" class="program js_dropdown-link nice-button with-highlight"> 
+			<g:if test="${currentProgram != null}">
 				<g:i18n field="${currentProgram.names}" />
-			</a>
-		</g:if> 
-		<g:else>
-			<a href="#" class="program selected" data-type="program"> 
+			</g:if> 
+			<g:else>
 				<g:message code="filter.program.noselection.label" />
-			</a>
-		</g:else>
-		<div class="hidden dropdown-list js_dropdown-list">
+			</g:else>
+		</a>		
+		<div class="dropdown-list js_dropdown-list push-top-10">
 			<g:if test="${programTree != null && !programTree.empty}">
 				<ul>	
 					<g:render template="/tags/filter/programTree"

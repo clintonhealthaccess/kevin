@@ -33,10 +33,13 @@ import grails.plugin.springcache.annotations.CacheFlush;
 
 import java.util.Date
 
+import javax.servlet.ServletRequest;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.apache.shiro.web.util.WebUtils;
 import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.Aggregation;
@@ -68,8 +71,8 @@ import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram
-import org.chai.kevin.security.DataUser;
 import org.chai.kevin.security.User;
+import org.chai.kevin.security.User.UserType;
 
 abstract class IntegrationTests extends IntegrationSpec {
 	
@@ -206,15 +209,27 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}	
 			
 	static def newUser(def username, def uuid) {
-		return new User(code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid).save(failOnError: true)
+		return new User(userType: UserType.OTHER, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
 	}
 	
-	static def newSurveyUser(def username, def uuid, def dataLocationId) {
-		return new DataUser(code: username, username: username, landingPage: HomeController.SURVEY_LANDING_PAGE, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId).save(failOnError: true)
+	static def newUser(def username, def active, def confirmed) {
+		return new User(userType: UserType.OTHER, code: 'not_important', username: username, email: username,
+			passwordHash: '', active: active, confirmed: confirmed, uuid: 'uuid', firstname: 'first', lastname: 'last',
+			organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
 	}
 	
-	static def newPlanningUser(def username, def uuid, def dataLocationId) {
-		return new DataUser(code: username, username: username, landingPage: HomeController.PLANNING_LANDING_PAGE, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId).save(failOnError: true)
+	static def newUser(def username, def passwordHash, def active, def confirmed) {
+		return new User(userType: UserType.OTHER, code: 'not_important', username: username, email: username,
+			passwordHash: passwordHash, active: active, confirmed: confirmed, uuid: 'uuid', firstname: 'first', lastname: 'last',
+			organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
+	}
+	
+	static def newSurveyUser(def username, def uuid, def locationId) {
+		return new User(userType: UserType.SURVEY, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
+	}
+	
+	static def newPlanningUser(def username, def uuid, def locationId) {
+		return new User(userType: UserType.PLANNING, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
 	}
 	
 	static def newReportProgram(def code) {
@@ -382,9 +397,10 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def setupSecurityManager(def user) {
-		def subject = [getPrincipal: { user?.uuid }, isAuthenticated: { user==null?false:true }] as Subject
+		def subject = [getPrincipal: { user?.uuid }, isAuthenticated: { user==null?false:true }, login: { token -> null }] as Subject
 		ThreadContext.put( ThreadContext.SECURITY_MANAGER_KEY, [ getSubject: { subject } ] as SecurityManager )
 		SecurityUtils.metaClass.static.getSubject = { subject }
+		WebUtils.metaClass.static.getSavedRequest = { ServletRequest request -> null }
 	}
 	
 	static def g(def types) {

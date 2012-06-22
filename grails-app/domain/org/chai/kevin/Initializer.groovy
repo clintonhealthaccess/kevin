@@ -64,9 +64,9 @@ import org.chai.kevin.planning.PlanningOutputColumn;
 import org.chai.kevin.planning.PlanningSkipRule;
 import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.reports.ReportProgram
-import org.chai.kevin.security.DataUser;
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.Role;
+import org.chai.kevin.security.User.UserType;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
@@ -108,23 +108,23 @@ class Initializer {
 		surveyAllReadonly.addToPermissions("editSurvey:print")
 		surveyAllReadonly.save()
 
-		def user = new User(code:"dhsst",username: "dhsst", email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), active: true, confirmed: true, uuid:'dhsst_uuid')
+		def user = new User(userType: UserType.OTHER,code:"dhsst", username: "dhsst", firstname: "Dhsst", lastname: "Dhsst", email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), active: true, confirmed: true, uuid:'dhsst_uuid', defaultLanguage:'fr', phoneNumber: '+250 11 111 11 11', organisation:'org')
 		user.addToRoles(reportAllReadonly)
 		user.addToRoles(surveyAllReadonly)
 		// access to site
 		user.save(failOnError: true)
 
-		def admin = new User(code:"admin",username: "admin", email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), active: true, confirmed: true, uuid:'admin_uuid')
+		def admin = new User(userType: UserType.OTHER, code:"admin", firstname: "Super", lastname: "Admin", username: "admin", email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), active: true, confirmed: true, uuid:'admin_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
 		admin.addToPermissions("*")
 		admin.save(failOnError: true)
 
-		def butaro = new DataUser(code:"butaro",username: "butaro", landingPage: HomeController.SURVEY_LANDING_PAGE, dataLocationId: DataLocation.findByCode("Butaro DH").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'butaro_uuid')
+		def butaro = new User(userType: UserType.SURVEY, code:"butaro",username: "butaro", firstname: "butaro", lastname: "butaro", locationId: DataLocation.findByCode("Butaro DH").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'butaro_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
 		butaro.addToPermissions("editSurvey:view")
 		butaro.addToPermissions("editSurvey:*:"+DataLocation.findByCode("Butaro DH").id)
 		butaro.addToPermissions("menu:survey")
 		butaro.save(failOnError: true)
 		
-		def kivuye = new DataUser(code:"kivuye",username: "kivuye", landingPage: HomeController.PLANNING_LANDING_PAGE, dataLocationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
+		def kivuye = new User(userType: UserType.PLANNING, code:"kivuye",username: "kivuye", firstname: "kivuye", lastname: "kivuye", locationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
 		kivuye.addToPermissions("editPlanning:view")
 		kivuye.addToPermissions("editPlanning:*:"+DataLocation.findByCode("Kivuye HC").id)
 		kivuye.addToPermissions("menu:planning")
@@ -774,7 +774,7 @@ class Initializer {
 					).save(failOnError: true)
 		}
 	}
-
+	
 	static def createDashboard() {
 		if (!DashboardProgram.count()) {
 
@@ -847,51 +847,57 @@ class Initializer {
 			staffing.save(failOnError: true, flush:true)
 		}
 	}
-
+	
 	static def createDsr() {
 		if (!DsrTarget.count()) {
 			def dh = DataLocationType.findByCode("District Hospital")
 			def hc = DataLocationType.findByCode("Health Center")
 
-			def finacss = ReportProgram.findByCode("Service Delivery")
+			def servDeliv = ReportProgram.findByCode("Service Delivery")
 			def instCap = ReportProgram.findByCode("Institutional Capacity")
 			def hmr = ReportProgram.findByCode("Human Resources for Health")
 
 			def root = ReportProgram.findByCode("Strategic Programs")
-			root.addChild(finacss)
+			root.addChild(servDeliv)
 			root.addChild(instCap)
 			root.addChild(hmr)
 			root.save(failOnError: true, flush: true)
 
-			def firstCat1 = new DsrTargetCategory(
+			def infectiousDiseaseCat1 = new DsrTargetCategory(
 					names:j(["en":"Infectious Disease Testing Offered 1"]),
 					order: 1,
 					descriptions:j(["en":"Infectious Disease Testing Offered 1"]),
 					code: "Infectious Disease Testing Offered 1"
 					)
-			def firstCat2 = new DsrTargetCategory(
+			def infectiousDiseaseCat2 = new DsrTargetCategory(
 					names:j(["en":"Infectious Disease Testing Offered 2"]),
 					order: 2,
 					descriptions:j(["en":"Infectious Disease Testing Offered 2"]),
 					code: "Infectious Disease Testing Offered 2"
 					)			
-			def secondCat = new DsrTargetCategory(
+			def nursesCat = new DsrTargetCategory(
 					names:j(["en":"Nurses"]),
 					descriptions:j(["en":"Nurses"]),
 					order: 3,
 					code: "Nurses"
 					)
-			def thirdCat = new DsrTargetCategory(
+			def waterAndPowerCat = new DsrTargetCategory(
 					names:j(["en":"Facility Water and Power Sources"]),
 					order: 2,
 					descriptions:j(["en":"Facility Water and Power Sources"]),
 					code: "Facility Water and Power Sources"
 					)
 
+			def dsrAverage = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Average constant 10", timestamp:new Date())
+			dsrAverage.save(failOnError: true)
+			
+			def dsrSum = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Sum constant 10", timestamp:new Date());
+			dsrSum.save(failOnError: true);			
+			
 			new DsrTarget(
 					names:j(["en":"Accountant"]), descriptions:j(["en":"Accountant"]),
 					program: hmr,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
+					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 8,
 					code: "Accountant"
 					).save(failOnError:true)
@@ -899,15 +905,23 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Days Of Nurse Training"]), descriptions:j(["en":"Days Of Nurse Training"]),
 					program: hmr,
-					dataElement: NormalizedDataElement.findByCode("Constant 20"),
+					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 1,
 					code: "Days Of Nurse Training"
 					).save(failOnError:true)
 
 			new DsrTarget(
+					names:j(["en":"A0"]), descriptions:j(["en":"A0"]),
+					program: hmr,
+					data: RawDataElement.findByCode("CODE1"),
+					order: 1,
+					code: "A0"
+					).save(failOnError:true)
+										
+			new DsrTarget(
 					names:j(["en":"A1"]), descriptions:j(["en":"A1"]),
 					program: hmr,
-					dataElement: NormalizedDataElement.findByCode("TRUE"),
+					data: NormalizedDataElement.findByCode("TRUE"),
 					order: 2,
 					code: "A1"
 					).save(failOnError:true)
@@ -915,71 +929,79 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"A2"]), descriptions:j(["en":"A2"]),
 					program: hmr,
-					dataElement: NormalizedDataElement.findByCode("FALSE"),
-					order: 5,
+					data: NormalizedDataElement.findByCode("FALSE"),
+					order: 3,
 					code:"A2"
 					).save(failOnError:true)
 
 			new DsrTarget(
 					names:j(["en":"A3"]), descriptions:j(["en":"A3"]),
 					program: hmr,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
-					order: 3,
+					data: dsrAverage,
+					order: 4,
 					code: "A3"
 					).save(failOnError:true)
 
 			new DsrTarget(
+					names:j(["en":"A4"]), descriptions:j(["en":"A4"]),
+					program: hmr,
+					data: dsrSum,
+					order: 5,
+					code: "A4"
+					).save(failOnError:true)
+					
+			new DsrTarget(
 					names:j(["en":"Testing Category Human Resource"]), descriptions:j(["en":"Testing Category Human Resource"]),
 					program: hmr,
-					dataElement: NormalizedDataElement.findByCode("Constant 20"),
+					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 4,
 					code: "Testing Category Human Resource"
 					).save(failOnError:true)
 
 			new DsrTarget(
 					names:j(["en":"In-Facility Birth Ratio"]), descriptions:j(["en":"In-Facility Birth Ratio"]),
-					program: finacss,
-					dataElement: NormalizedDataElement.findByCode("Constant 20"),
+					program: servDeliv,
+					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 6,
 					code: "In-Facility Birth Ratio"
 					).save(failOnError:true)
 
 			new DsrTarget(
 					names:j(["en":"Mental Health Service"]), descriptions:j(["en":"Mental Health Service"]),
-					program: finacss,
-					dataElement: NormalizedDataElement.findByCode("Constant 20"),
+					program: servDeliv,
+					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 11,
 					code: "Mental Health Service"
 					).save(failOnError:true)
 
 			new DsrTarget(
 					names:j(["en":"Malaria Rapid Test"]), descriptions:j(["en":"Malaria Rapid Test"]),
-					program: finacss,
-					dataElement: NormalizedDataElement.findByCode("Constant 20"),
+					program: servDeliv,
+					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 7,
 					code: "Malaria Rapid Test"
 					).save(failOnError:true)
 
 			new DsrTarget(
 					names:j(["en":"HIV Rapid Test"]), descriptions:j(["en":"HIV Rapid Test"]),
-					program: finacss,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
+					program: servDeliv,
+					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 9,
 					code: "HIV Rapid Test"
 					).save(failOnError:true)
 
 			new DsrTarget(
 					names:j(["en":"TB Stain Test"]), descriptions:j(["en":"TB Stain Test"]),
-					program: finacss,
-					dataElement: NormalizedDataElement.findByCode("Constant 20"),
+					program: servDeliv,
+					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 10,
 					code: "TB Stain Test"
 					).save(failOnError:true)
 
 			new DsrTarget(
 					names:j(["en":"Catchment Population per CHW"]), descriptions:j(["en":"Catchment Population per CHW"]),
-					program: finacss,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
+					program: servDeliv,
+					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 12,
 					code: "Catchment Population per CHW"
 					).save(failOnError:true)
@@ -987,7 +1009,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Consultation Room"]), descriptions:j(["en":"Consultation Room"]),
 					program: instCap,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
+					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 1,
 					code: "Consultation Room"
 					).save(failOnError:true)
@@ -995,7 +1017,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Facility Water Status"]), descriptions:j(["en":"Facility Water Status"]),
 					program: instCap,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
+					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
 					code: "Facility Water Status"
 					).save(failOnError:true)
@@ -1003,7 +1025,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Incinerator Availability"]), descriptions:j(["en":"Incinerator Availability"]),
 					program: instCap,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
+					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 2,
 					code: "Incinerator Availability"
 					).save(failOnError:true)
@@ -1011,26 +1033,28 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"Facility Power Status"]), descriptions:j(["en":"Facility Power Status"]),
 					program: instCap,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
+					data: NormalizedDataElement.findByCode("Constant 10"),
 					code: "Facility Power Status"
 					).save(failOnError:true)
 
-			firstCat1.addTarget(DsrTarget.findByCode("Malaria Rapid Test"));
-			firstCat1.addTarget(DsrTarget.findByCode("HIV Rapid Test"));
-			firstCat1.save(failOnError:true);
+			infectiousDiseaseCat1.addTarget(DsrTarget.findByCode("Malaria Rapid Test"));
+			infectiousDiseaseCat1.addTarget(DsrTarget.findByCode("HIV Rapid Test"));
+			infectiousDiseaseCat1.save(failOnError:true);
 			
-			firstCat2.addTarget(DsrTarget.findByCode("Mental Health Service"));
-			firstCat2.addTarget(DsrTarget.findByCode("TB Stain Test"));
-			firstCat2.save(failOnError:true);
+			infectiousDiseaseCat2.addTarget(DsrTarget.findByCode("Mental Health Service"));
+			infectiousDiseaseCat2.addTarget(DsrTarget.findByCode("TB Stain Test"));
+			infectiousDiseaseCat2.save(failOnError:true);
 
-			secondCat.addTarget(DsrTarget.findByCode("A1"));
-			secondCat.addTarget(DsrTarget.findByCode("A2"));
-			secondCat.addTarget(DsrTarget.findByCode("A3"));
-			secondCat.save(failOnError:true);
+			nursesCat.addTarget(DsrTarget.findByCode("A0"));
+			nursesCat.addTarget(DsrTarget.findByCode("A1"));
+			nursesCat.addTarget(DsrTarget.findByCode("A2"));
+			nursesCat.addTarget(DsrTarget.findByCode("A3"));
+			nursesCat.addTarget(DsrTarget.findByCode("A4"));
+			nursesCat.save(failOnError:true);
 
-			thirdCat.addTarget(DsrTarget.findByCode("Facility Water Status"));
-			thirdCat.addTarget(DsrTarget.findByCode("Incinerator Availability"));
-			thirdCat.save(failOnError:true);
+			waterAndPowerCat.addTarget(DsrTarget.findByCode("Facility Water Status"));
+			waterAndPowerCat.addTarget(DsrTarget.findByCode("Incinerator Availability"));
+			waterAndPowerCat.save(failOnError:true);			
 		}
 	}
 
@@ -1113,7 +1137,8 @@ class Initializer {
 			
 			hmr.save(failOnError:true)
 		}
-	}	
+	}
+	
 	
 	static def createPlanning() {
 		
@@ -1354,9 +1379,8 @@ class Initializer {
 				
 		}
 	}
-	
-	
-	
+
+		
 	static def createQuestionaire(){
 		if(!Survey.count()){
 
@@ -2050,6 +2074,7 @@ class Initializer {
 			surveyOne.save()
 		}
 	}
+	
 
 	public static Date getDate( int year, int month, int day ) {
 		final Calendar calendar = Calendar.getInstance();
@@ -2069,7 +2094,7 @@ class Initializer {
 	public static Value v(def value) {
 		return new Value("{\"value\":"+value+"}");
 	}
-
+	
 	public static Translation j(def map) {
 		return new Translation(jsonText: JSONUtils.getJSONFromMap(map));
 	}

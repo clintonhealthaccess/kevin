@@ -1,7 +1,7 @@
-<div class="filter">
+<div>
 	<div class="js_dropdown dropdown">
-		<a class="selected" href="#" data-type="question"><g:message code="default.new.label" args="[entityName]"/></a>
-		<div class="hidden js_dropdown-list dropdown-list">
+		<a class="js_dropdown-link with-highlight" href="#"><g:message code="default.new.label" args="[entityName]"/></a>
+		<div class="js_dropdown-list dropdown-list">
 			<ul>
 				<li>
 					<a href="${createLinkWithTargetURI(controller:'average', action:'create')}">

@@ -1,4 +1,4 @@
-<div id="add-enum-option" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">
 			<g:message code="default.new.label" args="[message(code:'enumoption.label')]"/>

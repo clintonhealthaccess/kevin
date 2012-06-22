@@ -65,19 +65,4 @@ class DataLocationController extends AbstractEntityController {
 		])
 	}
 	
-	def getAjaxData = {
-		def dataLocations = locationService.searchLocation(DataLocation.class, params['term'], [:])
-		
-		render(contentType:"text/json") {
-			elements = array {
-				dataLocations.each { dataLocation ->
-					elem (
-						key: dataLocation.id,
-						value: i18n(field:dataLocation.location.names)+" - "+i18n(field:dataLocation.names)
-					)
-				}
-			}
-		}
-	}
-	
 }

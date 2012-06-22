@@ -56,6 +56,8 @@ public class FctTarget extends AbstractReportTarget implements Exportable {
 	
 	private Long id;
 	private List<FctTargetOption> targetOptions = new ArrayList<FctTargetOption>();
+	
+	//TODO get rid of this ?
 	private String typeCodeString; //comma-separated list of location type ids
 	
 	@Id
@@ -76,11 +78,13 @@ public class FctTarget extends AbstractReportTarget implements Exportable {
 		this.targetOptions = targetOptions;
 	}
 
+	//TODO get rid of this ?
     @Lob
 	public String getTypeCodeString() {
 		return typeCodeString;
     }
 
+  //TODO get rid of this ?
 	public void setTypeCodeString(String typeCodeString) {
 		this.typeCodeString = typeCodeString;
 	}

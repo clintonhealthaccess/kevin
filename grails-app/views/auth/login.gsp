@@ -5,20 +5,29 @@
 		<title><g:message code="login.title"/></title>
 	</head>
 	<body>
-		<h3 class="subnav center"><g:message code="login.header.label"/></h3>
-		<g:form action="signIn" class="nice-form">
-			<input type="hidden" name="targetURI" value="${targetURI}" />
-    
-			<table class="listing login">
-				<tbody>
-					<tr><td><label class="login-label"><g:message code="login.username.label"/></label></td></tr>
-					<tr><td><input class="login-field" type="text" name="username" value="${username}" /></td></tr>
-					<tr><td><label class="login-label"><g:message code="login.password.label"/></label></td></tr>
-					<tr><td><input class="login-field" type="password" name="password" value="" /></td></tr>
-					<tr><td><g:checkBox name="rememberMe" value="${rememberMe}" /> <label class="login-label"><g:message code="login.rememberme.label"/></label></td></tr>
-					<tr><td><ul><li><input type="submit" value="${message(code:'login.signin.label')}" /></li><li><span class="login-label"><a href="${createLink(controller:'auth', action:'forgotPassword')}"><g:message code="login.forgot.password.label"/></a></span></li></td></tr>
-				</tbody>
-			</table>
-		</g:form>
+		<h3 class="heading2-bar text-center"><g:message code="login.header.label"/></h3>
+		<div class="form-box">
+			<g:form action="signIn" class="nice-form login-form">
+				<input type="hidden" name="targetURI" value="${targetURI}" />
+	    
+				<table class="listing">
+					<tbody>
+						<tr><td>
+							<label><g:message code="login.username.label"/></label>
+							<input type="text" name="username" value="${username}" />
+						</td></tr>
+						<tr><td>
+							<label><g:message code="login.password.label"/></label>
+							<input type="password" name="password" value="" />
+							<a href="${createLink(controller:'auth', action:'forgotPassword')}"><g:message code="login.forgot.password.label"/></a>
+						</td></tr>
+						<tr><td>
+							<button type="submit">${message(code:'login.signin.label')}</button>
+							<g:checkBox name="rememberMe" value="${rememberMe}" /><label><g:message code="login.rememberme.label"/></label>
+						</td></tr>
+					</tbody>
+				</table>
+			</g:form>
+		</div>
 	</body>
 </html>

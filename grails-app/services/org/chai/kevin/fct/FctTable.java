@@ -83,7 +83,7 @@ public class FctTable extends ReportTable<FctTargetOption, CalculationLocation> 
 	public Set<CalculationLocation> getLocations(){
 		return valueMap.keySet();
 	}	
-	
+
 	public boolean hasData(){
 		return (super.hasData());
 	}

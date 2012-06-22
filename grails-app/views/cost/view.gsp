@@ -15,7 +15,7 @@
     </head>
     <body>
     	<div id="cost">
-			<div class="subnav">
+			<div class="heading1-bar">
 				<g:periodFilter linkParams="${[location: currentLocation?.id, program: currentProgram?.id]}" selected="${currentPeriod}"/>
 				<g:locationFilter linkParams="${[period: currentPeriod.id, program: currentProgram?.id]}" selected="${currentLocation}"/>
 				<g:render template="/templates/programFilter" model="[linkParams:[period: currentPeriod.id, location: currentLocation?.id]]"/>
@@ -29,7 +29,7 @@
 					</span>
 				</shiro:hasPermission>
 			</div>
-    		<div id="center" class="main">
+    		<div id="text-center" class="main">
     			<div id="values">
     				<g:if test="${costTable != null}">
 						<table class="listing">

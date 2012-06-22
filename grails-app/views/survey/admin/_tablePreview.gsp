@@ -1,6 +1,6 @@
 <div class="white-box entity-list">
 	<g:i18n field="${question.names}" />
-	<table class="question-table" id="question-table-${question.id}">
+	<table class="question-table">
 		<thead>
 			<tr>
 				<th><g:i18n field="${question.tableNames}" /></th>

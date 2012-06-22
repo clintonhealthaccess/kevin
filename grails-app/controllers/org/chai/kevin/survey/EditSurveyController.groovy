@@ -27,19 +27,15 @@ package org.chai.kevin.survey;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.zip.ZipOutputStream
-import org.apache.shiro.SecurityUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.LocationService
-import org.chai.kevin.form.FormValidationService;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.security.User
+import org.chai.kevin.form.FormValidationService
+import org.chai.kevin.location.CalculationLocation
+import org.chai.kevin.location.DataLocation
+import org.chai.kevin.security.User.UserType;
 import org.chai.kevin.survey.summary.SummaryService
-import org.chai.kevin.survey.summary.SurveySummaryPage
-import org.chai.kevin.util.Utils;
-import org.hibernate.SessionFactory;
+import org.chai.kevin.util.Utils
+import org.hibernate.SessionFactory
 
 class EditSurveyController extends AbstractController {
 
@@ -58,7 +54,7 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.view, params:"+params)
 		def user = getUser()
 
-		if (user.hasProperty('dataLocation') && user.dataLocation != null) {
+		if (user.userType == UserType.SURVEY) {
 			Survey dataEntry = Survey.get(params.int('survey'))
 
 			if (dataEntry == null) {
@@ -69,7 +65,7 @@ class EditSurveyController extends AbstractController {
 				response.sendError(404)
 			}
 			else {
-				redirect (controller:'editSurvey', action: 'surveyPage', params: [survey: dataEntry?.id, location: user.dataLocation.id])
+				redirect (controller:'editSurvey', action: 'surveyPage', params: [survey: dataEntry?.id, location: user.location.id])
 			}
 		}
 		else {

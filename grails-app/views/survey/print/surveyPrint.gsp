@@ -20,7 +20,7 @@
 				<h3 class="program-title"><g:i18n field="${program.names}"/></h3>
 				<g:each in="${program.getSections(surveyPage.dataLocation.type)}" var="section">
 					<h4 class="section-title"><g:i18n field="${section.names}"/></h4>
-					<ol id="questions-section-${section.id}">
+					<ol>
 					<g:each in="${surveyPage.getQuestions(section)}" var="question">
 						<li class="question-container">
 							<g:render template="/survey/question/${question.getType().getTemplate()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, print: true, showHints: false]" />

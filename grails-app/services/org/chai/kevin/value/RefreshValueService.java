@@ -117,9 +117,6 @@ public class RefreshValueService {
 	private Date refreshDataElement(DataElement dataElement, DataLocation dataLocation, Period period, List<NormalizedDataElement> uptodateElements) {
 		DataValue storedValue = valueService.getDataElementValue(dataElement, dataLocation, period);
 		
-		// TODO see if we can optimize the position of this line
-		sessionFactory.getCurrentSession().evict(storedValue);
-		
 		if (dataElement instanceof RawDataElement) {
 			if (storedValue == null) return dataElement.getTimestamp();
 			return storedValue.getTimestamp();

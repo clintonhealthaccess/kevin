@@ -1,8 +1,10 @@
 package org.chai.kevin
 
-import org.apache.shiro.SecurityUtils;
-import org.chai.kevin.security.DataUser;
-import org.chai.kevin.security.User;
+import org.apache.commons.lang.NotImplementedException;
+
+import org.apache.shiro.SecurityUtils
+import org.chai.kevin.security.User
+import org.chai.kevin.security.User.UserType;
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -34,23 +36,29 @@ import org.chai.kevin.security.User;
 
 class HomeController {
 	
-	static String SURVEY_LANDING_PAGE = "survey";
-	static String PLANNING_LANDING_PAGE = "planning";
-	
 	def languageService
 	
 	def index = {
 		if (log.isDebugEnabled()) log.debug("home.index, params:"+params)
 		User user = User.findByUuid(SecurityUtils.subject.principal, [cache: true])
 		
-		if (user instanceof DataUser) {
-			if (user.landingPage == SURVEY_LANDING_PAGE) redirect (controller: "editSurvey", action: "view")
-			else if (user.landingPage == PLANNING_LANDING_PAGE) redirect (controller: "editPlanning", action: "view")
-			else response.sendError(404)
+		switch (user.userType) {
+			case UserType.OTHER:
+				redirect (controller: "home", action: "landingPage")
+				break;
+			case UserType.SURVEY:
+				redirect (controller: "editSurvey", action: "view")
+				break;
+			case UserType.PLANNING:
+				redirect (controller: "editPlanning", action: "view")
+				break;
+			default:
+				throw new NotImplementedException()
 		}
-		else {
-			redirect (controller: "dashboard", action: "view")
-		}
+	}
+	
+	def landingPage = {
+		
 	}
 	
 	def upgrade = {render (view:'upgrade_'+languageService.currentLanguage)}

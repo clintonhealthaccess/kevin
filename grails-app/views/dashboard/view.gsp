@@ -15,16 +15,23 @@
     </head>
     <body>
 		<div id="report">
-			<div class="subnav">
+			<div class="filter-bar">
 				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params]"/>
 			</div>
 			<div class="main">
 				<g:topLevelReportTabs linkParams="${params}" exclude="${['dashboardEntity']}" />
 				
 				<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>
-				<ul class="clearfix" id="questions">
-  					<li class="question push-20">
-						<g:render template="/templates/reportTableHeader" model="[table:'program', linkParams:params]"/>						
+				<ul class="clearfix">
+  					<li class="push-20">
+						<g:render template="/templates/reportTitle" model="[title: i18n(field: currentProgram.names), file: 'star_small.png']"/>
+						
+						<% def levelUpLinkParamsProgram = new HashMap(params) %>
+						<g:if test="${currentProgram.parent != null}">
+							<% levelUpLinkParamsProgram['program'] = currentProgram.parent.id+"" %>
+							<a class="level-up" href="${createLink(controller:'dashboard', action:actionName, params:levelUpLinkParamsProgram)}">Level Up</a>	  
+					  	</g:if>
+												
 						<g:if test="${programDashboard != null && programDashboard.hasData()}">
 							<g:render template="/dashboard/reportCompareFilter" model="[table:'program', dashboard:programDashboard]"/>
 							<div class="horizontal-graph-wrap">
@@ -37,8 +44,15 @@
 		                	</div>
 		                </g:else>
 	                </li>
-	                <li class="question push-10">
-		                <g:render template="/templates/reportTableHeader" model="[table:'location', linkParams:params]"/>						
+	                <li class="push-10">
+	                	<g:render template="/templates/reportTitle" model="[title: i18n(field: currentLocation.names), file: 'marker_small.png']"/>
+		                
+						<% def levelUpLinkParamsLocation = new HashMap(params) %>
+		                <g:if test="${currentLocation.parent != null}">
+							<% levelUpLinkParamsLocation['location'] = currentLocation.parent?.id+"" %>
+							<a class="level-up" href="${createLink(controller:'dashboard', action:actionName, linkParams:levelUpLinkParamsLocation)}">Level Up</a>		  
+						</g:if>
+		                						
 		                <g:if test="${locationDashboard != null && locationDashboard.hasData()}">
 		                <g:render template="/dashboard/reportCompareFilter" model="[table:'location', dashboard:locationDashboard]"/>
 							<div class="horizontal-graph-wrap">

@@ -35,8 +35,8 @@
 				<td>${program.order}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 
-						<a class="selected dropdown manage-btn" href="#"><g:message code="entity.list.manage.label"/></a>
-						<div class="hidden manage-list js_dropdown-list dropdown-list">
+						<a class="js_dropdown-link with-highlight" href="#"><g:message code="entity.list.manage.label"/></a>
+						<div class="js_dropdown-list dropdown-list">
 							<ul>
 								<li>
 									<a href="${createLink(controller:'section', action:'list', params:['program.id': program.id])}">

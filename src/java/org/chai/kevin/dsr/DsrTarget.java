@@ -44,6 +44,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Importable;
+import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
@@ -57,7 +58,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class DsrTarget extends AbstractReportTarget implements Exportable, Importable {
 	
 	private Long id;
-	private DataElement<StoredValue> dataElement;
+	private Data<StoredValue> data; //this can be either a calculation or a data element
 	private DsrTargetCategory category;
 	private String format;
 	
@@ -68,16 +69,16 @@ public class DsrTarget extends AbstractReportTarget implements Exportable, Impor
 	}	
 	public void setId(Long id) {
 		this.id = id;
-	}
+	}	
 	
-	@ManyToOne(targetEntity=DataElement.class, optional=false)
-	public DataElement<StoredValue> getDataElement() {
-		return dataElement;
+	@ManyToOne(targetEntity=Data.class, optional=false)
+	public Data<StoredValue> getData() {
+		return data;
 	}
 
-	public void setDataElement(DataElement<StoredValue> dataElement) {
-		this.dataElement = dataElement;
-	}
+	public void setData(Data<StoredValue> data) {
+		this.data = data;
+	}	
 
 	@ManyToOne(targetEntity=DsrTargetCategory.class)
 	public DsrTargetCategory getCategory() {
