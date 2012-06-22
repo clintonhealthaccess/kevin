@@ -124,26 +124,7 @@ public abstract class AbstractController {
 		LocationLevel level = null
 		level = LocationLevel.get(params.int('level'));
 		return level
-	}
-	
-	def getReportDescriptions(def reportEntities){
-		def entityDescriptions = []
-		for(def entity : reportEntities){
-			if(entity != null && entity instanceof ReportEntity){
-				ReportEntity reportEntity = (ReportEntity) entity
-				if(reportEntity != null){
-					def name = languageService.getText(reportEntity.names)
-					def description = languageService.getText(reportEntity.descriptions)
-					if(description != null && description != "" && description != name)
-						 entityDescriptions.add(name + " - " + description)
-					else
-						entityDescriptions.add(name)
-				}				
-			}
-		}
-		def descriptions = entityDescriptions.join("<br><br>")
-		return descriptions
-	}
+	}	
 	
 	def adaptParamsForList() {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
