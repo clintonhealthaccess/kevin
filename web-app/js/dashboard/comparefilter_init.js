@@ -1,28 +1,11 @@
-$(document).ready(function() {
-	
-	var programCompareDiv = $('.horizontal-bar-avg');
-	var locationCompareDiv = $('.horizontal-graph-average');	
-	programCompareDiv.hide();
-	locationCompareDiv.hide();
-	
-	$('#program-compare').bind('change', function() {
-		var locationId = $(this).val();
-		if(locationId == 0){
-			programCompareDiv.hide();				
-		} else {
-			compareFilter('program', locationId);	
-		}					
-	});		
-	$('#location-compare').bind('change', function() {
-		var locationId = $(this).val();
-		if(locationId == 0){
-			locationCompareDiv.hide();				
-		} else {
-			compareFilter('location', locationId);	
-		}							
-	});		
-			
-});
+function dashboardFilterChange(element, table) {
+	var locationId = $(element).val();
+	if(locationId == 0){
+		programCompareDiv.hide();				
+	} else {
+		compareFilter(table, locationId);	
+	}	
+}
 
 function compareFilter(table, locationId) {
 	$('#'+table+'-form').ajaxSubmit(function(data) {
@@ -50,7 +33,7 @@ function compareFilter(table, locationId) {
 		}
 		if(table == 'location'){				
 			var percentageValue = data.compareValues[0].value;
-			var compareDiv = $('.horizontal-graph-average');
+			var compareDiv = $('.horizontal-graph-avg');
 			var tooltip = $(compareDiv).children('.tooltip');
 			var tickmark = $(compareDiv).children('.horizontal-graph-marker');
 			if(percentageValue == null){

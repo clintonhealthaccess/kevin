@@ -32,7 +32,7 @@ var animateCharts = function(compare, table) {
 //	$('.horizontal-bar-avg').hide();
 //	var bars = null;
 //	
-//	$('.horizontal-graph-average').hide();			
+//	$('.horizontal-graph-avg').hide();			
 //	var tickmark = null;
 //	var tooltip = null;
 //	
@@ -41,8 +41,8 @@ var animateCharts = function(compare, table) {
 //			bars = $('.horizontal-bar, .horizontal-bar-avg');
 //		}
 //		if(table == 'location'){
-//			var tickmark = $('.horizontal-graph-average').children('.horizontal-graph-marker');
-//			var tooltip = $('.horizontal-graph-average').children('.tooltip');	
+//			var tickmark = $('.horizontal-graph-avg').children('.horizontal-graph-marker');
+//			var tooltip = $('.horizontal-graph-avg').children('.tooltip');	
 //		}
 //	}
 //	else{

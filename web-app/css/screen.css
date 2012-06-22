@@ -1087,7 +1087,7 @@ textarea.login-field { width: 400px; height: 50px; text-align: left; }
 .horizontal-graph-wrap { overflow: hidden; position: relative; width: 100%; }
 
 /* line 155, ../../src/stylesheets/partials/_graphs.sass */
-.horizontal-graph-average { bottom: 1px; position: absolute; right: 15px; top: 33px; width: 610px; }
+.horizontal-graph-avg { bottom: 1px; position: absolute; right: 15px; top: 33px; width: 610px; }
 
 /* line 162, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-tip { background: #258cd5; color: white; font-size: 10px; font-weight: bold; height: 10px; left: 63%; margin: 0 0 0 -8px; opacity: 0.6; padding: 3px; position: absolute; text-align: center; top: -18px; width: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px; -o-border-radius: 10px; -ms-border-radius: 10px; -khtml-border-radius: 10px; border-radius: 10px; -moz-box-shadow: white 0 1px 0; -webkit-box-shadow: white 0 1px 0; -o-box-shadow: white 0 1px 0; box-shadow: white 0 1px 0; }
