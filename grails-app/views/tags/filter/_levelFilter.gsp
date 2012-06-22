@@ -1,8 +1,10 @@
-<div class="filter">	
+<div class="left">	
 	<span class="dropdown js_dropdown">
-		<a class="level selected" href="#" data-period="${currentLevel?.id}" data-type="level">
-			<g:i18n field="${currentLevel?.names}"/>
-		</a>
+		<div>
+			<a class="level js_dropdown-link nice-button with-highlight" href="#">
+				<g:i18n field="${currentLevel?.names}"/>
+			</a>
+		</div>
 		<div class="hidden dropdown-list js_dropdown-list">
 			<ul>
 				<g:each in="${levels}" var="level">

@@ -17,7 +17,7 @@ class SecurityFilters {
 				if (controllerName == 'refresh') return true;
 				
 				// Ignore home controller, except when the user is logged in
-				if (controllerName == 'home' && (actionName != 'index' || SecurityUtils.subject.principal != null)) return true
+				if (controllerName == 'home' && ((actionName != 'index' && actionName != 'landingPage') || SecurityUtils.subject.principal != null)) return true
 				
 				// deny access to survey not corresponding to user
 				// leave access to /survey/view open

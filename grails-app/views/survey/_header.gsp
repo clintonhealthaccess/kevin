@@ -1,10 +1,10 @@
 <r:require module="dropdown"/>
 
-<div class="subnav">
-	<div>
-		<div class="filter">
+<div>
+	<div class="filter-bar">
+		<div class="left">
 			<span class="js_dropdown dropdown">
-				<a class="program selected" href="#">
+				<a class="program js_dropdown-link nice-button with-highlight" href="#">
 					<g:if test="${program != null}">
 						<g:i18n field="${program.names}" />
 					</g:if>
@@ -12,16 +12,16 @@
 					<g:message code="survey.labels.program.select" />	
 					</g:else>
 				</a>
-				<div class="hidden dropdown-list js_dropdown-list">
+				<div class="dropdown-list js_dropdown-list push-top-10">
 					<g:render template="/survey/menu" model="[surveyPage: surveyPage]"/>
 				</div>
 			</span>
 		</div>
-		<div class="filter">
+		<div class="left">
 			<span class="bold"><g:message code="datalocation.label" />:</span>
 			<span><g:i18n field="${location.names}"/></span>
 		</div>
-		<div class="filter">
+		<div class="left">
 			<span class="bold"><g:message code="survey.labels.period" />:</span>
 			<span> 
 				<g:dateFormat format="yyyy" date="${period.startDate}" />

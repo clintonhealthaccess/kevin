@@ -1,9 +1,9 @@
-<div class="filter">
+<div class="left">
 	<span class="dropdown js_dropdown">
-		<a class="time selected" href="#" data-period="${currentPeriod.id}" data-type="period">
+		<a class="time js_dropdown-link nice-button with-highlight" href="#">
 			<g:dateFormat format="yyyy" date="${currentPeriod.startDate}"/>
 		</a>
-		<div class="hidden dropdown-list js_dropdown-list">
+		<div class="dropdown-list js_dropdown-list push-top-10">
 			<ul>
 				<g:each in="${periods}" var="period">
 					<% def periodLinkParams = new HashMap(linkParams) %>

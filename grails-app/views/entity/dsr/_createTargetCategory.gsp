@@ -1,4 +1,4 @@
-<div id="add-category-program" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 
 	<div class="entity-form-header">
 		<h3 class="title">

@@ -6,7 +6,7 @@
 		
 	</head>
 	<body>
-		<div class="subnav"/>
+		<div class="heading1-bar"/>
 		<div class="main">
 			<g:message code="pages.404.content"/>
 		</div>

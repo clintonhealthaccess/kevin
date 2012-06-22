@@ -160,18 +160,6 @@ modules = {
 		resource url: '/js/dashboard/comparefilter_init.js', bundle: 'core'
 	}
 	
-	categoryfilter {
-		dependsOn 'jquery'
-		
-		resource url: '/js/dsr/categoryfilter_init.js', bundle: 'core'
-	}
-	
-	targetfilter {
-		dependsOn 'jquery'
-		
-		resource url: '/js/fct/targetfilter_init.js', bundle: 'core'
-	}
-	
 	// Start resources for pages
 	list {
 		dependsOn 'core,spinner,form,fieldselection,cluetip,dropdown,explanation,chosen'
@@ -190,13 +178,13 @@ modules = {
 	}
 
 	dsr {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,categoryfilter'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation'
 
 		//resource url: '/css/dsr.css'
 	}
 
 	fct {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,targetfilter'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation'
 
 		//resource url: '/css/dsr.css'
 	}
