@@ -47,7 +47,7 @@
 					</g:else>						
 					<!-- comparison value -->
 					<div id="compare-dashboard-entity-${entity.id}" 
-					class="js_bar_horizontal tooltip horizontal-bar-avg" 							
+					class="js_bar_horizontal tooltip horizontal-bar-avg hidden" 							
 						data-percentage="45" 
 						style="width:45%;" 
 						original-title="45%"></div>
