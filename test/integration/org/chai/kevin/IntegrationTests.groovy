@@ -72,7 +72,7 @@ import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.security.User;
-import org.chai.kevin.security.User.UserType;
+import org.chai.kevin.security.UserType;
 
 abstract class IntegrationTests extends IntegrationSpec {
 	

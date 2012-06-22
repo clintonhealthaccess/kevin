@@ -4,7 +4,7 @@ import org.apache.commons.lang.NotImplementedException;
 
 import org.apache.shiro.SecurityUtils
 import org.chai.kevin.security.User
-import org.chai.kevin.security.User.UserType;
+import org.chai.kevin.security.UserType;
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.

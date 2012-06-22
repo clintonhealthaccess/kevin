@@ -6,12 +6,6 @@ import org.chai.kevin.util.Utils;
 
 class User {
 
-	enum UserType {PLANNING, SURVEY, OTHER
-		
-		String getKey() { return name(); }
-		
-	}
-	
 	// TODO get rid of this, it is the uuid
 	String code
 	
@@ -47,6 +41,35 @@ class User {
 		def permissions = getPermissions()
 		permissions << permission
 		this.permissionString = Utils.unsplit(permissions)
+	}
+	
+	def removeFromPermissions(def permission) {
+		def permissions = getPermissions()
+		permissions.remove(permission)
+		this.permissionString = Utils.unsplit(permissions)
+	}
+	
+	def setDefaultPermissions() {
+		removeAllDefaultPermissions()
+		addDefaultPermissions()
+	}
+	
+	private def addDefaultPermissions() {
+		userType.defaultPermissions.each { permissionToAdd ->
+			def permission = permissionToAdd.replaceAll('<id>', locationId+'')
+			addToPermissions(permission)
+		}
+	}
+	
+	private def removeAllDefaultPermissions() {
+		UserType.getAllPermissions().each { permissionToRemove ->
+			def regexToCheck = permissionToRemove.replaceAll('\\*','\\\\*').replaceAll('<id>', "\\\\d*")
+			permissions.each { permission ->
+				if (permission.matches(regexToCheck)) {
+					removeFromPermissions(permission)
+				}
+			}
+		}
 	}
 	
 	def canActivate() {
