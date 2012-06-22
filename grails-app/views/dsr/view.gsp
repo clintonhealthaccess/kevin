@@ -16,8 +16,8 @@
 			<div class="filter-bar">			
 				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params]"/>
 			</div>
-			<div class="main">
-				<g:render template="/templates/topLevelReportTabs" model="[linkParams:params]"/>				
+			<div class="main">			
+				<g:topLevelReportTabs linkParams="${params}" exclude="${['dsrCategory']}" />							
 				<g:if test="${dsrTable != null && dsrTable.hasData()}">
 					<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>
 					<ul>

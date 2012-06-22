@@ -47,23 +47,7 @@ class DashboardController extends AbstractController {
 	
 	def index = {
 		redirect (action: 'view', params: params)
-	}
-		
-	protected def redirectIfDifferent(def period, def program, def location) {
-		if (period.id+'' != params['period'] || program.id+'' != params['program'] || location.id+'' != params['location'] ) {
-			
-			if (log.isInfoEnabled()) {
-				log.info ("redirecting to action: "+params['action']+
-					", period: "+period.id+
-					", program: "+program.id+
-					", location: "+location.id);
-			}
-			
-			redirect (controller: 'dashboard', action: params['action'],
-				params: [period: period.id, program: program.id, location: location.id]);
-	
-		}
-	}
+	}		
 	
 	private def getDashboardEntity(def program) {		
 		DashboardEntity entity = dashboardService.getDashboardProgram(program)
@@ -76,29 +60,29 @@ class DashboardController extends AbstractController {
 		Period period = getPeriod()									
 		ReportProgram program = getProgram(DashboardTarget.class)
 		Location location = getLocation()
-		Set<DataLocationType> dataLocationTypes = getLocationTypes()
-		
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()		
 		def dashboardEntity = getDashboardEntity(program)
+		
 		def skipLevels = dashboardService.getSkipLocationLevels();
 		
 		def programDashboard = null
 		def locationDashboard = null
-		if (period != null && program != null && dashboardEntity != null && location != null && dataLocationTypes != null) {			
-			if (log.isInfoEnabled()){
-				log.info("dashboard for period: "+period.id+
-					", location: "+location.id+
-					", program:"+program.id);
-			}
-			redirectIfDifferent(period, program, location)
-
+		if (period != null && program != null && location != null && dataLocationTypes != null && dashboardEntity != null ) {			
+			
+			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
+				'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'dashboardEntity':dashboardEntity.id]
+			def redirectParams = getRedirectParams(reportParams)
+			def newParams = redirectIfDifferent(redirectParams)
+			if(newParams != null && !newParams.empty)
+				redirect(controller: 'dashboard', action: 'view', params: newParams)
+			
 			programDashboard = dashboardService.getProgramDashboard(location, program, period, dataLocationTypes);
 			locationDashboard = dashboardService.getLocationDashboard(location, program, period, dataLocationTypes, false);			
 
 		}
 		if (log.isDebugEnabled()){
-			 log.debug('program dashboard: '+programDashboard)
-			 log.debug('location dashboard: '+locationDashboard)
-		}		
+			 log.debug('program dashboard: '+programDashboard+", location dashboard: "+locationDashboard+", root program: "+program+", root location: "+location)
+		}
 		
 		[
 			programDashboard: programDashboard,
@@ -119,20 +103,15 @@ class DashboardController extends AbstractController {
 		Period period = getPeriod()	
 		ReportProgram program = getProgram(DashboardTarget.class)
 		Location location = getLocation()
-		Set<DataLocationType> dataLocationTypes = getLocationTypes()
-		
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()		
 		DashboardEntity dashboardEntity = getDashboardEntity(program)
 		
 		def dashboard = null
-		if (period != null && program != null && dashboardEntity != null && location != null && dataLocationTypes != null) {			
+		if (period != null && program != null && location != null && dataLocationTypes != null && dashboardEntity != null) {			
 			
-			if (log.isInfoEnabled()){
-				log.info("compare dashboard for period: "+period.id+
-					", location: "+location.id+
-					", program:"+program.id+
-					", dashboardEntity: " + dashboardEntity.id);
-			}
-			redirectIfDifferent(period, program, location)
+			if (log.isDebugEnabled()){
+				log.debug("compare dashboard for dashboardEntity: "+dashboardEntity+", root program: "+program+", root location: "+location)
+			}						
 			
 			def table = (String) params.get("table")			
 			if(table == 'program')
