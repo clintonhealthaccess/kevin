@@ -4,11 +4,11 @@
 		<tr>
 			<th/>
 			<th><g:message code="entity.code.label"/></th>
-			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="survey.active.label"/></th>
+			<th><g:message code="entity.name.label"/></th>		
 			<th><g:message code="entity.description.label"/></th>
 			<th><g:message code="survey.period.label"/></th>
-			<th><g:message code="default.number.label" args="[message(code:'survey.program.label')]"/></th>
+			<th><g:message code="survey.program.label"/> <g:message code="default.list.suffix.label" /></th>
+			<th><g:message code="survey.active.label"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
 	</thead>
@@ -30,11 +30,11 @@
 					</ul>
 				</td>
 				<td>${survey.code}</td>
-				<td><g:i18n field="${survey.names}" /></td>
-				<td>${survey?.active?'\u2713':''}</td>
+				<td><g:i18n field="${survey.names}" /></td>				
 				<td><g:i18n field="${survey.descriptions}" /></td>
-				<td>[${Utils.formatDate(survey.period.startDate)} - ${Utils.formatDate(survey.period.startDate)}]</td>
-				<td>${survey.programs.size()}</td>
+				<td>[${Utils.formatDate(survey.period.startDate)} - ${Utils.formatDate(survey.period.endDate)}]</td>
+				<td>${survey.programs.collect{it.code}.join(',<br/>')}</td>
+				<td>${survey?.active?'\u2713':''}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 
 						<a class="js_dropdown-link with-highlight" href="#"><g:message code="entity.list.manage.label"/></a>
