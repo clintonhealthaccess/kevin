@@ -18,11 +18,10 @@
 			</div>
 			<div class="main">
 				<g:topLevelReportTabs linkParams="${params}" exclude="${['fctTarget']}" />								
-				<g:if test="${fctTable != null && fctTable.hasData()}">
-					<g:render template="/templates/help" model="[content: i18n(field:currentProgram.descriptions)]"/>			
+				<g:if test="${fctTable != null && fctTable.hasData()}">								
 					<ul>
 			            <li class="push-20">
-			                <g:render template="/templates/reportTitle" model="[title: i18n(field:currentProgram.names), file: 'star_small.png']"/>			                             																
+			                <g:render template="/templates/reportTitle" model="[program: currentProgram, title: i18n(field:currentProgram.names), file: 'star_small.png']"/>		                             																
 							<g:render template="/fct/reportTargetFilter" model="[linkParams:params]"/>
 		              		<g:render template="/fct/reportProgramTable" model="[linkParams:params]"/>	
 		              	</li>

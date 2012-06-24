@@ -18,11 +18,10 @@
 			</div>
 			<div class="main">			
 				<g:topLevelReportTabs linkParams="${params}" exclude="${['dsrCategory']}" />							
-				<g:if test="${dsrTable != null && dsrTable.hasData()}">
-					<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>
+				<g:if test="${dsrTable != null && dsrTable.hasData()}">					
 					<ul>
 						<li>
-							<g:render template="/templates/reportTitle" model="[title: i18n(field:currentProgram.names)+' x '+i18n(field:currentLocation.names), file: 'star_small.png']"/>	                
+							<g:render template="/templates/reportTitle" model="[program: currentProgram, title: i18n(field:currentProgram.names)+' x '+i18n(field:currentLocation.names), file: 'star_small.png']"/>                
 							<g:render template="/dsr/reportCategoryFilter" model="[linkParams:params]"/>
 						</li>
 						<g:if test="${dsrTable.hasData()}">
