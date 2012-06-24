@@ -37,6 +37,20 @@
 					<p class="nav-help"><g:message code="dsr.report.table.noselection.label"/></p>
 				</g:else>
 			</div>		
-		</div>		
+		</div>
+		<r:script>
+		$(document).ready(function() {
+			$('.expand-all').bind('click', function() {
+				$('td.js_foldable-toggle').addClass('toggled');
+				$('tr.js_foldable-container').show();
+				return false;
+			});
+			$('.collapse-all').bind('click', function() {
+				$('td.js_foldable-toggle').removeClass('toggled');
+				$('tr.js_foldable-container').hide();				
+				return false;
+			});
+		});				
+		</r:script>
 	</body>	
 </html>

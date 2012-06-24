@@ -1,7 +1,10 @@
 <table class="nested push-top-10">
 	<thead>
 		<tr>
-			<th><g:message code="dsr.report.table.location"/></th>
+			<th><g:message code="dsr.report.table.location"/>
+				<a class="expand-all" href="#"><g:message code="report.program.table.tree.expandall"/></a> 
+				<a class="collapse-all" href="#"><g:message code="report.program.table.tree.collapseall"/></a>
+			</th>
 			<g:if test="${dsrTable.targets != null && !dsrTable.targets.empty}">
 				<g:each in="${dsrTable.targets}" var="target">
 					<th>
