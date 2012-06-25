@@ -5,8 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public enum UserType {
-	SURVEY("editSurvey:view","editSurvey:*:<id>","menu:survey"), 
-	PLANNING("editPlanning:view","editPlanning:*:<id>","menu:planning"), 
+	
+	SURVEY("editSurvey:view","editSurvey:*:<id>","menu:survey","menu:reports","home:*"), 
+	PLANNING("editPlanning:view","editPlanning:*:<id>","menu:planning","menu:reports","home:*"), 
 	OTHER("home:*");
 	
 	protected Set<String> defaultPermissions;
@@ -24,4 +25,5 @@ public enum UserType {
 		}
 		return result;
 	}
+	
 }
