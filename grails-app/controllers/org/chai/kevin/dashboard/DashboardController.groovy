@@ -28,18 +28,13 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.apache.commons.lang.math.NumberUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.LocationService
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.Period;
-import org.chai.kevin.Translation;
-import org.chai.kevin.util.JSONUtils;
+import org.chai.kevin.Period
+import org.chai.kevin.location.DataLocationType
+import org.chai.kevin.location.Location
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class DashboardController extends AbstractController {
 	
@@ -65,16 +60,18 @@ class DashboardController extends AbstractController {
 		
 		def skipLevels = dashboardService.getSkipLocationLevels();
 		
-		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
-			'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'dashboardEntity':dashboardEntity.id]
+		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id, 'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort()]
 		
 		def newParams = redirectIfDifferent(reportParams)
 		if(newParams != null && !newParams.empty) {
 			redirect(controller: 'dashboard', action: 'view', params: newParams)
 		}
 		else {
-			def programDashboard = dashboardService.getProgramDashboard(location, program, period, dataLocationTypes);
-			def locationDashboard = dashboardService.getLocationDashboard(location, program, period, dataLocationTypes, false);
+			def programDashboard, locationDashboard
+			if (dashboardEntity != null) {
+				programDashboard = dashboardService.getProgramDashboard(location, program, period, dataLocationTypes);
+				locationDashboard = dashboardService.getLocationDashboard(location, program, period, dataLocationTypes, false);
+			}
 						
 			if (log.isDebugEnabled()){
 				 log.debug('program dashboard: '+programDashboard+", location dashboard: "+locationDashboard+", root program: "+program+", root location: "+location)

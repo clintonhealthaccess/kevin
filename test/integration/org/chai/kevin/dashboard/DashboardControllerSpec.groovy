@@ -23,7 +23,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		when:
 		dashboardController.params.period = period.id
 		dashboardController.params.location = Location.findByCode(RWANDA).id
-		dashboardController.params.program = ReportProgram.findByCode(ROOT)
+		dashboardController.params.program = ReportProgram.findByCode(ROOT).id
 		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
 		
@@ -53,7 +53,6 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		then:
 		dashboardController.response.redirectedUrl.contains("/dashboard/view/")
 		dashboardController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"?")
-		dashboardController.response.redirectedUrl.contains("dashboardEntity="+dashboardProgram.id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
@@ -80,7 +79,6 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		then:
 		dashboardController.response.redirectedUrl.contains("/dashboard/view/")
 		dashboardController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"?")
-		dashboardController.response.redirectedUrl.contains("dashboardEntity="+dashboardProgram.id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
@@ -107,7 +105,6 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		then:
 		dashboardController.response.redirectedUrl.contains("/dashboard/view/")
 		dashboardController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(BURERA).id+"?")
-		dashboardController.response.redirectedUrl.contains("dashboardEntity="+dashboardProgram.id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
