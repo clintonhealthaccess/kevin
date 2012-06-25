@@ -22,14 +22,14 @@
 						<g:each in="${periods}" var="period" status="i">
 							<div>
 								<a class="${i==0?'no-link':''} expression-period-link" href="#" 
-									onclick="$('.expression-period').hide();$('#expression-period-${period.id}').show();$('.expression-period-link').removeClass('no-link');$(this).addClass('no-link');return false;">
+									onclick="$('.js_expression-period').hide();$('#js_expression-period-${period.id}').show();$('.expression-period-link').removeClass('no-link');$(this).addClass('no-link');return false;">
 									${Utils.formatDate(period.startDate)} to ${Utils.formatDate(period.endDate)}
 								</a>
 							</div>
 						</g:each>
 					</div>
 					<g:each in="${periods}" var="period" status="i">
-						<div class="expression-period ${i!=0?'hidden':''}">
+						<div class="js_expression-period ${i!=0?'hidden':''}" id="js_expression-period-${period.id}">
 							<g:each in="${types}" var="group">
 								<label for="expressionMap[${period.id}][${group.code}]">${group.code}</label> 
 								<textarea name="expressionMap[${period.id}][${group.code}]" rows="4">${normalizedDataElement.getExpression(period, group.code)}</textarea>
