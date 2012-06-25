@@ -18,4 +18,15 @@ $(document).ready(function(){
 	}
 	$('.opened').children('.js_foldable-container').show();
 	$('.opened').children('.js_foldable-toggle').addClass('toggled');
+	
+	$('.expand-all').bind('click', function() {
+		$('td.js_foldable-toggle').addClass('toggled');
+		$('tr.js_foldable-container').show();
+		return false;
+	});
+	$('.collapse-all').bind('click', function() {
+		$('td.js_foldable-toggle').removeClass('toggled');
+		$('tr.js_foldable-container').hide();				
+		return false;
+	});
 });

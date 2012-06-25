@@ -96,8 +96,8 @@ class SurveyController extends AbstractEntityController {
 		List<Survey> surveys = Survey.list(params);
 		if(surveys.size()>0) Collections.sort(surveys,new SurveySorter())
 
-		render (view: '/survey/admin/list', model:[
-			template:"surveyList",
+		render (view: '/entity/list', model:[
+			template:"survey/surveyList",
 			entities: surveys,
 			entityCount: Survey.count(),
 			code: getLabel(),

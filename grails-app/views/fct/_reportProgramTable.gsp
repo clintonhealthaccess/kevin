@@ -1,7 +1,11 @@
 <table class="nested push-top-10">
 	<thead>
 		<tr>
-			<th><g:message code="fct.report.table.location"/></th>
+			<th>
+				<g:message code="fct.report.table.location"/>
+				<a class="expand-all" href="#"><g:message code="report.program.table.tree.expandall"/></a> 
+				<a class="collapse-all" href="#"><g:message code="report.program.table.tree.collapseall"/></a>
+			</th>
 			<g:if test="${fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
 				<g:each in="${fctTable.targetOptions}" var="targetOption">
 					<th>						
