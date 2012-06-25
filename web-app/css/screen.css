@@ -824,11 +824,11 @@ form.search-form input:hover, form.search-form input:focus { background: #ecf7ff
 /* line 588, ../../src/stylesheets/partials/_forms.sass */
 .login-form a { display: block; }
 /* line 590, ../../src/stylesheets/partials/_forms.sass */
-.login-form button { margin: 0 auto; display: block; }
-/* line 593, ../../src/stylesheets/partials/_forms.sass */
+.login-form button { margin: 0 auto; }
+/* line 592, ../../src/stylesheets/partials/_forms.sass */
 .login-form .error-list { position: relative; left: 20px; }
 
-/* line 598, ../../src/stylesheets/partials/_forms.sass */
+/* line 597, ../../src/stylesheets/partials/_forms.sass */
 textarea.login-field { width: 400px; height: 50px; text-align: left; }
 
 /* line 2, ../../src/stylesheets/partials/_flashes.sass */

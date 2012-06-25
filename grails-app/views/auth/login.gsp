@@ -22,8 +22,8 @@
 							<a href="${createLink(controller:'auth', action:'forgotPassword')}"><g:message code="login.forgot.password.label"/></a>
 						</td></tr>
 						<tr><td>
-							<button type="submit">${message(code:'login.signin.label')}</button>
-							<g:checkBox name="rememberMe" value="${rememberMe}" /><label><g:message code="login.rememberme.label"/></label>
+							<div><button type="submit">${message(code:'login.signin.label')}</button></div>
+							<div><g:checkBox name="rememberMe" value="${rememberMe}" /><label><g:message code="login.rememberme.label"/></label></div>
 						</td></tr>
 					</tbody>
 				</table>
