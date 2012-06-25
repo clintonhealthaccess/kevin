@@ -50,7 +50,7 @@ class QuestionController extends AbstractController {
 		Survey survey = Survey.get(params.int('survey'))
 		List<SurveyQuestion> questions = surveyService.searchSurveyQuestions(params['q'], survey, params);
 		
-		render (view: '/survey/admin/list', model:[
+		render (view: '/entity/list', model:[
 			template:"questionList",
 			survey: survey,
 			entities: questions,
@@ -78,8 +78,8 @@ class QuestionController extends AbstractController {
 			
 			def max = Math.min(params['offset']+params['max'], questions.size())
 			
-			render (view: '/survey/admin/list', model:[
-				template:"questionList",
+			render (view: '/entity/list', model:[
+				template:"survey/questionList",
 				survey: section.program.survey,
 				program: section.program,
 				section: section,

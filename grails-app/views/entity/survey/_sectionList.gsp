@@ -9,7 +9,6 @@
 			<th><g:message code="survey.period.label"/></th>
 			<th><g:message code="survey.label" /></th>
 			<th><g:message code="survey.program.label" /></th>
-			<th><g:message code="survey.question.label"/> <g:message code="default.list.suffix.label"/></th>
 			<th><g:message code="entity.order.label"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
@@ -33,11 +32,10 @@
 				</td>
 				<td>${section.code}</td>
 				<td><g:i18n field="${section.names}" /></td>
-				<td>${section.typeCodeString.replaceAll(',', ',<br/>')}</td>
-				<td>[${Utils.formatDate(section.survey.period.startDate)} - ${Utils.formatDate(section.survey.period.endDate)}]</td>
+				<td><g:prettyList entities="${section.typeCodeString}" /></td>
+				<td>${Utils.formatDate(section.survey.period.startDate)}</td>
 				<td>${section.program.survey.code}</td>
 				<td>${section.program.code}</td>
-				<td>${section.questions.collect{it.code}.join(',<br/>')}</td>
 				<td>${section.order}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 

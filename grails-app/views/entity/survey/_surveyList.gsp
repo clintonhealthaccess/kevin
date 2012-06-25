@@ -7,7 +7,6 @@
 			<th><g:message code="entity.name.label"/></th>		
 			<th><g:message code="entity.description.label"/></th>
 			<th><g:message code="survey.period.label"/></th>
-			<th><g:message code="survey.program.label"/> <g:message code="default.list.suffix.label" /></th>
 			<th><g:message code="survey.active.label"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
@@ -32,8 +31,7 @@
 				<td>${survey.code}</td>
 				<td><g:i18n field="${survey.names}" /></td>				
 				<td><g:i18n field="${survey.descriptions}" /></td>
-				<td>[${Utils.formatDate(survey.period.startDate)} - ${Utils.formatDate(survey.period.endDate)}]</td>
-				<td>${survey.programs.collect{it.code}.join(',<br/>')}</td>
+				<td>${Utils.formatDate(survey.period.startDate)}</td>
 				<td>${survey?.active?'\u2713':''}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 

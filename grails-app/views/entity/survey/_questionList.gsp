@@ -36,8 +36,8 @@
 					rel="${createLink(controller:question.getType().getTemplate(), action:'getDescription', params:[question: question.id])}"
 					onclick="return false;"><g:stripHtml field="${i18n(field: question.names)}" chars="100"/></a></td>
 				<td>${question.getType()}</td>
-				<td>${question.typeCodeString.replaceAll(',', ',<br/>')}</td>
-				<td>[${Utils.formatDate(question.section.survey.period.startDate)} - ${Utils.formatDate(question.section.survey.period.endDate)}]</td>
+				<td><g:prettyList entities="${question.typeCodeString}" /></td>
+				<td>${Utils.formatDate(question.section.survey.period.startDate)}</td>
 				<td>${question.section.program.survey.code}</td>
 				<td>${question.section.program.code}</td>
 				<td>${question.section.code}</td>
