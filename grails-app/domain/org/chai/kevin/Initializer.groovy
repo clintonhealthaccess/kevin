@@ -66,7 +66,7 @@ import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.Role;
-import org.chai.kevin.security.User.UserType;
+import org.chai.kevin.security.UserType;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;

@@ -5,7 +5,7 @@ import grails.validation.ValidationException;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
-import org.chai.kevin.security.User.UserType;
+import org.chai.kevin.security.UserType;
 
 class UserSpec extends IntegrationTests {
 

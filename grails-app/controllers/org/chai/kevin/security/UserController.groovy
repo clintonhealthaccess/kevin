@@ -77,6 +77,11 @@ class UserController extends AbstractEntityController {
 		return valid;
 	}
 	
+	def saveEntity(def entity) {
+		entity.setDefaultPermissions()
+		entity.save()
+	}
+	
 	def bindParams(def entity) {
 		if (log.isDebugEnabled()) log.debug('binding params: '+params)
 		bindData(entity,params,[exclude:['uuid','passwordHash']])
@@ -92,7 +97,6 @@ class UserController extends AbstractEntityController {
 		if (log.isDebugEnabled()) log.debug("create.userPassword, params:"+params+"command"+cmd)
 		params['cmd'] = cmd;
 		super.save()
-
 	}
 	
 	def list = {

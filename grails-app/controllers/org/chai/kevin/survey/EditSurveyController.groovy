@@ -32,7 +32,7 @@ import org.chai.kevin.LocationService
 import org.chai.kevin.form.FormValidationService
 import org.chai.kevin.location.CalculationLocation
 import org.chai.kevin.location.DataLocation
-import org.chai.kevin.security.User.UserType;
+import org.chai.kevin.security.UserType;
 import org.chai.kevin.survey.summary.SummaryService
 import org.chai.kevin.util.Utils
 import org.hibernate.SessionFactory
