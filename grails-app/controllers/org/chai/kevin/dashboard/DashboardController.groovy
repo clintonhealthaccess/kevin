@@ -65,36 +65,33 @@ class DashboardController extends AbstractController {
 		
 		def skipLevels = dashboardService.getSkipLocationLevels();
 		
-		def programDashboard = null
-		def locationDashboard = null
-		if (period != null && program != null && location != null && dataLocationTypes != null && dashboardEntity != null ) {			
-			
-			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
-				'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'dashboardEntity':dashboardEntity.id]
-			def redirectParams = getRedirectParams(reportParams)
-			def newParams = redirectIfDifferent(redirectParams)
-			if(newParams != null && !newParams.empty)
-				redirect(controller: 'dashboard', action: 'view', params: newParams)
-			
-			programDashboard = dashboardService.getProgramDashboard(location, program, period, dataLocationTypes);
-			locationDashboard = dashboardService.getLocationDashboard(location, program, period, dataLocationTypes, false);			
-
-		}
-		if (log.isDebugEnabled()){
-			 log.debug('program dashboard: '+programDashboard+", location dashboard: "+locationDashboard+", root program: "+program+", root location: "+location)
-		}
+		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
+			'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'dashboardEntity':dashboardEntity.id]
 		
-		[
-			programDashboard: programDashboard,
-			locationDashboard: locationDashboard,			
-			currentPeriod: period,
-			dashboardEntity: dashboardEntity,
-			currentProgram: program,
-			selectedTargetClass: DashboardTarget.class,
-			currentLocation: location,			
-			currentLocationTypes: dataLocationTypes,
-			skipLevels: skipLevels			
-		]
+		def newParams = redirectIfDifferent(reportParams)
+		if(newParams != null && !newParams.empty) {
+			redirect(controller: 'dashboard', action: 'view', params: newParams)
+		}
+		else {
+			def programDashboard = dashboardService.getProgramDashboard(location, program, period, dataLocationTypes);
+			def locationDashboard = dashboardService.getLocationDashboard(location, program, period, dataLocationTypes, false);
+						
+			if (log.isDebugEnabled()){
+				 log.debug('program dashboard: '+programDashboard+", location dashboard: "+locationDashboard+", root program: "+program+", root location: "+location)
+			}
+			
+			[
+				programDashboard: programDashboard,
+				locationDashboard: locationDashboard,			
+				currentPeriod: period,
+				dashboardEntity: dashboardEntity,
+				currentProgram: program,
+				selectedTargetClass: DashboardTarget.class,
+				currentLocation: location,			
+				currentLocationTypes: dataLocationTypes,
+				skipLevels: skipLevels			
+			]
+		}
 	}
 	
 	def compare = {

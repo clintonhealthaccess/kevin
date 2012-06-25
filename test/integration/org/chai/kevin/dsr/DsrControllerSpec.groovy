@@ -120,7 +120,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		model.dsrTable.hasData() == false
 	}
 			
-	def "get dsr with no parameters, default to period, root program, root location, location types, category, and target"() {
+	def "get dsr with no parameters redirects to period, program, location and category"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -134,15 +134,28 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def model = dsrController.view()
 		
 		then:
-		model.currentPeriod.equals(period)
-		model.currentProgram.equals(ReportProgram.findByCode(ROOT))
-		model.currentLocation.equals(Location.findByCode(RWANDA))
-		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
-		model.currentCategory.equals(DsrTargetCategory.findByCode(CATEGORY1))
-		model.dsrTable != null
-		model.dsrTable.hasData() == true
-		model.dsrTable.targets.equals([target])
-		model.dsrTable.targetCategories.equals([category])		
+		dsrController.response.redirectedUrl.contains("/dsr/view/")
+		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"/"+category.id)
+		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
+		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
+	}
+	
+	def "get dsr with no parameters redirects to period, program and location"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def program = newReportProgram(ROOT)
+		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
+		
+		when: "no parameters"
+		dsrController = new DsrController()
+		def model = dsrController.view()
+		
+		then:
+		dsrController.response.redirectedUrl.contains("/dsr/view/")
+		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id)
+		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
+		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
 	
 	def "get dsr with invalid parameters, redirect to default period, root program, root location, location types, category, and target"() {

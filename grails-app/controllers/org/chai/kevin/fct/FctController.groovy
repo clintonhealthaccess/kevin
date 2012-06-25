@@ -55,31 +55,31 @@ class FctController extends AbstractController {
 		def skipLevels = fctService.getSkipLocationLevels()
 		def locationTree = location.collectTreeWithDataLocations(skipLevels, dataLocationTypes).asList()
 		LocationLevel level = locationService.getLevelAfter(location.getLevel(), skipLevels)
+
+		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
+			'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'fctTarget':fctTarget?.id]
+		def newParams = redirectIfDifferent(reportParams)
 		
-		FctTable fctTable = null;
-		if (period != null && program != null && fctTarget != null && location != null && dataLocationTypes != null) {
-			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
-				'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'fctTarget':fctTarget.id]
-			def newParams = redirectIfDifferent(reportParams)
-			if(newParams != null && !newParams.empty)
-				redirect(controller: 'fct', action: 'view', params: newParams)
-						
-			fctTable = fctService.getFctTable(location, program, fctTarget, period, level, dataLocationTypes);
+		if(newParams != null && !newParams.empty) redirect(controller: 'fct', action: 'view', params: newParams)
+		
+		else {
+			FctTable fctTable = null
+			if (fctTarget != null)		
+				fctTable = fctService.getFctTable(location, program, fctTarget, period, level, dataLocationTypes);
+			
+			if (log.isDebugEnabled()) log.debug('fct: '+fctTable+", root program: "+program+", root location: "+location)				
+			[
+				fctTable: fctTable,
+				currentTarget: fctTarget,
+				currentPeriod: period,
+				currentProgram: program,
+				selectedTargetClass: FctTarget.class,
+				currentLocation: location,
+				locationTree: locationTree,
+				currentLocationTypes: dataLocationTypes,		
+				skipLevels: skipLevels,
+				currentChildLevel: level
+			]
 		}
-		
-		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+", root program: "+program+", root location: "+location)				
-		
-		[
-			fctTable: fctTable,
-			currentTarget: fctTarget,
-			currentPeriod: period,
-			currentProgram: program,
-			selectedTargetClass: FctTarget.class,
-			currentLocation: location,
-			locationTree: locationTree,
-			currentLocationTypes: dataLocationTypes,		
-			skipLevels: skipLevels,
-			currentChildLevel: level
-		]
 	}		
 }

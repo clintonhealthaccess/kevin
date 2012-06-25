@@ -82,30 +82,31 @@ class DsrController extends AbstractController {
 		def skipLevels = dsrService.getSkipLocationLevels()
 		def locationTree = location.collectTreeWithDataLocations(skipLevels, dataLocationTypes).asList()
 		
-		def dsrTable = null		
-		if (period != null && program != null && location != null && dataLocationTypes != null && dsrCategory != null) {
-			
-			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
-						'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'dsrCategory':dsrCategory.id]
-			def newParams = redirectIfDifferent(reportParams)
-			if(newParams != null && !newParams.empty) 
-				redirect(controller: 'dsr', action: 'view', params: newParams)
-			
-			dsrTable = dsrService.getDsrTable(location, program, period, dataLocationTypes, dsrCategory);			
+		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
+					'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'dsrCategory':dsrCategory?.id]
+		def newParams = redirectIfDifferent(reportParams)
+		
+		if(newParams != null && !newParams.empty) { 
+			redirect(controller: 'dsr', action: 'view', params: newParams)
 		}
-		
-		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+" root program: "+program+", root location: "+location)
-		
-		[
-			dsrTable: dsrTable,
-			currentCategory: dsrCategory,
-			currentPeriod: period,
-			currentProgram: program,
-			selectedTargetClass: DsrTarget.class,
-			currentLocation: location,
-			locationTree: locationTree,
-			currentLocationTypes: dataLocationTypes,
-			skipLevels: skipLevels
-		]
+		else {
+			def dsrTable = null
+			if (dsrCategory != null)
+				dsrTable = dsrService.getDsrTable(location, program, period, dataLocationTypes, dsrCategory);			
+			
+			if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+" root program: "+program+", root location: "+location)
+			
+			[
+				dsrTable: dsrTable,
+				currentCategory: dsrCategory,
+				currentPeriod: period,
+				currentProgram: program,
+				selectedTargetClass: DsrTarget.class,
+				currentLocation: location,
+				locationTree: locationTree,
+				currentLocationTypes: dataLocationTypes,
+				skipLevels: skipLevels
+			]
+		}
 	}	
 }
