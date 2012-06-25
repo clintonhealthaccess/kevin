@@ -20,14 +20,17 @@ class FctController extends AbstractController {
 		def fctTarget = null
 		if(params.int('fctTarget') != null){
 			fctTarget = FctTarget.get(params.int('fctTarget'))
+			
+			// reset the target if it doesn't belong to the right program
 			if(fctTarget != null){
 				if(!fctTarget.program.equals(program))
 					fctTarget = null
 			}			
 		}
 		
+		// set the target to the first of the program if null
 		if(fctTarget == null){
-			def targets = fctService.getFctTargets(program)			
+			def targets = fctService.getFctTargetsWithOptions(program)			
 			if(targets != null && !targets.empty){
 				Collections.sort(targets);
 				fctTarget = targets.first()			
@@ -35,16 +38,6 @@ class FctController extends AbstractController {
 		}
 		return fctTarget
 	}		
-	
-//	def getLevel(){
-//		LocationLevel level = null
-//		level = LocationLevel.get(params.int('level'));
-//		if(level == null){
-//			 rootLocation = locationService.getRootLocation().getLevelAfter()
-//			 level = locationService.getLevelAfter(rootLocation.getLevel())
-//		}
-//		return level
-//	}
 	
 	def index = {
 		redirect (action: 'view', params: params)
@@ -64,13 +57,10 @@ class FctController extends AbstractController {
 		LocationLevel level = locationService.getLevelAfter(location.getLevel(), skipLevels)
 		
 		FctTable fctTable = null;
-		def fctDescriptions = null;
 		if (period != null && program != null && fctTarget != null && location != null && dataLocationTypes != null) {
-
 			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
-				'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'fctTarget':fctTarget?fctTarget.id:null]
-			def redirectParams = getRedirectParams(reportParams)
-			def newParams = redirectIfDifferent(redirectParams)
+				'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'fctTarget':fctTarget.id]
+			def newParams = redirectIfDifferent(reportParams)
 			if(newParams != null && !newParams.empty)
 				redirect(controller: 'fct', action: 'view', params: newParams)
 						

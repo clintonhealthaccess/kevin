@@ -43,6 +43,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def program = newReportProgram(CODE(1))
 		def average = newAverage("1", CODE(2))
+		def category = newDsrTargetCategory(CODE(1), 1)
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
 		
@@ -50,6 +51,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		dsrTargetController.params.code = CODE(4)
 		dsrTargetController.params['data.id'] = average.id+""
 		dsrTargetController.params['program.id'] = program.id+""
+		dsrTargetController.params['category.id'] = category.id+""
 		dsrTargetController.saveWithoutTokenCheck()
 		
 		then:
@@ -61,6 +63,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		setup:
 		setupLocationTree()
 		def program = newReportProgram(CODE(1))
+		def category = newDsrTargetCategory(CODE(1), 1)
 		def sum = newSum("1", CODE(2))
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
@@ -69,6 +72,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		dsrTargetController.params.code = CODE(5)
 		dsrTargetController.params['data.id'] = sum.id+""
 		dsrTargetController.params['program.id'] = program.id+""
+		dsrTargetController.params['category.id'] = category.id+""
 		dsrTargetController.saveWithoutTokenCheck()
 		
 		then:
@@ -80,6 +84,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		setup:
 		setupLocationTree()
 		def program = newReportProgram(CODE(1))
+		def category = newDsrTargetCategory(CODE(1), 1)
 		def rawDataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
@@ -88,6 +93,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		dsrTargetController.params.code = CODE(3)
 		dsrTargetController.params['data.id'] = rawDataElement.id+""
 		dsrTargetController.params['program.id'] = program.id+""
+		dsrTargetController.params['category.id'] = category.id+""
 		dsrTargetController.saveWithoutTokenCheck()
 		
 		then:
@@ -100,6 +106,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(1))
+		def category = newDsrTargetCategory(CODE(1), 1)
 		def normalizedDataElement = newNormalizedDataElement(CODE(4), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
@@ -108,6 +115,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		dsrTargetController.params.code = CODE(5)
 		dsrTargetController.params['data.id'] = normalizedDataElement.id+""
 		dsrTargetController.params['program.id'] = program.id+""
+		dsrTargetController.params['category.id'] = category.id+""
 		dsrTargetController.saveWithoutTokenCheck()
 		
 		then:
@@ -120,7 +128,8 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def program = newReportProgram(CODE(1))
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(1), dataElement, program)
+		def category = newDsrTargetCategory(CODE(1), 1)
+		def target = newDsrTarget(CODE(1), dataElement, program, category)
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
 		

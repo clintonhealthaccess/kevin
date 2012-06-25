@@ -29,6 +29,7 @@ package org.chai.kevin;
  */
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.dsr.DsrTargetCategory
 import org.chai.kevin.location.DataLocationType;
@@ -97,7 +98,7 @@ public abstract class AbstractController {
 		Set<DataLocationType> dataLocationTypes = new HashSet<DataLocationType>()
 		if (params.list('dataLocationTypes') != null && !params.list('dataLocationTypes').empty) {
 			def types = params.list('dataLocationTypes')
-			dataLocationTypes.addAll(types.collect{ DataLocationType.get(it) } - null)
+			dataLocationTypes.addAll(types.collect{ NumberUtils.isNumber(it as String) ? DataLocationType.get(it) : null } - null)
 		}		
 		
 		if(dataLocationTypes == null || dataLocationTypes.empty){
@@ -111,7 +112,7 @@ public abstract class AbstractController {
 		Set<Period> periods =null
 		if (params.list('currentPeriods') != null && !params.list('currentPeriods').empty) {
 			def selectedPeriods = params.list('currentPeriods')
-			periods = new HashSet<Period>(selectedPeriods.collect{ Periods.get(it) })
+			periods = new HashSet<Period>(selectedPeriods.collect{ NumberUtils.isNumber(it as String) ? Periods.get(it) : null } - null)
 		}
 		else {
 			periods = new HashSet<Period>().add(Period.list()[Period.list().size()-1]);
@@ -140,23 +141,30 @@ public abstract class AbstractController {
 		return redirectParams
 	}
 	
-	protected def redirectIfDifferent(def redirectParams) {		
+	protected def redirectIfDifferent(def redirectParams) {
+		if (log.isDebugEnabled()) {
+			log.debug("redirectIfDifferent(redirectParams="+redirectParams+")")
+			log.debug("request params: "+params)
+		}
+				
 		boolean redirect = false
 		def newParams = [:]
-		for(def param : params){
-			def key = param.key						
+		for(def param : redirectParams){
+			def key = param.key
+			def redirectValue = redirectParams[key].toString()
+			
+			// url value to compare with
 			def urlValue = null
-			if(key == 'controller' || key == 'action') 
-				continue
-			else if(key == 'dataLocationTypes') 
+			if(key == 'dataLocationTypes') 
 				urlValue = params.list(key).toString()
 			else 
 				urlValue = params[key].toString()		
-			def redirectValue = redirectParams[key].toString()
+			
 			if(urlValue != redirectValue)
 				redirect = true
 			if(redirectParams[key] != null) newParams.put(key, redirectParams[key])
 		}
+		
 		if(!redirect) return null				
 		if(redirect){
 			if (log.isInfoEnabled()) {

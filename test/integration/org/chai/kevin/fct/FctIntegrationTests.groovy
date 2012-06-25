@@ -13,8 +13,8 @@ abstract class FctIntegrationTests extends IntegrationTests {
 			program: program,
 			typeCodeString: Utils.unsplit(types)
 			).save(failOnError: true)
-			program.save(failOnError: true)
-			return target
+		program.save(failOnError: true)
+		return target
 	}
 		
 	static def newFctTarget(def code, def order, def types, def program) {
@@ -23,17 +23,17 @@ abstract class FctIntegrationTests extends IntegrationTests {
 			order: order,
 			program: program,
 			typeCodeString: Utils.unsplit(types)
-			).save(failOnError: true)			
-			program.save(failOnError: true)
-			return target
+			).save(failOnError: true)
+		program.save(failOnError: true)
+		return target
 	}
 
 	def newFctTargetOption(def code, def target, def sum) {
 		def targetOption = new FctTargetOption(
-		names: [:],
-		code: code,
-		target: target,
-		sum: sum
+			names: [:],
+			code: code,
+			target: target,
+			sum: sum
 		).save(failOnError: true)
 		target.targetOptions << targetOption
 		target.save(failOnError: true)
@@ -42,11 +42,11 @@ abstract class FctIntegrationTests extends IntegrationTests {
 		
 	def newFctTargetOption(def code, def order, def target, def sum) {
 		def targetOption = new FctTargetOption(
-		names: [:],
-		order: order,
-		code: code,
-		target: target,		
-		sum: sum
+			names: [:],
+			order: order,
+			code: code,
+			target: target,		
+			sum: sum
 		).save(failOnError: true)		
 		target.targetOptions << targetOption
 		target.save(failOnError: true)

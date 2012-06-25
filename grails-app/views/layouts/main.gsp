@@ -89,7 +89,7 @@
 			<ul id="main-menu" class="menu">
 				<!-- Home -->
 				<shiro:hasPermission permission="menu:home">
-					<li><a class="home" href="/kevin/"><img src="${resource(dir:'images',file:'/icons/home_dhsst.png')}" alt="Home"/></a></li>
+					<li><a class="home" href="${createLink(controller:'home', action:'index')}"><img src="${resource(dir:'images',file:'/icons/home_dhsst.png')}" alt="Home"/></a></li>
 				</shiro:hasPermission>
 				<g:set var="controllerClass" value="${grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).getClazz()}" />	
 				<!-- Reports -->

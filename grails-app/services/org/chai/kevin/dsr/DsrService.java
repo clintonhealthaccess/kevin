@@ -1,6 +1,5 @@
 package org.chai.kevin.dsr;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,15 +10,10 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LanguageService;
 import org.chai.kevin.Period;
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
-import org.chai.kevin.data.Enum;
-import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -27,10 +21,8 @@ import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
-import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
 import org.springframework.cache.annotation.Cacheable;
@@ -42,7 +34,6 @@ public class DsrService {
 	private ReportService reportService;
 	private ValueService valueService;
 	private DataService dataService;
-	private LanguageService languageService;
 	private Set<String> skipLevels;
 	
 	@Cacheable("dsrCache")
@@ -55,14 +46,12 @@ public class DsrService {
 		List<DataLocation> dataLocations = location.collectDataLocations(skips, types);
 		
 		List<DsrTarget> targets = new ArrayList<DsrTarget>();
-		if(category != null) targets.addAll(category.getTargets());
-		else targets.addAll(reportService.getReportTargets(DsrTarget.class, program));
+		targets.addAll(category.getTargetsForProgram(program));
 		
 		Map<CalculationLocation, Map<DsrTarget, Value>> valueMap = new HashMap<CalculationLocation, Map<DsrTarget, Value>>();		
 		List<DsrTargetCategory> targetCategories = new ArrayList<DsrTargetCategory>();
 		
-		if(dataLocations.isEmpty() || targets.isEmpty())
-			return new DsrTable(valueMap, targets, targetCategories);
+		if(dataLocations.isEmpty() || targets.isEmpty()) return new DsrTable(valueMap, targets, targetCategories);
 		Collections.sort(targets);
 				
 		for (DsrTarget target : targets) {
@@ -133,10 +122,6 @@ public class DsrService {
 	
 	public void setDataService(DataService dataService) {
 		this.dataService = dataService;
-	}
-	
-	public void setLanguageService(LanguageService languageService) {
-		this.languageService = languageService;
 	}
 	
 	public void setSkipLevels(Set<String> skipLevels) {

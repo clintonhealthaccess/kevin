@@ -83,8 +83,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		
 		then:
 		fctController.response.redirectedUrl.contains("/fct/view/")
-		fctController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"?")
-		fctController.response.redirectedUrl.contains("fctTarget="+target.id)
+		fctController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"/"+target.id)
 		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}	
@@ -109,8 +108,56 @@ class FctControllerSpec extends FctIntegrationTests {
 		
 		then:
 		fctController.response.redirectedUrl.contains("/fct/view/")
-		fctController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(BURERA).id+"?")
-		fctController.response.redirectedUrl.contains("fctTarget="+target.id)
+		fctController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(BURERA).id+"/"+target.id)
+		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
+		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
+	}
+	
+	def "get fct with with invalid data location type parameters, redirect with correct parameter"(){
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def program = newReportProgram(CODE(2))
+		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def sum = newSum("1", CODE(2))
+		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
+		
+		when: "valid location parameter"
+		fctController = new FctController()
+		fctController.params.period = -1
+		fctController.params.program = -1
+		fctController.params.location = Location.findByCode(BURERA).id
+		fctController.params.dataLocationTypes = ['1,2', 'test']
+		fctController.params.fctTarget = -1
+		def model = fctController.view()
+		
+		then:
+		fctController.response.redirectedUrl.contains("/fct/view/")
+		fctController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(BURERA).id+"/"+target.id)
+		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
+		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
+	}
+	
+	def "get fct with target with no target redirects to first target"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def program = newReportProgram(CODE(2))
+		def sum = newSum("1", CODE(2))
+		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
+		
+		when:
+		fctController = new FctController()
+		fctController.params.period = period.id
+		fctController.params.program = program.id
+		fctController.params.location = Location.findByCode(BURERA).id
+		fctController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		def model = fctController.view()
+		
+		then:
+		fctController.response.redirectedUrl.contains("/fct/view/")
+		fctController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(BURERA).id+"/"+target.id)
 		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
@@ -130,8 +177,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		def model = fctController.view()
 		
 		then:
-		model.fctTable != null
-		model.fctTable.hasData() == false		
+		model.fctTable == null
 	}
 	
 	def "get fct with target with no target options"() {
