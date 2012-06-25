@@ -894,28 +894,14 @@ class Initializer {
 			def dsrSum = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Sum constant 10", timestamp:new Date());
 			dsrSum.save(failOnError: true);			
 			
-			new DsrTarget(
-					names:j(["en":"Accountant"]), descriptions:j(["en":"Accountant"]),
-					program: hmr,
-					data: NormalizedDataElement.findByCode("Constant 10"),
-					order: 8,
-					code: "Accountant"
-					).save(failOnError:true)
-
-			new DsrTarget(
-					names:j(["en":"Days Of Nurse Training"]), descriptions:j(["en":"Days Of Nurse Training"]),
-					program: hmr,
-					data: NormalizedDataElement.findByCode("Constant 20"),
-					order: 1,
-					code: "Days Of Nurse Training"
-					).save(failOnError:true)
 
 			new DsrTarget(
 					names:j(["en":"A0"]), descriptions:j(["en":"A0"]),
 					program: hmr,
 					data: RawDataElement.findByCode("CODE1"),
 					order: 1,
-					code: "A0"
+					code: "A0",
+					category: nursesCat,
 					).save(failOnError:true)
 										
 			new DsrTarget(
@@ -923,7 +909,8 @@ class Initializer {
 					program: hmr,
 					data: NormalizedDataElement.findByCode("TRUE"),
 					order: 2,
-					code: "A1"
+					code: "A1",
+					category: nursesCat,
 					).save(failOnError:true)
 
 			new DsrTarget(
@@ -931,7 +918,8 @@ class Initializer {
 					program: hmr,
 					data: NormalizedDataElement.findByCode("FALSE"),
 					order: 3,
-					code:"A2"
+					code:"A2",
+					category: nursesCat,
 					).save(failOnError:true)
 
 			new DsrTarget(
@@ -939,7 +927,8 @@ class Initializer {
 					program: hmr,
 					data: dsrAverage,
 					order: 4,
-					code: "A3"
+					code: "A3",
+					category: nursesCat,
 					).save(failOnError:true)
 
 			new DsrTarget(
@@ -947,31 +936,17 @@ class Initializer {
 					program: hmr,
 					data: dsrSum,
 					order: 5,
-					code: "A4"
+					code: "A4",
+					category: nursesCat,
 					).save(failOnError:true)
 					
-			new DsrTarget(
-					names:j(["en":"Testing Category Human Resource"]), descriptions:j(["en":"Testing Category Human Resource"]),
-					program: hmr,
-					data: NormalizedDataElement.findByCode("Constant 20"),
-					order: 4,
-					code: "Testing Category Human Resource"
-					).save(failOnError:true)
-
-			new DsrTarget(
-					names:j(["en":"In-Facility Birth Ratio"]), descriptions:j(["en":"In-Facility Birth Ratio"]),
-					program: servDeliv,
-					data: NormalizedDataElement.findByCode("Constant 20"),
-					order: 6,
-					code: "In-Facility Birth Ratio"
-					).save(failOnError:true)
-
 			new DsrTarget(
 					names:j(["en":"Mental Health Service"]), descriptions:j(["en":"Mental Health Service"]),
 					program: servDeliv,
 					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 11,
-					code: "Mental Health Service"
+					code: "Mental Health Service",
+					category: infectiousDiseaseCat2
 					).save(failOnError:true)
 
 			new DsrTarget(
@@ -979,7 +954,8 @@ class Initializer {
 					program: servDeliv,
 					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 7,
-					code: "Malaria Rapid Test"
+					code: "Malaria Rapid Test",
+					category: infectiousDiseaseCat1
 					).save(failOnError:true)
 
 			new DsrTarget(
@@ -987,7 +963,8 @@ class Initializer {
 					program: servDeliv,
 					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 9,
-					code: "HIV Rapid Test"
+					code: "HIV Rapid Test",
+					category: infectiousDiseaseCat1
 					).save(failOnError:true)
 
 			new DsrTarget(
@@ -995,23 +972,8 @@ class Initializer {
 					program: servDeliv,
 					data: NormalizedDataElement.findByCode("Constant 20"),
 					order: 10,
-					code: "TB Stain Test"
-					).save(failOnError:true)
-
-			new DsrTarget(
-					names:j(["en":"Catchment Population per CHW"]), descriptions:j(["en":"Catchment Population per CHW"]),
-					program: servDeliv,
-					data: NormalizedDataElement.findByCode("Constant 10"),
-					order: 12,
-					code: "Catchment Population per CHW"
-					).save(failOnError:true)
-
-			new DsrTarget(
-					names:j(["en":"Consultation Room"]), descriptions:j(["en":"Consultation Room"]),
-					program: instCap,
-					data: NormalizedDataElement.findByCode("Constant 10"),
-					order: 1,
-					code: "Consultation Room"
+					code: "TB Stain Test",
+					category: infectiousDiseaseCat2
 					).save(failOnError:true)
 
 			new DsrTarget(
@@ -1019,7 +981,8 @@ class Initializer {
 					program: instCap,
 					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
-					code: "Facility Water Status"
+					code: "Facility Water Status",
+					category: waterAndPowerCat
 					).save(failOnError:true)
 
 			new DsrTarget(
@@ -1027,14 +990,8 @@ class Initializer {
 					program: instCap,
 					data: NormalizedDataElement.findByCode("Constant 10"),
 					order: 2,
-					code: "Incinerator Availability"
-					).save(failOnError:true)
-
-			new DsrTarget(
-					names:j(["en":"Facility Power Status"]), descriptions:j(["en":"Facility Power Status"]),
-					program: instCap,
-					data: NormalizedDataElement.findByCode("Constant 10"),
-					code: "Facility Power Status"
+					code: "Incinerator Availability",
+					category: waterAndPowerCat
 					).save(failOnError:true)
 
 			infectiousDiseaseCat1.addTarget(DsrTarget.findByCode("Malaria Rapid Test"));

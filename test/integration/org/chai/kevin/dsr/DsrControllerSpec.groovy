@@ -24,6 +24,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		dsrController.params.program = program.id
 		dsrController.params.location = Location.findByCode(RWANDA).id
 		dsrController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		dsrController.params.dsrCategory = category.id
 		def model = dsrController.view()
 		
 		then:
@@ -37,13 +38,46 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		model.dsrTable.hasData() == true
 	}
 	
+	def "get dsr with category belonging to several programs only gets target belonging to the specified category"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def program1 = newReportProgram(ROOT)
+		def program2 = newReportProgram(PROGRAM1, program1)
+		def category = newDsrTargetCategory(CATEGORY1, 0)
+		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
+		def target1 = newDsrTarget(CODE(4), 1, dataElement, program1, category)
+		def target2 = newDsrTarget(CODE(5), 1, dataElement, program2, category)
+	
+		when: "valid table"
+		dsrController = new DsrController()
+		dsrController.params.period = period.id
+		dsrController.params.program = program1.id
+		dsrController.params.location = Location.findByCode(RWANDA).id
+		dsrController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		dsrController.params.dsrCategory = category.id
+		def model = dsrController.view()
+		
+		then:
+		model.currentPeriod.equals(period)
+		model.currentProgram.equals(program1)
+		model.currentLocation.equals(Location.findByCode(RWANDA))
+		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		model.currentCategory.equals(category)
+		model.dsrTable != null
+		model.dsrTable.targets == [target1]
+		model.dsrTable.valueMap.isEmpty() == false
+		model.dsrTable.hasData() == true
+	}
+	
 	def "get dsr with no category"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(4), 1, dataElement, program)
+		def category = newDsrTargetCategory(CATEGORY1, 0)
+		def target = newDsrTarget(CODE(4), 1, dataElement, program, category)
 		
 		when: "valid table"
 		dsrController = new DsrController()
@@ -54,16 +88,10 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def model = dsrController.view()
 		
 		then:
-		model.currentPeriod.equals(period)
-		model.currentProgram.equals(program)
-		model.currentLocation.equals(Location.findByCode(RWANDA))
-		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
-		model.currentCategory == null
-		model.dsrTable != null
-		model.dsrTable.valueMap.isEmpty() == false
-		model.dsrTable.hasData() == true
-		model.dsrTable.targets.equals([target])
-		model.dsrTable.targetCategories.equals([])
+		dsrController.response.redirectedUrl.contains("/dsr/view/")
+		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"/"+category.id)
+		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
+		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
 
 	def "get dsr with no targets"() {
@@ -71,6 +99,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
+		def category = newDsrTargetCategory(CATEGORY1, 0)
 		
 		when:
 		dsrController = new DsrController()
@@ -78,6 +107,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		dsrController.params.program = program.id
 		dsrController.params.location = Location.findByCode(BURERA).id
 		dsrController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		dsrController.params.dsrCategory = category.id
 		def model = dsrController.view()
 		
 		then:
@@ -85,7 +115,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		model.currentProgram.id == program.id
 		model.currentLocation.id == Location.findByCode(BURERA).id
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
-		model.currentCategory == null
+		model.currentCategory == category
 		model.dsrTable != null
 		model.dsrTable.hasData() == false
 	}
@@ -135,8 +165,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		
 		then:
 		dsrController.response.redirectedUrl.contains("/dsr/view/")
-		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"?")
-		dsrController.response.redirectedUrl.contains("dsrCategory="+category.id)
+		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"/"+category.id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
@@ -161,8 +190,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		
 		then:
 		dsrController.response.redirectedUrl.contains("/dsr/view/")
-		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(BURERA).id+"?")
-		dsrController.response.redirectedUrl.contains("dsrCategory="+category.id)
+		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(BURERA).id+"/"+category.id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
@@ -172,8 +200,9 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
+		def category = newDsrTargetCategory(CATEGORY1, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(4), 1, dataElement, program)
+		def target = newDsrTarget(CODE(4), 1, dataElement, program, category)
 		
 		when: "valid table"
 		dsrController = new DsrController()
@@ -181,6 +210,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		dsrController.params.program = program.id
 		dsrController.params.location = Location.findByCode(RWANDA).id
 		dsrController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		dsrController.params.dsrCategory = category.id
 		def model = dsrController.view()
 		
 		then:
@@ -188,11 +218,11 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		model.currentProgram.equals(program)
 		model.currentLocation.equals(Location.findByCode(RWANDA))
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
-		model.currentCategory == null
+		model.currentCategory == category
 		model.dsrTable != null
 		model.dsrTable.hasData() == true
 		model.dsrTable.targets.equals([target])
-		model.dsrTable.targetCategories.equals([])
+		model.dsrTable.targetCategories.equals([category])
 	}
 	
 }

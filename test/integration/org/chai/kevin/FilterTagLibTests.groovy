@@ -32,17 +32,16 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		
 		def html = applyTemplate(
 //			'<g:programFilter linkParams="${params}" selected="${program}" selectedTargetClass="${target}" exclude="${excludeParams}"/>',
-			'<g:programFilter linkParams="${params}" exclude="${excludeParams}"/>',
+			'<g:programFilter linkParams="${params}" exclude="${excludeParams}" selectedTargetClass="${target}"/>',
 			[
 				'params': controller.request.params,
 //				'program': program,
-//				'target': DashboardTarget.class,
+				'target': DashboardTarget.class,
 				'excludeParams': ['dashboardEntity', 'dsrCategory', 'fctTarget']
 			]
 		)
 		
-		assertTrue html.contains("href=\"/test?program="+program.id+"\"")
-		assertTrue html.contains("Program1")
+		assertTrue html.contains("href=\"/user/index?program="+program.id+"\"")
 		assertTrue !html.contains("dashboardEntity="+3+"\"")
 		assertTrue !html.contains("dsrCategory="+4+"\"")
 		assertTrue !html.contains("fctTarget="+5+"\"")
@@ -151,7 +150,9 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 			]
 		)
 
-		assertTrue html.contains("href=\"/test?program="+program.id+"\"")
+		assertTrue html.contains("href=\"/dashboard/index?program="+program.id+"\"")
+		assertTrue html.contains("href=\"/dsr/index?program="+program.id+"\"")
+		assertTrue html.contains("href=\"/fct/index?program="+program.id+"\"")
 		assertTrue !html.contains("dashboardEntity="+3+"\"")
 	}
 }
