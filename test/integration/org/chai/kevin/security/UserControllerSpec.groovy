@@ -171,7 +171,7 @@ class UserControllerSpec extends IntegrationTests{
 		then:
 		User.count() == 1;
 		User.findByUsername("myuser1")!=null;
-		User.findByUsername("myuser1").permissions.equals(s(['editPlanning:view','editPlanning:*:'+location.id,'menu:planning']))
+		User.findByUsername("myuser1").permissions.equals(s(['editPlanning:view','editPlanning:*:'+location.id,'menu:planning','home:*','menu:reports']))
 	}
 	
 	def "cannot change password hash"(){

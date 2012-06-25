@@ -16,14 +16,14 @@ class UserUnitSpec extends UnitSpec {
 		user.setDefaultPermissions()
 		
 		then:
-		user.permissions.equals(new HashSet(['editSurvey:view','editSurvey:*:12','menu:survey']))
+		user.permissions.equals(new HashSet(['editSurvey:view','editSurvey:*:12','menu:survey',"menu:reports","home:*"]))
 		
 		when:
 		user = new User(userType: UserType.PLANNING, locationId: 12)
 		user.setDefaultPermissions()
 		
 		then:
-		user.permissions.equals(new HashSet(['editPlanning:view','editPlanning:*:12','menu:planning']))
+		user.permissions.equals(new HashSet(['editPlanning:view','editPlanning:*:12','menu:planning',"menu:reports","home:*"]))
 		
 		when:
 		user = new User(userType: UserType.OTHER, locationId: 12)
@@ -42,14 +42,14 @@ class UserUnitSpec extends UnitSpec {
 		user.setDefaultPermissions()
 		
 		then:
-		user.permissions.equals(new HashSet(['editSurvey:view','editSurvey:*:12','menu:survey','test:test1','test:test2','test:*']))
+		user.permissions.equals(new HashSet(['editSurvey:view','editSurvey:*:12','menu:survey','test:test1','test:test2','test:*',"menu:reports","home:*"]))
 		
 		when:
 		user = new User(userType: UserType.PLANNING, locationId: 12, permissionString: 'test:test1,test:test2,test:*')
 		user.setDefaultPermissions()
 		
 		then:
-		user.permissions.equals(new HashSet(['editPlanning:view','editPlanning:*:12','menu:planning','test:test1','test:test2','test:*']))
+		user.permissions.equals(new HashSet(['editPlanning:view','editPlanning:*:12','menu:planning','test:test1','test:test2','test:*',"menu:reports","home:*"]))
 		
 		when:
 		user = new User(userType: UserType.OTHER, locationId: 12, permissionString: 'test:test1,test:test2,test:*')
@@ -68,14 +68,14 @@ class UserUnitSpec extends UnitSpec {
 		user.setDefaultPermissions()
 		
 		then:
-		user.permissions.equals(new HashSet(['editSurvey:view','editSurvey:*:12','menu:survey']))
+		user.permissions.equals(new HashSet(['editSurvey:view','editSurvey:*:12','menu:survey',"menu:reports","home:*"]))
 		
 		when:
 		user = new User(userType: UserType.SURVEY, locationId: 12, permissionString: 'editPlanning:view,editPlanning:*:100,menu:planning,home:*')
 		user.setDefaultPermissions()
 		
 		then:
-		user.permissions.equals(new HashSet(['editSurvey:view','editSurvey:*:12','menu:survey']))
+		user.permissions.equals(new HashSet(['editSurvey:view','editSurvey:*:12','menu:survey',"menu:reports","home:*"]))
 		
 		when:
 		user = new User(userType: UserType.OTHER, locationId: 12, permissionString: 'editPlanning:view,editPlanning:*:100,menu:planning,home:*')
