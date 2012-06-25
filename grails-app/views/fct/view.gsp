@@ -43,6 +43,6 @@
 	        		<p class="nav-help"><g:message code="fct.report.table.noselection.label"/></p>
 	        	</g:else>
             </div>					
-		</div>		
+		</div>
 	</body>
 </html>
