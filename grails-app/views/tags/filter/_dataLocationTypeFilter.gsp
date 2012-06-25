@@ -1,6 +1,10 @@
 <div class="left">
-	<g:form name="report-filters" method="get" url="[controller:controllerName, action:actionName]">
-		<g:linkParamFilter linkParams="${linkParams}" exclude="${['dataLocationTypes']}" />
+	<%
+		newLinkParams = [:]
+		newLinkParams.putAll linkParams
+		newLinkParams.remove 'dataLocationTypes'
+	%>
+	<g:form name="report-filters" method="get" url="[controller:controllerName, action:actionName, params: newLinkParams]">
 			
 		<span class="js_dropdown dropdown">
 			<a class="datalocation js_dropdown-link nice-button with-highlight" href="#">
@@ -19,13 +23,14 @@
 									<label for="${type.id}"><g:i18n field="${type.names}"/></label>								
 								</li>
 							</g:each>	        
-						<li><button id="js_data-location-type-submit" type="submit"><g:message code="filter.datalocationtype.filter"/></button></li>
+						<li>
+						<button id="js_data-location-type-submit" type="submit"><g:message code="filter.datalocationtype.filter"/></button></li>
 					</ul>
 				</div>
 			</g:if>
 		    <g:else>
 				<span class="italic"><g:message code="filter.datalocationtype.empty.label"/></span>
-			</g:else>		
+			</g:else>	
 	    </span>
 	    <r:script>
 	    $(document).ready(function() {

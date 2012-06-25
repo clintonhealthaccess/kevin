@@ -116,21 +116,6 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		assertTrue html.contains('select ')
 	}
 	
-	//TODO fix these tests	
-
-	def testLinkParamFilter() {
-		def controller = new UserController()
-		controller.request.params = ['param1': '123', 'param2': ['123','456']]
-		
-		def html = applyTemplate(
-			'<g:linkParamFilter linkParams="${params}"/>'
-		)
-
-		assertTrue html.contains('<input type="hidden" name="param1" value="123"/>')
-		assertTrue html.contains('<input type="hidden" name="param2" value="123"/>')
-		assertTrue html.contains('<input type="hidden" name="param2" value="456"/>')
-	}	
-	
 	def testTopLevelReportTabsFilter() {
 		def period = IntegrationTests.newPeriod()
 		IntegrationTests.setupProgramTree()

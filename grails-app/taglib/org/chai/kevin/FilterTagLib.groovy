@@ -151,12 +151,6 @@ class FilterTagLib {
 //			out << render(template:'/tags/filter/levelFilter', model:model)
 //		}
 //	}
-		
-	def linkParamFilter = {attrs, body ->
-		def model = new HashMap(attrs)		
-		if (model.linkParams == null) model << [linkParams: [:]]		
-		out << render(template:'/templates/linkParamFilter', model:model)
-	}
 	
 	// attrs['skipLevels'] is only needed for reports with both top-level locationFilter & levelFilter
 	def createLinkByFilter = {attrs, body ->
