@@ -18,21 +18,22 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def program = newReportProgram(CODE(1))
 		def location = Location.findByCode(BURERA)
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(3), 1, dataElement, program)
+		def category = newDsrTargetCategory(CODE(1), 1)
+		def target = newDsrTarget(CODE(3), 1, dataElement, program, category)
 		def types = new HashSet([
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
 
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		def dsrTable = dsrService.getDsrTable(location, program, period, types, category)
 
 		then:
 		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target) == null
 
 		when:
 		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_NUMBER(10d))
-		dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		dsrTable = dsrService.getDsrTable(location, program, period, types, category)
 
 		then:
 		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target).getNumberValue() == 10d
@@ -45,7 +46,8 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def program = newReportProgram(CODE(1))
 		def burera = Location.findByCode(BURERA)
 		def average = newAverage("1", CODE(2))
-		def target = newDsrTarget(CODE(3), 1, average, program)
+		def category = newDsrTargetCategory(CODE(1), 1)
+		def target = newDsrTarget(CODE(3), 1, average, program, category)
 		def types = new HashSet([
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
@@ -53,7 +55,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refreshCalculation()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(burera, program, period, types, null)
+		def dsrTable = dsrService.getDsrTable(burera, program, period, types, category)
 
 		then:
 		dsrTable != null
@@ -73,7 +75,8 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def program = newReportProgram(CODE(1))
 		def burera = Location.findByCode(BURERA)
 		def sum = newSum("1", CODE(2))
-		def target = newDsrTarget(CODE(3), 1, sum, program)
+		def category = newDsrTargetCategory(CODE(1), 1)
+		def target = newDsrTarget(CODE(3), 1, sum, program, category)
 		def types = new HashSet([
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
@@ -81,7 +84,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refreshCalculation()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(burera, program, period, types, null)
+		def dsrTable = dsrService.getDsrTable(burera, program, period, types, category)
 
 		then:
 		dsrTable != null
@@ -105,11 +108,12 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
 		def rawDataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(3), 1, rawDataElement, program)
+		def category = newDsrTargetCategory(CODE(1), 1)
+		def target = newDsrTarget(CODE(3), 1, rawDataElement, program, category)
 		newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_NUMBER(10d))
 
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		def dsrTable = dsrService.getDsrTable(location, program, period, types, category)
 
 		then:
 		dsrTable != null
@@ -121,7 +125,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 
 		when:
 		newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(KIVUYE), Value.VALUE_NUMBER(10d))
-		dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		dsrTable = dsrService.getDsrTable(location, program, period, types, category)
 
 		then:
 		dsrTable != null
@@ -143,11 +147,12 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
-		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, program)
+		def category = newDsrTargetCategory(CODE(1), 1)
+		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, program, category)
 		refreshNormalizedDataElement()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		def dsrTable = dsrService.getDsrTable(location, program, period, types, category)
 
 		then:
 		dsrTable != null
@@ -169,11 +174,12 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10"]]))
-		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, program)
+		def category = newDsrTargetCategory(CODE(1), 1)
+		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, program, category)
 		refreshNormalizedDataElement()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		def dsrTable = dsrService.getDsrTable(location, program, period, types, category)
 
 		then:
 		dsrTable != null
@@ -195,11 +201,12 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
-		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, program)
+		def category = newDsrTargetCategory(CODE(1), 1)
+		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, program, category)
 		refreshNormalizedDataElement()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		def dsrTable = dsrService.getDsrTable(location, program, period, types, category)
 
 		then:
 		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target).getNumberValue() == 10d
@@ -247,14 +254,15 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
+		def category = newDsrTargetCategory(CODE(1), 1)
 		def dataElement1 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def target1 = newDsrTarget(CODE(3), 1, dataElement1, program)
+		def target1 = newDsrTarget(CODE(3), 1, dataElement1, program, category)
 		def dataElement2 = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
-		def target2 = newDsrTarget(CODE(5), 2, dataElement2, program)
+		def target2 = newDsrTarget(CODE(5), 2, dataElement2, program, category)
 		refresh()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		def dsrTable = dsrService.getDsrTable(location, program, period, types, category)
 
 		then:
 		dsrTable.targets[0].equals(DsrTarget.findByCode(CODE(3)))
@@ -263,7 +271,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		when:
 		DsrTarget.findByCode(CODE(3)).order = 2
 		DsrTarget.findByCode(CODE(5)).order = 1
-		dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		dsrTable = dsrService.getDsrTable(location, program, period, types, category)
 
 		then:
 		dsrTable.targets[0].equals(DsrTarget.findByCode(CODE(5)))
@@ -290,7 +298,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refresh()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		def dsrTable = dsrService.getDsrTable(location, program, period, types, category1)
 
 		then:
 		dsrTable.targetCategories[0].equals(category1)
@@ -299,7 +307,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		when:
 		DsrTargetCategory.findByCode(CODE(2)).order = 2
 		DsrTargetCategory.findByCode(CODE(5)).order = 1
-		dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		dsrTable = dsrService.getDsrTable(location, program, period, types, category1)
 
 		then:
 		dsrTable.targetCategories[0].equals(category2)

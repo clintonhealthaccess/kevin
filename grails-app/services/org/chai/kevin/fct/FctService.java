@@ -12,10 +12,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationSorter;
 import org.chai.kevin.Period;
-import org.chai.kevin.data.Sum;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -24,8 +21,6 @@ import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.value.RawDataElementValue;
-import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class FctService {
 	private static final Log log = LogFactory.getLog(FctService.class);
 	
-	private LanguageService languageService;
 	private ReportService reportService;
 	private ValueService valueService;
 	private Set<String> skipLevels;
@@ -49,8 +43,6 @@ public class FctService {
 		List<FctTarget> targets = new ArrayList<FctTarget>();
 		List<CalculationLocation> topLevelLocations = new ArrayList<CalculationLocation>();
 		
-		if(target == null)
-			return new FctTable(valueMap, targetOptions, targets, topLevelLocations);
 		targetOptions = target.getTargetOptions();
 		if(targetOptions.isEmpty())
 			return new FctTable(valueMap, targetOptions, targets, topLevelLocations);
@@ -82,7 +74,7 @@ public class FctService {
 		
 		topLevelLocations.addAll(location.getChildrenEntitiesWithDataLocations(skips, types));
 		
-		targets = getFctTargets(program);		
+		targets = getFctTargetsWithOptions(program);		
 		Collections.sort(targets);
 		
 		FctTable fctTable = new FctTable(valueMap, targetOptions, targets, topLevelLocations);
@@ -98,19 +90,14 @@ public class FctService {
 		return value;
 	}
 
-	public List<FctTarget> getFctTargets(ReportProgram program){
-		List<FctTarget> targets = new ArrayList<FctTarget>();
+	public List<FctTarget> getFctTargetsWithOptions(ReportProgram program){
 		List<FctTarget> result = new ArrayList<FctTarget>();
-		targets = reportService.getReportTargets(FctTarget.class, program);
+		List<FctTarget> targets = reportService.getReportTargets(FctTarget.class, program);
 		for(FctTarget target : targets){
 			if(target.getTargetOptions() != null && !target.getTargetOptions().isEmpty())
 				result.add(target);
 		}
 		return result;
-	}
-	
-	public void setLanguageService(LanguageService languageService) {
-		this.languageService = languageService;
 	}
 	
 	public void setReportService(ReportService reportService) {

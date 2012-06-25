@@ -156,12 +156,10 @@ beans = {
 		reportService = ref("reportService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
-		languageService = ref("languageService")
 		skipLevels = dsrSkipLevels
 	}
 	
 	fctService(FctService){
-		languageService = ref("languageService")
 		reportService = ref("reportService")
 		valueService = ref("valueService")
 		skipLevels = fctSkipLevels
