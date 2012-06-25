@@ -71,6 +71,13 @@ public class JaqlService {
 		JsonValue value = null;
 		JaqlQuery query = new JaqlQuery();
 		
+		if (expression.contains("roundup")) {
+			try {
+				query.registerJavaUDF("roundup", RoundUp.class);
+			} catch (Exception e) {
+				log.error("could not load roundup method", e);
+			}
+		}
 		query.setQueryString(expression.replaceAll("\\s", " "));
 		
 		for (Entry<String, JsonValue> entry : valueMap.entrySet()) {
