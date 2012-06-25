@@ -114,8 +114,8 @@ class SurveySkipRuleController  extends AbstractEntityController {
 			
 			def max = Math.min(params['offset']+params['max'], skipRules.size())
 			
-			render(view: '/survey/admin/list', model:[
-				template: "skipRuleList",
+			render(view: '/entity/list', model:[
+				template: "survey/skipRuleList",
 				entities: skipRules.subList(params['offset'], max),
 				entityCount: skipRules.size(),
 				code: getLabel(),

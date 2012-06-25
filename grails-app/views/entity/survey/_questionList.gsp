@@ -1,3 +1,4 @@
+<%@page import="org.chai.kevin.util.Utils"%>
 <table class="listing">
 	<thead>
 		<tr>
@@ -6,6 +7,10 @@
 			<th><g:message code="survey.question.label"/></th>
 			<th><g:message code="survey.question.type.label"/></th>
 			<th><g:message code="entity.datalocationtype.label"/></th>
+			<th><g:message code="survey.period.label"/></th>
+			<th><g:message code="survey.label" /></th>
+			<th><g:message code="survey.program.label" /></th>
+			<th><g:message code="survey.section.label" /></th>
 			<th><g:message code="entity.order.label"/></th>
 		</tr>
 	</thead>
@@ -31,7 +36,11 @@
 					rel="${createLink(controller:question.getType().getTemplate(), action:'getDescription', params:[question: question.id])}"
 					onclick="return false;"><g:stripHtml field="${i18n(field: question.names)}" chars="100"/></a></td>
 				<td>${question.getType()}</td>
-				<td>${question.typeCodeString}</td>
+				<td><g:prettyList entities="${question.typeCodeString}" /></td>
+				<td>${Utils.formatDate(question.section.survey.period.startDate)}</td>
+				<td>${question.section.program.survey.code}</td>
+				<td>${question.section.program.code}</td>
+				<td>${question.section.code}</td>
 				<td>${question.order}</td>
 			</tr>
 		</g:each>

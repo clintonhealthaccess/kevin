@@ -20,12 +20,10 @@
 			</div>
 			<div class="main">
 				<g:topLevelReportTabs linkParams="${params}" exclude="${['dashboardEntity']}" />
-				
-				<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>
+								
 				<ul class="clearfix">
   					<li class="push-20">
-						<g:render template="/templates/reportTitle" model="[title: i18n(field: currentProgram.names), file: 'star_small.png']"/>
-						
+						<g:render template="/templates/reportTitle" model="[program: currentProgram, title: i18n(field: currentProgram.names), descriptions: i18n(field: currentProgram.names), file: 'star_small.png']"/>								
 						<% def levelUpLinkParamsProgram = new HashMap(params) %>
 						<g:if test="${currentProgram.parent != null}">
 							<% levelUpLinkParamsProgram['program'] = currentProgram.parent.id+"" %>

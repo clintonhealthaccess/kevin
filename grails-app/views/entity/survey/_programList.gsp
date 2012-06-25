@@ -1,3 +1,4 @@
+<%@page import="org.chai.kevin.util.Utils"%>
 <g:searchBox controller="question" action="search" params="${[survey: survey?.id]}" entityName="Survey Question"/>
 <table class="listing">
 	<thead>
@@ -6,7 +7,8 @@
 			<th><g:message code="entity.code.label"/></th>
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="entity.datalocationtype.label"/></th>
-			<th><g:message code="default.number.label" args="[message(code:'survey.section.label')]"/></th>
+			<th><g:message code="survey.period.label"/></th>
+			<th><g:message code="survey.label" /></th>
 			<th><g:message code="entity.order.label"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
@@ -30,8 +32,9 @@
 				</td>
 				<td>${program.code}</td>
 				<td><g:i18n field="${program.names}" /></td>
-				<td>${program.typeCodeString}</td>
-				<td>${program.sections.size()}</td>
+				<td><g:prettyList entities="${program.typeCodeString}" /></td>
+				<td>${Utils.formatDate(program.survey.period.startDate)}</td>
+				<td>${program.survey.code}</td>
 				<td>${program.order}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 
