@@ -86,7 +86,7 @@ class Initializer {
 	static Date mar311 = getDate( 2006, 3, 31 );
 
 	static def createUsers() {
-		def reportAllReadonly = new Role(name: "reports-all-readonly")
+		def reportAllReadonly = new Role(name: "report-all-readonly")
 		reportAllReadonly.addToPermissions("menu:reports")
 		reportAllReadonly.addToPermissions("dashboard:*")
 		reportAllReadonly.addToPermissions("dsr:*")
