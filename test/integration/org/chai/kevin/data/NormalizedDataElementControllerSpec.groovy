@@ -98,7 +98,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 	def "cannot delete normalized data element if there are associated calculations"() {
 		setup:
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
-		def calculation = newAverage("\$"+normalizedDataElement.id, CODE(2))
+		def calculation = newSum("\$"+normalizedDataElement.id, CODE(2))
 		normalizedDataElementController = new NormalizedDataElementController()
 		
 		when:
@@ -107,7 +107,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		
 		then:
 		NormalizedDataElement.count() == 1
-		Average.count() == 1
+		Sum.count() == 1
 	}
 	
 	def "cannot delete normalized data element if there are associated planning costs"() {

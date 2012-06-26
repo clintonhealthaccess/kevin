@@ -3,14 +3,11 @@ package org.chai.kevin
 import grails.plugin.spock.UnitSpec;
 
 import org.chai.kevin.data.Aggregation;
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.AggregationValue;
-import org.chai.kevin.value.AveragePartialValue;
-import org.chai.kevin.value.AverageValue;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.SumValue;
@@ -52,37 +49,37 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 	}
 	
-	def "test average"() {
+	def "test ratio"() {
 		setup:
-		def partialValue1 = new AveragePartialValue(value: v("1"), numberOfDataLocations: 1)
-		def partialValue2 = new AveragePartialValue(value: v("14"), numberOfDataLocations: 2)
-		def partialValue3 = new AveragePartialValue(value: v("27"), numberOfDataLocations: 3)
-		def average = new Average()
+		def partialValue1 = new SumPartialValue(value: v("1"), numberOfDataLocations: 1)
+		def partialValue2 = new SumPartialValue(value: v("14"), numberOfDataLocations: 2)
+		def partialValue3 = new SumPartialValue(value: v("27"), numberOfDataLocations: 3)
+		def ratio = new Sum()
 		def value = null
 		
 		when:
-		value = new AverageValue([partialValue1], average, null, new Location())
+		value = new SumValue([partialValue1], ratio, null, new Location())
 		
 		then:
-		value.getValue().equals(v("1"))
+		value.getRatio().equals(v("1"))
 		
 		when:
-		value = new AverageValue([partialValue1, partialValue2], average, null, new Location())
+		value = new SumValue([partialValue1, partialValue2], ratio, null, new Location())
 		
 		then:
-		value.getValue().equals(v("5"))
+		value.getRatio().equals(v("5"))
 		
 		when:
-		value = new AverageValue([partialValue1, partialValue3], average, null, new Location())
+		value = new SumValue([partialValue1, partialValue3], ratio, null, new Location())
 		
 		then:
-		value.getValue().equals(v("7"))
+		value.getRatio().equals(v("7"))
 		
 		when:
-		value = new AverageValue([partialValue1, partialValue2, partialValue3], average, null, new Location())
+		value = new SumValue([partialValue1, partialValue2, partialValue3], ratio, null, new Location())
 		
 		then:
-		value.getValue().equals(v("7"))
+		value.getRatio().equals(v("7"))
 		
 	}
 	
@@ -137,15 +134,15 @@ class CalculationValueUnitSpec extends UnitSpec {
 		value.getValue().equals(Value.NULL_INSTANCE())
 	}
 	
-	def "test average with null values on DataLocation"() {
+	def "test ratio with null values on DataLocation"() {
 		setup:
 		def partialValue = null
 		def value = null
-		def average = new Average()
+		def ratio = new Sum()
 		
 		when:
-		partialValue = new AveragePartialValue(value: Value.NULL_INSTANCE())
-		value = new AverageValue([partialValue], average, null, new DataLocation())
+		partialValue = new SumPartialValue(value: Value.NULL_INSTANCE())
+		value = new SumValue([partialValue], ratio, null, new DataLocation())
 		
 		then:
 		value.getValue().equals(Value.NULL_INSTANCE())
@@ -181,25 +178,27 @@ class CalculationValueUnitSpec extends UnitSpec {
 		value.getValue().equals(v("0"))
 	}
 	
-	def "test average with invalid values"() {
+	def "test ratio with invalid values"() {
 		setup:
 		def partialValue = null
 		def value = null
-		def average = new Average()
+		def ratio = new Sum()
 		
 		when:
-		partialValue = new AveragePartialValue(value: v("1"), numberOfDataLocations: 0)
-		value = new AverageValue([partialValue], average, null, new Location())
+		partialValue = new SumPartialValue(value: v("1"), numberOfDataLocations:0)
+		value = new SumValue([partialValue], ratio, null, new Location())
 		
 		then:
-		value.getValue().equals(Value.NULL_INSTANCE())
+		value.getValue().getNumberValue() == 1
+		value.getRatio().equals(Value.NULL_INSTANCE())
 		
 		when:
-		partialValue = new AveragePartialValue(value: v("0"), numberOfDataLocations: 0)
-		value = new AverageValue([partialValue], average, null, new Location())
+		partialValue = new SumPartialValue(value: v("0"), numberOfDataLocations:0)
+		value = new SumValue([partialValue], ratio, null, new Location())
 
 		then:
-		value.getValue().equals(Value.NULL_INSTANCE())
+		value.getValue().getNumberValue() == 0
+		value.getRatio().equals(Value.NULL_INSTANCE())
 	}
 	
 	def "test aggregation with invalid values"() {

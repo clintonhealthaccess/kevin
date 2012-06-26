@@ -134,7 +134,7 @@ public class CostTarget extends AbstractReportTarget implements Exportable {
 	}
 	
 	@Transient
-	public boolean isAverage() {
+	public boolean isRatio() {
 		return dataElementEnd != null;
 	}
 	

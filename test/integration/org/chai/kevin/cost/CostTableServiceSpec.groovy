@@ -39,7 +39,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 	def costTableService;
 	
 	static def TRAINING = "Training"
-	static def AVERAGE = "Average"
+	static def RATIO = "Ratio"
 	
 	def "cost service returns expected values with no end"() {
 		setup:
@@ -102,7 +102,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		def costProgram = newReportProgram(CODE(2))
 		def rampUp = CONSTANT_RAMP_UP()
 		def training = newCostTarget(TRAINING, dataElement, rampUp, CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costProgram)
-		def average = newCostTarget(AVERAGE, dataElement, rampUp, CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costProgram)
+		def ratio = newCostTarget(RATIO, dataElement, rampUp, CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
 		def costTable = costTableService.getCostTable(period, costProgram, Location.findByCode(RWANDA))
@@ -113,7 +113,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		where:
 		expectedTargets		| expectedYears
-		[TRAINING, AVERAGE]	| [1, 2, 3, 4, 5]
+		[TRAINING, RATIO]	| [1, 2, 3, 4, 5]
 	}
 	
 	

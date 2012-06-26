@@ -49,7 +49,6 @@ import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.ExpressionMap;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
@@ -715,7 +714,7 @@ class Initializer {
 
 	static def createMaps() {
 		if (!MapsTarget.count()) {
-			def calculation1 = new Average(expression: "\$"+NormalizedDataElement.findByCode("Element 1").id, code: "Maps average 1", timestamp:new Date())
+			def calculation1 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Element 1").id, code: "Maps sum 1", timestamp:new Date())
 			calculation1.save(failOnError:true)
 			new MapsTarget(names:j(["en":"Map Target 3"]), descriptions:j([:]), code:"TARGET3", calculation: calculation1).save(failOnError: true, flush:true)
 		}
@@ -789,7 +788,7 @@ class Initializer {
 			def dashboardStaffing = new DashboardProgram(names:j(["en":"Staffing"]), weight: 1, order: 1, code: "Staffing", program: staffing)
 			dashboardStaffing.save(failOnError: true, flush: true)
 
-			def calculation1 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Average constant 10", timestamp:new Date())
+			def calculation1 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Ratio constant 10", timestamp:new Date())
 			calculation1.save(failOnError: true)
 
 			def nursea1 = new DashboardTarget(
@@ -797,7 +796,7 @@ class Initializer {
 					calculation: calculation1, program: staffing,
 					weight: 1, order: 1).save(failOnError: true, flush:true)
 
-			def calculation2 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 20").id, code:"Average constant 20", timestamp:new Date())
+			def calculation2 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Constant 20").id, code:"Ratio constant 20", timestamp:new Date())
 			calculation2.save(failOnError: true)
 
 			def nursea2 = new DashboardTarget(
@@ -805,7 +804,7 @@ class Initializer {
 					calculation: calculation2,  program: staffing,
 					weight: 1, order: 2).save(failOnError: true, flush:true)
 
-			def calculation3 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 1").id, code:"Average 1", timestamp:new Date())
+			def calculation3 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Element 1").id, code:"Ratio 1", timestamp:new Date())
 			calculation3.save(failOnError: true)
 
 			def target1 = new DashboardTarget(
@@ -813,7 +812,7 @@ class Initializer {
 					calculation: calculation3,  program: staffing,
 					weight: 1, order: 3).save(failOnError: true, flush:true)
 
-			def calculation4 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 2").id, code:"Average 2", timestamp:new Date())
+			def calculation4 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Element 2").id, code:"Ratio 2", timestamp:new Date())
 			calculation4.save(failOnError: true)
 
 			def missexpr = new DashboardTarget(
@@ -821,7 +820,7 @@ class Initializer {
 					calculation: calculation4,  program: staffing,
 					weight: 1, order: 4).save(failOnError: true, flush:true)
 
-			def calculation5 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Average 3", timestamp:new Date())
+			def calculation5 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Ratio 3", timestamp:new Date())
 			calculation5.save(failOnError: true)
 
 			def missdata = new DashboardTarget(
@@ -829,7 +828,7 @@ class Initializer {
 					calculation: calculation5,  program: staffing,
 					weight: 1, order: 5).save(failOnError: true, flush:true)
 
-			def calculation6 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Average 4", timestamp:new Date())
+			def calculation6 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Ratio 4", timestamp:new Date())
 			calculation6.save(failOnError: true)
 
 			def enume = new DashboardTarget(
@@ -888,8 +887,8 @@ class Initializer {
 					code: "Facility Water and Power Sources"
 					)
 
-			def dsrAverage = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Average constant 10", timestamp:new Date())
-			dsrAverage.save(failOnError: true)
+			def dsrRatio = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Ratio constant 10", timestamp:new Date())
+			dsrRatio.save(failOnError: true)
 			
 			def dsrSum = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Sum constant 10", timestamp:new Date());
 			dsrSum.save(failOnError: true);			
@@ -925,7 +924,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"A3"]), descriptions:j(["en":"A3"]),
 					program: hmr,
-					data: dsrAverage,
+					data: dsrRatio,
 					order: 4,
 					code: "A3",
 					category: nursesCat,

@@ -28,8 +28,8 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation
+import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type
 import org.chai.kevin.reports.ReportProgram
 
@@ -43,8 +43,8 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 	def "delete target"() {
 		setup:
 		def root = newReportProgram(CODE(1))
-		def average = newAverage("1", CODE(2))
-		def target = newDashboardTarget(TARGET1, average, root, 1)
+		def ratio = newSum("1", CODE(2))
+		def target = newDashboardTarget(TARGET1, ratio, root, 1)
 		dashboardTargetController = new DashboardTargetController();
 		dashboardTargetController.dataService = dataService
 		
@@ -62,9 +62,9 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 	def "save target with calculations"() {
 		setup:
 		setupLocationTree()
-		def average = newAverage("1", CODE(2))
+		def ratio = newSum("1", CODE(2))
 		def root = newReportProgram(CODE(1))
-		def target = newDashboardTarget(TARGET1, average, root, 1)
+		def target = newDashboardTarget(TARGET1, ratio, root, 1)
 		dashboardTargetController = new DashboardTargetController()
 		dashboardTargetController.dataService = dataService
 		
@@ -72,25 +72,25 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		dashboardTargetController.params['id'] = target.id
 		dashboardTargetController.params['weight'] = 1
 		dashboardTargetController.params['code'] = "NEW"
-		dashboardTargetController.params['calculation.id'] = average.id+""
+		dashboardTargetController.params['calculation.id'] = ratio.id+""
 		dashboardTargetController.saveWithoutTokenCheck()
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
 		then:
 		dashboardTargetController.response.redirectedUrl.equals(dashboardTargetController.getTargetURI())
 		newTarget != null
-		newTarget.calculation.equals(average)
+		newTarget.calculation.equals(ratio)
 		newTarget.weight == 1
 		DashboardTarget.count() == 1
-		Average.count() == 1
+		Sum.count() == 1
 	}
 	
 	def "edit target with calculations"() {
 		setup:
 		setupLocationTree()
 		def root = newReportProgram(CODE(1))
-		def average = newAverage("1", CODE(3))
-		def target = newDashboardTarget(TARGET1, average, root, 1)
+		def ratio = newSum("1", CODE(3))
+		def target = newDashboardTarget(TARGET1, ratio, root, 1)
 		dashboardTargetController = new DashboardTargetController()
 		dashboardTargetController.dataService = dataService
 		
@@ -98,32 +98,17 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		dashboardTargetController.params['id'] = target.id
 		dashboardTargetController.params['weight'] = 1
 		dashboardTargetController.params['code'] = "NEW"
-		dashboardTargetController.params['calculation.id'] = average.id+""
+		dashboardTargetController.params['calculation.id'] = ratio.id+""
 		dashboardTargetController.saveWithoutTokenCheck()
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
 		then:
 		dashboardTargetController.response.redirectedUrl.equals(dashboardTargetController.getTargetURI())
 		newTarget != null
-		newTarget.calculation.equals(average)
+		newTarget.calculation.equals(ratio)
 		newTarget.weight == 1
 		DashboardTarget.count() == 1
-		Average.count() == 1
+		Sum.count() == 1
 	}
-	
-//	def "create target does not show sums"() {
-//		setup:
-//		setupLocationTree()
-//		def sum = newSum("1", CODE(1))
-//		def average = newAverage("1", CODE(2))
-//		dashboardTargetController = new DashboardTargetController()
-//		dashboardTargetController.locationService = locationService
-//		
-//		when:
-//		dashboardTargetController.create()
-//		
-//		then:
-//		dashboardTargetController.modelAndView.model.calculations.equals([average])
-//	}
 	
 }
