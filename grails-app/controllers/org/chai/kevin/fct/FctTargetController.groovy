@@ -63,8 +63,7 @@ class FctTargetController extends AbstractEntityController {
 		[
 			target: entity,
 			types: DataLocationType.list([cache: true]),
-			programs: ReportProgram.list(),
-			typeCodes: Utils.split(entity.typeCodeString)
+			programs: ReportProgram.list()
 		]
 	}
 

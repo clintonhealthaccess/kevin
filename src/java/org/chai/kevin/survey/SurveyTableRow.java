@@ -62,6 +62,7 @@ import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -109,11 +110,11 @@ public class SurveyTableRow extends Orderable<Integer> implements Exportable {
 	
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString);
+		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes);
+		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 
 	@ManyToOne(targetEntity=SurveyTableQuestion.class, fetch=FetchType.LAZY)
@@ -126,10 +127,10 @@ public class SurveyTableRow extends Orderable<Integer> implements Exportable {
 		this.question = question;
 	}
 
-	@OneToMany(targetEntity=SurveyElement.class)
+	@OneToMany(targetEntity=SurveyElement.class, orphanRemoval=true)
 	@JoinTable(name="dhsst_survey_table_row_elements", joinColumns=@JoinColumn(nullable=false))
 	@MapKeyJoinColumn(nullable=false, name="survey_table_column")
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@Cascade({ CascadeType.ALL })
 	public Map<SurveyTableColumn, SurveyElement> getSurveyElements() {
 		return surveyElements;
 	}
@@ -151,7 +152,7 @@ public class SurveyTableRow extends Orderable<Integer> implements Exportable {
 
 	@Transient
 	public Set<String> getTypeApplicable() {
-		return Utils.split(this.typeCodeString);
+		return Utils.split(this.typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	
     @Transient

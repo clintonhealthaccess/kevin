@@ -79,14 +79,14 @@ public class CostTableService {
 		}
 
 		List<DataLocationType> types = new ArrayList<DataLocationType>();
-		for (String typeCode : Utils.split(target.getTypeCodeString())) {
+		for (String typeCode : Utils.split(target.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER)) {
 			types.add(locationService.findDataLocationTypeByCode(typeCode));
 		}
 		return new Explanation(target, types, target.getProgram(), period, new ArrayList<CalculationLocation>(explanationMap.keySet()), costService.getYears(), explanationMap);
 	}
 	
 	private boolean appliesToLocation(CostTarget target, DataLocation dataLocation) {
-		return Utils.split(target.getTypeCodeString()).contains(dataLocation.getType().getCode());
+		return Utils.split(target.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER).contains(dataLocation.getType().getCode());
 	}
 	
 	private Map<Integer, Cost> getCost(CostTarget target, CalculationLocation location, Period period) {

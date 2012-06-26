@@ -7,8 +7,6 @@ import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Exportable;
-
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 

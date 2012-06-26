@@ -22,6 +22,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DataLocationType implements Exportable {
 
+	public static final String DEFAULT_CODE_DELIMITER = ",";
+	
 	private Long id;
 	private String code;
 	private Translation names = new Translation();

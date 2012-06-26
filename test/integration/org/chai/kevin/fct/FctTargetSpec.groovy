@@ -12,7 +12,7 @@ class FctTargetSpec extends FctIntegrationTests {
 		def sum = newSum("1", CODE(1))
 		
 		when:
-		new FctTarget(program: program, typeCodes: [DISTRICT_HOSPITAL_GROUP], code: CODE(1)).save(failOnError: true)
+		new FctTarget(program: program, code: CODE(1)).save(failOnError: true)
 		
 		then:
 		FctTarget.count() == 1
@@ -23,7 +23,7 @@ class FctTargetSpec extends FctIntegrationTests {
 		def program = newReportProgram(CODE(1))
 		
 		when:
-		new FctTarget(program: program, typeCodes: [DISTRICT_HOSPITAL_GROUP]).save(failOnError: true)
+		new FctTarget(program: program).save(failOnError: true)
 		
 		then:
 		thrown ValidationException

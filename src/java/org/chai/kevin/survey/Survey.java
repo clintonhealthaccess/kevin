@@ -131,8 +131,8 @@ public class Survey implements Exportable {
 		this.descriptions = descriptions;
 	}
 	
-	@OneToMany(targetEntity = SurveyProgram.class, mappedBy="survey")
-	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	@OneToMany(targetEntity = SurveyProgram.class, mappedBy="survey", orphanRemoval=true)
+	@Cascade({CascadeType.ALL})
 	@Fetch(FetchMode.SELECT)
 	public List<SurveyProgram> getPrograms() {
 		return programs;
@@ -148,8 +148,8 @@ public class Survey implements Exportable {
 		programs.add(program);
 	}
 	
-	@OneToMany(mappedBy="survey", targetEntity=SurveySkipRule.class)
-	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	@OneToMany(mappedBy="survey", targetEntity=SurveySkipRule.class, orphanRemoval=true)
+	@Cascade({CascadeType.ALL})
 	public List<SurveySkipRule> getSkipRules() {
 		return skipRules;
 	}
@@ -176,7 +176,7 @@ public class Survey implements Exportable {
 	public List<SurveyProgram> getPrograms(DataLocationType type) {
 		List<SurveyProgram> result = new ArrayList<SurveyProgram>();
 		for (SurveyProgram surveyProgram : getPrograms()) {
-			if (Utils.split(surveyProgram.getTypeCodeString()).contains(type.getCode())) result.add(surveyProgram);
+			if (Utils.split(surveyProgram.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER).contains(type.getCode())) result.add(surveyProgram);
 		}
 		return result;
 	}

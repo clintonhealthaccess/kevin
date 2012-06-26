@@ -19,7 +19,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.LanguageService;
@@ -40,6 +39,8 @@ import org.chai.kevin.value.ValueService;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class FormElement implements Exportable {
 
+	public static String FIELD_DELIMITER = ",";
+	
 	protected Long id;
 	// TODO get rid of this
 	private String code;

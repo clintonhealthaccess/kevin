@@ -74,16 +74,6 @@ class UtilTagLib {
 		out << text 
 	}
 	
-	def codeList = { attrs, body ->
-		def entities = attrs['entities']
-		entities.join('<br />')
-	}
-	
-	def dataLocationTypeList = { attrs, body ->
-		def dataLocationTypes = attrs['dataLocationTypes'].split(',')
-		dataLocationTypes.join('<br />')
-	}
-	
 	def prettyList = { attrs, body ->
 		def entities = attrs['entities']
 		def splitDelim = attrs['split'] ?: ','
