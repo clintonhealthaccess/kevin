@@ -117,14 +117,14 @@ public class SurveySection extends Orderable<Integer> implements Exportable {
 	
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString);
+		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes);
+		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 
-	@OneToMany(targetEntity=SurveyQuestion.class, mappedBy="section")
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@OneToMany(targetEntity=SurveyQuestion.class, mappedBy="section", orphanRemoval=true)
+	@Cascade({ CascadeType.ALL })
 	@Fetch(FetchMode.SELECT)
 	public List<SurveyQuestion> getQuestions() {
 		return questions;
@@ -158,7 +158,7 @@ public class SurveySection extends Orderable<Integer> implements Exportable {
 	@Transient
 	public Set<String> getTypeApplicable() {
 		return new HashSet<String>(CollectionUtils.intersection(
-				Utils.split(this.typeCodeString),
+				Utils.split(this.typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER),
 				this.program.getTypeApplicable()));
 	}
 
@@ -175,7 +175,7 @@ public class SurveySection extends Orderable<Integer> implements Exportable {
 	public List<SurveyQuestion> getQuestions(DataLocationType type) {
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
 		for (SurveyQuestion surveyQuestion : getQuestions()) {
-			if (Utils.split(surveyQuestion.getTypeCodeString()).contains(type.getCode())) {
+			if (Utils.split(surveyQuestion.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER).contains(type.getCode())) {
 				result.add(surveyQuestion);
 			}
 		}

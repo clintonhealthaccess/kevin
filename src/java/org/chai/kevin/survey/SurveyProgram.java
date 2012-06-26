@@ -94,8 +94,8 @@ public class SurveyProgram extends Orderable<Integer> implements Exportable {
 		this.order = order;
 	}
 	
-	@OneToMany(targetEntity=SurveySection.class, mappedBy="program")
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@OneToMany(targetEntity=SurveySection.class, mappedBy="program", orphanRemoval=true)
+	@Cascade({ CascadeType.ALL })
 	@Fetch(FetchMode.SELECT)
 	public List<SurveySection> getSections() {
 		return sections;
@@ -131,10 +131,10 @@ public class SurveyProgram extends Orderable<Integer> implements Exportable {
 
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString);
+		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes);
+		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	
 
@@ -160,14 +160,14 @@ public class SurveyProgram extends Orderable<Integer> implements Exportable {
 
 	@Transient
 	public Set<String> getTypeApplicable() {
-		return Utils.split(this.typeCodeString);
+		return Utils.split(this.typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 
 	@Transient
 	public List<SurveySection> getSections(DataLocationType type) {
 		List<SurveySection> result = new ArrayList<SurveySection>();
 		for (SurveySection surveySection : getSections()) {
-			if (Utils.split(surveySection.getTypeCodeString()).contains(type.getCode()))
+			if (Utils.split(surveySection.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER).contains(type.getCode()))
 				result.add(surveySection);
 		}
 		return result;

@@ -6,6 +6,8 @@ import org.chai.kevin.util.Utils;
 
 class User {
 
+	static String PERMISSION_DELIMITER = ";"
+	
 	// TODO get rid of this, it is the uuid
 	String code
 	
@@ -34,23 +36,23 @@ class User {
 	}
 	
 	def getPermissions() {
-		return Utils.split(permissionString)
+		return Utils.split(permissionString, User.PERMISSION_DELIMITER)
 	}
 	
 	def setPermissions(def permissions) {
-		this.permissionString = Utils.unsplit(permissions)
+		this.permissionString = Utils.unsplit(permissions, User.PERMISSION_DELIMITER)
 	}
 	
 	def addToPermissions(def permission) {
 		def permissions = getPermissions()
 		permissions << permission
-		this.permissionString = Utils.unsplit(permissions)
+		this.permissionString = Utils.unsplit(permissions, User.PERMISSION_DELIMITER)
 	}
 	
 	def removeFromPermissions(def permission) {
 		def permissions = getPermissions()
 		permissions.remove(permission)
-		this.permissionString = Utils.unsplit(permissions)
+		this.permissionString = Utils.unsplit(permissions, User.PERMISSION_DELIMITER)
 	}
 	
 	def setDefaultPermissions() {

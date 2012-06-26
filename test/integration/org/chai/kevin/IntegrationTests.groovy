@@ -353,7 +353,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def static newFormValidationRule(def code, def element, def prefix, def types, def expression, boolean allowOutlier, def dependencies = []) {
-		def validationRule = new FormValidationRule(code: code, expression: expression, prefix: prefix, messages: [:], formElement: element, typeCodeString: Utils.unsplit(types), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
+		def validationRule = new FormValidationRule(code: code, expression: expression, prefix: prefix, messages: [:], formElement: element, typeCodeString: Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
 		element.addValidationRule(validationRule)
 		element.save(failOnError: true)
 		return validationRule
@@ -404,7 +404,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def g(def types) {
-		return Utils.unsplit(types)
+		return Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER)
 	}
 	
 	static def getLocationLevels(def levels) {

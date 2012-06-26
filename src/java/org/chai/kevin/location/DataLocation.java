@@ -11,8 +11,6 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.util.Utils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="DataLocation")
 @Table(name="dhsst_location_data_location")

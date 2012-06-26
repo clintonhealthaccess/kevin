@@ -10,9 +10,6 @@
 		<g:i18nTextarea name="descriptions" bean="${target}" value="${target.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions"/>
 		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${target}" field="code"/>
 		
-   		<g:selectFromList name="typeCodes" label="${message(code:'entity.datalocationtype.label')}" bean="${target}" field="typeCodeString" 
-				from="${types}" value="${target.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
-	
 		<g:selectFromList name="program.id" label="${message(code:'fct.target.program.label')}" bean="${target}" field="program" optionKey="id" multiple="false"
 			from="${programs}" value="${target.program?.id}" values="${programs.collect{i18n(field:it.names)}}" />
 

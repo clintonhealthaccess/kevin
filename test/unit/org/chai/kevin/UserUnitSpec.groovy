@@ -38,21 +38,21 @@ class UserUnitSpec extends UnitSpec {
 		def user
 		
 		when:
-		user = new User(userType: UserType.SURVEY, locationId: 12, permissionString: 'test:test1,test:test2,test:*')
+		user = new User(userType: UserType.SURVEY, locationId: 12, permissionString: 'test:test1;test:test2;test:*')
 		user.setDefaultPermissions()
 		
 		then:
 		user.permissions.equals(new HashSet(['editSurvey:view','editSurvey:*:12','menu:survey','test:test1','test:test2','test:*',"home:*"]))
 		
 		when:
-		user = new User(userType: UserType.PLANNING, locationId: 12, permissionString: 'test:test1,test:test2,test:*')
+		user = new User(userType: UserType.PLANNING, locationId: 12, permissionString: 'test:test1;test:test2;test:*')
 		user.setDefaultPermissions()
 		
 		then:
 		user.permissions.equals(new HashSet(['editPlanning:view','editPlanning:*:12','menu:planning','test:test1','test:test2','test:*',"home:*"]))
 		
 		when:
-		user = new User(userType: UserType.OTHER, locationId: 12, permissionString: 'test:test1,test:test2,test:*')
+		user = new User(userType: UserType.OTHER, locationId: 12, permissionString: 'test:test1;test:test2;test:*')
 		user.setDefaultPermissions()
 		
 		then:
@@ -64,21 +64,21 @@ class UserUnitSpec extends UnitSpec {
 		def user
 		
 		when:
-		user = new User(userType: UserType.SURVEY, locationId: 12, permissionString: 'editSurvey:view,editSurvey:*:100,menu:survey,home:*')
+		user = new User(userType: UserType.SURVEY, locationId: 12, permissionString: 'editSurvey:view;editSurvey:*:100;menu:survey;home:*')
 		user.setDefaultPermissions()
 		
 		then:
 		user.permissions.equals(new HashSet(['editSurvey:view','editSurvey:*:12','menu:survey',"home:*"]))
 		
 		when:
-		user = new User(userType: UserType.SURVEY, locationId: 12, permissionString: 'editPlanning:view,editPlanning:*:100,menu:planning,home:*')
+		user = new User(userType: UserType.SURVEY, locationId: 12, permissionString: 'editPlanning:view;editPlanning:*:100;menu:planning;home:*')
 		user.setDefaultPermissions()
 		
 		then:
 		user.permissions.equals(new HashSet(['editSurvey:view','editSurvey:*:12','menu:survey',"home:*"]))
 		
 		when:
-		user = new User(userType: UserType.OTHER, locationId: 12, permissionString: 'editPlanning:view,editPlanning:*:100,menu:planning,home:*')
+		user = new User(userType: UserType.OTHER, locationId: 12, permissionString: 'editPlanning:view;editPlanning:*:100;menu:planning;home:*')
 		user.setDefaultPermissions()
 		
 		then:

@@ -68,6 +68,7 @@ public class JSONUtils {
 	private static Object getObjectFromJSONObject(Object object) {
 		if (object instanceof JSONObject) {
 			Map<String, Object> descriptions = new HashMap<String, Object>();
+			@SuppressWarnings("unchecked")
 			Iterator<String> keyIterator = ((JSONObject)object).keys();
 			while (keyIterator.hasNext()) {
 				String type = (String) keyIterator.next();

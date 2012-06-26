@@ -43,7 +43,6 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Exportable;
-import org.chai.kevin.form.FormElement;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
@@ -57,8 +56,8 @@ public class SurveySimpleQuestion extends SurveyQuestion implements Exportable {
 
 	private SurveyElement surveyElement;
 
-	@OneToOne(targetEntity = SurveyElement.class, mappedBy = "surveyQuestion")
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@OneToOne(targetEntity = SurveyElement.class, mappedBy = "surveyQuestion", orphanRemoval=true)
+	@Cascade({ CascadeType.ALL })
 	@Fetch(FetchMode.SELECT)
 	public SurveyElement getSurveyElement() {
 		return surveyElement;
@@ -103,7 +102,7 @@ public class SurveySimpleQuestion extends SurveyQuestion implements Exportable {
 			throw new IllegalArgumentException("survey element does not belong to question (simple)");
 		}
 		return new HashSet<String>(CollectionUtils.intersection(
-			Utils.split(this.getTypeCodeString()),
+			Utils.split(this.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER),
 			this.getSection().getTypeApplicable())
 		);
 	}

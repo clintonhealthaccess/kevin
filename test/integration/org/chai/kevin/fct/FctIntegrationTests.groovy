@@ -2,6 +2,7 @@ package org.chai.kevin.fct
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.util.Utils;
 
@@ -11,7 +12,6 @@ abstract class FctIntegrationTests extends IntegrationTests {
 		def target = new FctTarget(names: [:],
 			code: code,
 			program: program,
-			typeCodeString: Utils.unsplit(types)
 			).save(failOnError: true)
 		program.save(failOnError: true)
 		return target
@@ -22,7 +22,6 @@ abstract class FctIntegrationTests extends IntegrationTests {
 			code: code,
 			order: order,
 			program: program,
-			typeCodeString: Utils.unsplit(types)
 			).save(failOnError: true)
 		program.save(failOnError: true)
 		return target

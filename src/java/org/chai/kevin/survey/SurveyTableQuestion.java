@@ -49,7 +49,6 @@ import javax.persistence.Transient;
 import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Translation;
-import org.chai.kevin.form.FormElement;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
@@ -157,7 +156,7 @@ public class SurveyTableQuestion extends SurveyQuestion implements Exportable {
 	public List<SurveyTableRow> getRows(DataLocationType type) {
 		List<SurveyTableRow> result = new ArrayList<SurveyTableRow>();
 		for (SurveyTableRow surveyTableRow : getRows()) {
-			if (Utils.split(surveyTableRow.getTypeCodeString()).contains(type.getCode()))
+			if (Utils.split(surveyTableRow.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER).contains(type.getCode()))
 				result.add(surveyTableRow);
 		}
 		return result;
@@ -167,7 +166,7 @@ public class SurveyTableQuestion extends SurveyQuestion implements Exportable {
 	public List<SurveyTableColumn> getColumns(DataLocationType type) {
 		List<SurveyTableColumn> result = new ArrayList<SurveyTableColumn>();
 		for (SurveyTableColumn surveyTableColumn : getColumns()) {
-			if (Utils.split(surveyTableColumn.getTypeCodeString()).contains(type.getCode()))
+			if (Utils.split(surveyTableColumn.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER).contains(type.getCode()))
 				result.add(surveyTableColumn);
 		}
 		return result;
@@ -202,7 +201,7 @@ public class SurveyTableQuestion extends SurveyQuestion implements Exportable {
 			CollectionUtils.intersection(
 				CollectionUtils.intersection(
 					columnRowOrgUnitUuIDs, 
-					Utils.split(this.getTypeCodeString())
+					Utils.split(this.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER)
 				),
 				getSection().getTypeApplicable()	
 			)

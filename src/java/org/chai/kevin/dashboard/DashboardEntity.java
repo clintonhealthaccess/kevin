@@ -28,23 +28,14 @@ package org.chai.kevin.dashboard;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Exportable;
-import org.chai.kevin.Orderable;
 import org.chai.kevin.Period;
-import org.chai.kevin.Translation;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.reports.ReportProgram;
-import org.chai.kevin.util.Utils;
 
 @MappedSuperclass
 public abstract class DashboardEntity extends ReportEntity {
