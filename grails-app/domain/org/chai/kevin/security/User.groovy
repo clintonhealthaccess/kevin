@@ -23,6 +23,10 @@ class User {
 	
 	static hasMany = [ roles: Role ]
 	
+	User() {
+		roles = []
+	}
+	
 	def getLocation () {
 		def location = Location.get(locationId) 
 		if (location == null) location = DataLocation.get(locationId)
@@ -54,6 +58,11 @@ class User {
 		addDefaultPermissions()
 	}
 	
+	def setDefaultRoles() {
+		removeAllDefaultRoles()
+		addDefaultRoles()
+	}
+	
 	private def addDefaultPermissions() {
 		userType.defaultPermissions.each { permissionToAdd ->
 			def permission = permissionToAdd.replaceAll('<id>', locationId+'')
@@ -71,6 +80,20 @@ class User {
 			}
 		}
 	}
+	
+	private def addDefaultRoles() {
+		userType.defaultRoles.each { roleNameToAdd ->
+			def roleToAdd = Role.findByName(roleNameToAdd)
+			if (roleToAdd != null) roles.add(roleToAdd)
+		}
+	}
+	
+	private def removeAllDefaultRoles() {
+		UserType.getAllRoles().each { roleNameToRemove ->
+			def roleToRemove = Role.findByName(roleNameToRemove)
+			if (roleToRemove != null) roles.remove(roleToRemove)
+		}
+	}	
 	
 	def canActivate() {
 		return confirmed == true && active == false
