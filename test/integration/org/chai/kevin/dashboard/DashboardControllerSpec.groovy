@@ -23,7 +23,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		when:
 		dashboardController.params.period = period.id
 		dashboardController.params.location = Location.findByCode(RWANDA).id
-		dashboardController.params.program = ReportProgram.findByCode(ROOT)
+		dashboardController.params.program = ReportProgram.findByCode(ROOT).id
 		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
 		
@@ -36,12 +36,14 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		model.locationDashboard.hasData() == true
 	}		
 	
-	def "get dashboard with no parameters, default to period, root program, root location, location types, and dashboard entity"(){
+	def "get dashboard with no parameters redirects to period, root program, root location, location types, and dashboard entity"(){
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		setupProgramTree()
-		setupDashboardTree()
+		def program = newReportProgram(PROGRAM1)
+		def dashboardProgram = newDashboardProgram(PROGRAM1, program, 1)
+		def calculation = newAverage("1", CODE(2))
+		def target = newDashboardTarget(TARGET1, calculation, program, 1)
 		dashboardController = new DashboardController()
 		refresh()
 		
@@ -49,12 +51,10 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		def model = dashboardController.view()
 		
 		then:
-		model.currentPeriod.equals(period)
-		model.dashboardEntity.equals(DashboardProgram.findByCode(ROOT))
-		model.currentLocation.equals(Location.findByCode(RWANDA))
-		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
-		model.programDashboard.hasData() == true
-		model.locationDashboard.hasData() == true
+		dashboardController.response.redirectedUrl.contains("/dashboard/view/")
+		dashboardController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"?")
+		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
+		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
 	
 	def "get dashboard with invalid parameters, redirect to default period, root program, root location, location types, and dashboard entity"(){
@@ -79,7 +79,6 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		then:
 		dashboardController.response.redirectedUrl.contains("/dashboard/view/")
 		dashboardController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"?")
-		dashboardController.response.redirectedUrl.contains("dashboardEntity="+dashboardProgram.id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
@@ -106,7 +105,6 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		then:
 		dashboardController.response.redirectedUrl.contains("/dashboard/view/")
 		dashboardController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(BURERA).id+"?")
-		dashboardController.response.redirectedUrl.contains("dashboardEntity="+dashboardProgram.id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}

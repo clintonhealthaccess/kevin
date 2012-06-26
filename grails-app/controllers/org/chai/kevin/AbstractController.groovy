@@ -132,15 +132,6 @@ public abstract class AbstractController {
 		params.offset = params.offset ? params.int('offset'): 0
 	}	
 	
-	def getRedirectParams(def reportParams){
-		def redirectParams = [:]
-		for(def reportParam : reportParams){
-			if(params.get(reportParam.key) != null)
-				redirectParams.put(reportParam.key, reportParam.value)
-		}
-		return redirectParams
-	}
-	
 	protected def redirectIfDifferent(def redirectParams) {
 		if (log.isDebugEnabled()) {
 			log.debug("redirectIfDifferent(redirectParams="+redirectParams+")")
@@ -160,7 +151,7 @@ public abstract class AbstractController {
 			else 
 				urlValue = params[key].toString()		
 			
-			if(urlValue != redirectValue)
+			if(redirectValue != null && urlValue != redirectValue)
 				redirect = true
 			if(redirectParams[key] != null) newParams.put(key, redirectParams[key])
 		}

@@ -32,6 +32,7 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 		}
 		return getData().getType().getValue(value);
 	}
+	
 
 	@Override
 	public String toString() {

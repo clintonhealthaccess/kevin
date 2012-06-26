@@ -40,9 +40,9 @@ class UrlMappings {
 		
 		"/cost/$action/$period?/$program?/$location?"(controller:"cost")
 
-		"/dsr/$action/$period?/$program?/$location/$dsrCategory?"(controller:"dsr")
+		"/dsr/$action/$period?/$program?/$location?/$dsrCategory?"(controller:"dsr")
 		
-		"/fct/$action/$period?/$program?/$location/$fctTarget?"(controller:"fct")
+		"/fct/$action/$period?/$program?/$location?/$fctTarget?"(controller:"fct")
 		
 		"/maps/view"(controller:"maps", action:"view")
 		
