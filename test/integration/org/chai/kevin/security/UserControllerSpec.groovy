@@ -155,10 +155,11 @@ class UserControllerSpec extends IntegrationTests{
 		User.findByUsername("myuser1").uuid == uuid;
 	}
 	
-	def "saving sets permissions"(){
+	def "saving sets permissions and roles"(){
 		setup:
 		setupLocationTree()
 		userController = new UserController();
+		new Role(name: 'report-all-readonly', permissionString: '').save(failOnError: true)
 		def uuid = UUID.randomUUID().toString();
 		def location = DataLocation.findByCode(BUTARO)
 		def user = newSurveyUser("myuser1",uuid,location.id);
@@ -171,7 +172,8 @@ class UserControllerSpec extends IntegrationTests{
 		then:
 		User.count() == 1;
 		User.findByUsername("myuser1")!=null;
-		User.findByUsername("myuser1").permissions.equals(s(['editPlanning:view','editPlanning:*:'+location.id,'menu:planning']))
+		User.findByUsername("myuser1").permissions.equals(s(['editPlanning:view','editPlanning:*:'+location.id,'menu:planning','home:*']))
+		User.findByUsername("myuser1").roles*.name == ['report-all-readonly']
 	}
 	
 	def "cannot change password hash"(){
