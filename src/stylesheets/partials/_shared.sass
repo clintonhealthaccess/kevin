@@ -156,6 +156,19 @@ ul.horizontal
     &.toggled
       background-image: url('../images/icons/toggle_minus.png')
  
+.with-highlight
+  padding: 3px
+  &:hover, &:focus, &.dropdown-selected  
+    background-color: $primary !important
+    color: white
+    position: relative
+    text-decoration: none
+    z-index: 5
+    +box-shadow($primary - #222 0 2px 9px 0 inset)
+    +text-shadow($primary - #333 0 1px 0)
+    +border-radius(3px)
+    +transition(all 0.3s)
+ 
 .nice-button
   padding: 12px 18px 10px 40px
   +border-radius(3px)
@@ -198,18 +211,6 @@ ul.horizontal
   +border-radius(3px)
   &:hover, &:focus
     border-color: $primary_light
-      
-.with-highlight
-  &:hover, &:focus, &.dropdown-selected
-    background-color: $primary !important
-    color: white
-    position: relative
-    text-decoration: none
-    z-index: 5
-    +box-shadow($primary - #222 0 2px 9px 0 inset)
-    +text-shadow($primary - #333 0 1px 0)
-    +border-radius(3px)
-    +transition(all 0.3s)
       
 .dropdown
   position: relative
@@ -333,7 +334,7 @@ ul.horizontal
   line-height: 1.5
   margin: 0 0 10px 0
   max-width: 850px
-  padding: 7px 20px 7px 22px
+  padding: 7px 20px 7px 22px 
   position: relative
   +border-right-radius(100px)
   +box-shadow($filler - #090909, -2px, -2px, 2px, 0, inset)
