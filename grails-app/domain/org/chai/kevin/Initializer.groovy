@@ -1039,8 +1039,7 @@ class Initializer {
 				names:j(["en":"Fct Target 1"]), 
 				program: hmr,
 				descriptions:j([:]), 
-				code:"TARGET 1",
-				typeCodeString: "District Hospital,Health Center"
+				code:"TARGET 1"
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption1 = new FctTargetOption(
@@ -1065,8 +1064,7 @@ class Initializer {
 			FctTarget fctTarget2 = new FctTarget(
 				names:j(["en":"Fct Target 2"]), descriptions:j([:]),
 				program: hmr,
-				code:"TARGET 2",
-				typeCodeString: "District Hospital,Health Center"
+				code:"TARGET 2"
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption3 = new FctTargetOption(
@@ -1092,8 +1090,7 @@ class Initializer {
 				names:j(["en":"Fct Target 3"]), descriptions:j([:]),
 				program: hmr,
 				targetOptions: [],
-				code:"TARGET 3",
-				typeCodeString: "District Hospital,Health Center"
+				code:"TARGET 3"
 			).save(failOnError:true)
 			
 			hmr.save(failOnError:true)

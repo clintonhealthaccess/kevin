@@ -120,7 +120,7 @@ class DbRealm {
         // against the required one.
 		results.each { permissionString ->
 			if (retval == null) {
-				retval = Utils.split(permissionString).find { permission ->
+				retval = Utils.split(permissionString, User.PERMISSION_DELIMITER).find { permission ->
 		            // Create a real permission instance from the database
 		            // permission.
 		            def perm = shiroPermissionResolver.resolvePermission(permission)

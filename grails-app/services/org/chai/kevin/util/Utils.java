@@ -68,14 +68,14 @@ public class Utils {
 			CODE_DELIMITER + "[^" + CODE_DELIMITER + "]+" + CODE_DELIMITER;
 //	public final static String CODE_MISSING = "MISSING_CODE";
 	public final static String VALUE_NOT_EXPORTABLE = "VALUE_NOT_EXPORTABLE";	
-	
-	public static Set<String> split(String string) {
+
+	public static Set<String> split(String string, String delimiter) {
 		Set<String> result = new HashSet<String>();
-		if (string != null) result.addAll(Arrays.asList(StringUtils.split(string, ',')));
+		if (string != null) result.addAll(Arrays.asList(StringUtils.split(string, delimiter)));
 		return result;
 	}
 
-	public static String unsplit(Object list) {
+	public static String unsplit(Object list, String delimiter) {
 		List<String> result = new ArrayList<String>();
 		
 		if (list instanceof String) result.add((String) list);
@@ -86,7 +86,7 @@ public class Utils {
 			if (string.isEmpty()) result.remove(string);
 		}
 		
-		return StringUtils.join(result, ',');
+		return StringUtils.join(result, delimiter);
 	}
 		
 	public static boolean matches(String text, String value) {
@@ -94,14 +94,6 @@ public class Utils {
 		return value.matches("(?i).*"+text+".*");
 	}
 
-	public static Set<String> getUuids(List<DataLocationType> types) {
-		Set<String> result = new HashSet<String>();
-		for (DataLocationType type : types) {
-			result.add(type.getCode());
-		}
-		return result;
-	}
-	
 	public static String formatNumber(String format, Number value) {
 		if (format == null) format = "#";
 		

@@ -32,5 +32,9 @@ package org.chai.kevin.location
  *
  */
 constraints ={
-	code (nullable: false, blank: false, unique: true)
+	code (nullable: false, blank: false, unique: true, 
+		validator: { val, obj ->
+			return !val.contains(DataLocationType.DEFAULT_CODE_DELIMITER)
+		}
+	)
 }

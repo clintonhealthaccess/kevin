@@ -1,6 +1,7 @@
 package org.chai.kevin.planning
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.loader.custom.Return;
 
@@ -15,7 +16,7 @@ abstract class PlanningIntegrationTests extends IntegrationTests {
 	}
 	
 	static def newPlanning(def period, def types, def active) {
-		return new Planning(period: period, typeCodeString: Utils.unsplit(types), active: active).save(failOnError: true)
+		return new Planning(period: period, typeCodeString: Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER), active: active).save(failOnError: true)
 	}
 	
 	static def newPlanningType(def names, def formElement, def fixedHeader, def planning, def maxNumber) {

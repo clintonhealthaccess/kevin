@@ -48,7 +48,7 @@ class FormValidationRuleControllerSpec extends IntegrationTests {
 		
 		then:
 		FormValidationRule.count() == 1
-		FormValidationRule.list()[0].typeCodeString == Utils.unsplit([(HEALTH_CENTER_GROUP)])
+		FormValidationRule.list()[0].typeCodeString == HEALTH_CENTER_GROUP
 		FormValidationRule.list()[0].messages['en'] == "Validation rule"
 		
 	}

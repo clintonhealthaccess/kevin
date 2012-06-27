@@ -16,6 +16,7 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
 import org.chai.kevin.data.Type.Sanitizer;
 import org.chai.kevin.data.Type.ValuePredicate;
+import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.util.Utils;
@@ -104,7 +105,7 @@ public class ValidatableValue {
 	 */
 	public Set<String> getErrorRules(String prefix) {
 		try {
-			return Utils.split(type.getAttribute(value, prefix, "invalid"));
+			return Utils.split(type.getAttribute(value, prefix, "invalid"), FormElement.FIELD_DELIMITER);
 		}
 		catch (IndexOutOfBoundsException e) {
 			return new HashSet<String>();
@@ -135,7 +136,7 @@ public class ValidatableValue {
 	
 	public boolean isAcceptedWarning(FormValidationRule rule, String prefix) {
 		try {
-			return Utils.split(type.getAttribute(value, prefix, "warning")).contains(rule.getId().toString());
+			return Utils.split(type.getAttribute(value, prefix, "warning"), FormElement.FIELD_DELIMITER).contains(rule.getId().toString());
 		}
 		catch (IndexOutOfBoundsException e) {
 			return false;
@@ -163,10 +164,10 @@ public class ValidatableValue {
 		
 		Set<String> invalidAndUnacceptedPrefixes = new HashSet<String>();
 		for (String invalidPrefix : invalidPrefixes.keySet()) {
-			Set<String> invalidRules = Utils.split(invalidPrefixes.get(invalidPrefix).getAttribute("invalid"));
+			Set<String> invalidRules = Utils.split(invalidPrefixes.get(invalidPrefix).getAttribute("invalid"), FormElement.FIELD_DELIMITER);
 			Set<String> acceptedRules = new HashSet<String>();
 			if (acceptedPrefixes.containsKey(invalidPrefix)) {
-				acceptedRules.addAll(Utils.split(acceptedPrefixes.get(invalidPrefix).getAttribute("warning")));
+				acceptedRules.addAll(Utils.split(acceptedPrefixes.get(invalidPrefix).getAttribute("warning"), FormElement.FIELD_DELIMITER));
 			}
 			
 			if (!CollectionUtils.subtract(invalidRules, acceptedRules).isEmpty()) invalidAndUnacceptedPrefixes.add(invalidPrefix);
@@ -206,6 +207,7 @@ public class ValidatableValue {
 		});
 	}
 	
+	@SuppressWarnings("unchecked")
 	private Collection<String> getReallyIncompletePrefixes() {
 		// element is complete if all the non-skipped values are not-null
 		// regardless of whether they are valid or not
@@ -232,7 +234,7 @@ public class ValidatableValue {
 		Map<String, Value> prefixesWithId = type.getPrefixes(value, new PrefixPredicate() {
 			@Override
 			public boolean holds(Type type, Value value, String prefix) {
-				return Utils.split(value.getAttribute(attribute)).contains(id);
+				return Utils.split(value.getAttribute(attribute), FormElement.FIELD_DELIMITER).contains(id);
 			}
 		});
 		
@@ -240,10 +242,10 @@ public class ValidatableValue {
 		// remove the attribute from prefixes which are not in the set
 		for (String prefixWithId : prefixesWithId.keySet()) {
 			if (!prefixes.contains(prefixWithId)) {
-				Set<String> attributeValue = Utils.split(type.getAttribute(value, prefixWithId, attribute));
+				Set<String> attributeValue = Utils.split(type.getAttribute(value, prefixWithId, attribute), FormElement.FIELD_DELIMITER);
 				attributeValue.remove(id);
 				
-				String newAttributeValue = Utils.unsplit(attributeValue);
+				String newAttributeValue = Utils.unsplit(attributeValue, FormElement.FIELD_DELIMITER);
 				if (newAttributeValue.isEmpty()) newAttributeValue = null;
 				newPrefixAttributes.put(prefixWithId, newAttributeValue);
 			}
@@ -251,9 +253,9 @@ public class ValidatableValue {
 		
 		// add it on prefixes which are in the set
 		for (String prefix : prefixes) {
-			Set<String> attributeValue = Utils.split(type.getAttribute(value, prefix, attribute));
+			Set<String> attributeValue = Utils.split(type.getAttribute(value, prefix, attribute), FormElement.FIELD_DELIMITER);
 			attributeValue.add(id);
-			newPrefixAttributes.put(prefix, Utils.unsplit(attributeValue));
+			newPrefixAttributes.put(prefix, Utils.unsplit(attributeValue, FormElement.FIELD_DELIMITER));
 		}
 		
 		// set the attribute to the new value

@@ -107,7 +107,7 @@ public class PlanningType {
 	}
 
 	@JoinColumn(nullable=false)
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@Cascade({ CascadeType.ALL })
 	@ManyToOne(targetEntity=FormElement.class, optional=false)
 	public FormElement getFormElement() {
 		return formElement;
@@ -118,7 +118,7 @@ public class PlanningType {
 	}
 	
 	@ElementCollection(targetClass=Translation.class)
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@Cascade({ CascadeType.ALL })
 	@JoinTable(name="dhsst_planning_type_descriptions")	
 	public Map<String, Translation> getSectionDescriptions() {
 		return sectionDescriptions;

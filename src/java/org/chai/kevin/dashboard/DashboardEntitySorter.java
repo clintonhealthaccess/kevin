@@ -30,9 +30,6 @@ package org.chai.kevin.dashboard;
 import java.util.Comparator;
 
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
 
 /**
  * @author Jean Kahigiso M.

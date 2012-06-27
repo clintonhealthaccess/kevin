@@ -95,7 +95,7 @@ public class FormSkipRule {
 		if (skippedFormElements.containsKey(element)) {
 			String text = skippedFormElements.get(element);
 			if (text.isEmpty()) result.add(text);
-			result.addAll(Utils.split(text));
+			result.addAll(Utils.split(text, FormElement.FIELD_DELIMITER));
 		}
 		return result;
 	}
