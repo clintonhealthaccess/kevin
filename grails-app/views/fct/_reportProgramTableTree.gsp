@@ -6,8 +6,10 @@
 		</td>
 		<g:each in="${fctTable.targetOptions}" var="targetOption">
 			<td>
-				<g:if test="${fctTable.getReportValue(location, targetOption) != null}">
-					<g:reportValue value="${fctTable.getReportValue(location, targetOption)}" type="${targetOption.sum.type}" format="${targetOption.format}"/>
+				<g:if test="${fctTable.getReportValue(location, targetOption).getValue() != null}">
+					<div class="report-datalocation-value">
+						<g:reportValue value="${fctTable.getReportValue(location, targetOption).getValue()}" type="${targetOption.sum.type}"/>
+					</div>					
 				</g:if>
 				<g:else>
 					<div class="report-value-na"><g:message code="report.value.na"/></div>
@@ -25,8 +27,13 @@
 			</td>
 			<g:each in="${fctTable.targetOptions}" var="targetOption">
 				<td>
-					<g:if test="${fctTable.getReportValue(location, targetOption) != null}">
-						<g:reportValue value="${fctTable.getReportValue(location, targetOption)}" type="${targetOption.sum.type}" format="${targetOption.format}"/>
+					<g:if test="${fctTable.getReportValue(location, targetOption).getValue() != null}">
+						<div class="report-location-value">
+							<g:reportValue value="${fctTable.getReportValue(location, targetOption).getValue()}" type="${targetOption.sum.type}"/>
+						</div>
+						<div class="report-location-percentage hidden">
+							<g:reportValue value="${fctTable.getReportValue(location, targetOption).getPercentage()}" type="${targetOption.sum.type}"/>%
+						</div>
 					</g:if>
 					<g:else>
 						<div class="report-value-na"><g:message code="report.value.na"/></div>

@@ -76,7 +76,7 @@ public class DashboardPercentageService {
 			
 			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), location, period, types);
 			if (calculationValue == null) return null;
-			DashboardPercentage percentage = new DashboardPercentage(calculationValue.getRatio(), location, period);
+			DashboardPercentage percentage = new DashboardPercentage(calculationValue.getValue(), location, period);
 
 			if (log.isDebugEnabled()) log.debug("visitTarget(...)="+percentage);
 			return percentage;

@@ -709,6 +709,9 @@ class Initializer {
 				
 			new NormalizedDataElement(names:j(["en":"TRUE"]), descriptions:j([:]), code:"TRUE", expressionMap: e([(period1.id+''):[(hc.code):"true", (dh.code):"true"]]), type: Type.TYPE_BOOL(), timestamp:new Date()).save(failOnError: true, flush: true)
 			new NormalizedDataElement(names:j(["en":"FALSE"]), descriptions:j([:]), code:"FALSE", expressionMap: e([(period1.id+''):[(hc.code):"false", (dh.code):"false"]]), type: Type.TYPE_BOOL(), timestamp:new Date()).save(failOnError: true, flush: true)
+			
+			new NormalizedDataElement(names:j(["en":"ZERO"]), descriptions:j([:]), code:"ZERO", expressionMap: e([(period1.id+''):[(hc.code):"0", (dh.code):"0"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"ONE"]), descriptions:j([:]), code:"ONE", expressionMap: e([(period1.id+''):[(hc.code):"1", (dh.code):"1"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 		}
 	}
 
@@ -1019,15 +1022,12 @@ class Initializer {
 			def dh = DataLocationType.findByCode("District Hospital")
 			def hc = DataLocationType.findByCode("Health Center")
 			def hmr = ReportProgram.findByCode("Human Resources for Health")
-
-			def sum1 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Sum 1", timestamp:new Date());
-			sum1.save(failOnError: true);
-			def sum2 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 20").id, code: "Sum 2", timestamp:new Date());
-			sum2.save(failOnError: true);
-			def sum3 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 30").id, code: "Sum 3", timestamp:new Date());
-			sum3.save(failOnError: true);
-			def sum4 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 40").id, code: "Sum 4", timestamp:new Date());
-			sum4.save(failOnError: true);
+			
+			def sumZero = new Sum(expression: "\$"+NormalizedDataElement.findByCode("ZERO").id, code:"Sum ZERO", timestamp:new Date());
+			sumZero.save(failOnError: true);
+			
+			def sumOne = new Sum(expression: "\$"+NormalizedDataElement.findByCode("ONE").id, code:"Sum ONE", timestamp:new Date());
+			sumOne.save(failOnError: true);
 						
 			FctTarget fctTarget1 = new FctTarget(
 
@@ -1043,7 +1043,7 @@ class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]), 
 				code:"TARGET OPTION 1",
-				sum: sum1
+				sum: sumOne
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption2 = new FctTargetOption(
@@ -1051,7 +1051,7 @@ class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]),
 				code:"TARGET OPTION 2",
-				sum: sum2
+				sum: sumZero
 			).save(failOnError:true)
 			
 			fctTarget1.targetOptions << [fctTargetOption1, fctTargetOption2]
@@ -1069,7 +1069,7 @@ class Initializer {
 				target: fctTarget2,
 				descriptions:j([:]),
 				code:"TARGET OPTION 3",
-				sum: sum3
+				sum: sumZero
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption4 = new FctTargetOption(
@@ -1077,7 +1077,7 @@ class Initializer {
 				target: fctTarget2,
 				descriptions:j([:]),
 				code:"TARGET OPTION 4",
-				sum: sum4
+				sum: sumOne
 			).save(failOnError:true)
 			
 			fctTarget2.targetOptions << [fctTargetOption3, fctTargetOption4]

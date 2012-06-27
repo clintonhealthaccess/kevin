@@ -28,7 +28,7 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 	public abstract Value getValue();
 	
 	@Transient
-	public abstract Value getRatio();
+	public abstract Value getPercentage();
 	
 	@Override
 	public Period getPeriod() {

@@ -52,8 +52,8 @@ class CalculationValueUnitSpec extends UnitSpec {
 	def "test ratio"() {
 		setup:
 		def partialValue1 = new SumPartialValue(value: v("1"), numberOfDataLocations: 1)
-		def partialValue2 = new SumPartialValue(value: v("14"), numberOfDataLocations: 2)
-		def partialValue3 = new SumPartialValue(value: v("27"), numberOfDataLocations: 3)
+		def partialValue2 = new SumPartialValue(value: v("0"), numberOfDataLocations: 2)
+		def partialValue3 = new SumPartialValue(value: v("1"), numberOfDataLocations: 3)
 		def ratio = new Sum()
 		def value = null
 		
@@ -61,25 +61,25 @@ class CalculationValueUnitSpec extends UnitSpec {
 		value = new SumValue([partialValue1], ratio, null, new Location())
 		
 		then:
-		value.getRatio().equals(v("1"))
+		value.getPercentage().equals(v("100"))
 		
 		when:
 		value = new SumValue([partialValue1, partialValue2], ratio, null, new Location())
 		
 		then:
-		value.getRatio().equals(v("5"))
+		value.getPercentage().equals(v("33"))
 		
 		when:
 		value = new SumValue([partialValue1, partialValue3], ratio, null, new Location())
 		
 		then:
-		value.getRatio().equals(v("7"))
+		value.getPercentage().equals(v("50"))
 		
 		when:
 		value = new SumValue([partialValue1, partialValue2, partialValue3], ratio, null, new Location())
 		
 		then:
-		value.getRatio().equals(v("7"))
+		value.getPercentage().equals(v("66"))
 		
 	}
 	
@@ -190,7 +190,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 		then:
 		value.getValue().getNumberValue() == 1
-		value.getRatio().equals(Value.NULL_INSTANCE())
+		value.getPercentage().equals(Value.NULL_INSTANCE())
 		
 		when:
 		partialValue = new SumPartialValue(value: v("0"), numberOfDataLocations:0)
@@ -198,7 +198,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 
 		then:
 		value.getValue().getNumberValue() == 0
-		value.getRatio().equals(Value.NULL_INSTANCE())
+		value.getPercentage().equals(Value.NULL_INSTANCE())
 	}
 	
 	def "test aggregation with invalid values"() {
