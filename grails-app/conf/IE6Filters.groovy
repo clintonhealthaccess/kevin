@@ -10,7 +10,7 @@ class IE6Filters {
 					
 					def userAgent = RequestContextHolder.currentRequestAttributes().currentRequest.getHeader('user-agent')
 					
-					if (userAgent.contains('MSIE 6.0')) {
+					if (userAgent?.contains('MSIE 6.0')) {
 						redirect(controller:'home', action:'upgrade')
 						return false
 					}
