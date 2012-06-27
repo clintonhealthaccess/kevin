@@ -654,4 +654,54 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		!expressionService.expressionIsValid(formula, Sum.class)
 	}
 	
+	def "test circular dependency"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		
+		when:
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]])
+		
+		then:
+		expressionService.hasCircularDependency(normalizedDataElement1) == false
+		
+		when:
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id,(HEALTH_CENTER_GROUP):"1"]])
+		
+		then:
+		expressionService.hasCircularDependency(normalizedDataElement2) == false
+		
+		when:
+		def normalizedDataElement3 = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement2.id,(HEALTH_CENTER_GROUP):"1"]])
+		
+		then:
+		expressionService.hasCircularDependency(normalizedDataElement3) == false
+		
+		when:
+		normalizedDataElement2.expressionMap = [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement3.id,(HEALTH_CENTER_GROUP):"1"]]
+		
+		then:
+		expressionService.hasCircularDependency(normalizedDataElement3) == true
+		
+		when:
+		normalizedDataElement2.expressionMap = [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id,(HEALTH_CENTER_GROUP):"\$"+normalizedDataElement3.id]]
+		
+		then:
+		expressionService.hasCircularDependency(normalizedDataElement3) == false
+		
+		when:
+		def normalizedDataElement4 = newNormalizedDataElement(CODE(4), Type.TYPE_NUMBER(), [:])
+		
+		then:
+		expressionService.hasCircularDependency(normalizedDataElement4) == false
+		
+		when:
+		def dataElement = newRawDataElement(CODE(5), Type.TYPE_NUMBER())
+		def normalizedDataElement5 = newNormalizedDataElement(CODE(6), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id,(HEALTH_CENTER_GROUP):"1"]])
+		
+		then:
+		expressionService.hasCircularDependency(normalizedDataElement5) == false
+		
+	}
+	
 }
