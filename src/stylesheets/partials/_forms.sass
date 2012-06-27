@@ -40,7 +40,7 @@
     > h6
       margin-top: 5px
       
-  .horizontal li
+  .horizontal > li
     margin-bottom: 5px
   
   h5
@@ -236,13 +236,22 @@ select
   &:hover, &:focus
     background: $filler + #030303
     border-color: $primary
+    
+.entity-form-container h5
+  color: #888
+  font-size: 16px
+  font-weight: bold
+  margin-top: 20px
 
 .entity-form-container
   float: left
   width: 100%
   
   .entity-form-header
-
+    color: #888
+    font-size: 11px
+    padding: 10px 15px 30px
+    
     .title
       float: left
       color: $primary
@@ -252,11 +261,9 @@ select
       padding: 4px
     
       a
+        font-size: 11px
         padding: 2px
     
-      a.no-link
-        font-weight: bold
-        
   .forms-container 
     width: 100%
         
@@ -350,35 +357,6 @@ select
 .ajax-search-field
   width: 340px
   
-.login-field
-  background: $filler
-  border: 1px solid $filler - #333
-  color: #444
-  font: normal 16px 'Lucida Grande', Arial, sans-serif
-  padding: 4px
-  text-align: center
-  width: 154px
-  +box-shadow($filler - #111, 1px, 1px, 3px, 0, inset)
-  &:hover, &:focus
-    background: $filler + #030303
-    border-color: $primary
-    
-// fterrier start: added textare style
-textarea.login-field
-  width: 400px
-  height: 50px
-  text-align: left
-// fterrier end
-    
-.login-label
-  color: $primary
-  font-family: 'Lucida Grande', Arial, sans-serif
-  font-size: 11px
-  margin: 0 auto
-  padding: 3px
-  text-align: center
-  width: 154px
-  
 ul.filtered
   border: 1px solid lightGrey
   padding: 4px
@@ -394,6 +372,30 @@ ul.filtered
 
   li:hover
     background-color: yellow
+
+
+.add-row, .element-list-add
+  background: url('../images/icons/toggle_plus.png') no-repeat 10px center $filler
+  border: 1px solid $filler - #222
+  display: inline-block
+  font-size: 12px
+  font-weight: bold
+  margin-top: 10px
+  padding: 8px 20px 7px 35px
+  text-decoration: none
+  +border-radius(3px)
+  +box-shadow(#eee, 0, 2px, 1px)
+  +text-shadow(#fff, 0, 1px, 0)
+  &:hover, &:focus
+    background: url('../images/icons/toggle_plus.png') no-repeat 10px center $yes
+    border: 1px solid $yes - #292929
+    color: #fff
+    +box-shadow(#ccc, 0, 2px, 1px)
+    +text-shadow($yes - #333, 0, 1px, 0)
+  &:active
+    position: relative
+    top: 1px
+    +box-shadow(#ccc, 0, 1px, 1px)
 
 // start fterrier:
 .element
@@ -469,16 +471,12 @@ ul.element-map
     color: $primary
     padding-left: 10px
 
-.inline-list li
-  display: inline
-  float: left
-  
 form.search-form
   background: $filler
   border: 1px solid $filler - #111
   color: $primary
   font-size: 12px
-  margin: 10px 15px 5px
+  margin: 0px 15px 5px
   padding: 10px
   text-align: center
   +border-radius
@@ -510,3 +508,95 @@ form.search-form
 .value-map-key
   color: $primary
 // fterrier end
+
+.inline
+  display: inline
+
+.form-box
+  border: 1px solid #ddd
+  margin: 0 auto
+  width: 250px
+  +box-shadow(#eee 0 0 5px)
+  +border-radius(3px)
+  table.listing
+    tbody
+      border: none
+    tr:last-child td
+      border: none
+      padding-top: 10px
+      padding-bottom: 20px
+    tr:first-child td
+      border: none
+    td
+      border: none
+      padding: 12px 0 5px 0
+      text-align: center
+
+  // fterrier start: added style for a tags
+  a
+    font-size: 11px
+  // fterrier end
+
+.nice-form
+  
+  input, select
+    font-family: 'Lucida Grande', Arial, sans-serif
+    width: 250px
+    background: $filler
+    border: 1px solid $filler - #333
+    color: #444
+    font-size: 14px
+    padding: 4px
+    margin-bottom: 0px
+    +box-shadow($filler - #111, 1px, 1px, 3px, 0, inset)
+    &:hover, &:focus
+      background: $filler + #030303
+      border-color: $primary
+  
+  select
+    width: 200px
+    
+  label, span, a, div:not(.error-list)
+    font-family: 'Lucida Grande', Arial, sans-serif
+    color: $primary
+    font-size: 11px
+    margin: 0 auto
+    padding: 3px
+    
+  td:first-child
+    width: 345px
+    text-align: right
+
+  td
+    vertical-align: middle
+    
+  tr
+    height: 42px
+    
+.login-form
+  input, button
+    margin-top: 10px
+  button
+    margin-bottom: 5px
+  td:first-child
+    text-align: center
+  input
+    width: 200px
+    text-align: center
+  input[type=checkbox]
+    width: 14px
+  a
+    display: block
+  button
+    margin: 0 auto
+  .error-list
+    position: relative
+    left: 20px
+      
+// fterrier start: added textarea style
+textarea.login-field
+  width: 400px
+  height: 50px
+  text-align: left
+// fterrier end
+  

@@ -9,8 +9,7 @@
   thead
     background: $filler
     +box-shadow($filler - #111 0 1px 4px inset)
-  tbody
-    //border: 1px solid $primary
+
   th, td
     padding: 7px 12px
   th
@@ -36,10 +35,6 @@
       color: #888
       font-weight: bold
 
-  tbody tr
-    &:hover, &:focus
-      background: #f9f9f9
-
   th:first-child
     border-left: 1px solid $filler
 
@@ -58,30 +53,6 @@
   tbody tr:first-child td
     border-top: 1px solid $dropdown
 
-  &.login
-    border: 1px solid #ddd
-    margin: 0 auto
-    width: 240px
-    +box-shadow(#eee 0 0 5px)
-    +border-radius(3px)
-    tbody
-      border: none
-    tr:first-child td
-      padding-top: 15px
-    tr:last-child td
-      border: none
-      padding-top: 10px
-      padding-bottom: 20px
-    td
-      border: none
-      padding: 0 0 5px
-      text-align: center
-
-    // fterrier start: added style for a tags
-    a
-      font-size: 11px
-    // fterrier end
-    
   &.new
     input[type=text], select
       height: 15px
@@ -104,6 +75,10 @@
 .nested
   font-size: 11px
   
+  tr:not(.tree-sign):hover, tr:not(.tree-sign):focus
+    > td:not(.bucket)
+      background: #f9f9f9
+  
   thead
     background: $filler
     border: 1px solid $filler - #111
@@ -113,6 +88,18 @@
     
   > thead tr:first-child th
     border-bottom: 1px solid $primary
+
+  // slister start: expand & collapse all
+  > thead tr:first-child th a.expand-all
+    background: url("../images/icons/toggle_plus_large.png") no-repeat 5px center
+    font-size: 11px
+    padding-left: 20px
+
+  > thead tr:first-child th a.collapse-all
+    background: url("../images/icons/toggle_minus_large.png") no-repeat 5px center
+    font-size: 11px
+    padding-left: 20px
+  // slister end: expand & collapse all
     
   > tbody
     border: 1px solid $primary
@@ -127,27 +114,26 @@
       width: 370px
       > span:first-child
         display: inline-block
-        padding-left: 20px
         
     &.bucket
       padding: 0
       
-  .sub-tree .sub-tree tr
-    td
-      border-bottom: 1px solid #eee
-    &:first-child td
-      border-top: 1px solid #eee
-    &:hover, &:focus
-      background: #f9f9f9
+  .sub-tree
+    > td
+      border-top: 0
+      
+  td
+    border-top: 1px solid #eee
       
   .tree-sign
     background: #f9f9f9
-    border-top: 1px solid #eee
     cursor: pointer
     td:first-child span:first-child
       background: url('../images/icons/toggle_plus_large.png') no-repeat 5px center
     td.toggled:first-child span:first-child
       background: url('../images/icons/toggle_minus_large.png') no-repeat 5px center
+    td:first-child span:first-child
+      padding-left: 20px
       
   &.col5
     td, th
@@ -185,9 +171,16 @@
     .budget-entry
       background-color: #e5e5e5
       
+      &:hover, &:focus
+        td
+          background-color: #efefef
+      
     .red 
       color: red
-    // fterrier end
+      
+    .empty-line
+      padding: 7px
+  // fterrier end
 
   tr.total td
     background: $filler
@@ -243,26 +236,4 @@
 .shorten
   max-width: 100px
   overflow: hidden
-
-.add-row, .element-list-add
-  background: url('../images/icons/toggle_plus.png') no-repeat 10px center $filler
-  border: 1px solid $filler - #222
-  display: inline-block
-  font-size: 12px
-  font-weight: bold
-  margin-top: 10px
-  padding: 8px 20px 7px 35px
-  text-decoration: none
-  +border-radius(3px)
-  +box-shadow(#eee, 0, 2px, 1px)
-  +text-shadow(#fff, 0, 1px, 0)
-  &:hover, &:focus
-    background: url('../images/icons/toggle_plus.png') no-repeat 10px center $yes
-    border: 1px solid $yes - #292929
-    color: #fff
-    +box-shadow(#ccc, 0, 2px, 1px)
-    +text-shadow($yes - #333, 0, 1px, 0)
-  &:active
-    position: relative
-    top: 1px
-    +box-shadow(#ccc, 0, 1px, 1px)
+  

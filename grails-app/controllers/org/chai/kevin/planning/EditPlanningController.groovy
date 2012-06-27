@@ -1,12 +1,16 @@
 package org.chai.kevin.planning
 
-import java.util.Map;
-
-import org.chai.kevin.AbstractController;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.Period;
-import org.chai.kevin.value.Value;
+import org.chai.kevin.AbstractController
+import org.chai.kevin.Period
+import org.chai.kevin.data.Type
+import org.chai.kevin.location.DataLocation
+import org.chai.kevin.location.Location
+import org.chai.kevin.planning.PlanningCost.PlanningCostType
+import org.chai.kevin.security.UserType;
+import org.chai.kevin.table.AggregateLine
+import org.chai.kevin.table.NumberLine
+import org.chai.kevin.table.Table
+import org.chai.kevin.value.Value
 
 class EditPlanningController extends AbstractController {
 	
@@ -23,7 +27,7 @@ class EditPlanningController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("planning.view, params:"+params)
 		def user = getUser()
 
-		if (user.hasProperty('dataLocation') && user.dataLocation != null) {
+		if (user.userType == UserType.PLANNING) {
 			Planning planning = Planning.get(params.int('planning'))
 
 			if (planning == null) {
@@ -34,7 +38,7 @@ class EditPlanningController extends AbstractController {
 				response.sendError(404)
 			}
 			else {
-				redirect (action: 'overview', params: [planning: planning?.id, location: user.dataLocation.id])
+				redirect (action: 'overview', params: [planning: planning?.id, location: user.location.id])
 			}
 		}
 		else {
@@ -167,7 +171,7 @@ class EditPlanningController extends AbstractController {
 		if (validate(planning, location)) {
 			planningService.submitIfNeeded(planning, location)
 			planningService.refreshBudgetIfNeeded(planning, location)
-			
+
 			def planningLists = planning.planningTypes.collect {
 				planningService.getPlanningList(it, location)
 			}
@@ -175,13 +179,109 @@ class EditPlanningController extends AbstractController {
 			render (view: '/planning/budget/budget', model: [
 				planning: planning,
 				location: location,
-				budgetNeedsUpdate: false,
-				planningLists: planningLists,
-				incoming: planningLists.sum {it.incoming},
-				outgoing: planningLists.sum {it.outgoing},
-				difference: planningLists.sum {it.difference}
+				emptyBudget: !planningLists.find {!it.empty},
+				budgetTable: getBudgetTable(planningLists, location),
 			])
 		}
+	}
+	
+	def getBudgetTable(def planningLists, def location) {
+		def planningListLines = []
+		planningLists.each { planningList ->
+			def entryLines = []
+			
+			def i = 0
+			planningList.planningEntryBudgetList.each { entry ->
+				i++
+				
+				def costLines = getCostLines(entry, planningList)
+				if (planningList.planningType.maxNumber == 1) entryLines.addAll(costLines)
+				else {
+					def header
+					if (planningList.planningType.fixedHeader == null || planningList.planningType.fixedHeader.empty) {
+						header = languageService.getText(planningList.planningType.names) + (planningList.planningType.maxNumber!=1?(' ' + i):'')
+					} 
+					else {
+						header = languageService.getStringValue(entry.fixedHeaderValue, planningList.planningType.fixedHeaderType)
+					}
+					def line = new AggregateLine(header, costLines, ['budget-entry'])
+					line.href = createLink(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber: entry.lineNumber])
+					entryLines << line
+				}	
+			}
+			def line = new AggregateLine(languageService.getText(planningList.planningType.namesPlural), entryLines, ['standout'])
+			line.openByDefault = true
+			planningListLines << line
+		}
+		
+		def columns = [
+			message(code: 'planning.budget.table.incoming'), 
+			message(code: 'planning.budget.table.outgoing'), 
+			message(code: 'planning.budget.table.difference')
+		]
+		return new Table("", columns, planningListLines, true, ['budget'])
+	}
+	
+	def getCostLines(def entry, def planningList) {
+		def types = [Type.TYPE_NUMBER(), Type.TYPE_NUMBER(), Type.TYPE_NUMBER()]
+		
+		def costLines = []
+		planningList.planningType.costs.each { cost ->
+			def values = null
+			def budgetCost = entry.getBudgetCost(cost)
+			if (budgetCost != null && !budgetCost.hidden) {
+				if (cost.type == PlanningCostType.INCOMING) values = [budgetCost.value, Value.VALUE_NUMBER(0), budgetCost.value]
+				else values = [Value.VALUE_NUMBER(0), budgetCost.value, Value.VALUE_NUMBER(0-budgetCost.value.numberValue)]
+			}
+			else if (budgetCost == null) {
+				if (cost.type == PlanningCostType.INCOMING) values = [null, Value.VALUE_NUMBER(0), Value.VALUE_NUMBER(0)]
+				else values = [Value.VALUE_NUMBER(0), null, Value.VALUE_NUMBER(0)]
+			}
+			if (values != null) costLines << new NumberLine(languageService.getText(cost.names), values, types)
+		}
+		return costLines
+	}
+	
+	
+	def output = {
+		def planningOutput = PlanningOutput.get(params.int('planningOutput'))
+		def location = DataLocation.get(params.int('location'))
+		
+		if (validate(planningOutput.planning, location)) {
+			planningService.submitIfNeeded(planningOutput.planning, location)
+			planningService.refreshOutputTableIfNeeded(planningOutput, location)
+			
+			def outputTable = planningService.getPlanningOutputTable(planningOutput, location)
+			
+			render (view: '/planning/output', model: [
+				planningOutput: planningOutput,
+				location: location,
+				outputTable: getOutputTable(outputTable)
+			])
+		}
+	}
+	
+	def getOutputTable(def outputTable) {
+		def lines = []
+		def rows = outputTable.getRows();
+		for (int i = 0; i < rows.size(); i++) {
+			def value = rows.get(i);
+			
+			def values = []
+			def types =[]
+			outputTable.planningOutput.columns.each { column ->
+				values << outputTable.getValue(i, column);
+				types << outputTable.getValueType(column);
+			}
+			lines << new NumberLine(languageService.getStringValue(value, outputTable.getHeaderType()), values, types);
+		}
+		def columns = outputTable.planningOutput.columns.collect {i18n(field: it.names)}
+		return new Table(
+			languageService.getText(outputTable.planningOutput.captions),
+			columns, lines, 
+			outputTable.planningOutput.displayTotal, 
+			['budget']
+		);
 	}
 	
 	def planningList = {

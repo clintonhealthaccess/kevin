@@ -29,6 +29,7 @@ package org.chai.kevin;
  */
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.dsr.DsrTargetCategory
 import org.chai.kevin.location.DataLocationType;
@@ -37,6 +38,7 @@ import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.LocationService
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.chai.kevin.reports.ReportEntity
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.security.User;
@@ -50,6 +52,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 public abstract class AbstractController {
 
+	LanguageService languageService;
 	ReportService reportService;
 	LocationService locationService;
 	protected final static String FILE_TYPE_ZIP="application/zip";
@@ -84,27 +87,32 @@ public abstract class AbstractController {
 	
 	def getLocation(){
 		Location location = Location.get(params.int('location'))
-		if (location == null) location = locationService.getRootLocation()
+		//TODO add skips and types to method
+		//TODO if location != null, get location tree, and if the location tree doesn't contain the location, return root location
+		if (location == null)
+			location = locationService.getRootLocation()
 		return location
-	}		
+	}
 	
 	public Set<DataLocationType> getLocationTypes() {
-		Set<DataLocationType> types = null
+		Set<DataLocationType> dataLocationTypes = new HashSet<DataLocationType>()
 		if (params.list('dataLocationTypes') != null && !params.list('dataLocationTypes').empty) {
-			def dataLocationTypes = params.list('dataLocationTypes')
-			types = new HashSet<DataLocationType>(dataLocationTypes.collect{ DataLocationType.get(it) })
+			def types = params.list('dataLocationTypes')
+			dataLocationTypes.addAll(types.collect{ NumberUtils.isNumber(it as String) ? DataLocationType.get(it) : null } - null)
+		}		
+		
+		if(dataLocationTypes == null || dataLocationTypes.empty){
+			dataLocationTypes.addAll(ConfigurationHolder.config.site.datalocationtype.checked.collect{ DataLocationType.findByCode(it) } - null)
 		}
-		else {
-			types = new HashSet<DataLocationType>(ConfigurationHolder.config.site.datalocationtype.checked.collect {DataLocationType.findByCode(it)})
-		}
-		return types
+		
+		return dataLocationTypes.sort()
 	}
 	
 	public Set<Period> getPeriods() {
 		Set<Period> periods =null
 		if (params.list('currentPeriods') != null && !params.list('currentPeriods').empty) {
 			def selectedPeriods = params.list('currentPeriods')
-			periods = new HashSet<Period>(selectedPeriods.collect{ Periods.get(it) })
+			periods = new HashSet<Period>(selectedPeriods.collect{ NumberUtils.isNumber(it as String) ? Periods.get(it) : null } - null)
 		}
 		else {
 			periods = new HashSet<Period>().add(Period.list()[Period.list().size()-1]);
@@ -112,14 +120,53 @@ public abstract class AbstractController {
 		return periods
 		
 	}
+	
 	def getLevel(){
 		LocationLevel level = null
 		level = LocationLevel.get(params.int('level'));
 		return level
-	}
+	}	
 	
 	def adaptParamsForList() {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
+	}	
+	
+	protected def redirectIfDifferent(def redirectParams) {
+		if (log.isDebugEnabled()) {
+			log.debug("redirectIfDifferent(redirectParams="+redirectParams+")")
+			log.debug("request params: "+params)
+		}
+				
+		boolean redirect = false
+		def newParams = [:]
+		for(def param : redirectParams){
+			def key = param.key
+			def redirectValue = redirectParams[key].toString()
+			
+			// url value to compare with
+			def urlValue = null
+			if(key == 'dataLocationTypes') 
+				urlValue = params.list(key).toString()
+			else 
+				urlValue = params[key].toString()		
+			
+			if(redirectValue != null && urlValue != redirectValue)
+				redirect = true
+			if(redirectParams[key] != null) newParams.put(key, redirectParams[key])
+		}
+		
+		if(!redirect) return null				
+		if(redirect){
+			if (log.isInfoEnabled()) {
+				log.info ("redirecting to controller: "+ params['controller']+
+					", action: "+params['action']+
+					", period: "+newParams['period']+
+					", program: "+newParams['program']+
+					", location: "+newParams['location']+
+					", dataLocationTypes: "+newParams['dataLocationTypes']);
+			}
+			return newParams;									
+		}
 	}
 }

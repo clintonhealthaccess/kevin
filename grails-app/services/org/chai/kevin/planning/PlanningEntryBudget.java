@@ -3,9 +3,9 @@ package org.chai.kevin.planning;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
 
@@ -35,30 +35,8 @@ public class PlanningEntryBudget extends PlanningEntry {
 		return budgetCosts;
 	}
 
-	public Double getOutgoing() {
-		return getSum(PlanningCostType.OUTGOING);
-	}
-	
-	public Double getIncoming() {
-		return getSum(PlanningCostType.INCOMING);
-	}
-
-	public Double getDifference() {
-		return getIncoming() - getOutgoing();
-	}
-
-	public Double getSum(PlanningCostType costType) {
-		Double result = 0d;
-		for (PlanningCost planningCost : type.getCosts()) {
-			if (planningCost.getType().equals(costType)) {
-				if (getBudgetCost(planningCost) != null) result += getBudgetCost(planningCost).getValue();
-			}
-		}
-		return result;
-	}
-	
 	protected BudgetCost getBudgetCost(PlanningCost planningCost) {
 		return getBudgetCosts().get(planningCost);
 	}
-
+	
 }

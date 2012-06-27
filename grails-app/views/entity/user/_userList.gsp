@@ -1,9 +1,8 @@
-<div class="table-wrap">
+<div class="main">
 	<table class="listing">
 		<thead>
 			<tr>
 				<th/>
-				<th><g:message code="entity.code.label"/></th>
 				<th><g:message code="user.username.label"/></th>
 				<th><g:message code="user.email.label"/></th>
 				<th><g:message code="user.permission.label"/></th>
@@ -26,10 +25,9 @@
 							</li>
 		           		</ul>
 					</td>
-					<td>${user.code}</td>
 					<td>${user.username}</td>					
 	  				<td>${user.email}</td>
-	  				<td>${user.permissionString}</td>
+	  				<td><g:stripHtml field="${user.permissionString}" chars="30"/></td>
 	  				<td>${user.roles}</td>
 	  				<td>${user.confirmed?'\u2713':''}</td>
 	  				<td>${user.active?'\u2713':''}</td>

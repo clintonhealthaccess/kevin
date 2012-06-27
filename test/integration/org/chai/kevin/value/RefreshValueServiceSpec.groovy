@@ -369,6 +369,52 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		average.refreshed != null
 	}
 	
+	def "test refresh calculations refreshes dependencies first - with data element"() {
+		when:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def average = newAverage("\$"+dataElement.id, CODE(2))
+		
+		then:
+		AveragePartialValue.count() == 0
+		RawDataElementValue.count() == 0
+		average.refreshed == null
+		
+		when:
+		refreshValueService.refreshCalculation(average);
+
+		then:
+		RawDataElementValue.count() == 0
+		AveragePartialValue.count() == 8
+		AveragePartialValue.list()[0].timestamp != null
+		average.refreshed != null
+	}
+	
+	def "test refresh calculations refreshes dependencies first - with normalized data element"() {
+			when:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def average = newAverage("\$"+dataElement.id, CODE(2))
+		
+		then:
+		AveragePartialValue.count() == 0
+		NormalizedDataElementValue.count() == 0
+		dataElement.refreshed == null
+		average.refreshed == null
+		
+		when:
+		refreshValueService.refreshCalculation(average);
+
+		then:
+		NormalizedDataElementValue.count() == 2
+		AveragePartialValue.count() == 8
+		AveragePartialValue.list()[0].timestamp != null
+		dataElement.refreshed != null
+		average.refreshed != null
+	}
+	
 	def "test refresh calculation updates when last value changed is set after refresh"() {
 		setup:
 		def date = new Date()

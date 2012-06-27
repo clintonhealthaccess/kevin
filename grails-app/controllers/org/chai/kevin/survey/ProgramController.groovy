@@ -88,8 +88,8 @@ class ProgramController extends AbstractEntityController {
 			
 			def max = Math.min(params['offset']+params['max'], programs.size())
 			
-			render (view: '/survey/admin/list', model:[
-				template:"programList",
+			render (view: '/entity/list', model:[
+				template:"survey/programList",
 				survey:survey,
 				entities: programs.subList(params['offset'], max),
 				entityCount: programs.size(),

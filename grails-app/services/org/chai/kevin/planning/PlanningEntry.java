@@ -15,13 +15,6 @@ import org.chai.kevin.value.Value;
 
 public class PlanningEntry {
 
-	static final String UUID = "uuid";
-	private static final Set<String> ATTRIBUTES = new HashSet<String>();
-			
-	static {
-		ATTRIBUTES.add(UUID);
-	}
-	
 	protected PlanningType type;
 	private DataLocation dataLocation;
 	private Integer lineNumber;
@@ -48,23 +41,23 @@ public class PlanningEntry {
 		this.enums = enums;
 	}
 
-	public String getUuid() {
-		return getValue().getAttribute(UUID);
-	}
-	
-	protected void setUuid(String uuid) {
-		if (getValue().getAttribute(UUID) != null) throw new IllegalStateException("uuid already set");
-		setAttribute(UUID, uuid);
-	}
+//	public String getUuid() {
+//		return getValue().getAttribute(UUID);
+//	}
+//	
+//	protected void setUuid(String uuid) {
+//		if (getValue().getAttribute(UUID) != null) throw new IllegalStateException("uuid already set");
+//		setAttribute(UUID, uuid);
+//	}
 	
 	private void setAttribute(String attribute, String value) {
-		validatable.getType().setAttribute(validatable.getValue(), getPrefix("[_]"), attribute, value);
+		validatable.getType().setAttribute(validatable.getValue(), PlanningUtils.getPrefix("[_]", lineNumber), attribute, value);
 	}
 	
 	public Set<String> getInvalidSections() {
 		Set<String> result = new HashSet<String>();
 		for (String section : type.getSections()) {
-			if (!getValidatable().isTreeValid(getPrefix(section))) result.add(section);
+			if (!getValidatable().isTreeValid(PlanningUtils.getPrefix(section, lineNumber))) result.add(section);
 		}
 		return result;
 	}
@@ -72,7 +65,7 @@ public class PlanningEntry {
 	public Set<String> getIncompleteSections() {
 		Set<String> result = new HashSet<String>();
 		for (String section : type.getSections()) {
-			if (!getValidatable().isTreeComplete(getPrefix(section))) result.add(section);
+			if (!getValidatable().isTreeComplete(PlanningUtils.getPrefix(section, lineNumber))) result.add(section);
 		}
 		return result;
 	}
@@ -90,11 +83,11 @@ public class PlanningEntry {
 	}
 	
 	public String getPrefix(String prefix) {
-		return prefix.replaceFirst("^\\[_\\]", "["+lineNumber+"]");
+		return PlanningUtils.getPrefix(prefix, lineNumber);
 	}
 	
 	public Value getValue(String prefix) {
-		return validatable.getType().getValue(validatable.getValue(), getPrefix(prefix));
+		return validatable.getType().getValue(validatable.getValue(), PlanningUtils.getPrefix(prefix, lineNumber));
 	}
 	
 	public Value getFixedHeaderValue() {
@@ -107,13 +100,13 @@ public class PlanningEntry {
 
 	public void mergeValues(Map<String, Object> params) {
 		params.put("elements["+type.getFormElement().getId()+"].value", getLineNumbers(null));
-		getValidatable().mergeValue(params, "elements["+type.getFormElement().getId()+"].value", ATTRIBUTES);
+		getValidatable().mergeValue(params, "elements["+type.getFormElement().getId()+"].value", new HashSet<String>());
 	}
 
 	public void delete() {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("elements["+type.getFormElement().getId()+"].value", getLineNumbers(lineNumber));
-		getValidatable().mergeValue(params, "elements["+type.getFormElement().getId()+"].value", ATTRIBUTES);
+		getValidatable().mergeValue(params, "elements["+type.getFormElement().getId()+"].value", new HashSet<String>());
 	}
 	
 	private List<String> getLineNumbers(Integer skip) {

@@ -74,6 +74,31 @@ class UtilTagLib {
 		out << text 
 	}
 	
+	def codeList = { attrs, body ->
+		def entities = attrs['entities']
+		entities.join('<br />')
+	}
+	
+	def dataLocationTypeList = { attrs, body ->
+		def dataLocationTypes = attrs['dataLocationTypes'].split(',')
+		dataLocationTypes.join('<br />')
+	}
+	
+	def prettyList = { attrs, body ->
+		def entities = attrs['entities']
+		def splitDelim = attrs['split'] ?: ','
+		def joinDelim = attrs['join'] ?: '<br />'
+		
+		def text = null
+		if(entities instanceof List)
+			text = entities.join(joinDelim)
+		else if(entities instanceof String)
+			text = entities.split(splitDelim).join(joinDelim)
+		else {}
+		
+		out << text
+	}
+	
 	def ifText = { attrs, body ->
 		def text = attrs['field'] == null?'':attrs['field']+''
 		if (!Utils.stripHtml(text).trim().isEmpty()) out << body()

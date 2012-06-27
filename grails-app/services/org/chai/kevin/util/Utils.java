@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,7 +63,6 @@ public class Utils {
 	
 	private final static String DATE_FORMAT = "dd-MM-yyyy";
 	private final static String DATE_FORMAT_TIME = "dd-MM-yyyy hh:mm:ss";
-	private final static String CSV_FILE_EXTENSION = ".csv";
 	private final static String ZIP_FILE_EXTENSION = ".zip";
 	
 	public final static String CODE_DELIMITER = "~";
@@ -91,7 +91,6 @@ public class Utils {
 		return StringUtils.join(result, ',');
 	}
 		
-	@SuppressWarnings("unused")
 	public static boolean matches(String text, String value) {
 		if (value == null) return false;
 		return value.matches("(?i).*"+text+".*");
@@ -117,10 +116,18 @@ public class Utils {
 		return result;
 	}
 	
+	public static String formatNumber(String format, Number value) {
+		if (format == null) format = "#";
+		
+		DecimalFormat frmt = new DecimalFormat(format);
+		return frmt.format(value.doubleValue()).toString();
+	}
+	
 	public static String formatDate(Date date) {
 		if (date == null) return null;
 		return new SimpleDateFormat(DATE_FORMAT).format(date);
 	}
+	
 	public static String formatDateWithTime(Date date) {
 		if (date == null) return null;
 		return new SimpleDateFormat(DATE_FORMAT_TIME).format(date);

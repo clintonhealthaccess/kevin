@@ -12,7 +12,6 @@ import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.form.FormElement.ElementSubmitter;
@@ -26,6 +25,7 @@ import org.chai.kevin.location.Location;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.RefreshValueService;
+import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
@@ -101,6 +101,17 @@ public class PlanningService {
 		return new PlanningList(type, location, formEnteredValue, rawDataElementValue, costValues, getEnums(type));
 	}
 	
+	@Transactional(readOnly=true)
+	public PlanningOutputTable getPlanningOutputTable(PlanningOutput output, DataLocation location) {
+		StoredValue value = (StoredValue)valueService.getDataElementValue(output.getDataElement(), location, output.getPlanning().getPeriod());
+		Map<PlanningOutputColumn, NormalizedDataElementValue> columns = new HashMap<PlanningOutputColumn, NormalizedDataElementValue>();
+		
+		for (PlanningOutputColumn column : output.getColumns()) {
+			columns.put(column, valueService.getDataElementValue(column.getNormalizedDataElement(), location, output.getPlanning().getPeriod()));
+		}
+		return new PlanningOutputTable(output, value, columns);
+	}
+	
 	private Map<String, Enum> getEnums(PlanningType type) {
 		Map<String, Enum> result = new HashMap<String, Enum>();
 		for (Entry<String, Type> prefix : type.getFormElement().getDataElement().getEnumPrefixes().entrySet()) {
@@ -153,7 +164,6 @@ public class PlanningService {
 		return planningEntry;
 	}
 	
-	
 	@Transactional(readOnly=false)
 	public void submitIfNeeded(Planning planning, DataLocation location) {
 		for (PlanningType planningType : planning.getPlanningTypes()) {
@@ -203,6 +213,13 @@ public class PlanningService {
 	public void refreshBudgetIfNeeded(Planning planning, DataLocation location) {
 		for (PlanningCost cost : planning.getPlanningCosts()) {
 			refreshValueService.refreshNormalizedDataElement(cost.getDataElement(), location, cost.getPlanningType().getPeriod());
+		}
+	}
+	
+	@Transactional(readOnly=false)
+	public void refreshOutputTableIfNeeded(PlanningOutput planningOutput, DataLocation location) {
+		for (PlanningOutputColumn column : planningOutput.getColumns()) {
+			refreshValueService.refreshNormalizedDataElement(column.getNormalizedDataElement(), location, planningOutput.getPlanning().getPeriod());
 		}
 	}
 	

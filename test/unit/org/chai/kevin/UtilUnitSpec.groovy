@@ -126,7 +126,6 @@ public class UtilUnitSpec extends UnitSpec {
 		bool.equals(boolValue.toString());
 		enumValue.equals("Value Text")
 		date.equals(Utils.formatDate(nowDate));	
-		
 			
 	}
 }

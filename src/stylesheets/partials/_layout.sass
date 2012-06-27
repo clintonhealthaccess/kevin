@@ -1,36 +1,271 @@
+body
+  background: url('../images/bg/body_bg.png')
+  font-family: Arial, Helvetica, sans-serif
+
 .wrapper
   margin: 0 auto
   position: relative
   width: 1000px
   +pie-clearfix
   
-.left
-  display: inline
-  float: left
-  
-.right
-  display: inline
-  float: right
-  
-.inline
-  display: inline
-  
 #content
+  padding-top: 15px
   background: url('../images/bg/content_bg.png') repeat-x top center
-  &.push
-    padding-top: 15px
   
   .main
+    padding: 15px
+    font-size: 12px
     background: #fff
     +border-bottom-radius
-    +box-shadow(#ccc, 0, 0, 2px)
+    +box-shadow(#ccc 0 0 2px)
     +pie-clearfix
-    &.push
-      padding-top: 15px
     
-.main
-  padding: 15px
-
-.clearfix
-  clear: both
+#header
+  background: url('../images/bg/header_bg.png') repeat-x center
+  height: 90px
+  position: relative
   +pie-clearfix
+  
+  h2
+    color: $primary + #090909
+    font-family: Arial, sans-serif
+    font-size: 15px
+    line-height: 1.4
+    position: absolute
+    right: 0
+    text-align: right
+    top: 45px
+    width: 500px
+    +text-shadow(#fff, 0, 1px, 0)
+    span
+      color: $primary + #222
+      display: block
+      font-size: 11px
+      letter-spacing: 0.3px
+      text-transform: uppercase
+    img
+      padding-left: 10px
+  
+#logo
+  color: $primary_alt
+  font: bold 42px arial, sans-serif
+  padding-top: 36px
+  +text-shadow(#fff, 0, 1px, 0)
+  // fterrier start: link displays as text
+  a
+    font: inherit
+    color: inherit
+    text-decoration: none
+    &:hover, &:focus
+      color: $primary - #333
+  // fterier end
+  
+.rwanda
+  background: url("../images/rwanda.png") no-repeat right center
+  padding-right: 20px
+
+// Languages switch
+#switcher, #top_nav
+  position: absolute
+  top: 0
+  +pie-clearfix
+
+  li
+    display: inline
+    float: left
+    margin-left: 3px
+
+  a
+    background: $filler
+    color: $primary
+    display: inline-block
+    font-size: 9px
+    padding: 7px 6px 5px
+    text-decoration: none
+    text-transform: uppercase
+    +border-bottom-radius(3px)
+    &:hover, &:focus, &.no-link
+      background: $primary
+      color: #fff
+      
+#switcher
+  left: 0
+  
+#top_nav
+  right: 0
+
+// Main navigation
+#navigation
+  background: url('../images/bg/nav_bg.png') repeat-x
+  height: 42px
+  position: relative
+  z-index: 50
+
+#main-menu
+  float: left
+  +pie-clearfix
+  > li
+    display: inline
+    float: left
+    position: relative
+    &:first-child
+      border-left: 1px solid $primary_light
+    &:last-child
+      border-right: 1px solid $primary_dark
+    &:hover .submenu
+      display: block
+      
+  a
+    border-left: 1px solid $primary_dark
+    border-right: 1px solid $primary_light
+    color: #fff
+    display: inline-block
+    font-size: 12px
+    font-weight: bold
+    padding: 15px 22px
+    text-decoration: none
+    +text-shadow(rgba(0, 0, 0, 0.3), 0, 1px, 0)
+    &:hover, &:focus, &.active
+      background: $primary_dark
+      +box-shadow($primary - #222, 0, -3px, 8px, 6px, inset)
+    &:active
+      +box-shadow($primary - #292929, 0, -2px, 10px, 10px, inset)    
+  a.home
+    height: 16px
+    padding: 12px 22px
+
+  .submenu
+    background: $primary
+    border: 1px solid $primary_dark
+    display: none
+    opacity: 0.93
+    padding: 5px 0 10px
+    position: absolute
+    top: 41px
+    z-index: 30
+    +border-bottom-radius
+    +box-shadow(#ccc 2px 2px 3px, $primary_dark 0 0 8px 3px inset)
+    a
+      border-bottom: 1px solid $primary_dark
+      display: block
+      font-size: 12px
+      font-weight: normal
+      padding: 7px 25px 7px
+      white-space: nowrap
+      &:hover, &:focus
+        background: $primary_dark
+
+
+// Logout navigation
+#logout
+  position: absolute
+  right: 0
+  top: 100px
+  z-index: 60
+
+  li
+    display: inline
+    float: left
+    margin-left: 7px
+
+  a
+    background: $primary_dark
+    color: $filler
+    display: block
+    font-size: 11px
+    padding: 6px 12px
+    text-decoration: none
+    +border-radius(3px)
+    +box-shadow($primary - #333 0 -2px 9px 1px inset)
+    +text-shadow($primary - #333, 0, 1px, 0)
+    &:hover, &:focus
+      color: #fff
+      +box-shadow($primary - #333 0 -2px 9px 4px inset)
+    &:active
+      +box-shadow($primary - #333 0 2px 9px 4px inset)
+    &.redmine
+      color: #fff
+      opacity: 0.7
+      &:hover, &:focus
+        opacity: 1
+
+// Tab navigation
+ul.tab-navigation
+  background: #eee
+  border-bottom: 1px solid #e3e3e3
+  margin: -15px -15px 15px
+  +linear-gradient(color-stops(#fafafa, #f1f1f1))
+  +pie-clearfix
+  li
+    margin-right: 0
+    &.settings
+      float: right
+      a
+        background: #fff
+        border: 1px solid #e3e3e3
+        color: primary
+        font-size: 11px
+        letter-spacing: 0.5px
+        margin: 8px
+        padding: 6px 12px 5px
+        +border-radius(3px)
+        +box-shadow(#eee 0 0 3px inset)
+        &:hover, &:focus, &.selected
+          background: #333
+          border: 1px solid #222
+          color: #fff
+          +box-shadow(#111 0 0 3px inset)
+          +text-shadow(#000 0 1px 0)
+  a
+    border-right: 1px solid #e3e3e3
+    color: #666
+    display: block
+    padding: 14px 20px
+    text-decoration: none
+    +text-shadow(#fff 0 1px 0)
+    &:hover, &:focus, &.selected
+      background: #fff
+      color: $primary
+      +linear-gradient(color-stops(#fff, #fff))
+      +transition(all .5s)
+
+    &.selected
+      border-bottom: 1px solid #fff
+      margin-bottom: -1px
+
+// Tab sub-navigation
+.tab-subnav
+  background: #fff
+  border-bottom: 1px solid #e3e3e3
+  margin: -15px -15px 15px
+  //+linear-gradient(color-stops(#fafafa, #f1f1f1))
+  +pie-clearfix
+  li
+    margin-right: 0
+  a
+    color: #666
+    display: block
+    font-size: 11px
+    padding: 14px 20px 
+    text-decoration: none
+    +text-shadow(#fff 0 1px 0)
+    &:hover, &:focus, &.selected
+      background: #fff
+      color: $primary
+      +linear-gradient(color-stops(#fff, #fff))
+      +transition(all .5s)
+
+    &.selected
+      background: url('../images/icons/tab-subnav.png') no-repeat center bottom
+      position: relative
+      bottom: -1px
+
+#footer
+  color: #888
+  font-size: 11px
+  line-height: 1.5
+  padding: 20px 0 40px
+  text-align: center
+  +text-shadow(#fff, 0, 1px, 0)
+  a
+    font-size: 11px

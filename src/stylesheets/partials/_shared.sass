@@ -1,7 +1,3 @@
-body
-  background: url('../images/bg/body_bg.png')
-  font-family: Arial, Helvetica, sans-serif
-
 h1, h2, h3, h4
   font-family: Arial, Helvetica, sans-serif
 
@@ -14,55 +10,6 @@ a
     color: $primary - #333
     text-decoration: none
     
-.main
-  clear: both
-  color: #666
-  font-size: 12px
-  +pie-clearfix
-  
-.form-heading
-  color: $primary
-  font-size: 24px
-  margin-bottom: 10px
-  padding-left: 10px
-
-.section-title-wrap
-  clear: both
-  display: block
-  position: relative
-  width: 100%
-  +pie-clearfix
-
-#questions h4
-  background: $filler
-  color: $primary
-  display: inline-block
-  font-family: Arial, sans-serif
-  font-weight: bold
-  left: -15px
-  line-height: 1.5
-  margin: 0 0 10px 0
-  max-width: 850px
-  padding: 7px 20px 7px 22px
-  position: relative
-  +border-right-radius(100px)
-  +box-shadow($filler - #090909, -2px, -2px, 2px, 0, inset)
-  +text-shadow(#fff, 0, 1px, 0)
-  
-  span
-    background: $yes
-    color: #fff
-    display: block
-    font-weight: bold
-    left: -10px
-    padding: 3px
-    position: absolute
-    text-align: center
-    top: 4px
-    width: 18px
-    +border-radius(50px)
-    +text-shadow($yes - #222, 0, 1px, 0)
-      
 .level-up
   background: url('../images/icons/level-up.png') no-repeat left center
   color: #333
@@ -75,40 +22,61 @@ a
     opacity: 1
     text-decoration: underline
       
-#questions .incomplete h4 span, #questions .invalid h4 span, #questions span.question-default
-  background: $primary
-  color: $filler
-  +text-shadow($primary - #222, 0, 1px, 0)
-  
 .follow
   background: url('../images/icons/follow.png') no-repeat right center !important
   padding-right: 20px !important
+  
+.text-center
+  text-align: center
+
+.center
+  margin: auto
+  
+.left
+  float: left
+  
+.right
+  float: right
+  
+.inline
+  display: inline
+
+.clearfix
+  clear: both
+  +pie-clearfix
   
 .hidden
   display: none
     
 .push-10
   margin-bottom: 10px
+  
 .push-top-10
   margin-top: 10px
+  
 .push-15
   margin-bottom: 15px
+  
 .push-20
   margin-bottom: 20px !important
+  
 .pull-7
   position: relative
   top: -7px
   
+// TODO cleanup
 .third
   float: left
   width: 33%
+
+// TODO cleanup
 .fourth
   float: left
   width: 25%
   
 ul.horizontal
   +pie-clearfix
-  li
+  > li
     margin-right: 5px
     display: inline
     float: left
@@ -139,20 +107,275 @@ ul.horizontal
   width: 12px
   &:hover
     opacity: 0.6
-    
-.entity-form-container h5
+
+// HEADING
+.heading1
+  color: $primary
+  font-size: 24px
+  margin-bottom: 10px
+  padding-left: 10px
+
+.heading1-bar
   color: #888
-  font-size: 16px
-  font-weight: bold
-  margin-top: 20px
-  
-.invalid-entry
-  color: $no !important
-  
-.heading
-  color: #444
-  font-size: 16px
-  padding: 25px 15px 12px
-  +text-shadow(#fff, 0, 1px, 0)
+  font-size: 11px
+  margin-bottom: 10px
+  +pie-clearfix
   a
     font-size: 11px
+
+.heading2-bar
+  color: #888
+  font-size: 16px
+  padding: 15px 15px 10px
+  +pie-clearfix
+
+.filter-bar
+  padding: 15px 15px 40px
+  font-size: 11px
+  color: #888
+  > div
+    margin-right: 10px
+
+.foldable-container
+  border-top: 1px dotted $dropdown - #191919
+  margin-top: 6px
+  
+.foldable
+  &.opened:not(.current)
+    padding-bottom: 0px !important
+
+  a.foldable-toggle
+    display: block
+    cursor: pointer
+    height: 14px
+    margin-top: -3px
+    width: 20px
+    float: left
+    text-indent: -9999px
+    background-image: url('../images/icons/toggle_plus.png')
+    &.toggled
+      background-image: url('../images/icons/toggle_minus.png')
+ 
+.nice-button
+  padding: 12px 18px 10px 40px
+  +border-radius(3px)
+  +box-shadow($filler - #111 1px 1px 3px inset)
+    
+  font: 15px arial !important
+  text-decoration: none
+  +text-shadow(white 0 1px 0)
+    
+  &.program
+    background: url("../images/icons/star.png") no-repeat 14px 50% #fcfcfc
+    &:hover, &:focus
+      background: url("../images/icons/star_hover.png") no-repeat 14px 50%
+  &.survey
+    background: url("../images/icons/survey.png") no-repeat 14px 50% #fcfcfc
+    &:hover, &:focus
+      background: url("../images/icons/survey_hover.png") no-repeat 14px 50% #fcfcfc
+  &.location
+    background: url("../images/icons/marker.png") no-repeat 14px 50% #fcfcfc
+    &:hover, &:focus
+      background: url("../images/icons/marker_hover.png") no-repeat 14px 50% #fcfcfc
+  &.time
+    background: url("../images/icons/calendar.png") no-repeat 14px 50% #fcfcfc
+    &:hover, &:focus
+      background: url("../images/icons/calendar_hover.png") no-repeat 14px 50% #fcfcfc
+  &.datalocation
+    background: url("../images/icons/datalocation.png") no-repeat 14px 50% #fcfcfc
+    &:hover, &:focus
+      background: url("../images/icons/datalocation_hover.png") no-repeat 14px 50% #fcfcfc
+
+.nice-button2
+  text-decoration: none
+  background: $filler
+  border: 1px solid $dropdown - #111
+  display: inline-block 
+  margin-bottom: 3px
+  padding: 4px 4px
+  text-align: center
+  width: 42%
+  +border-radius(3px)
+  &:hover, &:focus
+    border-color: $primary_light
+      
+.with-highlight
+  &:hover, &:focus, &.dropdown-selected
+    background-color: $primary !important
+    color: white
+    position: relative
+    text-decoration: none
+    z-index: 5
+    +box-shadow($primary - #222 0 2px 9px 0 inset)
+    +text-shadow($primary - #333 0 1px 0)
+    +border-radius(3px)
+    +transition(all 0.3s)
+      
+.dropdown
+  position: relative
+  
+  .dropdown-list
+    padding-bottom: 6px
+    background: $dropdown
+    border: 1px solid $dropdown - #222
+    display: none
+    min-width: 200px
+    opacity: 0.95
+    position: absolute
+    z-index: 10
+    +border-bottom-radius(3px)
+    +border-top-right-radius(3px)
+    +box-shadow(#ccc 2px 2px 3px, $dropdown - #111 0 0 8px 3px inset)
+    
+    li
+      margin-left: 10px
+      padding-top: 8px
+      padding-bottom: 8px
+      border-bottom: 1px dotted $dropdown - #191919
+      display: block
+      white-space: nowrap
+          
+      &:last-child
+        border: none
+        padding-bottom: 0px
+        
+      a
+        color: $primary
+        font-size: 11px
+        font-weight: bold
+        text-decoration: none
+        +text-shadow(white 0 1px 0)
+        
+        &:hover
+          color: $primary_dark
+          
+.splash-box
+  a
+    text-decoration: none
+
+  background: url('../images/bg/body_bg.png')
+  text-align: center
+  position: relative
+  padding: 10px
+  margin: 26px
+  font-size: 18px
+  +border-radius(3px)
+  +box-shadow(#ccc 0 0 2px)
+  
+  .splash-box-text
+    padding-top: 11px
+    margin-right: 5px
+    margin-bottom: 20px
+    float: left
+    font-size: 20px !important
+          
+  .splash-box-image
+    float: right
+    padding: 2px
+    background: white
+    +box-shadow(#ccc 0 0 2px)
+    right: 20px
+    opacity: 0.5
+  
+  &:hover, &:focus
+    cursor: pointer
+    +box-shadow(#ccc - #333 0 0 2px)
+    +transition(all 0.3s)
+    .splash-box-image
+      opacity: 1
+      +transition(all 0.3s)
+    a
+      color: $primary - #666
+      +transition(all 0.3s)
+
+.splash-two-columns
+  width: 410px
+  .splash-box-text
+    padding-top: 0px
+  
+.splash-three-columns
+  width: 250px
+  .splash-box-image
+    margin-top: 10px
+  .splash-box-text
+    text-align: center
+    float: none
+
+.paginateButtons
+  .step
+    background: $filler
+    border: 1px solid $filler - #111
+    color: $primary
+    display: inline-block
+    margin-right: 4px
+    padding: 3px 5px
+    text-decoration: none
+    +border-radius(2px)
+    &:hover, &:focus
+      border: 1px solid $filler - #222
+      color: $primary - #333
+  .currentStep
+    background: $primary
+    border: 1px solid $primary
+    color: white
+    display: inline-block
+    margin-right: 4px
+    padding: 3px 5px
+    +border-radius(2px)
+
+.nice-title
+  background: $filler
+  color: $primary
+  display: inline-block
+  font-family: Arial, sans-serif
+  font-weight: bold
+  left: -15px
+  line-height: 1.5
+  margin: 0 0 10px 0
+  max-width: 850px
+  padding: 7px 20px 7px 22px
+  position: relative
+  +border-right-radius(100px)
+  +box-shadow($filler - #090909, -2px, -2px, 2px, 0, inset)
+  +text-shadow(white, 0, 1px, 0)
+
+.nice-title-image
+  background: $primary
+  color: white
+  display: block
+  font-weight: bold
+  left: -10px
+  padding: 3px
+  position: absolute
+  text-align: center
+  top: 4px
+  width: 18px
+  +border-radius(50px)
+  +text-shadow($primary - #222, 0, 1px, 0)
+    
+.question.invalid .nice-title-image
+  background: $no
+  +text-shadow($no - #222, 0, 1px, 0)
+
+.question .nice-title-image
+  background: $yes
+  +text-shadow($yes - #222, 0, 1px, 0)
+  
+.question.incomplete .nice-title-image
+  background: $primary
+  +text-shadow($primary - #222, 0, 1px, 0)
+
+  
+.spinner
+  position: fixed
+  text-align: center
+  overflow: auto
+  width: 100%
+  height: 100%
+  opacity: 0.4
+  background-color: grey
+  z-index: 20
+ 
+  img
+    position: relative
+    top: 50%

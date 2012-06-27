@@ -8,77 +8,71 @@
 		<r:require module="planning"/>
 	</head>
 	<body>
-		<div id="content" class="push"/>
-			<div id="planning">
-				<div class="main">  
-	
-				<ul class="horizontal tab-navigation">
-					<li><a class="${selected=='undertakings'?'selected':''}" href="${createLink(controller:'editPlanning', action:'overview', params:[planning: planningType.planning.id, location: location.id])}"><g:message code="planning.tabs.undertakings"/></a></li>
-					<li><a class="selected" href="#"><g:message code="planning.tabs.new" args="[i18n(field:planningType.names)]"/></a></li>
-					<li><a class="${selected=='budget'?'selected':''}" href="${createLink(controller:'editPlanning', action:'budget', params:[planning: planningType.planning.id, location: location.id])}"><g:message code="planning.tabs.budget"/></a></li>
-				</ul>
-		    	<g:render template="/templates/help" model="[content: i18n(field: planningType.newHelps)]"/>
-					
-				<div id="questions">
-					<shiro:hasPermission permission="admin">
-						<div class="right"><a href="#" onclick="$('.admin-hint').toggle();return false;">Toggle element information</a></div>
-					</shiro:hasPermission>
+		<div id="planning">
+			<div class="main">  
+			
+			<g:render template="/planning/planningTabs" model="[planning: planningType.planning, location: location, selected: "undertakings"]"/>
+	    	<g:render template="/templates/help" model="[content: i18n(field: planningType.newHelps)]"/>
 				
-					<g:form url="[controller:'editPlanning', action:'save', params: [location: location.id, planningType: planningType.id, targetURI: targetURI]]">
-		  				<input class="js_always-send" type="hidden" name="lineNumber" value="${planningEntry.lineNumber}"/>
-		
-						<div id="element-${planningType.formElement.id}">
-			  				<g:each in="${planningType.sections}" var="section" status="i">
-			  					<div id="section-${section}" class="${planningEntry.invalidSections.contains(section)?'invalid':''} ${planningEntry.incompleteSections.contains(section)?'incomplete':''}">
-				  					<div class="section-title-wrap">
-				  						<h4 class="section-title"> 
-				  							<span class="question-default">${i+1}</span>
-				  							<g:i18n field="${planningType.formElement.headers[section]}"/>
-				  						</h4>
-				  					</div>
+			<div>
+				<shiro:hasPermission permission="admin">
+					<div class="right"><a href="#" onclick="$('.admin-hint').toggle();return false;">Toggle element information</a></div>
+				</shiro:hasPermission>
+			
+				<g:form url="[controller:'editPlanning', action:'save', params: [location: location.id, planningType: planningType.id, targetURI: targetURI]]">
+	  				<input class="js_always-send" type="hidden" name="lineNumber" value="${planningEntry.lineNumber}"/>
+	
+					<div id="element-${planningType.formElement.id}">
+		  				<g:each in="${planningType.sections}" var="section" status="i">
+		  					<div id="section-${section}" class="question ${planningEntry.invalidSections.contains(section)?'invalid':''} ${planningEntry.incompleteSections.contains(section)?'incomplete':''}">
+			  					<div class="clearfix">
+			  						<h4 class="nice-title"> 
+			  							<span class="nice-title-image">${i+1}</span>
+			  							<g:i18n field="${planningType.formElement.headers[section]}"/>
+			  						</h4>
+			  					</div>
+								
+			  					<g:render template="/survey/element/${planningType.getType(section).type.name().toLowerCase()}"  model="[
+									value: planningEntry.getValue(section),
+									lastValue: null,
+									type: planningType.getType(section), 
+									suffix: planningEntry.getPrefix(section),
+									headerSuffix: section,
 									
-				  					<g:render template="/survey/element/${planningType.getType(section).type.name().toLowerCase()}"  model="[
-										value: planningEntry.getValue(section),
-										lastValue: null,
-										type: planningType.getType(section), 
-										suffix: planningEntry.getPrefix(section),
-										headerSuffix: section,
-										
-										// get rid of those in the templates??
-										element: planningType.formElement,
-										validatable: planningEntry.validatable,
-										
-										readonly: readonly,
-										enums: planningEntry.enums,
-										showHints: SecurityUtils.subject.isPermitted('admin')
-									]"/>
+									// get rid of those in the templates??
+									element: planningType.formElement,
+									validatable: planningEntry.validatable,
 									
-									<div class="adv-aside help-container">
-										<div class="help"><g:i18n field="${planningType.sectionDescriptions[section]}"/></div>
-									</div>
+									readonly: readonly,
+									enums: planningEntry.enums,
+									showHints: SecurityUtils.subject.isPermitted('admin')
+								]"/>
+								
+								<div class="adv-aside help-container">
+									<div class="help"><g:i18n field="${planningType.sectionDescriptions[section]}"/></div>
 								</div>
-			  				</g:each>
-		  				</div>
-						<ul class=" form-actions clearfix">
-							<li>
-    		  					<button type="submit" class="loading-disabled">
-    		  						<g:message code="planning.new.save"/>
-    		  					</button>
-  		  					</li>
-  		  					<li>
-    		  					<button type="cancel" class="hidden">
-  								    <g:message code="survey.section.cancel.label"/>
-  							    </button>
-  							  </li>
-  							  <li>
-    		  					<a class="go-back" href="${createLink(uri: targetURI)}">
-    		  						<g:message code="planning.new.backtolisting"/>
-    		  					</a>
-    		  				</li>
-		  				</div>
-		  				<br />
-	  				</g:form>
-				</div>
+							</div>
+		  				</g:each>
+	  				</div>
+					<ul class=" form-actions clearfix">
+						<li>
+		  					<button type="submit" class="loading-disabled">
+		  						<g:message code="planning.new.save"/>
+		  					</button>
+	  					</li>
+	  					<li>
+		  					<button type="cancel" class="hidden">
+							    <g:message code="survey.section.cancel.label"/>
+						    </button>
+						  </li>
+						  <li>
+		  					<a class="go-back" href="${createLink(uri: targetURI)}">
+		  						<g:message code="planning.new.backtolisting"/>
+		  					</a>
+		  				</li>
+	  				</div>
+	  				<br />
+  				</g:form>
 			</div>
 		</div>
 		

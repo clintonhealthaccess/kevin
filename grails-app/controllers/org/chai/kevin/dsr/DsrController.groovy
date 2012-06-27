@@ -50,14 +50,19 @@ class DsrController extends AbstractController {
 	
 	public DsrTargetCategory getDsrTargetCategory(def program){
 		def dsrTargetCategory = null
-		if(params.int('dsrCategory') != null)
+			
+		if(params.int('dsrCategory') != null){
 			dsrTargetCategory = DsrTargetCategory.get(params.int('dsrCategory'))
-		else{
-			def categories = dsrService.getTargetCategories(program)
-			Collections.sort(categories);
-			if(categories != null && !categories.empty)
-				dsrTargetCategory = categories.first()
 		}
+		
+		if(dsrTargetCategory == null){
+			def categories = dsrService.getTargetCategories(program)
+			if(categories != null && !categories.empty){
+				Collections.sort(categories);
+				dsrTargetCategory = categories.first()
+			}
+		}
+		
 		return dsrTargetCategory
 	}	
 	
@@ -71,29 +76,37 @@ class DsrController extends AbstractController {
 		Period period = getPeriod()		
 		ReportProgram program = getProgram(DsrTarget.class)				
 		Location location = getLocation()
-		Set<DataLocationType> dataLocationTypes = getLocationTypes()
-		
-		DsrTargetCategory category = getDsrTargetCategory(program)		
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()		
+		DsrTargetCategory dsrCategory = getDsrTargetCategory(program)
+			
 		def skipLevels = dsrService.getSkipLocationLevels()
-		def locationTree = location.collectTreeWithDataLocations(skipLevels, dataLocationTypes).asList()				
+		def locationTree = location.collectTreeWithDataLocations(skipLevels, dataLocationTypes).asList()
 		
-		def dsrTable = null		
-		if (period != null && program != null && location != null && dataLocationTypes != null) {
-			 dsrTable = dsrService.getDsrTable(location, program, period, dataLocationTypes, category);				 					 		 			 
+		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
+					'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'dsrCategory':dsrCategory?.id]
+		def newParams = redirectIfDifferent(reportParams)
+		
+		if(newParams != null && !newParams.empty) { 
+			redirect(controller: 'dsr', action: 'view', params: newParams)
 		}
-		
-		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root program: "+program)
-		
-		[
-			dsrTable: dsrTable,
-			currentCategory: category,
-			currentPeriod: period,
-			currentProgram: program,
-			selectedTargetClass: DsrTarget.class,
-			currentLocation: location,
-			locationTree: locationTree,
-			currentLocationTypes: dataLocationTypes,
-			skipLevels: skipLevels
-		]
+		else {
+			def dsrTable = null
+			if (dsrCategory != null)
+				dsrTable = dsrService.getDsrTable(location, program, period, dataLocationTypes, dsrCategory);			
+			
+			if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+" root program: "+program+", root location: "+location)
+			
+			[
+				dsrTable: dsrTable,
+				currentCategory: dsrCategory,
+				currentPeriod: period,
+				currentProgram: program,
+				selectedTargetClass: DsrTarget.class,
+				currentLocation: location,
+				locationTree: locationTree,
+				currentLocationTypes: dataLocationTypes,
+				skipLevels: skipLevels
+			]
+		}
 	}	
 }

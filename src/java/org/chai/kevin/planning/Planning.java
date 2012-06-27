@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -33,7 +34,8 @@ public class Planning {
 	private Period period;
 	private String typeCodeString;
 	private List<PlanningType> planningTypes = new ArrayList<PlanningType>();
-	private List<PlanningSkipRule> skipRules = new ArrayList<PlanningSkipRule>(); 
+	private List<PlanningSkipRule> skipRules = new ArrayList<PlanningSkipRule>();
+	private List<PlanningOutput> planningOutputs = new ArrayList<PlanningOutput>();
 	private Translation names = new Translation();
 	private Translation overviewHelps = new Translation();
 	private Translation budgetHelps = new Translation();
@@ -48,6 +50,17 @@ public class Planning {
 	
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	@OneToMany(mappedBy="planning", targetEntity=PlanningOutput.class)
+	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	@OrderBy("order")
+	public List<PlanningOutput> getPlanningOutputs() {
+		return planningOutputs;
+	}
+	
+	public void setPlanningOutputs(List<PlanningOutput> planningOutputs) {
+		this.planningOutputs = planningOutputs;
 	}
 	
 	@OneToMany(mappedBy="planning", targetEntity=PlanningSkipRule.class)

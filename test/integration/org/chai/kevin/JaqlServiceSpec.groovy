@@ -38,4 +38,11 @@ class JaqlServiceSpec extends IntegrationTests {
 		jaqlService.evaluate("1==\n1", Type.TYPE_BOOL(), [:], [:]).equals(Value.VALUE_BOOL(true))
 	}
 	
+	def "evaluate roundup"() {
+		expect:
+		jaqlService.evaluate("roundup(0.1)", Type.TYPE_NUMBER(), [:], [:]).equals(Value.VALUE_NUMBER(1d))
+		jaqlService.evaluate("roundup(0.5)", Type.TYPE_NUMBER(), [:], [:]).equals(Value.VALUE_NUMBER(1d))
+		jaqlService.evaluate("roundup(1)", Type.TYPE_NUMBER(), [:], [:]).equals(Value.VALUE_NUMBER(1d))
+	}
+	
 }

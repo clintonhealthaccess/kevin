@@ -35,6 +35,7 @@ import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.JaqlService
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardPercentageService
@@ -155,12 +156,10 @@ beans = {
 		reportService = ref("reportService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
-		languageService = ref("languageService")
 		skipLevels = dsrSkipLevels
 	}
 	
 	fctService(FctService){
-		languageService = ref("languageService")
 		reportService = ref("reportService")
 		valueService = ref("valueService")
 		skipLevels = fctSkipLevels

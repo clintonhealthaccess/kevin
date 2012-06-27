@@ -115,7 +115,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		then:
 		planningTypeBudget.planningEntryBudgetList.size() == 1
 		planningTypeBudget.planningEntryBudgetList[0].budgetCosts.size() == 1
-		planningTypeBudget.planningEntryBudgetList[0].getBudgetCost(planningCost).value == 2.0d
+		planningTypeBudget.planningEntryBudgetList[0].getBudgetCost(planningCost).value.equals(Value.VALUE_NUMBER(2d))
 	}
 	
 	def "get budget lines when data element has null value"() {
@@ -209,7 +209,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		planningTypeBudget.planningEntryBudgetList.size() == 2
 		planningTypeBudget.planningEntryBudgetList[0].budgetCosts.size() == 0
 		planningTypeBudget.planningEntryBudgetList[1].budgetCosts.size() == 1
-		planningTypeBudget.planningEntryBudgetList[1].getBudgetCost(planningCost).value == 2d
+		planningTypeBudget.planningEntryBudgetList[1].getBudgetCost(planningCost).value.equals(Value.VALUE_NUMBER(2d))
 	}
 	
 	def "add planning entry"() {
@@ -567,6 +567,29 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		planningSummary.dataLocations.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
 		planningSummary.getNumberOfEntries(DataLocation.findByCode(BUTARO), planningType) == 1
 		
+	}
+	
+	def "get planning output table"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_LIST([Value.VALUE_MAP(["key0": Value.VALUE_STRING("123"), "key1": Value.VALUE_NUMBER(1)])]))
+		def planningOutput = newPlanningOutput(planning, dataElement, "[_].key0")
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
+		newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, Value.VALUE_LIST([Value.VALUE_NUMBER(1)]))
+		def planningColumn = newPlanningOutputColumn(planningOutput, normalizedDataElement)
+		
+		when:
+		def outputTable = planningService.getPlanningOutputTable(planningOutput, DataLocation.findByCode(BUTARO))
+		
+		then:
+		outputTable.headerType.equals(Type.TYPE_ENUM(CODE(1)))
+		outputTable.rows.equals([Value.VALUE_STRING("123")])
+		outputTable.getValueType(planningColumn).equals(Type.TYPE_NUMBER())
+		outputTable.getValue(0, planningColumn).equals(Value.VALUE_NUMBER(1))
 	}
 	
 //	TODO think about how to make that test pass

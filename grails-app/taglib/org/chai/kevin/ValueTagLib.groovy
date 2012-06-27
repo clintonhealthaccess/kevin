@@ -16,7 +16,6 @@ import org.chai.kevin.value.Value;
 
 class ValueTagLib {
 
-	def dataService
 	def languageService
 	
 	def reportValue = { attrs, body ->
@@ -33,37 +32,10 @@ class ValueTagLib {
 					if (value.booleanValue) out << '<div class="report-value-true">&#10003;</div>'
 					else out << '<div class="report-value-false">&#10007;</div>'
 					break;
-				case ValueType.STRING:
-				case ValueType.TEXT:
-					out << value.stringValue
-					break;
-				case ValueType.NUMBER:
-					out << formatNumber(format, value.numberValue)
-					break;
-				case ValueType.ENUM:
-					String output = null
-					Enum enume = dataService.findEnumByCode(type.enumCode);
-					if (enume != null) {
-						EnumOption option = enume.getOptionForValue(value.enumValue);
-						if (option != null) output = languageService.getText(option.getNames());
-					}
-					if (output == null) output = value.enumValue
-					out << output
-					break;
-				case ValueType.DATE:
-					// TODO
-					break;
 				default:
-					throw new NotImplementedException()
+					out << languageService.getStringValue(value, type, null, format)
 			}
 		}
-	}
-	
-	def formatNumber(String format, Number value) {
-		if (format == null) format = "#";
-		
-		DecimalFormat frmt = new DecimalFormat(format);
-		return frmt.format(value.doubleValue()).toString();
 	}
 	
 	def adminValue = {attrs, body ->
@@ -137,32 +109,14 @@ class ValueTagLib {
 		
 		def type = attrs['type']
 		def value = attrs['value']
+		def format = attrs['format']
+		def zero = attrs['zero']
 		def enums = attrs['enums']
 		def nullText = attrs['nullText']
 		
 		def result = null
 		if (value != null && !value.isNull()) {
-			switch (type.type) {
-				case (ValueType.ENUM):
-					def enume = null
-					 
-					if (enums == null) enume = dataService.findEnumByCode(type.enumCode);
-					else enume = enums?.get(type.enumCode)
-					
-					if (enume == null) result = value.enumValue
-					else {
-						def option = enume?.getOptionForValue(value.enumValue)
-						if (option == null) result = value.enumValue
-						else result = languageService.getText(option.names)
-					}
-					break;
-				case (ValueType.MAP):
-					// TODO
-				case (ValueType.LIST):
-					// TODO
-				default:
-					result = value.stringValue
-			}
+			result = languageService.getStringValue(value, type, enums, format, zero)
 		}
 		if (result == null && nullText != null) out << nullText
 		else out << result

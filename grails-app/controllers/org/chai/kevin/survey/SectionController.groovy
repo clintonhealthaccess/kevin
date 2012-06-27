@@ -88,8 +88,8 @@ class SectionController extends AbstractEntityController {
 	
 			def max = Math.min(params['offset']+params['max'], sections.size())
 			
-			render (view: '/survey/admin/list', model:[
-				template:"sectionList",
+			render (view: '/entity/list', model:[
+				template:"survey/sectionList",
 				survey: program.survey,
 				program: program,
 				entities: sections.subList(params['offset'], max),

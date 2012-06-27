@@ -82,11 +82,9 @@ public class ValueService {
 	@Transactional(readOnly=true)
 	public <T extends DataValue> T getDataElementValue(DataElement<T> data, DataLocation dataLocation, Period period) {
 		if (log.isDebugEnabled()) log.debug("getDataElementValue(data="+data+", period="+period+", dataLocation="+dataLocation+")");
-		List<T> values = listDataElementValues(data, dataLocation, period, new HashMap<String, Object>());
-		T result = null;
-		if (values.size() > 0) result = values.get(0);
+		Criteria criteria = getCriteria(data, dataLocation, period);
+		T result = (T)criteria.uniqueResult();
 		if (log.isDebugEnabled()) log.debug("getDataElementValue(...)="+result);
-		
 		return result;
 	}
 	
@@ -95,6 +93,7 @@ public class ValueService {
 	public <T extends DataValue> List<T> searchDataElementValues(String text, DataElement<T> data, DataLocation dataLocation, Period period, Map<String, Object> params) {
 		if (log.isDebugEnabled()) log.debug("searchDataElementValues(text="+text+", data="+data+", period="+period+", dataLocation="+dataLocation+")");
 		Criteria criteria = getCriteria(data, dataLocation, period);
+		criteria.createAlias("location", "location");
 		addSortAndLimitCriteria(criteria, params);
 		addSearchCriteria(criteria, text);
 		
@@ -108,8 +107,9 @@ public class ValueService {
 	private <T extends DataValue> void filterList(List<T> list, String text) {
 		for (String chunk : StringUtils.split(text)) {
 			for (DataValue element : new ArrayList<T>(list)) {
-				if (!Utils.matches(chunk, element.getLocation().getNames().get(languageService.getCurrentLanguage()))) list.remove(element);
-				if (!Utils.matches(chunk, element.getLocation().getCode())) list.remove(element);
+				if (!Utils.matches(chunk, element.getLocation().getNames().get(languageService.getCurrentLanguage())) 
+					&&
+					!Utils.matches(chunk, element.getLocation().getCode())) list.remove(element);
 			}
 		}
 	}
@@ -142,6 +142,7 @@ public class ValueService {
 	public <T extends DataValue> List<T> listDataElementValues(DataElement<T> data, DataLocation dataLocation, Period period, Map<String, Object> params) {
 		if (log.isDebugEnabled()) log.debug("listDataElementValues(data="+data+", period="+period+", dataLocation="+dataLocation+")");
 		Criteria criteria = getCriteria(data, dataLocation, period);
+		criteria.createAlias("location", "location");
 		addSortAndLimitCriteria(criteria, params);
 		
 		List<T> result = criteria.list();
@@ -152,7 +153,10 @@ public class ValueService {
 	public <T extends DataValue> Long countDataElementValues(String text, DataElement<T> data, DataLocation dataLocation, Period period) {
 		if (log.isDebugEnabled()) log.debug("listDataElementValues(data="+data+", period="+period+", dataLocation="+dataLocation+")");
 		Criteria criteria = getCriteria(data, dataLocation, period);
-		if (text != null) addSearchCriteria(criteria, text);
+		if (text != null) {
+			criteria.createAlias("location", "location");
+			addSearchCriteria(criteria, text);
+		}
 		
 		Long result = (Long)criteria.setProjection(Projections.count("id")).uniqueResult();
 		if (log.isDebugEnabled()) log.debug("listDataElementValues(...)=");
@@ -164,7 +168,7 @@ public class ValueService {
 		criteria.add(Restrictions.eq("data", data));
 		if (period != null) criteria.add(Restrictions.eq("period", period));
 		if (dataLocation != null) criteria.add(Restrictions.eq("location", dataLocation));
-		criteria.createAlias("location", "location");
+		
 		return criteria;
 	}
 	

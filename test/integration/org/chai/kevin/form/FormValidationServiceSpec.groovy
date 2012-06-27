@@ -98,7 +98,7 @@ class FormValidationServiceSpec extends IntegrationTests {
 		def validationRule = null
 		
 		when:
-		validationRule = newFormValidationRule(CODE(1),element1, "[_].test[_].test_nested", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+"[_].test[_].test_nested > 10")
+		validationRule = newFormValidationRule(CODE(1), element1, "[_].test[_].test_nested", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+"[_].test[_].test_nested > 10")
 		
 		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), Value.VALUE_LIST([
 			Value.VALUE_MAP([

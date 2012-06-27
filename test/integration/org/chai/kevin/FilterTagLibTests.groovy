@@ -3,6 +3,7 @@ package org.chai.kevin
 import grails.test.GroovyPagesTestCase;
 
 import org.chai.kevin.IntegrationTests
+import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardIntegrationTests
 import org.chai.kevin.dsr.DsrIntegrationTests
 import org.chai.kevin.location.DataLocation;
@@ -22,15 +23,28 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		DashboardIntegrationTests.setupDashboardTree()
 		def program = ReportProgram.findByCode(IntegrationTests.PROGRAM1)
 		
+		def controller = new UserController()
+		controller.request.params = [:]
+		controller.request.params.put('program', program.id)
+		controller.request.params.put('dashboardEntity', 3)
+		controller.request.params.put('dsrCategory', 4)
+		controller.request.params.put('fctTarget', 5)
+		
 		def html = applyTemplate(
-			'<g:programFilter selected="${program}" selectedTargetClass="${target}"/>',
+//			'<g:programFilter linkParams="${params}" selected="${program}" selectedTargetClass="${target}" exclude="${excludeParams}"/>',
+			'<g:programFilter linkParams="${params}" exclude="${excludeParams}" selectedTargetClass="${target}"/>',
 			[
-				'program': program,
-				'target': DashboardTarget.class
+				'params': controller.request.params,
+//				'program': program,
+				'target': DashboardTarget.class,
+				'excludeParams': ['dashboardEntity', 'dsrCategory', 'fctTarget']
 			]
 		)
 		
-		assertTrue html.contains("href=\"/test?program="+program.id+"\"")
+		assertTrue html.contains("href=\"/user/index?program="+program.id+"\"")
+		assertTrue !html.contains("dashboardEntity="+3+"\"")
+		assertTrue !html.contains("dsrCategory="+4+"\"")
+		assertTrue !html.contains("fctTarget="+5+"\"")
 	}
 	
 	def testLocationFilter() {
@@ -102,40 +116,28 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		assertTrue html.contains('select ')
 	}
 	
-	//TODO fix these tests
-	
-	def testLocationTypesLinkParamFilter() {
+	def testTopLevelReportTabsFilter() {
 		def period = IntegrationTests.newPeriod()
-		def country = IntegrationTests.newLocationLevel(IntegrationTests.NATIONAL, 1)
-		def rwanda = IntegrationTests.newLocation(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
-		def program = IntegrationTests.newReportProgram(IntegrationTests.ROOT)
+		IntegrationTests.setupProgramTree()
+		DashboardIntegrationTests.setupDashboardTree()
+		def program = ReportProgram.findByCode(IntegrationTests.PROGRAM1)
+		
+		def controller = new UserController()
+		controller.request.params = [:]
+		controller.request.params.put('program', program.id)
+		controller.request.params.put('dashboardEntity', 3)
 		
 		def html = applyTemplate(
-			'<input type="hidden" name="location" value="${location}"/>' +
-			'<input type="hidden" name="program" value="${program}"/>' +
-			'<input type="hidden" name="period" value="${period}"/>',
+			'<g:topLevelReportTabs linkParams="${params}" exclude="${excludeParams}" />',
 			[
-				'location': rwanda.id,
-				'program': program.id,
-				'period': period.id
+				'params': controller.request.params,
+				'excludeParams': ['dashboardEntity']
 			]
 		)
-		
-		assertTrue html.contains(rwanda.id.toString())
-		assertTrue html.contains(program.id.toString())
-		assertTrue html.contains(period.id.toString())
-	}
 
-	def testLinkParamFilter() {
-		def controller = new UserController()
-		controller.request.params = ['param1': '123', 'param2': ['123','456']]
-		
-		def html = applyTemplate(
-			'<g:linkParamFilter linkParams="${params}"/>'
-		)
-
-		assertTrue html.contains('<input type="hidden" name="param1" value="123"/>')
-		assertTrue html.contains('<input type="hidden" name="param2" value="123"/>')
-		assertTrue html.contains('<input type="hidden" name="param2" value="456"/>')
+		assertTrue html.contains("href=\"/dashboard/index?program="+program.id+"\"")
+		assertTrue html.contains("href=\"/dsr/index?program="+program.id+"\"")
+		assertTrue html.contains("href=\"/fct/index?program="+program.id+"\"")
+		assertTrue !html.contains("dashboardEntity="+3+"\"")
 	}
 }

@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.RawDataElementValue;
 
@@ -47,7 +47,7 @@ public class PlanningList {
 			planningBudgetEntries = new ArrayList<PlanningEntryBudget>();
 			if (rawDataElementValue != null && !rawDataElementValue.getValue().isNull()) {
 				for (int i = 0; i < rawDataElementValue.getValue().getListValue().size(); i++) {
-					PlanningEntry planningEntry = getPlanningEntry(rawDataElementValue.getValue().getListValue().get(i).getAttribute(PlanningEntry.UUID));
+					PlanningEntry planningEntry = getPlanningEntries().get(i);
 					if (planningEntry != null) planningBudgetEntries.add(new PlanningEntryBudget(budgetValues, dataLocation, planningType, formEnteredValue.getValidatable(), planningEntry.getLineNumber(), enums));
 				}
 			}
@@ -55,12 +55,12 @@ public class PlanningList {
 		return planningBudgetEntries;
 	}
 	
-	public PlanningEntry getPlanningEntry(String uuid) {
-		for (PlanningEntry planningEntry : getPlanningEntries()) {
-			if (planningEntry.getUuid().equals(uuid)) return planningEntry;
-		}
-		return null;
-	}
+//	public PlanningEntry getPlanningEntry(String uuid) {
+//		for (PlanningEntry planningEntry : getPlanningEntries()) {
+//			if (planningEntry.getUuid().equals(uuid)) return planningEntry;
+//		}
+//		return null;
+//	}
 
 	public List<PlanningEntry> getPlanningEntries() {
 		if (planningEntries == null) {
@@ -84,7 +84,7 @@ public class PlanningList {
 			result.mergeValues(new HashMap<String, Object>());
 		}
 		else result = getPlanningEntries().get(lineNumber);
-		if (result.getUuid() == null) result.setUuid(UUID.randomUUID().toString());
+//		if (result.getUuid() == null) result.setUuid(UUID.randomUUID().toString());
 		return result;
 	}
 	
@@ -101,24 +101,8 @@ public class PlanningList {
 		return getPlanningEntries().isEmpty();
 	}
 	
-	public Double getIncoming() {
-		return getSum(PlanningCostType.INCOMING);
-	}
-	
-	private Double getSum(PlanningCostType costType) {
-		Double result = 0d;
-		for (PlanningEntryBudget line : getPlanningEntryBudgetList()) {
-			result += line.getSum(costType);
-		}
-		return result;
-	}
-	
-	public Double getOutgoing() {
-		return getSum(PlanningCostType.OUTGOING);
-	}
-	
-	public Double getDifference() {
-		return getIncoming() - getOutgoing();
+	public PlanningType getPlanningType() {
+		return planningType;
 	}
 	
 }

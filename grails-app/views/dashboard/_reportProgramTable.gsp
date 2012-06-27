@@ -1,7 +1,11 @@
 <table class="horizontal-graph">
 <thead>
   <tr>
-	<th><g:i18n field="${currentProgram.names}"/></th>
+	<th>
+		<g:i18n field="${currentProgram.names}"/>
+		<g:render template="/templates/help_tooltip" 
+			model="[names: i18n(field: currentProgram.names), descriptions: i18n(field: currentProgram.descriptions)]" />
+	</th>
 	<th><g:message code="dashboard.report.table.score"/></th>
 	<th></th>
   </tr>
@@ -11,14 +15,16 @@
 		<g:each in="${dashboard.dashboardEntities}" var="entity">			
 			<tr>
 				<g:set var="percentageValue" />
-				<td><g:if test="${!entity.isTarget()}">
+				<td>
+					<g:if test="${!entity.isTarget()}">
 						<a href="${createLink(controller:'dashboard', action:'view',
 						params:[period: currentPeriod.id, program: entity.program.id, location: currentLocation.id, dashboardEntity: entity.id])}">
 							<g:i18n field="${entity.program.names}" />
 						</a>
 					</g:if> <g:else>
 						<g:i18n field="${entity.names}" />
-					</g:else></td>
+					</g:else>
+					</td>
 				<td><g:set var="percentageValue" value="${dashboard.getPercentage(currentLocation, entity)}" />
 					<g:if test="${percentageValue != null}">
 						${percentageValue}%
@@ -47,7 +53,7 @@
 					</g:else>						
 					<!-- comparison value -->
 					<div id="compare-dashboard-entity-${entity.id}" 
-					class="js_bar_horizontal tooltip horizontal-bar-avg" 							
+					class="js_bar_horizontal tooltip horizontal-bar-avg hidden" 							
 						data-percentage="45" 
 						style="width:45%;" 
 						original-title="45%"></div>

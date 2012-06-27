@@ -13,24 +13,28 @@
 	</head>
 	<body>
 		<div id="report">
-			<div class="subnav">			
+			<div class="filter-bar">			
 				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params]"/>
 			</div>
-			<div class="main">
-				<g:render template="/templates/topLevelReportTabs" model="[linkParams:params]"/>
-				<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>			
-				<ul id="questions">
-	              <li class="question">
-	                <g:render template="/templates/reportTableHeader" model="[linkParams:params]"/>	                
-	                <g:render template="/dsr/reportCategoryFilter" model="[linkParams:params]"/>
-	              </li>
-	              <g:if test="${dsrTable.hasData()}">
-	              	<g:render template="/dsr/reportProgramTable" model="[linkParams:params]"/>
-	              </g:if>
-	              <g:else>
-	              	<g:message code="dsr.report.table.noselection.label"/>	              	
-	              </g:else>
-				</ul>
+			<div class="main">			
+				<g:topLevelReportTabs linkParams="${params}" exclude="${['dsrCategory']}" />							
+				<g:if test="${dsrTable != null && dsrTable.hasData()}">					
+					<ul>
+						<li>
+							<g:render template="/templates/reportTitle" model="[program: currentProgram, title: i18n(field:currentProgram.names)+' x '+i18n(field:currentLocation.names), file: 'star_small.png']"/>                
+							<g:render template="/dsr/reportCategoryFilter" model="[linkParams:params]"/>
+						</li>
+						<g:if test="${dsrTable.hasData()}">
+							<g:render template="/dsr/reportProgramTable" model="[linkParams:params]"/>
+						</g:if>
+						<g:else>
+							<g:message code="dsr.report.table.noselection.label"/>	              	
+						</g:else>
+					</ul>
+				</g:if>
+				<g:else>
+					<p class="nav-help"><g:message code="dsr.report.table.noselection.label"/></p>
+				</g:else>
 			</div>		
 		</div>		
 	</body>	

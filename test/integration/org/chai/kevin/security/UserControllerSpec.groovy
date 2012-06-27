@@ -29,6 +29,7 @@ package org.chai.kevin.security
 
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.location.DataLocation;
 
 /**
  * @author Jean Kahigiso M.
@@ -44,9 +45,14 @@ class UserControllerSpec extends IntegrationTests{
 		userController = new UserController();
 		
 		when: 
+		userController.params.userType="OTHER";
 		userController.params.email="exemple@exemple.com";
 		userController.params.code ="exemple";
 		userController.params.username ="exemple";
+		userController.params.firstname ="first";
+		userController.params.lastname ="last";
+		userController.params.phoneNumber ="+250 11 111 11 11";
+		userController.params.organisation ="org";
 		userController.params.password = "exemple";
 		userController.params.repeat = "exemple";
 		userController.params.permissionString = "*";
@@ -67,8 +73,13 @@ class UserControllerSpec extends IntegrationTests{
 		userController = new UserController();
 		
 		when:
+		userController.params.userType="OTHER";
 		userController.params.email="exemple@exemple.com";
 		userController.params.username ="exemple";
+		userController.params.firstname ="first";
+		userController.params.lastname ="last";
+		userController.params.phoneNumber ="+250 11 111 11 11";
+		userController.params.organisation ="org";
 		userController.params.password = "exemple";
 		userController.params.repeat = "exemple1";
 		userController.params.permissionString = "*";
@@ -144,6 +155,27 @@ class UserControllerSpec extends IntegrationTests{
 		User.findByUsername("myuser1").uuid == uuid;
 	}
 	
+	def "saving sets permissions and roles"(){
+		setup:
+		setupLocationTree()
+		userController = new UserController();
+		new Role(name: 'report-all-readonly', permissionString: '').save(failOnError: true)
+		def uuid = UUID.randomUUID().toString();
+		def location = DataLocation.findByCode(BUTARO)
+		def user = newSurveyUser("myuser1",uuid,location.id);
+
+		when:
+		userController.params.id = user.id
+		userController.params.userType = "PLANNING";
+		userController.save();
+		
+		then:
+		User.count() == 1;
+		User.findByUsername("myuser1")!=null;
+		User.findByUsername("myuser1").permissions.equals(s(['editPlanning:view','editPlanning:*:'+location.id,'menu:planning','home:*']))
+		User.findByUsername("myuser1").roles*.name == ['report-all-readonly']
+	}
+	
 	def "cannot change password hash"(){
 		setup:
 		userController = new UserController();
@@ -159,4 +191,28 @@ class UserControllerSpec extends IntegrationTests{
 		User.findByUsername("myuser1")!=null;
 		User.findByUsername("myuser1").passwordHash == '';
 	}
+	
+	def "search and list user result test"(){
+		
+		setup:
+		setupLocationTree()
+		def dataLocation = DataLocation.findByCode(KIVUYE);
+		def user = newUser("user",UUID.randomUUID().toString());
+		def surveyUser = newSurveyUser("surveyUser",UUID.randomUUID().toString(),dataLocation.id);
+		userController = new UserController()
+		
+		when:
+		userController.params.q = "survey";
+		userController.search()
+		
+		then:
+		userController.modelAndView.model.entities.equals([surveyUser])
+		
+		when:
+		userController.list()
+		
+		then:
+		userController.modelAndView.model.entities.equals([user,surveyUser])
+	}
+	
 }

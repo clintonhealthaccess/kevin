@@ -117,9 +117,6 @@ public class RefreshValueService {
 	private Date refreshDataElement(DataElement dataElement, DataLocation dataLocation, Period period, List<NormalizedDataElement> uptodateElements) {
 		DataValue storedValue = valueService.getDataElementValue(dataElement, dataLocation, period);
 		
-		// TODO see if we can optimize the position of this line
-		sessionFactory.getCurrentSession().evict(storedValue);
-		
 		if (dataElement instanceof RawDataElement) {
 			if (storedValue == null) return dataElement.getTimestamp();
 			return storedValue.getTimestamp();
@@ -210,10 +207,10 @@ public class RefreshValueService {
 	
 	@Transactional(readOnly = false)
 	public void refreshCalculation(Calculation<?> calculation) {
-		Map<String, NormalizedDataElement> dependenciesMap = expressionService.getDataInExpression(calculation.getExpression(), NormalizedDataElement.class);
+		Map<String, DataElement> dependenciesMap = expressionService.getDataInExpression(calculation.getExpression(), DataElement.class);
 		
 		Date latestDependency = null;
-		for (NormalizedDataElement dependency : dependenciesMap.values()) {
+		for (DataElement<?> dependency : dependenciesMap.values()) {
 			Date dependencyDate = refreshDataElement(dependency, new ArrayList<NormalizedDataElement>());
 			if (latestDependency == null || (dependencyDate != null && dependencyDate.after(latestDependency))) latestDependency = dependencyDate;
 		}

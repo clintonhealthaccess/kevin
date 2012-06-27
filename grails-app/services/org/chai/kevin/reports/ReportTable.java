@@ -1,6 +1,7 @@
 package org.chai.kevin.reports;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.value.Value;
@@ -11,6 +12,10 @@ public abstract class ReportTable<T, S extends CalculationLocation> {
 	
 	public ReportTable(Map<S, Map<T, Value>> valueMap) {
 		this.valueMap = valueMap;
+	}
+	
+	public Set<S> getLocations(){
+		return valueMap.keySet();
 	}
 	
 	public boolean hasData(){

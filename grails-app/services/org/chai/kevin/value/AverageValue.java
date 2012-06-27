@@ -22,6 +22,11 @@ public class AverageValue extends CalculationValue<AveragePartialValue> {
 
 	@Override
 	public Value getValue() {
+		if (getLocation().collectsData()) {
+			if (getCalculationPartialValues().size() > 1) throw new IllegalStateException("calculation for DataLocation does not contain only one partial value");
+			if (getCalculationPartialValues().size() == 0) return Value.NULL_INSTANCE();
+			return getCalculationPartialValues().get(0).getValue();
+		}
 		Double sum = 0d;
 		Integer num = 0;
 		for (AveragePartialValue averagePartialValue : getCalculationPartialValues()) {

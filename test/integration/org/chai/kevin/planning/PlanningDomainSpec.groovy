@@ -80,8 +80,6 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		
 		then:
 		PlanningType.count() == 1
-		
-		
 	}
 	
 	def "header prefix must be a value prefix or empty"() {
@@ -160,6 +158,122 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		then:
 		thrown ValidationException
 		
+	}
+	
+	def "planning output - null constraints"() {
+		setup:
+		def period = newPeriod()
+		def planning = newPlanning(period, [])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		
+		when:
+		new PlanningOutput(dataElement: dataElement, fixedHeader: "[_]", planning: planning).save(failOnError:true)
+		
+		then:
+		PlanningOutput.count() == 1
+		
+		when:
+		new PlanningOutput(dataElement: dataElement, planning: planning).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+		
+		when:
+		new PlanningOutput(fixedHeader: "[_]", planning: planning).save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+		
+		when:
+		new PlanningOutput(dataElement: dataElement, fixedHeader: "[_]").save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "planning output - fixed header must not be empty"() {
+		setup:
+		def period = newPeriod()
+		def planning = newPlanning(period, [])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		
+		when:
+		new PlanningOutput(dataElement: dataElement, fixedHeader: "", planning: planning).save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
+		
+	
+	def "planning output - data element must be a list"() {
+		setup:
+		def period = newPeriod()
+		def planning = newPlanning(period, [])
+		
+		when:
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		new PlanningOutput(dataElement: dataElement, fixedHeader: "[_]", planning: planning).save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "planning output column - null constraints"() {
+		setup:
+		def period = newPeriod()
+		def planning = newPlanning(period, [])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		def planningOutput = newPlanningOutput(planning, dataElement, planning)
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
+		
+		when:
+		new PlanningOutputColumn(planningOutput: planningOutput, normalizedDataElement: normalizedDataElement).save(failOnError:true)
+		
+		then:
+		PlanningOutputColumn.count() == 1
+		
+		when:
+		new PlanningOutputColumn(planningOutput: planningOutput).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+		
+		when:
+		new PlanningOutputColumn(normalizedDataElement: normalizedDataElement).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "planning column output - data element must be a list"() {
+		setup:
+		def period = newPeriod()
+		def planning = newPlanning(period, [])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		def planningOutput = newPlanningOutput(planning, dataElement, planning)
+		
+		when:
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
+		new PlanningOutputColumn(planningOutput: planningOutput, normalizedDataElement: normalizedDataElement).save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "planning column output order"() {
+		setup:
+		def period = newPeriod()
+		def planning = newPlanning(period, [])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		def planningOutput = newPlanningOutput(planning, dataElement, planning)
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
+		
+		when:
+		def column1 = newPlanningOutputColumn(planningOutput, normalizedDataElement, 2).save(failOnError:true)
+		def column2 = newPlanningOutputColumn(planningOutput, normalizedDataElement, 1).save(failOnError:true)
+		
+		then:
+		planningOutput.columns.equals([column2, column1])
 	}
 	
 }

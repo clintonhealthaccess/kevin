@@ -6,7 +6,7 @@ class HomeControllerSpec extends IntegrationTests {
 
 	def homeController
 	
-	def "data user with survey landing page get redirected to survey"() {
+	def "data user with survey landing page get redirected to landing page"() {
 		setup:
 		setupLocationTree()
 		def dataLocation = DataLocation.findByCode(KIVUYE);
@@ -18,7 +18,7 @@ class HomeControllerSpec extends IntegrationTests {
 		homeController.index()
 		
 		then:
-		homeController.response.redirectedUrl == "/editSurvey/view"
+		homeController.response.redirectedUrl == "/home/landingPage"
 	}
 	
 	def "data user with planning landing page get redirected to planning"() {
@@ -33,7 +33,22 @@ class HomeControllerSpec extends IntegrationTests {
 		homeController.index()
 		
 		then:
-		homeController.response.redirectedUrl == "/editPlanning/view"
+		homeController.response.redirectedUrl == "/home/landingPage"
+	}
+	
+	def "other users get redirected to landing page"() {
+		setup:
+		setupLocationTree()
+		def dataLocation = DataLocation.findByCode(KIVUYE);
+		def user = newUser("myuser1", UUID.randomUUID().toString());
+		setupSecurityManager(user)
+		homeController = new HomeController()
+		
+		when:
+		homeController.index()
+		
+		then:
+		homeController.response.redirectedUrl == "/home/landingPage"
 	}
 	
 }
