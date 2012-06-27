@@ -38,6 +38,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
+import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataService;
@@ -82,18 +83,6 @@ class DataExportService {
 	def sessionFactory;
 	def surveyExportService;
 	
-	private final static String CSV_FILE_EXTENSION = ".csv";
-	private final static String LOCATION_TYPE = "Data Location Type";
-	private final static String DATA_LOCATION_CODE = "Data Location Code";
-	private final static String DATA_LOCATION_NAME = "Data Location Name";
-	private final static String DATA_CLASS = "Data Class";
-	private final static String DATA_CODE = "Data Id";
-	private final static String DATA_NAME = "Data Name";
-	private final static String PERIOD_CODE = "Period Code";
-	private final static String PERIOD = "Period";
-	private final static String DATA_VALUE = "Data Value";
-	private final static String DATA_VALUE_ADDRESS = "Data Value Address";
-	
 	public File exportData(DataExport export){
 		if (log.isDebugEnabled()) log.debug("exportData("+export+")");
 		Set<DataLocationType> types = new HashSet();
@@ -111,7 +100,7 @@ class DataExportService {
 		
 	public File exportDataElements(String fileName,List<DataLocation> dataLocations,Set<Period> periods,Set<Data<DataValue>> data){
 		if (log.isDebugEnabled()) log.debug(" exportDataElement(String "+fileName+" List<DataLocation>: " + dataLocations + " List<Period>: "+ periods + " Set<Data<DataValue>>: " + data + ")");
-		File csvFile = File.createTempFile(fileName, CSV_FILE_EXTENSION);
+		File csvFile = File.createTempFile(fileName, ImportExportConstant.CSV_FILE_EXTENSION);
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
 		this.writeDataElements(writer, dataLocations, periods, data)
@@ -179,16 +168,16 @@ class DataExportService {
 		List<String> headers = new ArrayList<String>();
 		for (LocationLevel level : locationService.listLevels())
 			headers.add(languageService.getText(level.getNames()));
-		headers.add(DATA_LOCATION_CODE);
-		headers.add(DATA_LOCATION_NAME);
-		headers.add(LOCATION_TYPE);
-		headers.add(PERIOD_CODE);
-		headers.add(PERIOD);
-		headers.add(DATA_CLASS);
-		headers.add(DATA_CODE);
-		headers.add(DATA_NAME);
-		headers.add(DATA_VALUE);
-		headers.add(DATA_VALUE_ADDRESS);
+		headers.add(ImportExportConstant.DATA_LOCATION_CODE);
+		headers.add(ImportExportConstant.DATA_LOCATION_NAME);
+		headers.add(ImportExportConstant.LOCATION_TYPE);
+		headers.add(ImportExportConstant.PERIOD_CODE);
+		headers.add(ImportExportConstant.PERIOD);
+		headers.add(ImportExportConstant.DATA_CLASS);
+		headers.add(ImportExportConstant.DATA_CODE);
+		headers.add(ImportExportConstant.DATA_NAME);
+		headers.add(ImportExportConstant.DATA_VALUE);
+		headers.add(ImportExportConstant.DATA_VALUE_ADDRESS);
 		return headers;
 	}
 	

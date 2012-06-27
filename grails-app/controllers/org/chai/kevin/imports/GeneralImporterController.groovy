@@ -68,12 +68,13 @@ class GeneralImporterController extends AbstractController {
 			GeneralDataImporter importer = new GeneralDataImporter(
 					locationService, valueService, dataService,
 					sessionFactory, transactionManager,
-					errorManager,periodService
+					errorManager, periodService
 					);
-			if (cmd.file.getContentType().equals(FILE_TYPE_ZIP)) importer.importZipFiles(cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
-			if (cmd.file.getContentType().equals(FILE_TYPE_CSV)) importer.importCsvFile(cmd.file.getName(), cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
+				
+			if (cmd.file.getContentType().equals(FILE_TYPE_ZIP)) importer.importZipFiles(cmd.file.getInputStream(), cmd.encoding, cmd.delimiter);
+			if (cmd.file.getContentType().equals(FILE_TYPE_CSV)) importer.importCsvFile(cmd.file.getName(), cmd.file.getInputStream(), cmd.encoding, cmd.delimiter);
 			cmd.file.getInputStream().close();
-
+			
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 		}else{
 			this.getModel(cmd,errorManager,IMPORT_FORM);
@@ -101,6 +102,5 @@ class GeneralImporterCommand {
 		})
 		delimiter(blank:false,nullable:false)
 		encoding(blank:false,nullable:false)
-		period(blank:false,nullable:false)
 	}
 }

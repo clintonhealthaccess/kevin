@@ -28,12 +28,12 @@
 package org.chai.kevin.imports;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,6 +42,7 @@ import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.Sanitizer;
+import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValueService;
@@ -55,9 +56,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 public abstract class DataImporter extends FileImporter {
 
 	private static final Log log = LogFactory.getLog(DataImporter.class);
-	static final String LOCATION_CODE_HEADER = "code";
-	static final String DATA_CODE_HEADER = "data";
-	static final String VALUE_HEADER = "data_value";
 	
 	protected ValueService valueService;
 	protected PlatformTransactionManager transactionManager;
@@ -79,6 +77,7 @@ public abstract class DataImporter extends FileImporter {
 
 	protected class ImportSanitizer implements Sanitizer {
 		private Map<String, Enum> enumMap = new HashMap<String, Enum>();
+		private Map<Integer,String> lineNumberAddress = new HashMap<Integer, String>();
 		
 		private DataService dataService;
 		private final List<ImporterError> errors;
@@ -97,7 +96,6 @@ public abstract class DataImporter extends FileImporter {
 		private Integer numberOfErrorInRows;
 		
 		private Enum getAndStoreEnum(String code) {
-			if (log.isDebugEnabled()) log.debug("++enumMap :"+enumMap);
 			if (!enumMap.containsKey(code)) {
 				Enum enume = dataService.findEnumByCode(code);
 				enumMap.put(code, enume);
@@ -117,16 +115,33 @@ public abstract class DataImporter extends FileImporter {
 			this.numberOfErrorInRows = numberOfErrorInRows;
 		}
 		
-		public void setType(String header,Type type){
-			types.clear();
+		public void addType(String header,Type type){
 			types.put(header, type);
 		}
-	
+		public void clearType(){
+			types.clear();
+		}
+		
+		public void addLineNumberMap(Integer lineNumber,String address){
+			lineNumberAddress.put(lineNumber,address);
+		}
+		public void clearLineNumberMap(){
+			lineNumberAddress.clear();
+		}
+
+		public Map<Integer,String> getLineNumberAddress() {
+			return lineNumberAddress;
+		}
+
+		public void setLineNumberAddress(Map<Integer,String> lineNumberAddress) {
+			this.lineNumberAddress = lineNumberAddress;
+		}
+		
 		@Override
-		public Object sanitizeValue(Object value, Type type, String prefix,String genericPrefix) {
+		public Object sanitizeValue(Object value, Type type, String prefix, String genericPrefix) {
 			switch (type.getType()) {
 			case ENUM:
-				return validateImportEnum(fileName,genericPrefix, value);
+				return validateImportEnum(fileName,prefix,genericPrefix, value);
 			case BOOL:
 				return validateImportBool(fileName,genericPrefix, value);
 			case NUMBER:
@@ -144,25 +159,36 @@ public abstract class DataImporter extends FileImporter {
 		}
 		
 	
-		private String validateImportEnum(String fileName, String header, Object value) {
-			Enum enume = getAndStoreEnum(types.get(header).getEnumCode());
+		private String validateImportEnum(String fileName, String prefixHeader, String genericPrefixHeader, Object value) {
+			if (log.isTraceEnabled()) log.trace("looking for map content: " + types + " prefixHeader" + prefixHeader + " genericPrefixHeader" + genericPrefixHeader);
+			Type type;
+			if (types.get(prefixHeader) != null)
+				type = types.get(prefixHeader);
+			else
+				type = types.get(genericPrefixHeader);
+
+			Enum enume = getAndStoreEnum(type.getEnumCode());
 			if (enume != null) {
 				EnumOption option = enume.getOptionForValue(value.toString());
-				if (option != null) return option.getValue();
+				if (option != null)
+					return option.getValue();
 			}
-			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(fileName,lineNumber, header,"import.error.message.enume"));
+			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows() + 1);
+			errors.add(new ImporterError(fileName, lineNumber, prefixHeader,
+					"import.error.message.enume"));
 			return value.toString();
 		}
 
 		private Boolean validateImportBool(String fileName,String header, Object value){
-			if (((String) value).equals("0") || ((String) value).equals("1"))
-				if (((String) value).equals("1"))
+			if(log.isTraceEnabled()) log.trace("imported bool value :"+value);
+			if (((String) value).equals(ImportExportConstant.TRUE) || ((String) value).equals(ImportExportConstant.FALSE))
+				if (((String) value).equals(ImportExportConstant.TRUE))
 					return true;
 				else
 					return false;
+			
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows() + 1);
-			errors.add(new ImporterError(fileName,lineNumber, header,"error.message.boolean"));
+			errors.add(new ImporterError(fileName,lineNumber, header,"import.error.message.boolean"));
 			return null;
 		}
 		
@@ -196,11 +222,18 @@ public abstract class DataImporter extends FileImporter {
 			errors.add(new ImporterError(fileName,lineNumber, header, "import.error.message.date")); 
 			return null;
 		}
+
+		@Override
+		public String toString() {	
+			return "ImportSanitizer [types=" + types + ", lineNumber="
+					+ lineNumber + "]";
+		}
 		
 	}
 	
 	protected void saveAndMergeIfNotNull(RawDataElementValue rawDataElementValue, Map<String,Object> positionsValueMap, ImportSanitizer sanitizer) {
 		if (rawDataElementValue != null) {
+			if (log.isTraceEnabled()) log.trace("sanitizer line: "+sanitizer);
 			if (log.isDebugEnabled()) log.debug("merging with data from map of header and data "+ positionsValueMap);
 			if (log.isTraceEnabled()) log.trace("value before merge" + rawDataElementValue.getValue());
 			rawDataElementValue.setValue(
@@ -212,5 +245,6 @@ public abstract class DataImporter extends FileImporter {
 			if (log.isTraceEnabled()) log.trace("saved rawDataElement: "+ rawDataElementValue.getValue());
 		}
 	}
+	
 	
 }

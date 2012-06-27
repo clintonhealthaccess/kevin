@@ -174,6 +174,12 @@ log4j = {
 		   				   
 	debug  'grails.app',
 		   'org.chai.kevin'
+		   
+	trace 'org.chai.kevin.service.imports.GeneralDataImporter',
+		   'org.chai.kevin.service.imports.NominativeDataImporter',
+		   'org.chai.kevin.service.imports.DataImporter',
+		   'org.chai.kevin.service.imports.DataImporterSpec'
+		   
 }
 
 environments {
@@ -184,10 +190,15 @@ environments {
 			}
 			
 			off 'ExpressionLog'
+			trace 'org.chai.kevin.service.imports.GeneralDataImporter',
+				  'org.chai.kevin.service.imports.NominativeDataImporter',
+				  'org.chai.kevin.service.imports.DataImporter',
+				  'org.chai.kevin.service.imports.lDataImporterSpec'
+		  	debug 'org.chai.kevin.service.imports.GeneralDataImporter',
+				  'org.chai.kevin.service.imports.NominativeDataImporter',
+				  'org.chai.kevin.service.imports.DataImporter',
+				  'org.chai.kevin.service.imports.lDataImporterSpec'
 			
-			trace 'org.chai.kevin.imports.GeneralDataImporter'
-			trace 'org.chai.kevin.imports.DataImporter'
-			debug 'org.chai.kevin.data.Type'
 		}
 	}
 }

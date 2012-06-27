@@ -39,21 +39,20 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import java.util.zip.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.Exportable;
-import org.chai.kevin.LanguageService;
-import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.data.EnumService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.Value;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author Jean Kahigiso M.
@@ -97,7 +96,19 @@ public class Utils {
 		if (value == null) return false;
 		return value.matches("(?i).*"+text+".*");
 	}
-
+	/**
+	 * Return the first occurrence of the key if the map matching the value(one-to-one)
+	 * @param map
+	 * @param value
+	 * @return key
+	 */
+	public static <T,E> T getKeyByValue(Map<T,E> map, E value){
+		for(Entry<T, E> entry: map.entrySet())
+			if(value.equals(entry.getValue()))
+				return entry.getKey();
+		return null;
+	}
+	
 	public static Set<String> getUuids(List<DataLocationType> types) {
 		Set<String> result = new HashSet<String>();
 		for (DataLocationType type : types) {
