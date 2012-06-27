@@ -3,7 +3,6 @@ package org.chai.kevin;
 import javax.persistence.Embeddable;
 
 import org.chai.kevin.json.JSONMap;
-import org.hibernate.sql.ordering.antlr.TranslationContext;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.

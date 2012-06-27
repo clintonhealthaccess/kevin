@@ -2,6 +2,7 @@ package org.chai.kevin.cost;
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.cost.CostTarget.CostType;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.util.Utils;
 
@@ -28,7 +29,7 @@ abstract class CostIntegrationTests extends IntegrationTests {
 	}
 	
 	def newCostTarget(def names, def code, def dataElement, def dataElementEnd, def costRampUp, def type, def types, def program) {
-		def target = new CostTarget(names: names, code: code, dataElement: dataElement, dataElementEnd: dataElementEnd, costRampUp: costRampUp, costType: type, typeCodeString: Utils.unsplit(types), program: program).save(failOnError: true)
+		def target = new CostTarget(names: names, code: code, dataElement: dataElement, dataElementEnd: dataElementEnd, costRampUp: costRampUp, costType: type, typeCodeString: Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER), program: program).save(failOnError: true)
 //		program.targets << target
 		program.save(failOnError: true)
 		return target

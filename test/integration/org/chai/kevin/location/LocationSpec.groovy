@@ -74,4 +74,19 @@ class LocationSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 	
+	def "data location type code cannot contain delimiter"() {
+		when:
+		new DataLocationType(code: CODE(1)).save(failOnError: true)
+		
+		then:
+		DataLocationType.count() == 1
+		
+		when:
+		new DataLocationType(code: CODE(1)+DataLocationType.DEFAULT_CODE_DELIMITER).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+		
+	}
+	
 }

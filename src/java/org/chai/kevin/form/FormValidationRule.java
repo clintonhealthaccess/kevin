@@ -24,10 +24,10 @@ import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.Exportable;
 import org.chai.kevin.Translation;
 import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 
 @Entity(name="FormValidationRule")
@@ -112,11 +112,11 @@ public class FormValidationRule {
 	
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString);
+		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes);
+		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	
 	@Basic

@@ -85,7 +85,7 @@ class Initializer {
 	static Date mar311 = getDate( 2006, 3, 31 );
 
 	static def createUsers() {
-		def reportAllReadonly = new Role(name: "reports-all-readonly")
+		def reportAllReadonly = new Role(name: "report-all-readonly")
 		reportAllReadonly.addToPermissions("menu:reports")
 		reportAllReadonly.addToPermissions("dashboard:*")
 		reportAllReadonly.addToPermissions("dsr:*")
@@ -121,12 +121,16 @@ class Initializer {
 		butaro.addToPermissions("editSurvey:view")
 		butaro.addToPermissions("editSurvey:*:"+DataLocation.findByCode("Butaro DH").id)
 		butaro.addToPermissions("menu:survey")
+		butaro.addToPermissions("menu:reports")
+		butaro.addToPermissions("home:*")
 		butaro.save(failOnError: true)
 		
 		def kivuye = new User(userType: UserType.PLANNING, code:"kivuye",username: "kivuye", firstname: "kivuye", lastname: "kivuye", locationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
 		kivuye.addToPermissions("editPlanning:view")
 		kivuye.addToPermissions("editPlanning:*:"+DataLocation.findByCode("Kivuye HC").id)
 		kivuye.addToPermissions("menu:planning")
+		kivuye.addToPermissions("menu:reports")
+		kivuye.addToPermissions("home:*")
 		kivuye.save(failOnError: true)
 	}
 
@@ -1034,8 +1038,7 @@ class Initializer {
 				names:j(["en":"Fct Target 1"]), 
 				program: hmr,
 				descriptions:j([:]), 
-				code:"TARGET 1",
-				typeCodeString: "District Hospital,Health Center"
+				code:"TARGET 1"
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption1 = new FctTargetOption(
@@ -1060,8 +1063,7 @@ class Initializer {
 			FctTarget fctTarget2 = new FctTarget(
 				names:j(["en":"Fct Target 2"]), descriptions:j([:]),
 				program: hmr,
-				code:"TARGET 2",
-				typeCodeString: "District Hospital,Health Center"
+				code:"TARGET 2"
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption3 = new FctTargetOption(
@@ -1087,8 +1089,7 @@ class Initializer {
 				names:j(["en":"Fct Target 3"]), descriptions:j([:]),
 				program: hmr,
 				targetOptions: [],
-				code:"TARGET 3",
-				typeCodeString: "District Hospital,Health Center"
+				code:"TARGET 3"
 			).save(failOnError:true)
 			
 			hmr.save(failOnError:true)

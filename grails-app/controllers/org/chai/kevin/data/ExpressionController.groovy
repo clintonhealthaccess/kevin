@@ -81,10 +81,10 @@ class ExpressionTestCommand {
 	String typeCodeString
 	
 	Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString);
+		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes);
+		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	
 	static constraints = {

@@ -30,22 +30,17 @@ package org.chai.kevin.dsr;
  * @author Jean Kahigiso M.
  *
  */
-import java.util.Set;
-
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Importable;
 import org.chai.kevin.data.Data;
-import org.chai.kevin.data.DataElement;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.StoredValue;

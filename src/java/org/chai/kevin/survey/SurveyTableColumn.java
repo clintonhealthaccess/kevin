@@ -53,6 +53,7 @@ import javax.persistence.UniqueConstraint;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "SurveyTableColumn")
@@ -97,11 +98,11 @@ public class SurveyTableColumn extends Orderable<Integer> implements Exportable 
 	
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString);
+		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes);
+		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 
 	@ManyToOne(targetEntity=SurveyTableQuestion.class, fetch=FetchType.LAZY)
@@ -126,7 +127,7 @@ public class SurveyTableColumn extends Orderable<Integer> implements Exportable 
 	
 	@Transient
 	public Set<String> getTypeApplicable() {
-		return Utils.split(this.typeCodeString);
+		return Utils.split(this.typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 
 	@Transient

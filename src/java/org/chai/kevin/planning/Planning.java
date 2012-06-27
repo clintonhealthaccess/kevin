@@ -21,6 +21,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -52,8 +53,8 @@ public class Planning {
 		this.id = id;
 	}
 	
-	@OneToMany(mappedBy="planning", targetEntity=PlanningOutput.class)
-	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	@OneToMany(mappedBy="planning", targetEntity=PlanningOutput.class, orphanRemoval=true)
+	@Cascade({CascadeType.ALL })
 	@OrderBy("order")
 	public List<PlanningOutput> getPlanningOutputs() {
 		return planningOutputs;
@@ -63,8 +64,8 @@ public class Planning {
 		this.planningOutputs = planningOutputs;
 	}
 	
-	@OneToMany(mappedBy="planning", targetEntity=PlanningSkipRule.class)
-	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	@OneToMany(mappedBy="planning", targetEntity=PlanningSkipRule.class, orphanRemoval=true)
+	@Cascade({CascadeType.ALL })
 	public List<PlanningSkipRule> getSkipRules() {
 		return skipRules;
 	}
@@ -98,10 +99,10 @@ public class Planning {
 	
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString);
+		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes);
+		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	
 	@ManyToOne(targetEntity=Period.class)

@@ -98,6 +98,29 @@ class UserSpec extends IntegrationTests {
 		).save(failOnError: true)
 		
 		then:
-		User.count() == 1	}
+		User.count() == 1	
+	}
+	
+	def "add default role adds the default roles"() {
+		setup:
+		new Role(name: 'report-all-readonly', permissionString: '').save(failOnError: true)
+		
+		when:
+		def user = new User(userType: UserType.SURVEY)
+		user.setDefaultRoles()
+		
+		then:
+		user.roles*.name == ['report-all-readonly']
+	}
+	
+	def "add default role when role does not exist"() {
+		
+		when:
+		def user = new User(userType: UserType.SURVEY)
+		user.setDefaultRoles()
+		
+		then:
+		user.roles.empty
+	}
 	
 }

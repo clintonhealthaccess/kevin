@@ -79,6 +79,7 @@ class UserController extends AbstractEntityController {
 	
 	def saveEntity(def entity) {
 		entity.setDefaultPermissions()
+		entity.setDefaultRoles()
 		entity.save()
 	}
 	

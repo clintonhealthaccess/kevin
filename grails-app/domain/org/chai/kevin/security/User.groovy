@@ -6,6 +6,8 @@ import org.chai.kevin.util.Utils;
 
 class User {
 
+	static String PERMISSION_DELIMITER = ";"
+	
 	// TODO get rid of this, it is the uuid
 	String code
 	
@@ -23,6 +25,10 @@ class User {
 	
 	static hasMany = [ roles: Role ]
 	
+	User() {
+		roles = []
+	}
+	
 	def getLocation () {
 		def location = Location.get(locationId) 
 		if (location == null) location = DataLocation.get(locationId)
@@ -30,28 +36,33 @@ class User {
 	}
 	
 	def getPermissions() {
-		return Utils.split(permissionString)
+		return Utils.split(permissionString, User.PERMISSION_DELIMITER)
 	}
 	
 	def setPermissions(def permissions) {
-		this.permissionString = Utils.unsplit(permissions)
+		this.permissionString = Utils.unsplit(permissions, User.PERMISSION_DELIMITER)
 	}
 	
 	def addToPermissions(def permission) {
 		def permissions = getPermissions()
 		permissions << permission
-		this.permissionString = Utils.unsplit(permissions)
+		this.permissionString = Utils.unsplit(permissions, User.PERMISSION_DELIMITER)
 	}
 	
 	def removeFromPermissions(def permission) {
 		def permissions = getPermissions()
 		permissions.remove(permission)
-		this.permissionString = Utils.unsplit(permissions)
+		this.permissionString = Utils.unsplit(permissions, User.PERMISSION_DELIMITER)
 	}
 	
 	def setDefaultPermissions() {
 		removeAllDefaultPermissions()
 		addDefaultPermissions()
+	}
+	
+	def setDefaultRoles() {
+		removeAllDefaultRoles()
+		addDefaultRoles()
 	}
 	
 	private def addDefaultPermissions() {
@@ -71,6 +82,20 @@ class User {
 			}
 		}
 	}
+	
+	private def addDefaultRoles() {
+		userType.defaultRoles.each { roleNameToAdd ->
+			def roleToAdd = Role.findByName(roleNameToAdd)
+			if (roleToAdd != null) roles.add(roleToAdd)
+		}
+	}
+	
+	private def removeAllDefaultRoles() {
+		UserType.getAllRoles().each { roleNameToRemove ->
+			def roleToRemove = Role.findByName(roleNameToRemove)
+			if (roleToRemove != null) roles.remove(roleToRemove)
+		}
+	}	
 	
 	def canActivate() {
 		return confirmed == true && active == false

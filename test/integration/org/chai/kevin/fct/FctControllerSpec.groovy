@@ -39,7 +39,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		model.fctTable.hasData() == true
 	}
 	
-	def "get fct with no parameters, default to period, root program, root location, location types, and target"(){
+	def "get fct with no parameters, redirect to period, root program, root location, location types, and target"(){
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -53,16 +53,32 @@ class FctControllerSpec extends FctIntegrationTests {
 		def model = fctController.view()
 		
 		then:
-		model.currentPeriod.equals(period)
-		model.currentProgram.equals(program)
-		model.currentLocation.equals(Location.findByCode(RWANDA))		
-		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
-		model.currentChildLevel.equals(LocationLevel.findByCode(PROVINCE))
-		model.currentTarget.equals(target)
-		model.fctTable != null
-		model.fctTable.hasData() == true
+		fctController.response.redirectedUrl.contains("/fct/view/")
+		fctController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"/"+target.id)
+		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
+		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
 		
+	def "get fct with no parameters, redirect to period, root program, root location, location types"(){
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def program = newReportProgram(CODE(2))
+		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def sum = newSum("1", CODE(2))
+		
+		when: "no parameters"
+		fctController = new FctController()
+		def model = fctController.view()
+		
+		then:
+		fctController.response.redirectedUrl.contains("/fct/view/")
+		fctController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id)
+		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
+		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
+	}
+		
+	
 	def "get fct with with invalid parameters, default to period, root program, root location, location types, and target"(){
 		setup:
 		setupLocationTree()
@@ -213,7 +229,11 @@ class FctControllerSpec extends FctIntegrationTests {
 		
 		when:
 		fctController = new FctController()
+		fctController.params.period = period.id
+		fctController.params.program = program.id
 		fctController.params.location = Location.findByCode(BURERA).id
+		fctController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		fctController.params.fctTarget = target.id
 		def model = fctController.view()
 		
 		then:

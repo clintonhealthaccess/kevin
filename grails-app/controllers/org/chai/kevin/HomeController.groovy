@@ -40,21 +40,7 @@ class HomeController {
 	
 	def index = {
 		if (log.isDebugEnabled()) log.debug("home.index, params:"+params)
-		User user = User.findByUuid(SecurityUtils.subject.principal, [cache: true])
-		
-		switch (user.userType) {
-			case UserType.OTHER:
-				redirect (controller: "home", action: "landingPage")
-				break;
-			case UserType.SURVEY:
-				redirect (controller: "editSurvey", action: "view")
-				break;
-			case UserType.PLANNING:
-				redirect (controller: "editPlanning", action: "view")
-				break;
-			default:
-				throw new NotImplementedException()
-		}
+		redirect (controller: "home", action: "landingPage")
 	}
 	
 	def landingPage = {
