@@ -24,62 +24,70 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def value = null
 		
 		when:
-		value = new SumValue([partialValue1], sum, null, new Location())
+		value = new SumValue([partialValue1], sum, null, new Location())		
 		
 		then:
 		value.getValue().equals(v("1"))
+		value.getNumberOfDataLocations() == 1
 		
 		when:
 		value = new SumValue([partialValue1, partialValue2], sum, null, new Location())
 		
 		then:
 		value.getValue().equals(v("3"))
+		value.getNumberOfDataLocations() == 3
 		
 		when:
 		value = new SumValue([partialValue1, partialValue3], sum, null, new Location())
 		
 		then:
 		value.getValue().equals(v("4"))
+		value.getNumberOfDataLocations() == 4
 		
 		when:
 		value = new SumValue([partialValue1, partialValue2, partialValue3], sum, null, new Location())
 		
 		then:
 		value.getValue().equals(v("6"))
+		value.getNumberOfDataLocations() == 6
 		
 	}
 	
-	def "test ratio"() {
+	def "test percentage"() {
 		setup:
 		def partialValue1 = new SumPartialValue(value: v("1"), numberOfDataLocations: 1)
 		def partialValue2 = new SumPartialValue(value: v("0"), numberOfDataLocations: 2)
 		def partialValue3 = new SumPartialValue(value: v("1"), numberOfDataLocations: 3)
-		def ratio = new Sum()
+		def percentage = new Sum()
 		def value = null
 		
 		when:
-		value = new SumValue([partialValue1], ratio, null, new Location())
+		value = new SumValue([partialValue1], percentage, null, new Location())
 		
 		then:
 		value.getPercentage().equals(v("100"))
+		value.getNumberOfDataLocations() == 1
 		
 		when:
-		value = new SumValue([partialValue1, partialValue2], ratio, null, new Location())
+		value = new SumValue([partialValue1, partialValue2], percentage, null, new Location())
 		
 		then:
-		value.getPercentage().equals(v("33"))
+		value.getPercentage().equals(v("33.33333333333333"))
+		value.getNumberOfDataLocations() == 3
 		
 		when:
-		value = new SumValue([partialValue1, partialValue3], ratio, null, new Location())
+		value = new SumValue([partialValue1, partialValue3], percentage, null, new Location())
 		
 		then:
 		value.getPercentage().equals(v("50"))
+		value.getNumberOfDataLocations() == 4
 		
 		when:
-		value = new SumValue([partialValue1, partialValue2, partialValue3], ratio, null, new Location())
+		value = new SumValue([partialValue1, partialValue2, partialValue3], percentage, null, new Location())
 		
 		then:
-		value.getPercentage().equals(v("66"))
+		value.getPercentage().equals(v("66.66666666666666"))
+		value.getNumberOfDataLocations() == 6
 		
 	}
 	
@@ -132,20 +140,25 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 		then:
 		value.getValue().equals(Value.NULL_INSTANCE())
+		value.getNumberOfDataLocations() == 1
 	}
 	
-	def "test ratio with null values on DataLocation"() {
+	def "test sum with null values on Location"() {
 		setup:
-		def partialValue = null
+		def partialValue1 = null
+		def partialValue2 = null
 		def value = null
-		def ratio = new Sum()
+		def percentage = new Sum()
 		
 		when:
-		partialValue = new SumPartialValue(value: Value.NULL_INSTANCE())
-		value = new SumValue([partialValue], ratio, null, new DataLocation())
+		partialValue1 = new SumPartialValue(value: Value.NULL_INSTANCE())
+		partialValue2 = new SumPartialValue(value: Value.NULL_INSTANCE())
+		value = new SumValue([partialValue1, partialValue2], percentage, null, new Location())
 		
 		then:
 		value.getValue().equals(Value.NULL_INSTANCE())
+		value.getNumberOfDataLocations() == 0				
+		
 	}
 	
 	def "test aggregation with null values on DataLocation"() {
@@ -178,27 +191,29 @@ class CalculationValueUnitSpec extends UnitSpec {
 		value.getValue().equals(v("0"))
 	}
 	
-	def "test ratio with invalid values"() {
+	def "test sum with invalid values"() {
 		setup:
 		def partialValue = null
 		def value = null
-		def ratio = new Sum()
+		def percentage = new Sum()
 		
 		when:
 		partialValue = new SumPartialValue(value: v("1"), numberOfDataLocations:0)
-		value = new SumValue([partialValue], ratio, null, new Location())
+		value = new SumValue([partialValue], percentage, null, new Location())
 		
 		then:
 		value.getValue().getNumberValue() == 1
 		value.getPercentage().equals(Value.NULL_INSTANCE())
+		value.getNumberOfDataLocations() == 0
 		
 		when:
 		partialValue = new SumPartialValue(value: v("0"), numberOfDataLocations:0)
-		value = new SumValue([partialValue], ratio, null, new Location())
+		value = new SumValue([partialValue], percentage, null, new Location())
 
 		then:
 		value.getValue().getNumberValue() == 0
 		value.getPercentage().equals(Value.NULL_INSTANCE())
+		value.getNumberOfDataLocations() == 0
 	}
 	
 	def "test aggregation with invalid values"() {

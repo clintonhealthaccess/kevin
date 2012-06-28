@@ -66,6 +66,11 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 	
 	//@Override TODO move to CalculationValue for use with AggregationValue
 	public Integer getNumberOfDataLocations(){
+		//data Location
+		if (getLocation().collectsData()) {
+			return 1;
+		}
+		//location
 		Integer numberOfDataLocations = 0;
 		for (SumPartialValue sumPartialValue : getCalculationPartialValues()) {
 			if (!sumPartialValue.getValue().isNull()) {

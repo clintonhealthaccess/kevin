@@ -42,7 +42,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setupLocationTree()
 		def program = newReportProgram(PROGRAM1)
 		def dashboardProgram = newDashboardProgram(PROGRAM1, program, 1)
-		def calculation = newAverage("1", CODE(2))
+		def calculation = newSum("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, program, 1)
 		dashboardController = new DashboardController()
 		refresh()
@@ -83,7 +83,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
 	
-	def "get dashboard with invalid parameters, redirect with correct parameter"(){
+	def "get dashboard with invalid parameters, redirect with correct parameters"(){
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
