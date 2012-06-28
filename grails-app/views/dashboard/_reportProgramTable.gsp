@@ -22,13 +22,16 @@
 						params:[period: currentPeriod.id, program: entity.program.id, location: currentLocation.id, dashboardEntity: entity.id])}">
 							<g:i18n field="${entity.program.names}" />
 						</a>
-					</g:if> <g:else>
+						&nbsp;
+						<g:render template="/templates/help_tooltip" 
+							model="[names: i18n(field: entity.program.names), descriptions: i18n(field: entity.program.descriptions)]" />
+					</g:if> 
+					<g:else>
 						<g:i18n field="${entity.names}" />
-					</g:else>
-					&nbsp;
-					<g:render template="/templates/help_tooltip" 
-						model="[names: i18n(field: entity.names), descriptions: i18n(field: entity.descriptions)]" />
-						</div>					 
+						&nbsp;
+						<g:render template="/templates/help_tooltip" 
+							model="[names: i18n(field: entity.names), descriptions: i18n(field: entity.descriptions)]" />
+					</g:else>									 
 					</td>
 				<td><g:set var="percentageValue" value="${dashboard.getPercentage(currentLocation, entity)}" />
 					<g:if test="${percentageValue != null}">
