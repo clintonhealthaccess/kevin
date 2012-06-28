@@ -30,7 +30,6 @@ package org.chai.kevin.value
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.Period;
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.NormalizedDataElement;
@@ -40,7 +39,6 @@ import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.util.JSONUtils;
-import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
@@ -354,19 +352,19 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		setupLocationTree()
 		def period = newPeriod()
-		def average = newAverage("1", CODE(2))
+		def ratio = newSum("1", CODE(2))
 		
 		then:
-		AveragePartialValue.count() == 0
-		average.refreshed == null
+		SumPartialValue.count() == 0
+		ratio.refreshed == null
 		
 		when:
-		refreshValueService.refreshCalculation(average);
+		refreshValueService.refreshCalculation(ratio);
 
 		then:
-		AveragePartialValue.count() == 8
-		AveragePartialValue.list()[0].timestamp != null
-		average.refreshed != null
+		SumPartialValue.count() == 8
+		SumPartialValue.list()[0].timestamp != null
+		ratio.refreshed != null
 	}
 	
 	def "test refresh calculations refreshes dependencies first - with data element"() {
@@ -374,21 +372,21 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def average = newAverage("\$"+dataElement.id, CODE(2))
+		def ratio = newSum("\$"+dataElement.id, CODE(2))
 		
 		then:
-		AveragePartialValue.count() == 0
+		SumPartialValue.count() == 0
 		RawDataElementValue.count() == 0
-		average.refreshed == null
+		ratio.refreshed == null
 		
 		when:
-		refreshValueService.refreshCalculation(average);
+		refreshValueService.refreshCalculation(ratio);
 
 		then:
 		RawDataElementValue.count() == 0
-		AveragePartialValue.count() == 8
-		AveragePartialValue.list()[0].timestamp != null
-		average.refreshed != null
+		SumPartialValue.count() == 8
+		SumPartialValue.list()[0].timestamp != null
+		ratio.refreshed != null
 	}
 	
 	def "test refresh calculations refreshes dependencies first - with normalized data element"() {
@@ -396,23 +394,23 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
-		def average = newAverage("\$"+dataElement.id, CODE(2))
+		def ratio = newSum("\$"+dataElement.id, CODE(2))
 		
 		then:
-		AveragePartialValue.count() == 0
+		SumPartialValue.count() == 0
 		NormalizedDataElementValue.count() == 0
 		dataElement.refreshed == null
-		average.refreshed == null
+		ratio.refreshed == null
 		
 		when:
-		refreshValueService.refreshCalculation(average);
+		refreshValueService.refreshCalculation(ratio);
 
 		then:
 		NormalizedDataElementValue.count() == 2
-		AveragePartialValue.count() == 8
-		AveragePartialValue.list()[0].timestamp != null
+		SumPartialValue.count() == 8
+		SumPartialValue.list()[0].timestamp != null
 		dataElement.refreshed != null
-		average.refreshed != null
+		ratio.refreshed != null
 	}
 	
 	def "test refresh calculation updates when last value changed is set after refresh"() {
@@ -437,22 +435,22 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def refreshed = new Date()
 		setupLocationTree()
 		def period = newPeriod()
-		def average = newAverage("1", CODE(2))
-		average.refreshed = refreshed
-		average.save(failOnError: true)
-		def partialValue = newAveragePartialValue(average, period, Location.findByCode(BURERA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
+		def ratio = newSum("1", CODE(2))
+		ratio.refreshed = refreshed
+		ratio.save(failOnError: true)
+		def partialValue = newSumPartialValue(ratio, period, Location.findByCode(BURERA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
 		def timestamp = partialValue.timestamp
 		
 		then:
-		AveragePartialValue.count() == 1
+		SumPartialValue.count() == 1
 		
 		when:
-		refreshValueService.refreshCalculation(average);
+		refreshValueService.refreshCalculation(ratio);
 
 		then:
-		AveragePartialValue.count() == 8
-		!AveragePartialValue.list()[0].timestamp.equals(timestamp)	
-		!average.refreshed.equals(refreshed)
+		SumPartialValue.count() == 8
+		!SumPartialValue.list()[0].timestamp.equals(timestamp)	
+		!ratio.refreshed.equals(refreshed)
 	}
 	
 	def "test refresh normalized data elements refreshes dependencies first"() {

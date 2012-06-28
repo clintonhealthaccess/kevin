@@ -30,7 +30,6 @@ package org.chai.kevin.value
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.Period;
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
@@ -41,8 +40,6 @@ import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.AggregationValue;
-import org.chai.kevin.value.AveragePartialValue;
-import org.chai.kevin.value.AverageValue;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
@@ -89,23 +86,23 @@ class ValueServiceSpec extends IntegrationTests {
 		valueService.getDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period).equals(dataValue)
 	}
 	
-	def "test get average value"() {
+	def "test get ratio value"() {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
 		
 		when:
-		def average = newAverage("1", CODE(1))
-		def expectedValue = new AverageValue([], average, period, DataLocation.findByCode(BUTARO))
-		def value = valueService.getCalculationValue(average, DataLocation.findByCode(BUTARO), period, s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		def ratio = newSum("1", CODE(1))
+		def expectedValue = new SumValue([], ratio, period, DataLocation.findByCode(BUTARO))
+		def value = valueService.getCalculationValue(ratio, DataLocation.findByCode(BUTARO), period, s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		 
 		then:
 		value.equals(expectedValue)
 		
 		when:
-		def partialValue = newAveragePartialValue(average, period, DataLocation.findByCode(BUTARO), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
-		expectedValue = new AverageValue([partialValue], average, period, DataLocation.findByCode(BUTARO))
-		value = valueService.getCalculationValue(average, DataLocation.findByCode(BUTARO), period, s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		def partialValue = newSumPartialValue(ratio, period, DataLocation.findByCode(BUTARO), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
+		expectedValue = new SumValue([partialValue], ratio, period, DataLocation.findByCode(BUTARO))
+		value = valueService.getCalculationValue(ratio, DataLocation.findByCode(BUTARO), period, s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 
 		then:
 		value.equals(expectedValue)
@@ -450,28 +447,28 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def average = newAverage("1", CODE(1))
+		def ratio = newSum("1", CODE(1))
 		
 		when:
-		newAveragePartialValue(average, period, DataLocation.findByCode(BUTARO), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
+		newSumPartialValue(ratio, period, DataLocation.findByCode(BUTARO), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
 		
 		then:
-		AveragePartialValue.count() == 1
+		SumPartialValue.count() == 1
 		
 		when:
-		valueService.deleteValues(average, null, null)
+		valueService.deleteValues(ratio, null, null)
 		
 		then:
-		AveragePartialValue.count() == 0
+		SumPartialValue.count() == 0
 		
 		when:
-		def average2 = newAverage("2", CODE(2))
-		newAveragePartialValue(average, period, DataLocation.findByCode(BUTARO), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
-		newAveragePartialValue(average2, period, DataLocation.findByCode(BUTARO), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
-		valueService.deleteValues(average, null, null)
+		def ratio2 = newSum("2", CODE(2))
+		newSumPartialValue(ratio, period, DataLocation.findByCode(BUTARO), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
+		newSumPartialValue(ratio2, period, DataLocation.findByCode(BUTARO), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
+		valueService.deleteValues(ratio, null, null)
 		
 		then:
-		AveragePartialValue.count() == 1
+		SumPartialValue.count() == 1
 	}
 	
 }

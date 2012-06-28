@@ -5,7 +5,6 @@ import org.chai.kevin.Period;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
@@ -297,31 +296,31 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		s(result*.value).equals(s([v("0"), v("2")]))
 	}
 	
-	def "test average with valid calculation"() {
+	def "test ratio with valid calculation"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]])
-		def average = newAverage("\$"+normalizedDataElement.id, CODE(2))
+		def ratio = newSum("\$"+normalizedDataElement.id, CODE(2))
 		def result = null
 		refreshNormalizedDataElement()
 		
 		when:
-		result = expressionService.calculatePartialValues(average, DataLocation.findByCode(BUTARO), period)
+		result = expressionService.calculatePartialValues(ratio, DataLocation.findByCode(BUTARO), period)
 		
 		then:
 		result.size() == 1
 		result*.value.equals([v("1")])
 
 		when:
-		result = expressionService.calculatePartialValues(average, Location.findByCode(BURERA), period)
+		result = expressionService.calculatePartialValues(ratio, Location.findByCode(BURERA), period)
 		
 		then:
 		result.size() == 2
 		result*.value.equals([v("1"), v("1")])
 		
 		when:
-		result = expressionService.calculatePartialValues(average, Location.findByCode(NORTH), period)
+		result = expressionService.calculatePartialValues(ratio, Location.findByCode(NORTH), period)
 		
 		then:
 		result.size() == 2
@@ -334,224 +333,50 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		normalizedDataElement.timestamp = new Date()
 		normalizedDataElement.save(failOnError: true)
 		refreshNormalizedDataElement()
-		result = expressionService.calculatePartialValues(average, Location.findByCode(BURERA), period)
+		result = expressionService.calculatePartialValues(ratio, Location.findByCode(BURERA), period)
 		
 		then:
 		result.size() == 2
 		s(result*.value).equals(s([v("2"), v("1")]))
 
 	}
-
-//	def "test sum with missing expression"() {
-//		setup:
-//		setupLocationTree()
-//		def period = newPeriod()
-//		
-//		when:
-//		def sum = newSum([:], CODE(1), Type.TYPE_NUMBER())
-//		def result = expressionService.calculate(sum, Location.findByName(locationName), period)
-//		
-//		then:
-//		result.hasMissingValues == false
-//		result.hasMissingExpression == true
-//		result.value == v("0")
-//	
-//		where:
-//		locationName << [BUTARO, KIVUYE, BURERA, NORTH, RWANDA]
-//	}
-//		
-//	def "test sum with data element"() {
-//		setup:
-//		setupLocationTree()
-//		def period = newPeriod()
-//		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-//		newRawDataElementValue(dataElement, period, DataLocation.findByCode(KIVUYE), v("1"))
-//		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), v("2"))
-//		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "\$"+dataElement.id)
-//		refreshNormalizedDataElement()
-//		
-//		when:
-//		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
-//		def result = expressionService.calculate(sum, Location.findByName(locationName), period)
-//		
-//		then:
-//		result.hasMissingValues == false
-//		result.hasMissingExpression == false
-//		result.value == value
-//		
-//		where:
-//		locationName	| value
-//		KIVUYE				| v("1")
-//		BUTARO				| v("2")
-//		BURERA				| v("3")
-//		NORTH				| v("3")
-//		RWANDA				| v("3")
-//	}
-//	
-//	def "test sum with missing values"() {
-//		setup:
-//		setupLocationTree()
-//		def period = newPeriod()
-//		def dataElement = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
-//		newRawDataElementValue(dataElement, period, DataLocation.findByCode(KIVUYE), v("1"))
-//		def expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "\$"+dataElement.id)
-//		refreshNormalizedDataElement()
-//		
-//		when:
-//		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
-//		def result = expressionService.calculate(sum, Location.findByName(locationName), period)
-//		
-//		then:
-//		result.hasMissingValues == missingValues
-//		result.hasMissingExpression == false
-//		result.value == value
-//		
-//		where:
-//		locationName	| value		| missingValues
-//		BUTARO				| v("0")	| true
-//		KIVUYE				| v("1")	| false
-//		BURERA				| v("1")	| true
-//		NORTH				| v("1")	| true	
-//		RWANDA				| v("1")	| true
-//		
-//	}
-//	
-//	def "test average"() {
-//		setup:
-//		setupLocationTree()
-//		def period = newPeriod()
-//		def kivuye = DataLocation.findByCode(KIVUYE)
-//		def butaro = DataLocation.findByCode(BUTARO)
-//		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
-//		refreshNormalizedDataElement()
-//		
-//		when:
-//		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(2), Type.TYPE_NUMBER())
-//		def result = expressionService.calculate(average, Location.findByName(locationName), period)
-//		
-//		then:
-//		result.hasMissingValues == false
-//		result.hasMissingExpression == false  
-//		result.value == value
-//		
-//		where:
-//		locationName	| value
-//		BUTARO				| v("1")
-//		KIVUYE				| v("1")
-//		BURERA				| v("1")
-//		NORTH				| v("1")
-//		RWANDA				| v("1")
-//	}
-//	
-//	def "test average with missing expression"() {
-//		setup:
-//		setupLocationTree()
-//		def period = newPeriod()
-//				
-//		when:
-//		def average = newAverage([:], CODE(1), Type.TYPE_NUMBER())
-//		def result = expressionService.calculate(average, Location.findByName(locationName), period)
-//		
-//		then:
-//		result.hasMissingValues == false
-//		result.hasMissingExpression == true
-//		result.value == Value.NULL_INSTANCE()
-//		
-//		where:
-//		locationName << [BUTARO, KIVUYE, BURERA, NORTH, RWANDA]
-//	}
-//	
-//	def "test average with data element"() {
-//		setup:
-//		setupLocationTree()
-//		def period = newPeriod()
-//		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-//		newRawDataElementValue(dataElement, period, DataLocation.findByCode(KIVUYE), v("1"))
-//		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), v("2"))
-//		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "\$"+dataElement.id)
-//		refreshNormalizedDataElement()
-//		
-//		when:
-//		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
-//		def result = expressionService.calculate(average, Location.findByName(locationName), period)
-//		
-//		then:
-//		result.hasMissingValues == false
-//		result.hasMissingExpression == false
-//		result.value == value
-//		
-//		where:
-//		locationName	| value
-//		BUTARO				| v("2")
-//		KIVUYE				| v("1")
-//		BURERA				| v("1.5")
-//		NORTH				| v("1.5")
-//		RWANDA				| v("1.5")
-//	}
-//		
-//	def "test average with missing values"() {
-//		setup:
-//		setupLocationTree()
-//		def period = newPeriod()
-//		def dataElement = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
-//		newRawDataElementValue(dataElement, period, DataLocation.findByCode(KIVUYE), v("1"))
-//		def expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "\$"+dataElement.id)
-//		refreshNormalizedDataElement()
-//		
-//		when:
-//		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
-//		def result = expressionService.calculate(average, Location.findByName(locationName), period)
-//		
-//		then:
-//		result.hasMissingValues == missingValues
-//		result.hasMissingExpression == false
-//		result.value == value
-//		
-//		where:
-//		locationName	| value		| missingValues
-//		BUTARO				| Value.NULL_INSTANCE()| true
-//		KIVUYE				| v("1")	| false
-//		BURERA				| v("1")	| true
-//		NORTH				| v("1")	| true
-//		RWANDA				| v("1")	| true
-//	}
 	
 	def "data elements in expression"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def average = newAverage("1", CODE(2))
+		def ratio = newSum("1", CODE(2))
 		def data = null
 		
 		when:
-		data = expressionService.getDataInExpression("\$"+average.id+"+"+"\$"+rawDataElement.id, RawDataElement.class)
+		data = expressionService.getDataInExpression("\$"+ratio.id+"+"+"\$"+rawDataElement.id, RawDataElement.class)
 		
 		then:
 		data.size() == 2
 		s(data.values()).equals(s([null, rawDataElement]))
 		
 		when:
-		data = expressionService.getDataInExpression("\$"+rawDataElement.id, Average.class)
+		data = expressionService.getDataInExpression("\$"+rawDataElement.id, Sum.class)
 		
 		then:
 		data.size() == 1
 		s(data.values()).equals(s([null]))
 		
 		when:
-		data = expressionService.getDataInExpression("\$"+average.id+"+"+"\$"+rawDataElement.id, Average.class)
+		data = expressionService.getDataInExpression("\$"+ratio.id+"+"+"\$"+rawDataElement.id, Sum.class)
 		
 		then:
 		data.size() == 2
-		s(data.values()).equals(s([null, average]))
+		s(data.values()).equals(s([null, ratio]))
 		
 		when:
-		data = expressionService.getDataInExpression("\$"+average.id+"+"+"\$"+rawDataElement.id, Data.class)
+		data = expressionService.getDataInExpression("\$"+ratio.id+"+"+"\$"+rawDataElement.id, Data.class)
 		
 		then:
 		data.size() == 2
-		s(data.values()).equals(s([average, rawDataElement]))
+		s(data.values()).equals(s([ratio, rawDataElement]))
 		
 		when:
-		data = expressionService.getDataInExpression("\$"+average.id+"+"+"\$"+rawDataElement.id, DataElement.class)
+		data = expressionService.getDataInExpression("\$"+ratio.id+"+"+"\$"+rawDataElement.id, DataElement.class)
 		
 		then:
 		data.size() == 2

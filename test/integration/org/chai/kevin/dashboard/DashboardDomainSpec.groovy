@@ -29,10 +29,9 @@ package org.chai.kevin.dashboard
 */
 
 import grails.validation.ValidationException;
-
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.chai.kevin.data.Average
+import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type
 
 class DashboardDomainSpec extends DashboardIntegrationTests {
@@ -41,7 +40,7 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 
 	def "weight cannot be null on target"() {
 		when:
-		def calculation = newAverage("1", CODE(3))
+		def calculation = newSum("1", CODE(3))
 		def program = newReportProgram(CODE(2))
 		new DashboardTarget(code: CODE(1), program: program, calculation: calculation, weight: 1).save(failOnError: true)
 		
@@ -57,7 +56,7 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	
 	def "report program cannot be null on target"() {
 		when:
-		def calculation = newAverage("1", CODE(3))
+		def calculation = newSum("1", CODE(3))
 		def program = newReportProgram(CODE(2))
 		new DashboardTarget(code: CODE(1), program: program, calculation: calculation, weight: 1).save(failOnError: true)
 		
@@ -73,7 +72,7 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	
 	def "report program cannot be null on program"() {
 		when:
-		def calculation = newAverage("1", CODE(3))
+		def calculation = newSum("1", CODE(3))
 		def program = newReportProgram(CODE(2))
 		new DashboardProgram(code: CODE(1), program: program, weight: 1).save(failOnError: true)
 		
@@ -89,7 +88,7 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	
 	def "weight cannot be null on program"() {
 		when:
-		def calculation = newAverage("1", CODE(3))
+		def calculation = newSum("1", CODE(3))
 		def program = newReportProgram(CODE(2))
 		new DashboardProgram(code: CODE(1), program: program, weight: 1).save(failOnError: true)
 		
@@ -105,24 +104,24 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	
 	def "save target does not resave calculation"() {
 		when:
-		def calculation = newAverage("1", CODE(3))
+		def calculation = newSum("1", CODE(3))
 		def program = newReportProgram(CODE(2))
 		def target = newDashboardTarget(CODE(1), calculation, program, 1)
 		
 		then:
-		Average.count() == 1
+		Sum.count() == 1
 		
 		when:
 		target.save(failOnError: true)
 		
 		then:
-		Average.count() == 1
+		Sum.count() == 1
 	}
 	
 	def "get parent"() {
 		when:
 		def program = newReportProgram(PROGRAM1)
-		def calculation = newAverage("1", CODE(3))
+		def calculation = newSum("1", CODE(3))
 		def target1 = newDashboardTarget(TARGET1, calculation, program, 1)
 		
 		then:

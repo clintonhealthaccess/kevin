@@ -28,7 +28,6 @@ modules = {
 		dependsOn 'jquery'
 
 		resource url: '/js/spinner.js'
-		//resource url: '/css/spinner.css', bundle: 'core'
 	}
 
 	fliptext {
@@ -99,21 +98,18 @@ modules = {
 		dependsOn 'jquery'
 
 		resource url: '/js/foldable_init.js', bundle: 'core'
-		//resource url: '/css/foldable.css', bundle: 'core'
 	}
 	
 	dropdown {
 		dependsOn 'jquery'
 
 		resource url: '/js/dropdown_init.js', bundle: 'core'
-		//resource url: '/css/dropdown.css', bundle: 'core'
 	}
 
 	nicetable {
 		dependsOn 'jquery'
 
 		resource url: '/js/nicetable_init.js'
-		//resource url: '/css/nicetable.css', bundle: 'core'
 	}
 
 	explanation {
@@ -160,17 +156,19 @@ modules = {
 		resource url: '/js/dashboard/comparefilter_init.js', bundle: 'core'
 	}
 	
+	valuefilter {
+		dependsOn 'jquery'
+				
+		resource url: '/js/valuefilter_init.js', bundle: 'core'
+	}
+	
 	// Start resources for pages
 	list {
 		dependsOn 'core,spinner,form,fieldselection,cluetip,dropdown,explanation,chosen'
-
-		//resource url: '/css/list.css'
 	}
 
 	survey {
 		dependsOn 'core,dataentry'
-
-		//resource url: '/css/survey.css'
 	}
 	
 	planning {
@@ -179,32 +177,22 @@ modules = {
 
 	dsr {
 		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation'
-
-		//resource url: '/css/dsr.css'
 	}
 
 	fct {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation'
-
-		//resource url: '/css/dsr.css'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,valuefilter'
 	}
 	
 	dashboard {
 		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen,chartanimation,comparefilter'
-
-		//resource url: '/css/dashboard.css'
 	}
 
 	maps {
 		dependsOn 'core,url,dropdown,explanation,spinner,chosen'
-
-		//resource url: '/css/maps.css'
 	}
 
 	cost {
 		dependsOn 'core,dropdown,nicetable,explanation,spinner,chosen'
-
-		//resource url: '/css/cost.css'
 	}
 
 }

@@ -8,9 +8,9 @@ import org.chai.kevin.value.Value;
 
 public abstract class ReportTable<T, S extends CalculationLocation> {
 
-	protected Map<S, Map<T, Value>> valueMap;
+	protected Map<S, Map<T, ? extends Object>> valueMap;
 	
-	public ReportTable(Map<S, Map<T, Value>> valueMap) {
+	public ReportTable(Map<S, Map<T, ? extends Object>> valueMap) {
 		this.valueMap = valueMap;
 	}
 	
@@ -22,9 +22,9 @@ public abstract class ReportTable<T, S extends CalculationLocation> {
 		return !valueMap.isEmpty();
 	}
 
-	public Value getReportValue(CalculationLocation location, T target){
-		Value reportValue = null;
-		Map<T, Value> reportValues = valueMap.get(location);
+	public Object getReportValue(CalculationLocation location, T target){
+		Object reportValue = null;
+		Map<T, ? extends Object> reportValues = valueMap.get(location);
 		if (reportValues != null) reportValue = reportValues.get(target);
 		return reportValue;
 	}

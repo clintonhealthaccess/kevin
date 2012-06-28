@@ -1,5 +1,7 @@
 package org.chai.kevin.value;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -22,23 +24,33 @@ import org.hibernate.annotations.NaturalId;
 public class SumPartialValue extends CalculationPartialValue {
 
 	private Sum data;
+	private Integer numberOfDataLocations;
 	
 	public SumPartialValue() {
 		super();
 	}
 
-	public SumPartialValue(Sum data, CalculationLocation location, Period period, DataLocationType type, Value value) {
-		super(location, period, type, value);
-		
+	public SumPartialValue(Sum data, CalculationLocation location, Period period, DataLocationType type, Integer numberOfDataLocations, Value value) {
+		super(location, period, type, value);		
 		this.data = data;
+		this.numberOfDataLocations = numberOfDataLocations;
 	}
 
-	public SumPartialValue(Sum data, CalculationLocation location, Period period, DataLocationType type) {
-		super(location, period, type);
-		
+	public SumPartialValue(Sum data, CalculationLocation location, Period period, DataLocationType type, Integer numberOfDataLocations) {
+		super(location, period, type);		
 		this.data = data;
+		this.numberOfDataLocations = numberOfDataLocations;
 	}
 
+	@Basic
+	@Column(nullable=false)
+	public Integer getNumberOfDataLocations() {
+		return numberOfDataLocations;
+	}
+	public void setNumberOfDataLocations(Integer numberOfDataLocations) {
+		this.numberOfDataLocations = numberOfDataLocations;
+	}
+	
 	@NaturalId
 	@ManyToOne(targetEntity=Sum.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)

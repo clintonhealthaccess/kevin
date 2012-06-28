@@ -49,7 +49,6 @@ import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.ExpressionMap;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
@@ -714,12 +713,15 @@ class Initializer {
 				
 			new NormalizedDataElement(names:j(["en":"TRUE"]), descriptions:j([:]), code:"TRUE", expressionMap: e([(period1.id+''):[(hc.code):"true", (dh.code):"true"]]), type: Type.TYPE_BOOL(), timestamp:new Date()).save(failOnError: true, flush: true)
 			new NormalizedDataElement(names:j(["en":"FALSE"]), descriptions:j([:]), code:"FALSE", expressionMap: e([(period1.id+''):[(hc.code):"false", (dh.code):"false"]]), type: Type.TYPE_BOOL(), timestamp:new Date()).save(failOnError: true, flush: true)
+			
+			new NormalizedDataElement(names:j(["en":"ZERO"]), descriptions:j([:]), code:"ZERO", expressionMap: e([(period1.id+''):[(hc.code):"0", (dh.code):"0"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"ONE"]), descriptions:j([:]), code:"ONE", expressionMap: e([(period1.id+''):[(hc.code):"1", (dh.code):"1"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 		}
 	}
 
 	static def createMaps() {
 		if (!MapsTarget.count()) {
-			def calculation1 = new Average(expression: "\$"+NormalizedDataElement.findByCode("Element 1").id, code: "Maps average 1", timestamp:new Date())
+			def calculation1 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Element 1").id, code: "Maps sum 1", timestamp:new Date())
 			calculation1.save(failOnError:true)
 			new MapsTarget(names:j(["en":"Map Target 3"]), descriptions:j([:]), code:"TARGET3", calculation: calculation1).save(failOnError: true, flush:true)
 		}
@@ -793,7 +795,7 @@ class Initializer {
 			def dashboardStaffing = new DashboardProgram(names:j(["en":"Staffing"]), weight: 1, order: 1, code: "Staffing", program: staffing)
 			dashboardStaffing.save(failOnError: true, flush: true)
 
-			def calculation1 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Average constant 10", timestamp:new Date())
+			def calculation1 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Ratio constant 10", timestamp:new Date())
 			calculation1.save(failOnError: true)
 
 			def nursea1 = new DashboardTarget(
@@ -801,7 +803,7 @@ class Initializer {
 					calculation: calculation1, program: staffing,
 					weight: 1, order: 1).save(failOnError: true, flush:true)
 
-			def calculation2 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 20").id, code:"Average constant 20", timestamp:new Date())
+			def calculation2 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Constant 20").id, code:"Ratio constant 20", timestamp:new Date())
 			calculation2.save(failOnError: true)
 
 			def nursea2 = new DashboardTarget(
@@ -809,7 +811,7 @@ class Initializer {
 					calculation: calculation2,  program: staffing,
 					weight: 1, order: 2).save(failOnError: true, flush:true)
 
-			def calculation3 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 1").id, code:"Average 1", timestamp:new Date())
+			def calculation3 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Element 1").id, code:"Ratio 1", timestamp:new Date())
 			calculation3.save(failOnError: true)
 
 			def target1 = new DashboardTarget(
@@ -817,7 +819,7 @@ class Initializer {
 					calculation: calculation3,  program: staffing,
 					weight: 1, order: 3).save(failOnError: true, flush:true)
 
-			def calculation4 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 2").id, code:"Average 2", timestamp:new Date())
+			def calculation4 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Element 2").id, code:"Ratio 2", timestamp:new Date())
 			calculation4.save(failOnError: true)
 
 			def missexpr = new DashboardTarget(
@@ -825,7 +827,7 @@ class Initializer {
 					calculation: calculation4,  program: staffing,
 					weight: 1, order: 4).save(failOnError: true, flush:true)
 
-			def calculation5 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Average 3", timestamp:new Date())
+			def calculation5 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Ratio 3", timestamp:new Date())
 			calculation5.save(failOnError: true)
 
 			def missdata = new DashboardTarget(
@@ -833,7 +835,7 @@ class Initializer {
 					calculation: calculation5,  program: staffing,
 					weight: 1, order: 5).save(failOnError: true, flush:true)
 
-			def calculation6 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Average 4", timestamp:new Date())
+			def calculation6 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Ratio 4", timestamp:new Date())
 			calculation6.save(failOnError: true)
 
 			def enume = new DashboardTarget(
@@ -892,8 +894,8 @@ class Initializer {
 					code: "Facility Water and Power Sources"
 					)
 
-			def dsrAverage = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Average constant 10", timestamp:new Date())
-			dsrAverage.save(failOnError: true)
+			def dsrRatio = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Ratio constant 10", timestamp:new Date())
+			dsrRatio.save(failOnError: true)
 			
 			def dsrSum = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Sum constant 10", timestamp:new Date());
 			dsrSum.save(failOnError: true);			
@@ -929,7 +931,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"A3"]), descriptions:j(["en":"A3"]),
 					program: hmr,
-					data: dsrAverage,
+					data: dsrRatio,
 					order: 4,
 					code: "A3",
 					category: nursesCat,
@@ -1024,15 +1026,12 @@ class Initializer {
 			def dh = DataLocationType.findByCode("District Hospital")
 			def hc = DataLocationType.findByCode("Health Center")
 			def hmr = ReportProgram.findByCode("Human Resources for Health")
-
-			def sum1 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Sum 1", timestamp:new Date());
-			sum1.save(failOnError: true);
-			def sum2 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 20").id, code: "Sum 2", timestamp:new Date());
-			sum2.save(failOnError: true);
-			def sum3 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 30").id, code: "Sum 3", timestamp:new Date());
-			sum3.save(failOnError: true);
-			def sum4 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 40").id, code: "Sum 4", timestamp:new Date());
-			sum4.save(failOnError: true);
+			
+			def sumZero = new Sum(expression: "\$"+NormalizedDataElement.findByCode("ZERO").id, code:"Sum ZERO", timestamp:new Date());
+			sumZero.save(failOnError: true);
+			
+			def sumOne = new Sum(expression: "\$"+NormalizedDataElement.findByCode("ONE").id, code:"Sum ONE", timestamp:new Date());
+			sumOne.save(failOnError: true);
 						
 			FctTarget fctTarget1 = new FctTarget(
 
@@ -1047,7 +1046,7 @@ class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]), 
 				code:"TARGET OPTION 1",
-				sum: sum1
+				sum: sumOne
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption2 = new FctTargetOption(
@@ -1055,7 +1054,7 @@ class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]),
 				code:"TARGET OPTION 2",
-				sum: sum2
+				sum: sumZero
 			).save(failOnError:true)
 			
 			fctTarget1.targetOptions << [fctTargetOption1, fctTargetOption2]
@@ -1072,7 +1071,7 @@ class Initializer {
 				target: fctTarget2,
 				descriptions:j([:]),
 				code:"TARGET OPTION 3",
-				sum: sum3
+				sum: sumZero
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption4 = new FctTargetOption(
@@ -1080,7 +1079,7 @@ class Initializer {
 				target: fctTarget2,
 				descriptions:j([:]),
 				code:"TARGET OPTION 4",
-				sum: sum4
+				sum: sumOne
 			).save(failOnError:true)
 			
 			fctTarget2.targetOptions << [fctTargetOption3, fctTargetOption4]

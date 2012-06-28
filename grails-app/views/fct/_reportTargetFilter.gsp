@@ -1,5 +1,4 @@
-<div class="selector">
-	<g:if test="${fctTable.targets != null && !fctTable.targets.empty}">
+<g:if test="${fctTable.targets != null && !fctTable.targets.empty}">
 		<g:form name="fctTarget-form" method="get" url="${[controller:'fct', action:'view']}">
 			
 			<span><g:message code="fct.report.target.selector"/>:</span>
@@ -25,4 +24,3 @@
 			</g:each>
 		</div>
 	</g:if>
-</div>

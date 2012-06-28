@@ -72,8 +72,12 @@
     &.invalid
       background: url("../images/icons/status_invalid.png") no-repeat center right
 
+// slister start: updates to dsr & fct location tree
 .nested
+  clear: both
   font-size: 11px
+  width: 970px
+  // slister end
   
   tr:not(.tree-sign):hover, tr:not(.tree-sign):focus
     > td:not(.bucket)
@@ -121,6 +125,11 @@
   .sub-tree
     > td
       border-top: 0
+    
+    // slister start: updates to dsr & fct location tree
+    .bucket > table
+      width: 970px
+      // slister end
       
   td
     border-top: 1px solid #eee
