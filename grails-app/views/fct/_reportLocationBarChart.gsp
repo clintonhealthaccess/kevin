@@ -1,9 +1,8 @@
 <!-- chart scale -->
-<g:set var="yMax" value="${fctTable.getMaxReportValue().intValue()}"/>
 <ul class="chart">
-	<li>${yMax}</li>
-	<li>${yMax/2}</li>
-	<li>0</li>
+	<li>100%</li>
+	<li>50%</li>
+	<li>0%</li>
 </ul>
 <!-- chart -->
 <table class="vertical-graph">
@@ -14,11 +13,11 @@
 						<td>
 							<g:if test="${fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
 								<g:each in="${fctTable.targetOptions}" var="targetOption" status="i">
-									<g:if test="${fctTable.getReportValue(location, targetOption) != null}">
-										<g:set var="reportValue" value="${fctTable.getReportValue(location, targetOption).numberValue}" />
+									<g:if test="${fctTable.getReportValue(location, targetOption).getPercentage() != null}">
+										<g:set var="reportValue" value="${fctTable.getReportValue(location, targetOption).getPercentage().numberValue}"/>									
 										<div class="js_bar_vertical tooltip bar${i+1}"
-											data-percentage="${reportValue}" title="${reportValue}"
-											style="height: ${(reportValue/yMax)*100}%;"></div>
+											data-percentage="${reportValue}" title="${reportValue}%"
+											style="height: ${reportValue}%;" onload="$(this).tipsy('show'); return false;"></div>
 									</g:if>
 									<g:else>
 										<div class="js_bar_vertical tooltip bar${i+1}"
@@ -40,12 +39,3 @@
 		</tr>
 	</tbody>
 </table>
-<!-- chart legend -->
-<ul class="chart_legend">
-	<g:if test="${fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
-		<g:each in="${fctTable.targetOptions}" var="targetOption" status="i">
-			<li><span class="bar${i+1}"></span> <g:i18n
-					field="${targetOption.names}" /></li>
-		</g:each>
-	</g:if>
-</ul>

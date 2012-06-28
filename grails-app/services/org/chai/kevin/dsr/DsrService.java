@@ -57,7 +57,7 @@ public class DsrService {
 		for (DsrTarget target : targets) {
 			Calculation calculation = dataService.getData(target.getData().getId(), Calculation.class);
 			if(calculation != null){				
-				for(Location treeLocation : treeLocations){					
+				for(Location treeLocation : treeLocations){			
 					if(!valueMap.containsKey(treeLocation))
 						valueMap.put(treeLocation, new HashMap<DsrTarget, Value>());	
 					valueMap.get(treeLocation).put(target, getDsrValue(calculation, treeLocation, period, types));

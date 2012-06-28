@@ -44,14 +44,14 @@ public class MapsDomainSpec extends MapsIntegrationTests {
 	
 	def "target constraint: code cannot be null"() {
 		when:
-		def average = newAverage("1", CODE(1))
-		new MapsTarget(code:CODE(1), calculation: average).save(failOnError:true)
+		def ratio = newSum("1", CODE(1))
+		new MapsTarget(code:CODE(1), calculation: ratio).save(failOnError:true)
 		
 		then:
 		MapsTarget.count() == 1
 		
 		when:
-		new MapsTarget(calculation: average).save(failOnError:true)
+		new MapsTarget(calculation: ratio).save(failOnError:true)
 		
 		then:
 		thrown ValidationException
@@ -59,7 +59,7 @@ public class MapsDomainSpec extends MapsIntegrationTests {
 	
 	def "target constraint: expression cannot be null"() {
 		when:
-		new MapsTarget(code:CODE(1), calculation: newAverage("1", CODE(1))).save(failOnError:true)
+		new MapsTarget(code:CODE(1), calculation: newSum("1", CODE(1))).save(failOnError:true)
 		
 		then:
 		MapsTarget.count() == 1
@@ -73,8 +73,8 @@ public class MapsDomainSpec extends MapsIntegrationTests {
 	
 	def "target constraint: calculation cannot be null"() {
 		when:
-		def average = newAverage("1", CODE(1))
-		new MapsTarget(code:CODE(1) , calculation: average).save(failOnError:true)
+		def ratio = newSum("1", CODE(1))
+		new MapsTarget(code:CODE(1) , calculation: ratio).save(failOnError:true)
 		
 		then:
 		MapsTarget.count() == 1

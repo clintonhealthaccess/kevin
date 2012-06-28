@@ -30,10 +30,10 @@ package org.chai.kevin.maps
 
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.data.Aggregation;
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Type
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.location.DataLocationType;
 
 class MapsTargetController extends AbstractEntityController {
 	

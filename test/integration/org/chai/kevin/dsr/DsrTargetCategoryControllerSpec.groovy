@@ -28,7 +28,6 @@ package org.chai.kevin.dsr
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation
 import org.chai.kevin.data.Type
 

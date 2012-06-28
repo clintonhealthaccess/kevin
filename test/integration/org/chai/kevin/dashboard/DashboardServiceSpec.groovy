@@ -50,7 +50,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		setupLocationTree()
 		def root = newReportProgram(CODE(1))
 		def dashboardRoot = newDashboardProgram(ROOT, root, 0)
-		def calculation = newAverage("1", CODE(2))
+		def calculation = newSum("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)
 		def dashboard = null
 		refresh()
@@ -184,11 +184,11 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		setupProgramTree()
 		setupDashboardTree()
 		def dataElement4 = newNormalizedDataElement(CODE(7), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
-		def average4 = newAverage("\$"+dataElement4.id, CODE(8))
-		def target4 = newDashboardTarget("Target 4", average4, ReportProgram.findByCode(ROOT), 1)
+		def ratio4 = newSum("\$"+dataElement4.id, CODE(8))
+		def target4 = newDashboardTarget("Target 4", ratio4, ReportProgram.findByCode(ROOT), 1)
 		def dataElement5 = newNormalizedDataElement(CODE(9), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
-		def average5 = newAverage("\$"+dataElement5.id, CODE(10))
-		def target5 = newDashboardTarget("Target 5", average5, ReportProgram.findByCode(ROOT), 1)
+		def ratio5 = newSum("\$"+dataElement5.id, CODE(10))
+		def target5 = newDashboardTarget("Target 5", ratio5, ReportProgram.findByCode(ROOT), 1)
 		refresh()
 
 		when:

@@ -1,7 +1,6 @@
 package org.chai.kevin
 
 import org.chai.kevin.data.Aggregation;
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.value.AggregationPartialValue;
 
@@ -14,7 +13,7 @@ class CalculationUnitSpec extends UnitSpec {
 		def calculation = null
 		
 		when:
-		calculation = new Average(expression: "1")
+		calculation = new Sum(expression: "1")
 		
 		then:
 		calculation.getPartialExpressions().equals(["1"])

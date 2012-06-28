@@ -4,7 +4,6 @@ import grails.validation.ValidationException;
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.Period;
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocation;

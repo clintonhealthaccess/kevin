@@ -29,7 +29,6 @@ package org.chai.kevin.data
 */
 
 import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
@@ -62,7 +61,7 @@ class DataServiceSpec extends IntegrationTests {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
-		def average = newAverage("1", CODE(3))
+		def ratio = newSum("1", CODE(3))
 		def sum = newSum("1", CODE(4))
 		def aggregation = newAggregation("1", CODE(5))
 		def result = null
@@ -80,10 +79,10 @@ class DataServiceSpec extends IntegrationTests {
 		result.equals(normalizedDataElement)
 
 		when:
-		result = dataService.getData(average.id, Average.class)
+		result = dataService.getData(ratio.id, Sum.class)
 		
 		then:
-		result.equals(average)
+		result.equals(ratio)
 
 		when:
 		result = dataService.getData(sum.id, Sum.class)
@@ -91,16 +90,14 @@ class DataServiceSpec extends IntegrationTests {
 		then:
 		result.equals(sum)
 	
-		expect:
-		dataService.getData(average.id, Sum.class) == null
-		dataService.getData(average.id, NormalizedDataElement.class) == null
-		dataService.getData(average.id, RawDataElement.class) == null
-		dataService.getData(sum.id, Average.class) == null
+		expect:		
+		dataService.getData(ratio.id, NormalizedDataElement.class) == null
+		dataService.getData(ratio.id, RawDataElement.class) == null
 		dataService.getData(sum.id, NormalizedDataElement.class) == null
 		dataService.getData(sum.id, RawDataElement.class) == null
-		dataService.getData(rawDataElement.id, Average.class) == null
-		dataService.getData(rawDataElement.id, NormalizedDataElement.class) == null
-		dataService.getData(rawDataElement.id, Sum.class) == null
+		dataService.getData(rawDataElement.id, Sum.class) == null				
+		dataService.getData(normalizedDataElement.id, Sum.class) == null
+		dataService.getData(normalizedDataElement.id, RawDataElement.class) == null
 		
 	}
 	
@@ -108,7 +105,7 @@ class DataServiceSpec extends IntegrationTests {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
-		def average = newAverage("1", CODE(3))
+		def ratio = newSum("1", CODE(3))
 		def sum = newSum("1", CODE(4))
 		def aggregation = newAggregation("1", CODE(5))
 		def result = null
@@ -126,10 +123,10 @@ class DataServiceSpec extends IntegrationTests {
 		result.equals(normalizedDataElement)
 
 		when:
-		result = dataService.getDataByCode(average.code, Average.class)
+		result = dataService.getDataByCode(ratio.code, Sum.class)
 		
 		then:
-		result.equals(average)
+		result.equals(ratio)
 
 		when:
 		result = dataService.getDataByCode(sum.code, Sum.class)
@@ -138,46 +135,45 @@ class DataServiceSpec extends IntegrationTests {
 		result.equals(sum)
 	
 		expect:
-		dataService.getDataByCode(average.code, Sum.class) == null
-		dataService.getDataByCode(average.code, NormalizedDataElement.class) == null
-		dataService.getDataByCode(average.code, RawDataElement.class) == null
-		dataService.getDataByCode(sum.code, Average.class) == null
+		dataService.getDataByCode(ratio.code, NormalizedDataElement.class) == null
+		dataService.getDataByCode(ratio.code, RawDataElement.class) == null
 		dataService.getDataByCode(sum.code, NormalizedDataElement.class) == null
 		dataService.getDataByCode(sum.code, RawDataElement.class) == null
-		dataService.getDataByCode(rawDataElement.code, Average.class) == null
-		dataService.getDataByCode(rawDataElement.code, NormalizedDataElement.class) == null
 		dataService.getDataByCode(rawDataElement.code, Sum.class) == null
+		dataService.getDataByCode(rawDataElement.code, NormalizedDataElement.class) == null
+		dataService.getDataByCode(normalizedDataElement.code, Sum.class) == null
+		dataService.getDataByCode(normalizedDataElement.code, RawDataElement.class) == null
 		
 	}
 	
 	def "get data element using super type"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def average = newAverage("1", CODE(3)) 
+		def ratio = newSum("1", CODE(3)) 
 		
 		expect:
 		dataService.getData(rawDataElement.id, DataElement.class).equals(rawDataElement)
 		dataService.getData(rawDataElement.id, Data.class).equals(rawDataElement)
-		dataService.getData(average.id, Calculation.class).equals(average)
-		dataService.getData(average.id, Data.class).equals(average)
+		dataService.getData(ratio.id, Calculation.class).equals(ratio)
+		dataService.getData(ratio.id, Data.class).equals(ratio)
 	}
 	
 	def "list data element"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
-		def average = newAverage("1", CODE(3))
+		def ratio = newSum("1", CODE(3))
 		def sum = newSum("1", CODE(4))
 		def aggregation = newAggregation("1", CODE(5))
 		
 		expect:
-		dataService.list(Average.class, [:]).equals([average])
-		dataService.count(Average.class) == 1
+		dataService.list(Sum.class, [:]).equals([ratio, sum])
+		dataService.count(Sum.class) == 2
 		dataService.list(DataElement.class, [:]).equals([rawDataElement, normalizedDataElement])
 		dataService.count(DataElement.class) == 2
 		dataService.list(NormalizedDataElement.class, [:]).equals([normalizedDataElement])
 		dataService.count(NormalizedDataElement.class) == 1
-		dataService.list(Data.class, [:]).equals([rawDataElement, normalizedDataElement, average, sum, aggregation])
+		dataService.list(Data.class, [:]).equals([rawDataElement, normalizedDataElement, ratio, sum, aggregation])
 		dataService.count(Data.class) == 5
 	}
 	
@@ -236,12 +232,11 @@ class DataServiceSpec extends IntegrationTests {
 	
 	def "search for calculations work"() {
 		setup:
-		def average1 = newAverage(j(["en": "average"]), "1", CODE(1));
+		def ratio1 = newSum(j(["en": "sum"]), "1", CODE(1));
 		
 		expect:
-		dataService.searchData(Average.class, "aver", [], [:]).equals([average1])
-		dataService.searchData(Data.class, "aver", [], [:]).equals([average1])
-		dataService.searchData(Sum.class, "aver", [], [:]).isEmpty()
+		dataService.searchData(Sum.class, "su", [], [:]).equals([ratio1])
+		dataService.searchData(Data.class, "su", [], [:]).equals([ratio1])
 		
 	}
 	
