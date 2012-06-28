@@ -213,6 +213,7 @@ public class ExpressionService {
         return dataInExpression;
     }
 	
+	@Transactional(readOnly=true)
 	public boolean hasCircularDependency(NormalizedDataElement dataElement) {
 		List<NormalizedDataElement> path = new ArrayList<NormalizedDataElement>();
 		path.add(dataElement);
