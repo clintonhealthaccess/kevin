@@ -47,15 +47,6 @@ class CalculationSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 	
-	def "sum expression does not accept calculations"() {
-		when:
-		def sum = newSum("1", CODE(1))
-		new Sum(code:CODE(1), expression: "\$"+sum.id).save(failOnError: true)
-		
-		then:
-		thrown ValidationException
-	}
-	
 	def "aggregation expression must be valid"() {
 		when:
 		new Aggregation(code:CODE(1), expression: "1").save(failOnError: true)

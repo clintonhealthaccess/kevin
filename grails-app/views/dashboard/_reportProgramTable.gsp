@@ -3,9 +3,10 @@
   <tr>
 	<th>
 		<g:i18n field="${currentProgram.names}"/>
+		&nbsp;
 		<g:render template="/templates/help_tooltip" 
 			model="[names: i18n(field: currentProgram.names), descriptions: i18n(field: currentProgram.descriptions)]" />
-	</th>
+	</th>	
 	<th><g:message code="dashboard.report.table.score"/></th>
 	<th></th>
   </tr>
@@ -24,13 +25,18 @@
 					</g:if> <g:else>
 						<g:i18n field="${entity.names}" />
 					</g:else>
+					&nbsp;
+					<g:render template="/templates/help_tooltip" 
+						model="[names: i18n(field: entity.names), descriptions: i18n(field: entity.descriptions)]" />
+						</div>					 
 					</td>
 				<td><g:set var="percentageValue" value="${dashboard.getPercentage(currentLocation, entity)}" />
 					<g:if test="${percentageValue != null}">
 						${percentageValue}%
 					</g:if><g:else>
 						<g:message code="report.value.na"/>
-					</g:else></td>
+					</g:else>
+					</td>					
 				<td>
 					<!-- percentage value -->
 					<g:if test="${percentageValue == null}">
