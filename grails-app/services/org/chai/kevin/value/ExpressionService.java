@@ -44,6 +44,7 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.JaqlService;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
+import org.chai.kevin.PeriodService;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
@@ -65,6 +66,7 @@ public class ExpressionService {
 	private LocationService locationService;
 	private ValueService valueService;
 	private JaqlService jaqlService;
+	private PeriodService periodService;
 	private SessionFactory sessionFactory;
 	
 	public static class StatusValuePair {
@@ -210,6 +212,34 @@ public class ExpressionService {
     	if (log.isDebugEnabled()) log.debug("getDataInExpression()="+dataInExpression);
         return dataInExpression;
     }
+	
+	public boolean hasCircularDependency(NormalizedDataElement dataElement) {
+		List<NormalizedDataElement> path = new ArrayList<NormalizedDataElement>();
+		path.add(dataElement);
+		for (DataLocationType dataLocationType : locationService.listTypes()) {
+			for (Period period : periodService.listPeriods()) {
+				if (hasCircularDependency(dataElement, period, dataLocationType, new ArrayList<NormalizedDataElement>(path))) return true; 
+			}
+		}
+		return false;
+	}
+	
+	private boolean hasCircularDependency(NormalizedDataElement dataElement, Period period, DataLocationType locationType, List<NormalizedDataElement> pathToExpression) {
+		String expression = dataElement.getExpression(period, locationType.getCode());
+		if (expression == null) return false;
+		Map<String, NormalizedDataElement> dataElementsInExpression = getDataInExpression(expression, NormalizedDataElement.class);
+		for (NormalizedDataElement dependency : dataElementsInExpression.values()) {
+			if (dependency != null) {
+				if (pathToExpression.contains(dependency)) return true;
+				else {
+					List<NormalizedDataElement> pathToExpressionWithDependency = new ArrayList<NormalizedDataElement>(pathToExpression);
+					pathToExpressionWithDependency.add(dependency);
+					if (hasCircularDependency(dependency, period, locationType, pathToExpressionWithDependency)) return true;
+				}
+			}
+		}
+		return false;
+	}
 
     public static Set<String> getVariables(String expression) {
     	Set<String> placeholders = null;
@@ -248,6 +278,10 @@ public class ExpressionService {
 	
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
+	}
+	
+	public void setPeriodService(PeriodService periodService) {
+		this.periodService = periodService;
 	}
 	
 	public void setLocationService(LocationService locationService) {
