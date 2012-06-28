@@ -44,7 +44,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 	def dashboardService	
 	
-	def "normal dashboard service"() {
+	def "get location dashboard"() {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
@@ -75,7 +75,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		
 	}
 	
-	def "dashboard with correct values"() {
+	def "get location dashboard with correct values"() {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
@@ -102,6 +102,55 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		RWANDA				| ROOT					| NORTH			| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
 	}
 
+	def "get program dashboard with no partial values"() {
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		setupProgramTree()
+		setupDashboardTree()
+
+		when:
+		def dashboard = dashboardService.getProgramDashboard(Location.findByCode(currentLocationName), ReportProgram.findByCode(currentProgramName), period, new HashSet(types.collect {DataLocationType.findByCode(it)}));
+		def percentage = dashboard.getPercentage(getCalculationLocation(currentLocationName), getDashboardEntity(programName))
+
+		then:
+		if (percentage == null) value == null
+		else percentage.value == value
+
+		where:
+		currentLocationName	| currentProgramName	| programName 	| types										    |value
+		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
+		BURERA				| PROGRAM1				| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
+		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
+		BURERA				| PROGRAM1				| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
+		RWANDA				| ROOT					| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
+		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP]						|null
+		RWANDA				| ROOT					| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP]						|null
+	}
+	
+	def "get program dashboard"() {
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		setupProgramTree()
+		setupDashboardTree()
+		refresh()
+
+		when:
+		def dashboard = dashboardService.getProgramDashboard(Location.findByCode(locationName), ReportProgram.findByCode(programCode), period, new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)]));
+
+		then:
+		dashboard.dashboardEntities.containsAll expectedEntities.collect {getDashboardEntity(it)}
+		dashboard.locations.containsAll expectedLocations.collect {getCalculationLocation(it)}
+		dashboard.locationPath.containsAll expectedLocationPath.collect {Location.findByCode(it)}
+
+		where:
+		locationName	| programCode	| expectedLocations	| expectedEntities  	| expectedLocationPath	| expectedProgramPath
+		RWANDA			| ROOT			| [RWANDA]			| [PROGRAM1, PROGRAM2]	| []					| []
+		BURERA			| PROGRAM1		| [BURERA]			| [TARGET1, TARGET2]	| [RWANDA, NORTH]		| [ROOT]
+		BURERA			| ROOT			| [BURERA]			| [PROGRAM1, PROGRAM2]	| [RWANDA, NORTH]		| []
+	}
+	
 	def "get program (compare) dashboard"() {
 		setup:
 		def period = newPeriod()
