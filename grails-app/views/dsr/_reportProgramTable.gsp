@@ -1,4 +1,4 @@
-<table class="nested push-top-10">
+<table class="nested push-top-10 ${dsrTable.targets.size() > 3 ? 'col4' : ''}">
 	<thead>
 		<tr>
 			<th><g:message code="dsr.report.table.location"/>

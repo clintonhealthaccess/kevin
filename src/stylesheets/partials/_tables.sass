@@ -144,7 +144,7 @@
     td:first-child span:first-child
       padding-left: 20px
       
-  &.col5
+  &.col4
     td, th
       width: 100px
       &:first-child
@@ -154,27 +154,25 @@
           display: inline-block
           padding-left: 20px
 
-  &.budget
-    td, th
-      width: 150px
-      a
-        color: #555
-        font-size: 11px
-        text-decoration: none
-        &:hover, &:focus
-          color: $primary
-      &:first-child
-        text-align: left
-        width: 320px
-      &.status
-        width: 20px
-        heigh: 16px
-        &.invalid
-          background: url("../images/icons/status_invalid.png") no-repeat center
-        &.incomplete
-          background: url("../images/icons/status_incomplete.png") no-repeat center
-        &.complete
-          background: url("../images/icons/status_complete.png") no-repeat center right
+  td, th
+    a
+      color: #555
+      font-size: 11px
+      text-decoration: none
+      &:hover, &:focus
+        color: $primary
+    &:first-child
+      text-align: left
+      width: 320px
+    &.status
+      width: 20px
+      height: 16px
+    &.invalid
+      background: url("../images/icons/status_invalid.png") no-repeat center
+      &.incomplete
+        background: url("../images/icons/status_incomplete.png") no-repeat center
+      &.complete
+        background: url("../images/icons/status_complete.png") no-repeat center right
          
     // fterrier start 
     .budget-entry
