@@ -28,7 +28,6 @@ package org.chai.kevin.fct;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,15 +35,14 @@ import java.util.Set;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportTable;
 import org.chai.kevin.value.SumValue;
-import org.chai.kevin.value.Value;
 
-public class FctTable extends ReportTable<FctTargetOption, CalculationLocation> {
+public class FctTable extends ReportTable<FctTargetOption, CalculationLocation, SumValue> {
 	
 	protected List<FctTargetOption> targetOptions;
 	private List<FctTarget> targets;
 	protected List<CalculationLocation> topLevelLocations;
 	
-	public FctTable(Map<CalculationLocation, Map<FctTargetOption, ? extends Object>> valueMap, List<FctTargetOption> targetOptions, List<FctTarget> targets, List<CalculationLocation> topLevelLocations) {
+	public FctTable(Map<CalculationLocation, Map<FctTargetOption, SumValue>> valueMap, List<FctTargetOption> targetOptions, List<FctTarget> targets, List<CalculationLocation> topLevelLocations) {
 		super(valueMap);
 		this.targetOptions = targetOptions;
 		this.targets = targets;

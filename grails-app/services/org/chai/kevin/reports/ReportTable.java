@@ -6,11 +6,11 @@ import java.util.Set;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.value.Value;
 
-public abstract class ReportTable<T, S extends CalculationLocation> {
+public abstract class ReportTable<T, S extends CalculationLocation, U> {
 
-	protected Map<S, Map<T, ? extends Object>> valueMap;
+	protected Map<S, Map<T, U>> valueMap;
 	
-	public ReportTable(Map<S, Map<T, ? extends Object>> valueMap) {
+	public ReportTable(Map<S, Map<T, U>> valueMap) {
 		this.valueMap = valueMap;
 	}
 	
@@ -22,9 +22,9 @@ public abstract class ReportTable<T, S extends CalculationLocation> {
 		return !valueMap.isEmpty();
 	}
 
-	public Object getReportValue(CalculationLocation location, T target){
-		Object reportValue = null;
-		Map<T, ? extends Object> reportValues = valueMap.get(location);
+	public U getReportValue(CalculationLocation location, T target){
+		U reportValue = null;
+		Map<T, U> reportValues = valueMap.get(location);
 		if (reportValues != null) reportValue = reportValues.get(target);
 		return reportValue;
 	}

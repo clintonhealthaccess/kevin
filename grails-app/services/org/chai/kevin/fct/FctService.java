@@ -39,7 +39,7 @@ public class FctService {
 		if (log.isDebugEnabled()) 
 			log.debug("getFctTable(period="+period+",location="+location+",level="+level+",program="+program+",target="+target+")");				
 				
-		Map<CalculationLocation, Map<FctTargetOption, ? extends Object>> valueMap = new HashMap<CalculationLocation, Map<FctTargetOption, ? extends Object>>();
+		Map<CalculationLocation, Map<FctTargetOption, SumValue>> valueMap = new HashMap<CalculationLocation, Map<FctTargetOption, SumValue>>();
 		List<FctTargetOption> targetOptions = new ArrayList<FctTargetOption>();
 		List<FctTarget> targets = new ArrayList<FctTarget>();
 		List<CalculationLocation> topLevelLocations = new ArrayList<CalculationLocation>();
