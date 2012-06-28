@@ -41,7 +41,7 @@ public class DsrTable extends ReportTable<DsrTarget, CalculationLocation> {
 	private List<DsrTarget> targets;
 	private List<DsrTargetCategory> targetCategories;		
 	
-	public DsrTable(Map<CalculationLocation, Map<DsrTarget, Value>> valueMap, 
+	public DsrTable(Map<CalculationLocation, Map<DsrTarget, ? extends Object>> valueMap, 
 			List<DsrTarget> targets, List<DsrTargetCategory> targetCategories) {
 		super(valueMap);
 		this.targets = targets;
