@@ -34,6 +34,11 @@ abstract class DashboardIntegrationTests extends IntegrationTests {
 		def dataElement3 = newNormalizedDataElement(CODE(5), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
 		def ratio3 = newSum("\$"+dataElement3.id, CODE(6))
 		def target3 = newDashboardTarget(TARGET3, ratio3, program2, 1)
+		
+		def dataElement4 = newNormalizedDataElement(CODE(7), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"0"]]))
+		def ratio4 = newSum("\$"+dataElement4.id, CODE(8))
+		def target4 = newDashboardTarget(TARGET4, ratio4, program3, 1)
+		
 	}
 	
 	static def newDashboardProgram(def code, def program) {
@@ -58,15 +63,4 @@ abstract class DashboardIntegrationTests extends IntegrationTests {
 		return dashboardTarget
 	}
 	
-	static def newDashboardPercentage(def value){
-		def dashboardPercentage = new DashboardPercentage(new Value("{\""+VALUE_STRING+"\":"+value+"}"), null, null)
-		return dashboardPercentage
-	}	
-	
-	def getPercentage(def percentage) {
-		if(percentage != null && percentage.isValid())
-			return percentage.getRoundedValue();
-		else
-			return null;
-	}
 }

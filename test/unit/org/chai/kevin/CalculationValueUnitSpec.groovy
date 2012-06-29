@@ -58,6 +58,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def partialValue1 = new SumPartialValue(value: v("1"), numberOfDataLocations: 1)
 		def partialValue2 = new SumPartialValue(value: v("0.5"), numberOfDataLocations: 2)
 		def partialValue3 = new SumPartialValue(value: v("2"), numberOfDataLocations: 5)
+		def partialValue4 = new SumPartialValue(value: Value.NULL_INSTANCE(), numberOfDataLocations: 1)
 		def percentage = new Sum()
 		def value = null
 		
@@ -66,6 +67,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 		then:
 		value.getAverage().equals(v("1"))
+		value.getValue().equals(v("1"))
 		value.getNumberOfDataLocations() == 1
 		
 		when:
@@ -73,6 +75,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 		then:
 		value.getAverage().equals(v("0.5"))
+		value.getValue().equals(v("1.5"))
 		value.getNumberOfDataLocations() == 3
 		
 		when:
@@ -80,6 +83,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 		then:
 		value.getAverage().equals(v("0.5"))
+		value.getValue().equals(v("3"))
 		value.getNumberOfDataLocations() == 6
 		
 		when:
@@ -87,7 +91,16 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 		then:
 		value.getAverage().equals(v("0.4375"))
+		value.getValue().equals(v("3.5"))
 		value.getNumberOfDataLocations() == 8
+		
+		when: "null values are excluded from sum and average"
+		value = new SumValue([partialValue1, partialValue4], percentage, null, new Location())
+		
+		then:
+		value.getAverage().equals(v("1"))
+		value.getValue().equals(v("1"))
+		value.getNumberOfDataLocations() == 1
 		
 	}
 	
@@ -128,18 +141,19 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 	}
 	
-	def "test sum with null values on DataLocation"() {
+	def "test sum and average with null values on DataLocation"() {
 		setup:
 		def partialValue = null
 		def value = null
 		def sum = new Sum()
 		
 		when:
-		partialValue = new SumPartialValue(value: Value.NULL_INSTANCE())
+		partialValue = new SumPartialValue(value: Value.NULL_INSTANCE(), numberOfDataLocations: 1)
 		value = new SumValue([partialValue], sum, null, new DataLocation())
 		
 		then:
 		value.getValue().equals(Value.NULL_INSTANCE())
+		value.getAverage().equals(Value.NULL_INSTANCE())
 		value.getNumberOfDataLocations() == 1
 	}
 	
@@ -151,13 +165,14 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def percentage = new Sum()
 		
 		when:
-		partialValue1 = new SumPartialValue(value: Value.NULL_INSTANCE())
-		partialValue2 = new SumPartialValue(value: Value.NULL_INSTANCE())
+		partialValue1 = new SumPartialValue(value: Value.NULL_INSTANCE(), numberOfDataLocations: 1)
+		partialValue2 = new SumPartialValue(value: Value.NULL_INSTANCE(), numberOfDataLocations: 1)
 		value = new SumValue([partialValue1, partialValue2], percentage, null, new Location())
 		
 		then:
-		value.getValue().equals(v("0"))
-		value.getNumberOfDataLocations() == 0				
+		value.getValue().equals(Value.NULL_INSTANCE())
+		value.getAverage().equals(Value.NULL_INSTANCE())
+		value.getNumberOfDataLocations() == 0
 		
 	}
 	

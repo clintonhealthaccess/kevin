@@ -26,9 +26,12 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 			return getDataLocationValue();
 		}
 		//location
-		Double sum = 0d;
+		Double sum = null;
 		for (SumPartialValue partialValue : getCalculationPartialValues()) {
-			if (!partialValue.getValue().isNull()) sum += partialValue.getValue().getNumberValue().doubleValue();
+			if (!partialValue.getValue().isNull()) {
+				if (sum == null) sum = 0d;
+				sum += partialValue.getValue().getNumberValue().doubleValue();
+			}
 		}
 		
 		return getData().getType().getValue(sum);
@@ -36,32 +39,28 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 	
 	@Override
 	public Value getAverage(){		
-		Double percentage = 0d;
+		Double average = 0d;
 		//data location
 		if (getLocation().collectsData()) {
-			Value dataLocationValue = getDataLocationValue();			
-			if(!dataLocationValue.isNull()){
-				percentage = dataLocationValue.getNumberValue().doubleValue();
-			}
-			
+			return getDataLocationValue();			
 		}
 		//location
-		else{			
-			Double sum = 0d;
-			Integer num = 0;
-			for (SumPartialValue sumPartialValue : getCalculationPartialValues()) {
-				if (!sumPartialValue.getValue().isNull()) {
-					sum += sumPartialValue.getValue().getNumberValue().doubleValue();
-					num += sumPartialValue.getNumberOfDataLocations();
-				}
+		Double sum = 0d;
+		Integer num = 0;
+		for (SumPartialValue sumPartialValue : getCalculationPartialValues()) {
+			if (!sumPartialValue.getValue().isNull()) {
+				// exclude null values from average
+				sum += sumPartialValue.getValue().getNumberValue().doubleValue();
+				num += sumPartialValue.getNumberOfDataLocations();
 			}
-			
-			percentage = (sum / num);	
 		}
 		
-		if (percentage.isNaN() || percentage.isInfinite()) 
-			percentage = null;
-		return getData().getType().getValue(percentage);
+		average = (sum / num);
+		
+		if (average.isInfinite()) average = null;
+		else if (average.isNaN()) average = null;
+		
+		return getData().getType().getValue(average);
 	}
 	
 	//@Override TODO move to CalculationValue for use with AggregationValue

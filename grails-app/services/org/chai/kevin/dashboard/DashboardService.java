@@ -43,6 +43,7 @@ import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
+import org.chai.kevin.value.Value;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +56,7 @@ public class DashboardService {
 	private LanguageService languageService;
 	private SessionFactory sessionFactory;
 	private Set<String> skipLevels;
-	private DashboardPercentageService dashboardPercentageService;	
+	private DashboardValueService dashboardPercentageService;	
 	
 	@Transactional(readOnly = true)
 	public Dashboard getProgramDashboard(Location location, ReportProgram program, Period period, Set<DataLocationType> types){
@@ -66,8 +67,8 @@ public class DashboardService {
 		List<DashboardEntity> dashboardEntities = collectDashboardEntitiesWithTargets(program);
 		
 		List<Location> locationPath = new ArrayList<Location>();
-		Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> valueMap = 
-				new HashMap<CalculationLocation, Map<DashboardEntity, DashboardPercentage>>();
+		Map<CalculationLocation, Map<DashboardEntity, Value>> valueMap = 
+				new HashMap<CalculationLocation, Map<DashboardEntity, Value>>();
 		
 		if(dashboardEntities.isEmpty())
 			return new Dashboard(locations, dashboardEntities, locationPath, valueMap);
@@ -95,8 +96,8 @@ public class DashboardService {
 		dashboardEntities.add(getDashboardProgram(program));		
 		
 		List<Location> locationPath = new ArrayList<Location>();
-		Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> valueMap = 
-				new HashMap<CalculationLocation, Map<DashboardEntity, DashboardPercentage>>();
+		Map<CalculationLocation, Map<DashboardEntity, Value>> valueMap = 
+				new HashMap<CalculationLocation, Map<DashboardEntity, Value>>();
 		
 		if(locationEntities.isEmpty())
 			return new Dashboard(locationEntities, dashboardEntities, locationPath, valueMap);
@@ -107,20 +108,20 @@ public class DashboardService {
 		return new Dashboard(locationEntities, dashboardEntities, locationPath, valueMap);
 	}
 	
-	private Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> getValues(List<CalculationLocation> locations, List<DashboardEntity> dashboardEntities, Period period, Set<DataLocationType> types) {
-		Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> valueMap = new HashMap<CalculationLocation, Map<DashboardEntity, DashboardPercentage>>();
+	private Map<CalculationLocation, Map<DashboardEntity, Value>> getValues(List<CalculationLocation> locations, List<DashboardEntity> dashboardEntities, Period period, Set<DataLocationType> types) {
+		Map<CalculationLocation, Map<DashboardEntity, Value>> valueMap = new HashMap<CalculationLocation, Map<DashboardEntity, Value>>();
 
 		for (CalculationLocation location : locations) {
-			Map<DashboardEntity, DashboardPercentage> locationMap = getValues(dashboardEntities, period, location, types);
+			Map<DashboardEntity, Value> locationMap = getValues(dashboardEntities, period, location, types);
 			valueMap.put(location, locationMap);
 		}
 		return valueMap;
 	}
 
-	private Map<DashboardEntity, DashboardPercentage> getValues(List<DashboardEntity> dashboardEntities, Period period, CalculationLocation location, Set<DataLocationType> types) {
-		Map<DashboardEntity, DashboardPercentage> entityMap = new HashMap<DashboardEntity, DashboardPercentage>();
+	private Map<DashboardEntity, Value> getValues(List<DashboardEntity> dashboardEntities, Period period, CalculationLocation location, Set<DataLocationType> types) {
+		Map<DashboardEntity, Value> entityMap = new HashMap<DashboardEntity, Value>();
 		for (DashboardEntity dashboardEntity : dashboardEntities) {
-			DashboardPercentage percentage = dashboardPercentageService.getDashboardValue(period, location, types, dashboardEntity);
+			Value percentage = dashboardPercentageService.getDashboardValue(period, location, types, dashboardEntity);
 			entityMap.put(dashboardEntity, percentage);
 		}
 		return entityMap;
@@ -198,7 +199,7 @@ public class DashboardService {
 		this.skipLevels = skipLevels;
 	}
 	
-	public void setDashboardPercentageService(DashboardPercentageService dashboardPercentageService) {
+	public void setDashboardPercentageService(DashboardValueService dashboardPercentageService) {
 		this.dashboardPercentageService = dashboardPercentageService;
 	}
 	

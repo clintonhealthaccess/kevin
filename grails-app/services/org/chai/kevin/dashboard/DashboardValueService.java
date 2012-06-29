@@ -16,7 +16,7 @@ import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
 import org.springframework.transaction.annotation.Transactional;
 
-public class DashboardPercentageService {
+public class DashboardValueService {
 
 	private static Type type = Type.TYPE_NUMBER();
 	
@@ -24,7 +24,7 @@ public class DashboardPercentageService {
 	private DashboardService dashboardService;
 	private ValueService valueService;
 
-	private class PercentageVisitor implements DashboardVisitor<DashboardPercentage> {
+	private class PercentageVisitor implements DashboardVisitor<Value> {
 		
 		private Set<DataLocationType> types;
 		
@@ -35,7 +35,7 @@ public class DashboardPercentageService {
 		private final Log log = LogFactory.getLog(PercentageVisitor.class);
 		
 		@Override
-		public DashboardPercentage visitProgram(DashboardProgram program, CalculationLocation location, Period period) {
+		public Value visitProgram(DashboardProgram program, CalculationLocation location, Period period) {
 			if (log.isDebugEnabled()) log.debug("visitProgram(program="+program+",location="+location+",period="+period+")");
 			
 			Integer totalWeight = 0;
@@ -45,11 +45,11 @@ public class DashboardPercentageService {
 			if (dashboardEntities.isEmpty()) return null;
 			
 			for (DashboardEntity child : dashboardEntities) {
-				DashboardPercentage childPercentage = child.visit(this, location, period);
+				Value childPercentage = child.visit(this, location, period);
 				if (childPercentage != null) { 
 					Integer weight = child.getWeight();
-					if (childPercentage.isValid()) {
-						sum += childPercentage.getGradientValue() * weight;
+					if (!childPercentage.isNull()) {
+						sum += childPercentage.getNumberValue().doubleValue() * weight;
 						totalWeight += weight;
 					}
 					else {
@@ -63,18 +63,17 @@ public class DashboardPercentageService {
 			Value value = null;
 			if (average.isNaN() || average.isInfinite()) value = Value.NULL_INSTANCE();
 			else value = type.getValue(average);
-			DashboardPercentage percentage = new DashboardPercentage(value, location, period);
 			
-			if (log.isDebugEnabled()) log.debug("visitProgram()="+percentage);
-			return percentage;
+			if (log.isDebugEnabled()) log.debug("visitProgram()="+value);
+			return value;
 		}
 
 		@Override
-		public DashboardPercentage visitTarget(DashboardTarget target, CalculationLocation location, Period period) {
+		public Value visitTarget(DashboardTarget target, CalculationLocation location, Period period) {
 			if (log.isDebugEnabled()) log.debug("visitTarget(target="+target+",location="+location+",period="+period+")");
 			
 			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), location, period, types);
-			DashboardPercentage percentage = new DashboardPercentage(calculationValue.getValue(), location, period);
+			Value percentage = calculationValue.getAverage();
 
 			if (log.isDebugEnabled()) log.debug("visitTarget(...)="+percentage);
 			return percentage;
@@ -108,7 +107,7 @@ public class DashboardPercentageService {
 	// TODO check this
 	@Transactional(readOnly = true)
 	@Cacheable(cache="dashboardCache")
-	public DashboardPercentage getDashboardValue(Period period, CalculationLocation location, Set<DataLocationType> types, DashboardEntity dashboardEntity) {
+	public Value getDashboardValue(Period period, CalculationLocation location, Set<DataLocationType> types, DashboardEntity dashboardEntity) {
 		return dashboardEntity.visit(new PercentageVisitor(types), location, period);
 	}
 	

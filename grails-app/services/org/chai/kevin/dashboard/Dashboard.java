@@ -32,19 +32,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.chai.kevin.data.Type;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.value.Value;
 
 public class Dashboard {
+	
+	private static Type DASHBOARD_TYPE = Type.TYPE_NUMBER();
 	
 	private List<CalculationLocation> locations;
 	private List<DashboardEntity> dashboardEntities;
 	
 	private List<Location> locationPath;
-	private Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> valueMap;
+	private Map<CalculationLocation, Map<DashboardEntity, Value>> valueMap;
 	
 	public Dashboard(List<CalculationLocation> locations, List<DashboardEntity> dashboardEntities,
-			List<Location> locationPath, Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> valueMap
+			List<Location> locationPath, Map<CalculationLocation, Map<DashboardEntity, Value>> valueMap
 	) {
 		this.locations = locations;
 		this.dashboardEntities = dashboardEntities;
@@ -64,13 +68,13 @@ public class Dashboard {
 		return locationPath;
 	}
 	
-	public Integer getPercentage(CalculationLocation location, DashboardEntity dashboardEntity) {		
-		DashboardPercentage percentage = null;
-		percentage = valueMap.get(location).get(dashboardEntity);
-		if(percentage != null && percentage.isValid())
-			return percentage.getRoundedValue();
-		else
-			return null;
+	// TODO rename this (in gsp + javascript to getAverage)
+	public Value getPercentage(CalculationLocation location, DashboardEntity dashboardEntity) {		
+		return valueMap.get(location).get(dashboardEntity);
+	}
+	
+	public Type getType() {
+		return DASHBOARD_TYPE;
 	}
 	
 	public boolean hasData(){
@@ -80,9 +84,9 @@ public class Dashboard {
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		for (Entry<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> locationEntry : this.valueMap.entrySet()) {
+		for (Entry<CalculationLocation, Map<DashboardEntity, Value>> locationEntry : this.valueMap.entrySet()) {
 			buffer.append(locationEntry.getKey());
-			for (Entry<DashboardEntity, DashboardPercentage> programEntry : locationEntry.getValue().entrySet()) {
+			for (Entry<DashboardEntity, Value> programEntry : locationEntry.getValue().entrySet()) {
 				buffer.append(programEntry.getKey());
 				buffer.append(":");
 				buffer.append(locationEntry.getValue());

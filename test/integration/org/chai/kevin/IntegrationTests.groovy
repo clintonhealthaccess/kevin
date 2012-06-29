@@ -110,6 +110,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static String TARGET3 = "Target 3"
 	
 	static String PROGRAM3 = "Program3"
+	static String TARGET4 = "Target 4"
 	
 	static String CATEGORY1 = "Category1"
 	

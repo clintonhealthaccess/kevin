@@ -20,10 +20,10 @@ function compareFilter(table, locationId) {
 					$(compareDiv).attr('data-percentage', 'N/A');							
 				}
 				else{							
-					$(compareDiv).css('width', percentageValue + '%');						
-					$(compareDiv).attr('title', percentageValue + '%');
-					$(compareDiv).attr('data-percentage', percentageValue);
-					if(percentageValue > 100){ 
+					$(compareDiv).css('width', percentageValue * 100 + '%');						
+					$(compareDiv).attr('title', percentageValue * 100 + '%');
+					$(compareDiv).attr('data-percentage', percentageValue * 100);
+					if(percentageValue > 1){ 
 						$(compareDiv).addClass('expand-bar');
 						$(compareDiv).css('width', '100%');
 					}
@@ -44,11 +44,11 @@ function compareFilter(table, locationId) {
 				
 			}
 			else{						
-				$(tooltip).css('left', percentageValue + '%')
-				$(tickmark).css('width', percentageValue + '%');
-				$(tooltip).attr('title', percentageValue + '%')
-				$(tooltip).attr('data-percentage', percentageValue);
-				if(percentageValue > 100){
+				$(tooltip).css('left', percentageValue * 100 + '%')
+				$(tickmark).css('width', percentageValue * 100 + '%');
+				$(tooltip).attr('title', percentageValue * 100 + '%')
+				$(tooltip).attr('data-percentage', percentageValue * 100);
+				if(percentageValue > 1){
 					$(tooltip).addClass('expand-tick');
 					$(tooltip).css('left', '100%');
 					$(tickmark).css('width', '100%');
