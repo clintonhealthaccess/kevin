@@ -55,7 +55,7 @@ public class AggregationValue extends CalculationValue<AggregationPartialValue> 
 	}
 
 	@Override
-	public Value getPercentage(){
+	public Value getAverage(){
 		return getValue();
 	}
 	

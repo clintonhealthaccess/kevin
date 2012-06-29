@@ -63,9 +63,9 @@ public class ReportProgram extends ReportEntity implements Exportable {
 		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 	
-//	@Override
-//	public ReportProgram fromExportString(Object value) {
-//		return (ReportProgram) value;
-//	}
+	@Override
+	public String toString() {
+		return "ReportProgram [code=" + code + "]";
+	}
 	
 }

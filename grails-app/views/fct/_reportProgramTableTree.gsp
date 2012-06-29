@@ -32,7 +32,7 @@
 							<g:reportValue value="${fctTable.getReportValue(location, targetOption).getValue()}" type="${targetOption.sum.type}"/>
 						</div>
 						<div class="report-location-percentage hidden">
-							<g:reportValue value="${fctTable.getReportValue(location, targetOption).getPercentage()}" type="${targetOption.sum.type}"/>%
+							<g:reportValue value="${fctTable.getReportValue(location, targetOption).getAverage()}" type="${targetOption.sum.type}" format="#%"/>
 						</div>
 					</g:if>
 					<g:else>
