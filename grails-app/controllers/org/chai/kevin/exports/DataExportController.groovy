@@ -154,7 +154,7 @@ class DataExportController extends AbstractEntityController {
 		
 	def list = {
 		adaptParamsForList()
-		List<DataExport> exports = dataExportService.getDataExports("date","desc");
+		List<DataExport> exports = DataExport.list(params)
 		this.getDataExportListModel(exports,dataExportService,list)
 	}
 	
