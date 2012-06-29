@@ -5,6 +5,7 @@ import org.chai.kevin.location.Location;
 import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.JSONUtils;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value
 
 class DashboardControllerSpec extends DashboardIntegrationTests {
@@ -143,8 +144,6 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setupProgramTree()
 		setupDashboardTree()
 		dashboardController = new DashboardController()
-		def percentageCompareValue1 = newDashboardPercentage("30")
-		def percentageCompareValue2 = newDashboardPercentage("10")
 		refresh()
 		
 		when:
@@ -163,9 +162,9 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		compareValues != null
 		compareValues.size() > 0
 		compareValues[0].id == DashboardProgram.findByCode(PROGRAM1).id
-		compareValues[0].value == getPercentage(percentageCompareValue1)
+		compareValues[0].value == 30
 		compareValues[1].id == DashboardProgram.findByCode(PROGRAM2).id
-		compareValues[1].value == getPercentage(percentageCompareValue2)
+		compareValues[1].value == 10
 	}
 	
 	def "get location compare dashboard"() {
@@ -175,7 +174,6 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setupProgramTree()
 		setupDashboardTree()
 		dashboardController = new DashboardController()
-		def percentageCompareValue = newDashboardPercentage("20")
 		refresh()
 		
 		when:
@@ -194,7 +192,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		compareValues != null
 		compareValues.size() == 1
 		compareValues[0].id == DashboardProgram.findByCode(ROOT).id
-		compareValues[0].value == getPercentage(percentageCompareValue)
+		Utils.formatNumber("#.0", compareValues[0].value) == "16.7"
 	}
 
 }

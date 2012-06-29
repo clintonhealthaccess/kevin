@@ -36,6 +36,7 @@ import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.data.Type;
@@ -85,23 +86,53 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 		when:
 		def dashboard = dashboardService.getLocationDashboard(Location.findByCode(currentLocationName), ReportProgram.findByCode(currentProgramName), period, new HashSet(types.collect {DataLocationType.findByCode(it)}), false);
-		def percentage = dashboard.getPercentage(getCalculationLocation(locationName), getDashboardEntity(programName))
+		def value = dashboard.getPercentage(getCalculationLocation(locationName), getDashboardEntity(currentProgramName))
 
 		then:
-		if (percentage == null) value == null
-		else percentage.value == value
+		Utils.formatNumber("#.0", value.numberValue) == Utils.formatNumber("#.0", expectedValue)
 
 		where:
-		currentLocationName	| currentProgramName	| locationName	| programName 	| types										    | value
-		BURERA				| PROGRAM1				| BUTARO		| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
-		BURERA				| PROGRAM1				| BUTARO		| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|20.0d
-		BURERA				| PROGRAM1				| KIVUYE		| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
-		BURERA				| PROGRAM1				| KIVUYE		| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
-		RWANDA				| ROOT					| NORTH			| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|30.0d
-		BURERA				| PROGRAM1				| BUTARO		| TARGET1		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
-		RWANDA				| ROOT					| NORTH			| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
+		currentLocationName	| currentProgramName	| locationName	| types										    | expectedValue
+		BURERA				| PROGRAM1				| BUTARO		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|30.0d
+		BURERA				| PROGRAM1				| KIVUYE		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
+		BURERA				| PROGRAM1				| BUTARO		| [DISTRICT_HOSPITAL_GROUP]						|30.0d
+		BURERA				| PROGRAM1				| KIVUYE		| [HEALTH_CENTER_GROUP]							|40.0d
+		RWANDA				| ROOT					| NORTH			| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|15.0d
+		RWANDA				| ROOT					| NORTH			| [DISTRICT_HOSPITAL_GROUP]						|50/3
+		RWANDA				| ROOT					| NORTH			| [HEALTH_CENTER_GROUP]							|50/3
 	}
 
+	def "get program dashboard with correct values"() {
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		setupProgramTree()
+		setupDashboardTree()
+		refresh()
+
+		when:
+		def dashboard = dashboardService.getProgramDashboard(Location.findByCode(currentLocationName), ReportProgram.findByCode(currentProgramName), period, new HashSet(types.collect {DataLocationType.findByCode(it)}));
+		def value = dashboard.getPercentage(getCalculationLocation(currentLocationName), getDashboardEntity(programName))
+
+		then:
+		value.numberValue == expectedValue
+
+		where:
+		currentLocationName	| currentProgramName	| programName 	| types										    | expectedValue
+		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
+		BURERA				| PROGRAM1				| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|20.0d
+		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP]						|40.0d
+		BURERA				| PROGRAM1				| TARGET1		| [HEALTH_CENTER_GROUP]							|40.0d
+		BURERA				| PROGRAM1				| TARGET2		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
+		BURERA				| PROGRAM1				| TARGET2		| [HEALTH_CENTER_GROUP]							|null
+		BURERA				| ROOT					| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|30.0d
+		BURERA				| ROOT					| PROGRAM2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|10.0d
+		BURERA				| PROGRAM3				| TARGET4		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|5.0d
+		BURERA				| PROGRAM3				| TARGET4		| [DISTRICT_HOSPITAL_GROUP]						|10.0d
+		BURERA				| PROGRAM3				| TARGET4		| [HEALTH_CENTER_GROUP]							|0.0d
+		BURERA				| ROOT					| PROGRAM3		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|5.0d
+	}
+	
 	def "get program dashboard with no partial values"() {
 		setup:
 		def period = newPeriod()
@@ -111,21 +142,20 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 		when:
 		def dashboard = dashboardService.getProgramDashboard(Location.findByCode(currentLocationName), ReportProgram.findByCode(currentProgramName), period, new HashSet(types.collect {DataLocationType.findByCode(it)}));
-		def percentage = dashboard.getPercentage(getCalculationLocation(currentLocationName), getDashboardEntity(programName))
+		def value = dashboard.getPercentage(getCalculationLocation(currentLocationName), getDashboardEntity(programName))
 
 		then:
-		if (percentage == null) value == null
-		else percentage.value == value
+		value.isNull()
 
 		where:
-		currentLocationName	| currentProgramName	| programName 	| types										    |value
-		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
-		BURERA				| PROGRAM1				| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
-		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
-		BURERA				| PROGRAM1				| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
-		RWANDA				| ROOT					| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
-		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP]						|null
-		RWANDA				| ROOT					| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP]						|null
+		currentLocationName	| currentProgramName	| programName 	| types										    
+		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
+		BURERA				| PROGRAM1				| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
+		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
+		BURERA				| PROGRAM1				| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
+		RWANDA				| ROOT					| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
+		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP]						
+		RWANDA				| ROOT					| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP]						
 	}
 	
 	def "get program dashboard"() {
@@ -232,12 +262,12 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		setupLocationTree()
 		setupProgramTree()
 		setupDashboardTree()
-		def dataElement4 = newNormalizedDataElement(CODE(7), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
-		def ratio4 = newSum("\$"+dataElement4.id, CODE(8))
-		def target4 = newDashboardTarget("Target 4", ratio4, ReportProgram.findByCode(ROOT), 1)
-		def dataElement5 = newNormalizedDataElement(CODE(9), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
-		def ratio5 = newSum("\$"+dataElement5.id, CODE(10))
-		def target5 = newDashboardTarget("Target 5", ratio5, ReportProgram.findByCode(ROOT), 1)
+		def dataElement4 = newNormalizedDataElement(CODE(10), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
+		def ratio4 = newSum("\$"+dataElement4.id, CODE(11))
+		def target4 = newDashboardTarget("Target 5", ratio4, ReportProgram.findByCode(ROOT), 1)
+		def dataElement5 = newNormalizedDataElement(CODE(12), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
+		def ratio5 = newSum("\$"+dataElement5.id, CODE(13))
+		def target5 = newDashboardTarget("Target 6", ratio5, ReportProgram.findByCode(ROOT), 1)
 		refresh()
 
 		when:
@@ -246,20 +276,24 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		then:
 		dashboard.dashboardEntities[0].equals(DashboardProgram.findByCode(PROGRAM1))
 		dashboard.dashboardEntities[1].equals(DashboardProgram.findByCode(PROGRAM2))
-		dashboard.dashboardEntities[2].equals(DashboardTarget.findByCode("Target 4"))
+		dashboard.dashboardEntities[2].equals(DashboardProgram.findByCode(PROGRAM3))
 		dashboard.dashboardEntities[3].equals(DashboardTarget.findByCode("Target 5"))
+		dashboard.dashboardEntities[4].equals(DashboardTarget.findByCode("Target 6"))
+		
 		when:
 		DashboardProgram.findByCode(PROGRAM1).order = 2
 		DashboardProgram.findByCode(PROGRAM2).order = 1
-		DashboardTarget.findByCode("Target 4").order = 2
-		DashboardTarget.findByCode("Target 5").order = 1
+		DashboardProgram.findByCode(PROGRAM3).order = 3
+		DashboardTarget.findByCode("Target 5").order = 2
+		DashboardTarget.findByCode("Target 6").order = 1
 		dashboard = dashboardService.getProgramDashboard(Location.findByCode(RWANDA), ReportProgram.findByCode(ROOT), period, new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)]));
 		
 		then:
 		dashboard.dashboardEntities[0].equals(DashboardProgram.findByCode(PROGRAM2))
 		dashboard.dashboardEntities[1].equals(DashboardProgram.findByCode(PROGRAM1))
-		dashboard.dashboardEntities[2].equals(DashboardTarget.findByCode("Target 5"))
-		dashboard.dashboardEntities[3].equals(DashboardTarget.findByCode("Target 4"))
+		dashboard.dashboardEntities[2].equals(DashboardProgram.findByCode(PROGRAM3))
+		dashboard.dashboardEntities[3].equals(DashboardTarget.findByCode("Target 6"))
+		dashboard.dashboardEntities[4].equals(DashboardTarget.findByCode("Target 5"))
 		
 	}
 	
