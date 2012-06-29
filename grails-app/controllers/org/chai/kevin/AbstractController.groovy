@@ -74,14 +74,11 @@ public abstract class AbstractController {
 	
 	def getProgram(def clazz){		
 		ReportProgram program = ReportProgram.get(params.int('program'))		
-		if(program == null)
-			program = reportService.getRootProgram()			
+		if(program == null) program = reportService.getRootProgram()			
 		if(clazz != null){
-			def programTree = reportService.getProgramTree(clazz).asList()
-			if(!programTree.contains(program))
-				program = reportService.getRootProgram()
+			def targets = reportService.collectReportTargets(clazz, program);
+			if (targets.isEmpty()) program = reportService.getRootProgram()
 		}
-			
 		return program
 	}
 	

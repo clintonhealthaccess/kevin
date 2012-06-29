@@ -41,23 +41,22 @@ public class DashboardPercentageService {
 			Integer totalWeight = 0;
 			Double sum = 0.0d;
 
-			List<DashboardEntity> dashboardEntities = dashboardService.getDashboardEntitiesWithTargets(program.getProgram());
+			List<DashboardEntity> dashboardEntities = dashboardService.getDashboardEntities(program.getProgram());
+			if (dashboardEntities.isEmpty()) return null;
+			
 			for (DashboardEntity child : dashboardEntities) {
 				DashboardPercentage childPercentage = child.visit(this, location, period);
-				if (childPercentage == null) {
-					if (log.isErrorEnabled()) log.error("found null percentage, program: "+child+", location: "+location+", period: "+period);
-					return null;
+				if (childPercentage != null) { 
+					Integer weight = child.getWeight();
+					if (childPercentage.isValid()) {
+						sum += childPercentage.getGradientValue() * weight;
+						totalWeight += weight;
+					}
+					else {
+						// MISSING_EXPRESSION - we skip it
+						// MISSING_NUMBER - should we count it in as zero ?
+					}
 				}
-				Integer weight = child.getWeight();
-				if (childPercentage.isValid()) {
-					sum += childPercentage.getGradientValue() * weight;
-					totalWeight += weight;
-				}
-				else {
-					// MISSING_EXPRESSION - we skip it
-					// MISSING_NUMBER - should we count it in as zero ?
-				}
-
 			}
 			// TODO what if sum = 0 and totalWeight = 0 ?
 			Double average = sum/totalWeight;
@@ -75,7 +74,6 @@ public class DashboardPercentageService {
 			if (log.isDebugEnabled()) log.debug("visitTarget(target="+target+",location="+location+",period="+period+")");
 			
 			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), location, period, types);
-			if (calculationValue == null) return null;
 			DashboardPercentage percentage = new DashboardPercentage(calculationValue.getValue(), location, period);
 
 			if (log.isDebugEnabled()) log.debug("visitTarget(...)="+percentage);

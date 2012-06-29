@@ -13,8 +13,8 @@
 						<td>
 							<g:if test="${fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
 								<g:each in="${fctTable.targetOptions}" var="targetOption" status="i">
-									<g:if test="${fctTable.getReportValue(location, targetOption).getPercentage() != null}">
-										<g:set var="reportValue" value="${fctTable.getReportValue(location, targetOption).getPercentage().numberValue}"/>									
+									<g:if test="${fctTable.getReportValue(location, targetOption).getAverage() != null}">
+										<g:set var="reportValue" value="${fctTable.getReportValue(location, targetOption).getAverage().numberValue * 100}"/>									
 										<div class="js_bar_vertical tooltip bar${i+1}"
 											data-percentage="${reportValue}" title="${reportValue}%"
 											style="height: ${reportValue}%;" onload="$(this).tipsy('show'); return false;"></div>

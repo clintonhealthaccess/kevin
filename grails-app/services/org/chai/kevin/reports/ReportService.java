@@ -69,19 +69,30 @@ public class ReportService {
 			.add(Restrictions.isNull("parent")).setCacheable(true).uniqueResult();
 		return program;
 	}
-
-	public <T extends ReportTarget> List<ReportProgram> getProgramTree(Class<T> clazz){
-		List<ReportProgram> programTree = new ArrayList<ReportProgram>();		
-		List<T> targets = getReportTargets(clazz, null);		
-		for(ReportTarget target : targets){
-			programTree.add(target.getProgram());			
-			ReportProgram parent = target.getProgram().getParent();
-			while(parent != null){
-				if(!programTree.contains(parent)) programTree.add(parent);
-				parent = parent.getParent();
-			}
+	
+	public <T extends ReportTarget> List<T> collectReportTargets(Class<T> clazz, ReportProgram program) {
+		List<T> result = new ArrayList<T>();
+		collectReportTree(clazz, program, null, result);
+		return result;
+	}
+	
+	public <T extends ReportTarget> List<ReportProgram> collectReportProgramTree(Class<T> clazz, ReportProgram program) {
+		List<ReportProgram> result = new ArrayList<ReportProgram>();
+		collectReportTree(clazz, program, result, null);
+		return result;
+	}
+	
+	public <T extends ReportTarget> boolean collectReportTree(Class<T> clazz, ReportProgram program, List<ReportProgram> collectedPrograms, List<T> collectedTargets) {
+		List<T> targets = getReportTargets(clazz, program);
+		if (collectedTargets != null) collectedTargets.addAll(targets);
+		
+		boolean hasTargets = !targets.isEmpty();
+		for (ReportProgram child : program.getChildren()) {
+			hasTargets = hasTargets | collectReportTree(clazz, child, collectedPrograms, collectedTargets);
 		}
-		return programTree;
+		
+		if (hasTargets && collectedPrograms != null) collectedPrograms.add(program);
+		return hasTargets;
 	}
 	
 	// TODO check this

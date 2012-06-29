@@ -82,7 +82,7 @@ class FilterTagLib {
 			def model = new HashMap(attrs)			
 			def program = attrs['selected']
 			def programRoot = reportService.getRootProgram()
-			def programTree = reportService.getProgramTree(attrs['selectedTargetClass']).asList()
+			def programTree = reportService.collectReportProgramTree(attrs['selectedTargetClass'], programRoot)
 			model << 
 				[
 					currentProgram: program,
