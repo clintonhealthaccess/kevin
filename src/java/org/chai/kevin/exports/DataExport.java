@@ -56,7 +56,6 @@ import org.chai.kevin.data.Data;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.DataValue;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
