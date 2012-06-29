@@ -121,8 +121,8 @@ class DashboardController extends AbstractController {
 					dashboard.dashboardEntities.each{ entity ->
 						obj (
 							id: entity.id,
-							value: dashboard.getPercentage(location, entity)
-							)
+							value: dashboard.getPercentage(location, entity).numberValue
+						)
 					}
 				}			
 			}

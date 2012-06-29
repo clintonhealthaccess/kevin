@@ -38,7 +38,7 @@ import org.chai.kevin.JaqlService
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
-import org.chai.kevin.dashboard.DashboardPercentageService
+import org.chai.kevin.dashboard.DashboardValueService
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.data.InfoService
 import org.chai.kevin.dsr.DsrService
@@ -198,7 +198,7 @@ beans = {
 		valueService = ref("valueService")
 	}
 	
-	dashboardPercentageService(DashboardPercentageService) {
+	dashboardPercentageService(DashboardValueService) {
 //		infoService = ref("infoService")
 		valueService = ref("valueService")
 		dashboardService = ref("dashboardService")
