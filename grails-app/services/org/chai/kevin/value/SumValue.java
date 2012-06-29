@@ -35,13 +35,13 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 	}
 	
 	@Override
-	public Value getPercentage(){		
+	public Value getAverage(){		
 		Double percentage = 0d;
 		//data location
 		if (getLocation().collectsData()) {
 			Value dataLocationValue = getDataLocationValue();			
 			if(!dataLocationValue.isNull()){
-				percentage = dataLocationValue.getNumberValue().doubleValue() * 100;
+				percentage = dataLocationValue.getNumberValue().doubleValue();
 			}
 			
 		}
@@ -56,7 +56,7 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 				}
 			}
 			
-			percentage = (sum / num) * 100;	
+			percentage = (sum / num);	
 		}
 		
 		if (percentage.isNaN() || percentage.isInfinite()) 

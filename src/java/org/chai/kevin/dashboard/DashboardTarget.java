@@ -29,6 +29,7 @@ package org.chai.kevin.dashboard;
  */
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -65,8 +66,7 @@ public class DashboardTarget extends DashboardEntity implements ReportTarget, Ex
 		this.id = id;
 	}
 	
-//	@Cascade(value={CascadeType.ALL, CascadeType.DELETE_ORPHAN})
-	@ManyToOne(targetEntity=Calculation.class, optional=false)
+	@ManyToOne(targetEntity=Calculation.class, optional=false, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
 	public Calculation<?> getCalculation() {
 		return calculation;
