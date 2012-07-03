@@ -50,27 +50,17 @@ public class FctService {
 		Collections.sort(targetOptions);
 		
 		Set<LocationLevel> skips = reportService.getSkipLocationLevels(skipLevels);
-		List<Location> treeLocations = location.collectTreeWithDataLocations(skips, types);
-		List<DataLocation> dataLocations = location.collectDataLocations(skips, types);
+		List<CalculationLocation> treeLocations = new ArrayList<CalculationLocation>();
+		treeLocations.addAll(location.collectTreeWithDataLocations(skips, types));
+		treeLocations.addAll(location.collectDataLocations(skips, types));
 		
-		for (Location treeLocation : treeLocations) {
+		for (CalculationLocation treeLocation : treeLocations) {
 			Map<FctTargetOption, SumValue> targetMap = new HashMap<FctTargetOption, SumValue>();
 			for(FctTargetOption targetOption : targetOptions){
 				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+targetOption.getSum());
 				targetMap.put(targetOption, getFctValue(targetOption, treeLocation, period, types));
 			}
 			valueMap.put(treeLocation, targetMap);
-		}
-		
-		for (DataLocation dataLocation : dataLocations) {
-			Map<FctTargetOption, SumValue> targetMap = new HashMap<FctTargetOption, SumValue>();
-			for(FctTargetOption targetOption : targetOptions){
-				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+targetOption.getSum());
-				Set<DataLocationType> dataLocationTypes = new HashSet<DataLocationType>();
-				dataLocationTypes.add(dataLocation.getType());
-				targetMap.put(targetOption, getFctValue(targetOption, dataLocation, period, dataLocationTypes));
-			}
-			valueMap.put(dataLocation, targetMap);						
 		}
 		
 		topLevelLocations.addAll(location.getChildrenEntitiesWithDataLocations(skips, types));
