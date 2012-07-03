@@ -249,6 +249,8 @@ public class Type extends JSONValue implements Exportable {
 	
 	@SuppressWarnings("unchecked")
 	private static List<Integer> getIndexList(Map<String, Object> map, String key) {
+		if (!map.containsKey(key)) return null;
+		
 		List<String> stringIndexList = new ArrayList<String>();
 		if (map.get(key) instanceof String[]) stringIndexList.addAll(Arrays.asList((String[])map.get(key)));
 		else if (map.get(key) instanceof Collection) stringIndexList.addAll((Collection<String>)map.get(key));
@@ -360,7 +362,10 @@ public class Type extends JSONValue implements Exportable {
 	
 								List<Integer> indexList = Type.getIndexList(map, prefix+".indexes");
 								for (int i = 0; i < oldValue.getListValue().size(); i++) {
-									if (indexList.size() > i) array1.add(getListType().mergeValueFromMap(oldValue.getListValue().get(i), map, prefix+"["+indexList.get(i)+"]", genericPrefix+"[_]", attributes, sanitizer, forImport).getJsonObject());
+									if (indexList == null || indexList.size() > i) {
+										int index = indexList == null ? i : indexList.get(i);
+										array1.add(getListType().mergeValueFromMap(oldValue.getListValue().get(i), map, prefix+"["+index+"]", genericPrefix+"[_]", attributes, sanitizer, forImport).getJsonObject());
+									}
 								}
 							}
 						}

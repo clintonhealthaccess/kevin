@@ -115,6 +115,10 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 	this.element.find('.js_always-send').each(function(i, input) {
 		data += '&'+$(input).serialize();
 	});
+	// we send the list indexes
+	element.find('.js_list-input-indexes').each(function(i, input) {
+		data += '&'+$(input).serialize();
+	});
 	
 	$(element).removeClass('ajax-error');
 	$(element).addClass('ajax-in-process');
