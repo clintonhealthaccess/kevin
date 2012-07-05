@@ -2,21 +2,24 @@
 
 <g:render template="/survey/element/hints"/>
 
-<ul id="element-${element.id}-${suffix}" class="adv-form element element-list ${validatable?.isSkipped(suffix)?'skipped':''} ${(validatable==null || validatable?.isValid(suffix))?'':'errors'}" data-element="${element.id}" data-suffix="${suffix}">
+<ul id="element-${element.id}-${suffix}" class="adv-form element element-list ${validatable?.isSkipped(suffix)?'skipped':''} 
+	${(validatable==null || validatable?.isValid(suffix))?'':'errors'}" data-element="${element.id}"
+	data-suffix="${suffix}">
+	
 	<a name="element-${element.id}-${suffix}"></a>
 	
 	<g:if test="${print}">
-			<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
-				location: location,
-				value: null,
-				lastValue: null,
-				type: type.listType, 
-				suffix: suffix+'['+i+']',
-				headerSuffix: (headerSuffix==null?suffix:headerSuffix)+'[_]',
-				element: element,
-				validatable: validatable,
-				readonly: readonly
-			]"/>
+		<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
+			location: location,
+			value: null,
+			lastValue: null,
+			type: type.listType, 
+			suffix: suffix+'['+i+']',
+			headerSuffix: (headerSuffix==null?suffix:headerSuffix)+'[_]',
+			element: element,
+			validatable: validatable,
+			readonly: readonly
+		]"/>
 	</g:if>
 	<g:else>
 		<g:each in="${value?.listValue}" var="item" status="i">
@@ -29,7 +32,7 @@
 				
 				<ul class="minimized-content"></ul>
 				<input type="hidden" class="js_list-input" name="elements[${element.id}].value${suffix}" value="[${i}]"/>
-				<input type="hidden" class="js_list-input-indexes" name="elements[${element.id}].value${suffix}.indexes" value="[${i}]"/>
+				
 				<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
 					location: location,
 					value: item,
