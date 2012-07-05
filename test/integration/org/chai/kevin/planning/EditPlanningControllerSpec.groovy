@@ -1,5 +1,6 @@
 package org.chai.kevin.planning
 
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
@@ -33,7 +34,6 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.params.planningType = planningType.id
 		planningController.params.element = formElement2.id
 		planningController.params.lineNumber = 0
-		planningController.params.suffix = '[0].key1'
 		planningController.params['elements['+formElement2.id+'].value[0].key1'] = '123'
 		planningController.saveValue()
 		def jsonResult = JSONUtils.getMapFromJSON(planningController.response.contentAsString)
@@ -66,7 +66,6 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.params.planningType = planningType.id
 		planningController.params.element = formElement.id
 		planningController.params.lineNumber = 0
-		planningController.params.suffix = '[0].key1'
 		planningController.params['elements['+formElement.id+'].value[0].key1'] = '123'
 		planningController.saveValue()
 		jsonResult = JSONUtils.getMapFromJSON(planningController.response.contentAsString)
@@ -96,7 +95,6 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.params.planningType = planningType.id
 		planningController.params.element = formElement.id
 		planningController.params.lineNumber = 0
-		planningController.params.suffix = '[0].key1'
 		planningController.params['elements['+formElement.id+'].value[0].key1'] = '99'
 		planningController.saveValue()
 		jsonResult = JSONUtils.getMapFromJSON(planningController.response.contentAsString)
@@ -125,7 +123,6 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.params.planningType = planningType.id
 		planningController.params.element = formElement.id
 		planningController.params.lineNumber = 0
-		planningController.params.suffix = '[0].key1'
 		planningController.params['elements['+formElement.id+'].value[0].key1'] = '123'
 		planningController.saveValue()
 		jsonResult = JSONUtils.getMapFromJSON(planningController.response.contentAsString)
@@ -156,7 +153,6 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.params.planningType = planningType.id
 		planningController.params.element = formElement.id
 		planningController.params.lineNumber = 0
-		planningController.params.suffix = '[0].key1'
 		planningController.params['elements['+formElement.id+'].value[0].key1'] = '1'
 		planningController.saveValue()
 		jsonResult = JSONUtils.getMapFromJSON(planningController.response.contentAsString)
@@ -167,6 +163,133 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		jsonResult.elements[0].skipped.size() == 1
 		jsonResult.elements[0].skipped[0] == '[0].key1'
 	}
+	
+	def "adding an element in a line does not erase other lines in system"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2), 
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_LIST(Type.TYPE_NUMBER())]))
+		)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def formElement = newFormElement(dataElement)
+		newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_LIST([
+			Value.VALUE_MAP(["key0":Value.VALUE_STRING("test"), "key1":Value.VALUE_LIST([Value.VALUE_NUMBER(123)])]),
+			Value.VALUE_MAP(["key0":Value.VALUE_STRING("test"), "key1":Value.VALUE_LIST([])]),
+		]))
+		def planningType = newPlanningType(formElement, "[_].key0", planning)
+		planningController = new EditPlanningController()
+		def jsonResult
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
+		planningController.params.planningType = planningType.id
+		planningController.params.element = formElement.id
+		planningController.params.lineNumber = 1
+		planningController.params['elements['+formElement.id+'].value[1].key1'] = ['[0]','[_]']
+		planningController.params['elements['+formElement.id+'].value[1].key1.indexes'] = ['[0]','[_]']
+		planningController.saveValue()
+		jsonResult = JSONUtils.getMapFromJSON(planningController.response.contentAsString)
+		
+		then:
+		jsonResult.valid == true
+		FormEnteredValue.list()[0].value.listValue[1].mapValue['key0'].stringValue == 'test'
+		FormEnteredValue.list()[0].value.listValue[1].mapValue['key1'].listValue.size() == 1
+		FormEnteredValue.list()[0].value.listValue[0].mapValue['key0'].stringValue == 'test'
+		FormEnteredValue.list()[0].value.listValue[0].mapValue['key1'].listValue.size() == 1
+	}
+	
+	def "edit planning entry - can still edit list after deleting line"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2), 
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_LIST(Type.TYPE_NUMBER())]))
+		)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def formElement = newFormElement(dataElement)
+		newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_LIST([
+			Value.VALUE_MAP(["key0":Value.VALUE_STRING("test"), "key1":Value.VALUE_LIST([Value.VALUE_NUMBER(123)])]),
+		]))
+		def planningType = newPlanningType(formElement, "[_].key0", planning)
+		planningController = new EditPlanningController()
+		def jsonResult
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
+		planningController.params.planningType = planningType.id
+		planningController.params.element = formElement.id
+		planningController.params.lineNumber = 0
+		planningController.params['elements['+formElement.id+'].value[0].key1'] = ['[1]','[0]','[_]']
+		planningController.params['elements['+formElement.id+'].value[0].key1.indexes'] = ['[1]','[0]','[_]']
+		planningController.saveValue()
+		jsonResult = JSONUtils.getMapFromJSON(planningController.response.contentAsString)
+		
+		then:
+		jsonResult.valid == true
+		FormEnteredValue.list()[0].value.listValue[0].mapValue['key0'].stringValue == 'test'
+		FormEnteredValue.list()[0].value.listValue[0].mapValue['key1'].listValue.size() == 2
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
+		planningController.params.planningType = planningType.id
+		planningController.params.element = formElement.id
+		planningController.params.lineNumber = 0
+		planningController.params['elements['+formElement.id+'].value[0].key1'] = ['[1]','[_]']
+		planningController.params['elements['+formElement.id+'].value[0].key1.indexes'] = ['[1]','[_]']
+		planningController.saveValue()
+		jsonResult = JSONUtils.getMapFromJSON(planningController.response.contentAsString)
+		
+		then:
+		jsonResult.valid == true
+		FormEnteredValue.list()[0].value.listValue[0].mapValue['key0'].stringValue == 'test'
+		FormEnteredValue.list()[0].value.listValue[0].mapValue['key1'].listValue.size() == 1
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
+		planningController.params.planningType = planningType.id
+		planningController.params.element = formElement.id
+		planningController.params.lineNumber = 0
+		planningController.params['elements['+formElement.id+'].value[0].key1[1]'] = 123
+		planningController.saveValue()
+		jsonResult = JSONUtils.getMapFromJSON(planningController.response.contentAsString)
+		
+		then:
+		jsonResult.valid == true
+		FormEnteredValue.list()[0].value.listValue[0].mapValue['key0'].stringValue == 'test'
+		FormEnteredValue.list()[0].value.listValue[0].mapValue['key1'].listValue.size() == 1
+		FormEnteredValue.list()[0].value.listValue[0].mapValue['key1'].listValue[0].numberValue == 123
+	}
+	
+	def "edit planning entry does not erase tables"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2), 
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_LIST(Type.TYPE_NUMBER())]))
+		)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def formElement = newFormElement(dataElement)
+		newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_LIST([
+			Value.VALUE_MAP(["key0":Value.VALUE_STRING("test"), "key1":Value.VALUE_LIST([Value.VALUE_NUMBER(123)])])
+		]))
+		def planningType = newPlanningType(formElement, "[_].key0", planning)
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
+		planningController.params.planningType = planningType.id
+		planningController.params.lineNumber = 1
+		planningController.editPlanningEntry()
+		
+		then:
+		FormEnteredValue.list()[0].value.listValue[0].mapValue['key0'].stringValue == 'test'
+		FormEnteredValue.list()[0].value.listValue[0].mapValue['key1'].listValue.size() == 1
+	}
+	
 	
 	def "edit planning entry creates line"() {
 		setup:
@@ -617,7 +740,6 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.params.planningType = planningType.id
 		planningController.params.element = formElement.id
 		planningController.params.lineNumber = 0
-		planningController.params.suffix = '[0].key1'
 		planningController.params['elements['+formElement.id+'].value[0].key1'] = '123'
 		planningController.save()
 		
@@ -645,7 +767,6 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.params.planningType = planningType.id
 		planningController.params.element = formElement.id
 		planningController.params.lineNumber = 0
-		planningController.params.suffix = '[0].key1'
 		planningController.params['elements['+formElement.id+'].value[0].key1'] = '123'
 		planningController.save()
 		
