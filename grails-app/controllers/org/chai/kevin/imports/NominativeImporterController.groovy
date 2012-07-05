@@ -67,7 +67,7 @@ class NominativeImporterController extends AbstractController {
 	def uploader = { NominativeImporterCommand cmd ->
 		ImporterErrorManager errorManager = new ImporterErrorManager();
 		if (!cmd.hasErrors()) {
-			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",period="+cmd.period+",dataElement="+cmd.dataElement+")")
+			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",period="+cmd.period+",dataElement="+cmd.dataElement+" delimiter="+cmd.delimiter+",encoding="+cmd.encoding+")")
 			
 			NominativeDataImporter importer = new NominativeDataImporter(
 				locationService, valueService, dataService,
@@ -93,7 +93,7 @@ class NominativeImporterController extends AbstractController {
 		render (view: '/import/'+view, model:[
 					periods: periods,
 					dataElements: dataElements,
-					normalizedImporter: cmd,
+					nominativeImporter: cmd,
 					errorManager: errorManager
 				])
 	}
