@@ -37,6 +37,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -55,7 +56,6 @@ import org.chai.kevin.data.Data;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.DataValue;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -73,13 +73,14 @@ public class DataExport {
 	private String typeCodeString;
 	private Set<CalculationLocation> locations = new HashSet<CalculationLocation>();
 	private Set<Period> periods = new HashSet<Period>();
-	private Set<Data<DataValue>> data = new HashSet<Data<DataValue>>();
+	private Set<Data<?>> data = new HashSet<Data<?>>();
 	
 	@Id
 	@GeneratedValue
 	public Long getId() {
 		return id;
 	}
+	
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -91,6 +92,7 @@ public class DataExport {
 	public Translation getDescriptions() {
 		return descriptions;
 	}
+	
 	public void setDescriptions(Translation descriptions) {
 		this.descriptions = descriptions;
 	}
@@ -100,6 +102,7 @@ public class DataExport {
 	public Date getDate() {
 		return date;
 	}
+	
 	public void setDate(Date date) {
 		this.date = date;
 	}
@@ -113,7 +116,7 @@ public class DataExport {
 		this.typeCodeString = typeCodeString;
 	}
 	
-	@ManyToMany(targetEntity=CalculationLocation.class)
+	@ManyToMany(targetEntity=CalculationLocation.class, fetch=FetchType.LAZY)
 	@JoinTable(name="dhsst_export_locations",
 		joinColumns=@JoinColumn(name="exporter"),
 		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","locations"})
@@ -121,18 +124,21 @@ public class DataExport {
 	public Set<CalculationLocation> getLocations() {
 		return locations;
 	}
+	
 	public void setLocations(Set<CalculationLocation> locations) {
 		this.locations = locations;
 	}
+	
 	@Transient
 	public Set<String> getTypeCodes() {
 		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
+	
 	public void setTypeCodes(Set<String> typeCodes) {
 		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	
-	@ManyToMany(targetEntity=Period.class)
+	@ManyToMany(targetEntity=Period.class, fetch=FetchType.LAZY)
 	@JoinTable(name="dhsst_export_periods",
 		joinColumns=@JoinColumn(name="exporter"),
 		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","periods"})
@@ -140,22 +146,23 @@ public class DataExport {
 	public Set<Period> getPeriods() {
 		return periods;
 	}
+	
 	public void setPeriods(Set<Period> periods) {
 		this.periods = periods;
 	}
 	
-	@ManyToMany(targetEntity=Data.class)
+	@ManyToMany(targetEntity=Data.class, fetch=FetchType.LAZY)
 	@JoinTable(name="dhsst_export_data",
 		joinColumns=@JoinColumn(name="exporter"),
 		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","data"})
 	)
-	public Set<Data<DataValue>> getData() {
+	public Set<Data<?>> getData() {
 		return data;
 	}
-	public void setData(Set<Data<DataValue>> data) {
+	
+	public void setData(Set<Data<?>> data) {
 		this.data = data;
 	}
-	
 
 	@Override
 	public int hashCode() {

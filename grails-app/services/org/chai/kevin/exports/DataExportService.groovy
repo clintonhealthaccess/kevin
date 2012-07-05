@@ -192,10 +192,6 @@ class DataExportService {
 		return headers;
 	}
 	
-	public List<DataExport> getDataExports(def sorter, def order){
-		return DataExport.list(sort:sorter,order:order);
-	}
-
 	public Integer countDataExports(Class<DataExport> clazz, String text) {
 		return getSearchCriteria(clazz,text).setProjection(Projections.count("id")).uniqueResult()
 	}
