@@ -23,6 +23,7 @@ import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
 import org.springframework.cache.annotation.Cacheable;
@@ -60,12 +61,12 @@ public class DsrService {
 				for(Location treeLocation : treeLocations){			
 					if(!valueMap.containsKey(treeLocation))
 						valueMap.put(treeLocation, new HashMap<DsrTarget, Value>());	
-					valueMap.get(treeLocation).put(target, getDsrValue(calculation, treeLocation, period, types));
+					valueMap.get(treeLocation).put(target, getDsrValue(target, calculation, treeLocation, period, types));
 				}
 				for(DataLocation dataLocation : dataLocations){					
 					if(!valueMap.containsKey(dataLocation))
 						valueMap.put(dataLocation, new HashMap<DsrTarget, Value>());	
-					valueMap.get(dataLocation).put(target, getDsrValue(calculation, dataLocation, period, types));
+					valueMap.get(dataLocation).put(target, getDsrValue(target, calculation, dataLocation, period, types));
 				}	
 			}
 			else{
@@ -96,11 +97,13 @@ public class DsrService {
 		return value;
 	}
 	
-	private Value getDsrValue(Calculation calculation, CalculationLocation location, Period period, Set<DataLocationType> types) {
-		Value value = null;	
-		CalculationValue<?> calculationValue = valueService.getCalculationValue(calculation, location, period, types);
-		if (calculationValue != null)
-			value = calculationValue.getValue();
+	private Value getDsrValue(DsrTarget target, Calculation calculation, CalculationLocation location, Period period, Set<DataLocationType> types) {
+		Value value = null;
+		SumValue calculationValue = (SumValue) valueService.getCalculationValue(calculation, location, period, types);
+		if(calculationValue != null){
+			if(target.getAverage()) value = calculationValue.getAverage();
+			else value = calculationValue.getValue();
+		}		
 		return value;
 	}	
 	
