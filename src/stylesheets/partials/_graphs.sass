@@ -115,10 +115,19 @@
     text-align: center
     vertical-align: bottom
 
-    div
+    // slister start: converting bars to stacked bars
+    div.js_bars_vertical
       display: inline-block
-      margin-bottom: -2px
-      width: 20px
+      height: 100%
+      margin-bottom: -1px
+      
+    div.js_bar_vertical
+      display: block      
+      width: 30px
+      
+    span
+      font-size: 10px
+      // slister end
 
 .chart_legend
   li
