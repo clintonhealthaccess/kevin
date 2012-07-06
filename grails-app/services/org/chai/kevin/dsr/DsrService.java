@@ -99,15 +99,10 @@ public class DsrService {
 	
 	private Value getDsrValue(DsrTarget target, Calculation calculation, CalculationLocation location, Period period, Set<DataLocationType> types) {
 		Value value = null;
-		if(target.getAverage()){
-			SumValue calculationValue = (SumValue) valueService.getCalculationValue(calculation, location, period, types);
-			if(calculationValue != null)
-				value = calculationValue.getAverage();
-		}
-		else{
-			CalculationValue<?> calculationValue = valueService.getCalculationValue(calculation, location, period, types);
-			if(calculationValue != null)
-				value = calculationValue.getValue();
+		SumValue calculationValue = (SumValue) valueService.getCalculationValue(calculation, location, period, types);
+		if(calculationValue != null){
+			if(target.getAverage()) value = calculationValue.getAverage();
+			else value = calculationValue.getValue();
 		}		
 		return value;
 	}	
