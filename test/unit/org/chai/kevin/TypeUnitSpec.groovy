@@ -404,7 +404,7 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['[3]':10d], '', new HashSet([]), sanitizer, true)
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['[3]':10d], '', new HashSet([]), sanitizer)
 		
 		then:
 		value.listValue.size() == 4
@@ -416,7 +416,7 @@ public class TypeUnitSpec extends UnitSpec {
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
 		def oldValue = Value.VALUE_LIST([Value.VALUE_NUMBER(5d)])
-		value = type.mergeValueFromMap(oldValue, ['[3]':10d], '', new HashSet([]), sanitizer, true)
+		value = type.mergeValueFromMap(oldValue, ['[3]':10d], '', new HashSet([]), sanitizer)
 		
 		then:
 		value.listValue.size() == 4
@@ -428,7 +428,7 @@ public class TypeUnitSpec extends UnitSpec {
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
 		oldValue = Value.VALUE_LIST([Value.VALUE_NUMBER(5d),Value.VALUE_NUMBER(10d)])
-		value = type.mergeValueFromMap(oldValue, ['[0]':15d], '', new HashSet([]), sanitizer, true)
+		value = type.mergeValueFromMap(oldValue, ['[0]':15d], '', new HashSet([]), sanitizer)
 		
 		then:
 		value.listValue.size() == 2
@@ -437,7 +437,7 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_MAP(["list": Type.TYPE_LIST(Type.TYPE_NUMBER())]))
-		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['[1].list[3]':10d], '', new HashSet([]), sanitizer, true)
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['[1].list[3]':10d], '', new HashSet([]), sanitizer)
 		
 		then:
 		value.listValue.size() == 2
