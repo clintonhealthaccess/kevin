@@ -17,11 +17,11 @@ public class ChartService {
 
 	public <T extends DataValue> Chart getChart(DataElement<T> element, DataLocation dataLocation) {
 		Map<Period, DataValue> values = new HashMap<Period, DataValue>();
-		for (Period period : periodService.getPeriods()) {
+		for (Period period : periodService.listPeriods()) {
 			DataValue value = valueService.getDataElementValue(element, dataLocation, period);
 			values.put(period, value);
 		}
-		return new Chart(dataLocation, element, periodService.getPeriods(), values);
+		return new Chart(dataLocation, element, periodService.listPeriods(), values);
 	}
 	
 	public void setValueService(ValueService valueService) {

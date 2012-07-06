@@ -65,6 +65,7 @@ class GeneralImporterController extends AbstractController {
 		ImporterErrorManager errorManager = new ImporterErrorManager();
 
 		if (!cmd.hasErrors()) {
+			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",delimiter="+cmd.delimiter+",encoding="+cmd.encoding+")")
 			GeneralDataImporter importer = new GeneralDataImporter(
 					locationService, valueService, dataService,
 					sessionFactory, transactionManager,
@@ -82,7 +83,7 @@ class GeneralImporterController extends AbstractController {
 	}
 	def getModel(def cmd,ImporterErrorManager errorManager,String view) {
 		render (view: '/import/'+view, model:[
-					importExporter: cmd,
+					generalImporter: cmd,
 					errorManager: errorManager
 				])
 	}
@@ -90,8 +91,7 @@ class GeneralImporterController extends AbstractController {
 }
 
 class GeneralImporterCommand {
-
-	Period period;
+	
 	String encoding;
 	Character delimiter;
 	CommonsMultipartFile file;

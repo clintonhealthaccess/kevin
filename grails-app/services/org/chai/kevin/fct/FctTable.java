@@ -28,44 +28,25 @@ package org.chai.kevin.fct;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportTable;
-import org.chai.kevin.value.Value;
+import org.chai.kevin.value.SumValue;
 
-public class FctTable extends ReportTable<FctTargetOption, CalculationLocation> {
+public class FctTable extends ReportTable<FctTargetOption, CalculationLocation, SumValue> {
 	
 	protected List<FctTargetOption> targetOptions;
 	private List<FctTarget> targets;
 	protected List<CalculationLocation> topLevelLocations;
 	
-	public FctTable(Map<CalculationLocation, Map<FctTargetOption, Value>> valueMap, List<FctTargetOption> targetOptions, List<FctTarget> targets, List<CalculationLocation> topLevelLocations) {
+	public FctTable(Map<CalculationLocation, Map<FctTargetOption, SumValue>> valueMap, List<FctTargetOption> targetOptions, List<FctTarget> targets, List<CalculationLocation> topLevelLocations) {
 		super(valueMap);
 		this.targetOptions = targetOptions;
 		this.targets = targets;
 		this.topLevelLocations = topLevelLocations;
-	}
-
-	public Double getMaxReportValue(){
-		Double dblMaxValue = 0d;
-		for(CalculationLocation topLevelLocation : topLevelLocations){
-			Map<FctTargetOption, Value> targetMap = valueMap.get(topLevelLocation);
-			Collection<Value> reportValues = targetMap.values();
-			for(Value reportValue : reportValues){
-				if (reportValue != null){
-					if(!reportValue.isNull()) {
-						Double doubleValue = reportValue.getNumberValue().doubleValue();					
-						if(doubleValue > dblMaxValue)
-							dblMaxValue = doubleValue;
-					}	
-				}					
-			}
-		}
-		return dblMaxValue;
 	}
 	
 	public List<FctTargetOption> getTargetOptions(){

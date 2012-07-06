@@ -40,7 +40,7 @@ class MapsServiceSpec extends MapsIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def calculation = newAverage("1", CODE(2))
+		def calculation = newSum("1", CODE(2))
 		def mapsTarget = newMapsTarget(CODE(3), calculation)
 		refresh()
 		

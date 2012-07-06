@@ -10,7 +10,7 @@ import org.chai.kevin.data.Sum;
 import org.chai.kevin.location.CalculationLocation;
 
 public class SumValue extends CalculationValue<SumPartialValue> {
-
+	
 	public SumValue(Set<SumPartialValue> calculationPartialValues, Sum calculation, Period period, CalculationLocation location) {
 		super(new ArrayList<SumPartialValue>(calculationPartialValues), calculation, period, location);
 	}
@@ -21,19 +21,70 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 
 	@Override
 	public Value getValue() {
+		//data Location
 		if (getLocation().collectsData()) {
-			if (getCalculationPartialValues().size() > 1) throw new IllegalStateException("calculation for DataLocation does not contain only one partial value");
-			if (getCalculationPartialValues().size() == 0) return Value.NULL_INSTANCE();
-			return getCalculationPartialValues().get(0).getValue();
+			return getDataLocationValue();
 		}
-		Double value = 0d;
+		//location
+		Double sum = null;
 		for (SumPartialValue partialValue : getCalculationPartialValues()) {
-			if (!partialValue.getValue().isNull()) value += partialValue.getValue().getNumberValue().doubleValue();
+			if (!partialValue.getValue().isNull()) {
+				if (sum == null) sum = 0d;
+				sum += partialValue.getValue().getNumberValue().doubleValue();
+			}
 		}
-		return getData().getType().getValue(value);
+		
+		return getData().getType().getValue(sum);
 	}
 	
-
+	@Override
+	public Value getAverage(){		
+		Double average = 0d;
+		//data location
+		if (getLocation().collectsData()) {
+			return getDataLocationValue();			
+		}
+		//location
+		Double sum = 0d;
+		Integer num = 0;
+		for (SumPartialValue sumPartialValue : getCalculationPartialValues()) {
+			if (!sumPartialValue.getValue().isNull()) {
+				// exclude null values from average
+				sum += sumPartialValue.getValue().getNumberValue().doubleValue();
+				num += sumPartialValue.getNumberOfDataLocations();
+			}
+		}
+		
+		average = (sum / num);
+		
+		if (average.isInfinite()) average = null;
+		else if (average.isNaN()) average = null;
+		
+		return getData().getType().getValue(average);
+	}
+	
+	//@Override TODO move to CalculationValue for use with AggregationValue
+	public Integer getNumberOfDataLocations(){
+		//data Location
+		if (getLocation().collectsData()) {
+			return 1;
+		}
+		//location
+		Integer numberOfDataLocations = 0;
+		for (SumPartialValue sumPartialValue : getCalculationPartialValues()) {
+			if (!sumPartialValue.getValue().isNull()) {
+				numberOfDataLocations += sumPartialValue.getNumberOfDataLocations();
+			}
+		}
+		return numberOfDataLocations;
+	}
+	
+	private Value getDataLocationValue(){
+		if (getCalculationPartialValues().size() > 1) throw new IllegalStateException("Calculation for DataLocation does not contain only 1 partial value");
+		if (getCalculationPartialValues().size() == 0) return Value.NULL_INSTANCE();
+		return getCalculationPartialValues().get(0).getValue();
+	}
+	
 	@Override
 	public String toString() {
 		return "SumValue [getValue()=" + getValue() + "]";

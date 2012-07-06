@@ -50,7 +50,7 @@ class CalculationController extends AbstractController {
 	
 	def Class getEntityClass(){
 		return Calculation.class;
-//		return [Aggregation.class, Average.class, Sum.class];
+//		return [Aggregation.class, Sum.class];
 	}
 	
 	def list = {

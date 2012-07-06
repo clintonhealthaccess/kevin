@@ -5,7 +5,6 @@ import grails.validation.ValidationException;
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Aggregation;
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 
@@ -34,24 +33,15 @@ class CalculationSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 	
-	def "average expression must be valid"() {
+	def "ratio expression must be valid"() {
 		when:
-		new Average(code:CODE(1), expression: "1").save(failOnError: true)
+		new Sum(code:CODE(1), expression: "1").save(failOnError: true)
 		
 		then:
-		Average.count() == 1
+		Sum.count() == 1
 		
 		when:
-		new Average(code:CODE(2), expression: "1(").save(failOnError: true)
-		
-		then:
-		thrown ValidationException
-	}
-	
-	def "average expression does not accept calculations"() {
-		when:
-		def sum = newSum("1", CODE(1))
-		new Average(code:CODE(1), expression: "\$"+sum.id).save(failOnError: true)
+		new Sum(code:CODE(2), expression: "1(").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -94,15 +84,15 @@ class CalculationSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 	
-	def "average code must not be null"() {
+	def "ratio code must not be null"() {
 		when:
-		new Average(code:CODE(1), expression: "1").save(failOnError: true)
+		new Sum(code:CODE(1), expression: "1").save(failOnError: true)
 		
 		then:
-		Average.count() == 1
+		Sum.count() == 1
 		
 		when:
-		new Average(expression: "1").save(failOnError: true)
+		new Sum(expression: "1").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -125,7 +115,7 @@ class CalculationSpec extends IntegrationTests {
 //	def "cannot delete expression with associated calculation"() {
 //		when:
 //		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
-//		def average = new Average(expressions: [HEALTH_CENTER_GROUP: expression], type:Type.TYPE_NUMBER()).save(failOnError: true)
+//		def ratio = new Sum(expressions: [HEALTH_CENTER_GROUP: expression], type:Type.TYPE_NUMBER()).save(failOnError: true)
 //		expression.delete(flush: true)
 //		
 //		then:

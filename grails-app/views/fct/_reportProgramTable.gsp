@@ -1,4 +1,4 @@
-<table class="nested push-top-10">
+<table class="nested push-top-10 ${fctTable.targetOptions.size() > 3 ? 'col4' : ''}">
 	<thead>
 		<tr>
 			<th>

@@ -55,6 +55,11 @@ public class AggregationValue extends CalculationValue<AggregationPartialValue> 
 	}
 
 	@Override
+	public Value getAverage(){
+		return getValue();
+	}
+	
+	@Override
 	public String toString() {
 		return "AggregationValue [getValue()=" + getValue() + "]";
 	}

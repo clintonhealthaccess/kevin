@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.reports.ReportTable;
 import org.chai.kevin.value.Value;
 
@@ -36,7 +35,7 @@ import org.chai.kevin.value.Value;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class DsrTable extends ReportTable<DsrTarget, CalculationLocation> {
+public class DsrTable extends ReportTable<DsrTarget, CalculationLocation, Value> {
 	
 	private List<DsrTarget> targets;
 	private List<DsrTargetCategory> targetCategories;		

@@ -31,6 +31,7 @@ package org.chai.kevin.data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -67,9 +68,18 @@ public class Sum extends Calculation<SumPartialValue> {
 	@Override
 	public SumPartialValue getCalculationPartialValue(String expression, Map<DataLocation, StatusValuePair> values, CalculationLocation location, Period period, DataLocationType type) {
 		Value value = getValue(values, location);
-		return new SumPartialValue(this, location, period, type, value);
+		Integer numberOfDataLocations = getNumberOfDataLocations(values);
+		return new SumPartialValue(this, location, period, type, numberOfDataLocations, value);
 	}
 
+	private Integer getNumberOfDataLocations(Map<DataLocation, StatusValuePair> values) {
+		Integer result = 0;
+		for (Entry<DataLocation, StatusValuePair> entry : values.entrySet()) {
+			if (!entry.getValue().value.isNull()) result++;
+		}
+		return result;
+	}
+	
 	@Override
 	@Transient
 	public List<String> getPartialExpressions() {

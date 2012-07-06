@@ -2,6 +2,7 @@ package org.chai.kevin.dashboard
 
 import org.chai.kevin.data.Sum;
 
+
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -33,8 +34,6 @@ import org.chai.kevin.data.Sum;
 constraints = {
 	code (nullable: false, blank: false, unique: true)
 	program (nullable: false)
-	calculation (nullable: false, validator: { val, obj ->
-		return !(val instanceof Sum)
-	})
+	calculation (nullable: false)
 	weight (nullable: false)
 }

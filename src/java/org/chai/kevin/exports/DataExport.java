@@ -53,6 +53,7 @@ import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.hibernate.annotations.Cache;
@@ -125,10 +126,10 @@ public class DataExport {
 	}
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString);
+		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes);
+		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	
 	@ManyToMany(targetEntity=Period.class)

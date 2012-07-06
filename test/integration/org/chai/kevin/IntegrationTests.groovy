@@ -43,7 +43,6 @@ import org.apache.shiro.web.util.WebUtils;
 import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.Aggregation;
-import org.chai.kevin.data.Average
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Enum
@@ -60,7 +59,6 @@ import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.AggregationPartialValue;
-import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.CalculationPartialValue
 import org.chai.kevin.value.RawDataElementValue
 import org.chai.kevin.value.NormalizedDataElementValue
@@ -112,6 +110,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static String TARGET3 = "Target 3"
 	
 	static String PROGRAM3 = "Program3"
+	static String TARGET4 = "Target 4"
 	
 	static String CATEGORY1 = "Category1"
 	
@@ -255,12 +254,12 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new AggregationPartialValue(data: aggregation, period: period, location: location, type: type, expressionData: expressionData, value: value).save(failOnError: true)
 	}
 	
-	static SumPartialValue newSumPartialValue(def sum, def period, def location, def type, def value) {
-		return new SumPartialValue(data: sum, period: period, location: location, type: type, value: value).save(failOnError: true)
+	static SumPartialValue newSumPartialValue(def sum, def period, def location, def type, def numberOfDataLocations, def value) {
+		return new SumPartialValue(data: sum, period: period, location: location, type: type, numberOfDataLocations: numberOfDataLocations, value: value).save(failOnError: true)
 	}
 	
-	static AveragePartialValue newAveragePartialValue(def average, def period, def location, def type, def numberOfDataLocations, def value) {
-		return new AveragePartialValue(data: average, period: period, location: location, type: type, numberOfDataLocations: numberOfDataLocations, value: value).save(failOnError: true)
+	static SumPartialValue newSumPartialValue(def sum, def period, def location, def type, def value) {
+		return new SumPartialValue(data: sum, period: period, location: location, type: type, numberOfDataLocations:0, value: value).save(failOnError: true)
 	}
 	
 	static RawDataElement newRawDataElement(def code, def type) {
@@ -305,12 +304,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return newAggregation([:], expression, code)
 	}
 
-	static def newAverage(def names, String expression, def code) {
-		return new Average(names: names, expression: expression, code: code).save(failOnError: true)
-	}
-
-	static def newAverage(String expression, def code) {
-		return newAverage([:], expression, code)
+	static def newSum(String expression, def code) {
+		return newSum([:], expression, code)
 	}
 	
 	static Sum newSum(def names, def expression, def code) {
@@ -353,7 +348,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def static newFormValidationRule(def code, def element, def prefix, def types, def expression, boolean allowOutlier, def dependencies = []) {
-		def validationRule = new FormValidationRule(code: code, expression: expression, prefix: prefix, messages: [:], formElement: element, typeCodeString: Utils.unsplit(types), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
+		def validationRule = new FormValidationRule(code: code, expression: expression, prefix: prefix, messages: [:], formElement: element, typeCodeString: Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
 		element.addValidationRule(validationRule)
 		element.save(failOnError: true)
 		return validationRule
@@ -385,9 +380,6 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def refreshCalculation() {
-		Average.list().each {
-			refreshValueService.refreshCalculation(it)
-		}
 		Sum.list().each {
 			refreshValueService.refreshCalculation(it)
 		}
@@ -404,7 +396,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def g(def types) {
-		return Utils.unsplit(types)
+		return Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER)
 	}
 	
 	static def getLocationLevels(def levels) {

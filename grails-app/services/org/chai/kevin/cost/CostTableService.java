@@ -79,14 +79,14 @@ public class CostTableService {
 		}
 
 		List<DataLocationType> types = new ArrayList<DataLocationType>();
-		for (String typeCode : Utils.split(target.getTypeCodeString())) {
+		for (String typeCode : Utils.split(target.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER)) {
 			types.add(locationService.findDataLocationTypeByCode(typeCode));
 		}
 		return new Explanation(target, types, target.getProgram(), period, new ArrayList<CalculationLocation>(explanationMap.keySet()), costService.getYears(), explanationMap);
 	}
 	
 	private boolean appliesToLocation(CostTarget target, DataLocation dataLocation) {
-		return Utils.split(target.getTypeCodeString()).contains(dataLocation.getType().getCode());
+		return Utils.split(target.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER).contains(dataLocation.getType().getCode());
 	}
 	
 	private Map<Integer, Cost> getCost(CostTarget target, CalculationLocation location, Period period) {
@@ -133,15 +133,15 @@ public class CostTableService {
 			
 			DataValue expressionValue = valueService.getDataElementValue(target.getDataElement(), dataLocation, period);
 			DataValue expressionEndValue = null;
-			if (target.isAverage()) expressionEndValue = valueService.getDataElementValue(target.getDataElementEnd(), dataLocation, period);
-			if (expressionValue != null && expressionValue.getValue().getNumberValue() != null && (!target.isAverage() || (expressionEndValue != null && expressionEndValue.getValue().getNumberValue() != null))) { 
+			if (target.isRatio()) expressionEndValue = valueService.getDataElementValue(target.getDataElementEnd(), dataLocation, period);
+			if (expressionValue != null && expressionValue.getValue().getNumberValue() != null && (!target.isRatio() || (expressionEndValue != null && expressionEndValue.getValue().getNumberValue() != null))) { 
 				Double baseCost = expressionValue.getValue().getNumberValue().doubleValue();
 
 				// FIXME
 	//			if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;
 				
 				Double steps = 0d;
-				if (target.isAverage()) {
+				if (target.isRatio()) {
 					Double endCost = expressionEndValue.getValue().getNumberValue().doubleValue();
 					// FIXME
 	//				if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;
@@ -150,7 +150,7 @@ public class CostTableService {
 	
 				for (Integer year : years) {
 					Double yearCost;
-					if (target.isAverage()) {
+					if (target.isRatio()) {
 						yearCost = ( baseCost + steps * (year-1) ) * target.getCostRampUp().getYears().get(year).getValue();
 					}
 					else {

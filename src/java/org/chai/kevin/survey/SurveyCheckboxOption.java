@@ -52,6 +52,7 @@ import javax.persistence.UniqueConstraint;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -99,10 +100,10 @@ public class SurveyCheckboxOption extends Orderable<Integer> implements Exportab
 	
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString);
+		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes);
+		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 
 	@ManyToOne(targetEntity = SurveyCheckboxQuestion.class)
@@ -115,8 +116,8 @@ public class SurveyCheckboxOption extends Orderable<Integer> implements Exportab
 		this.question = question;
 	}
 
-	@OneToOne(targetEntity = SurveyElement.class)
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@OneToOne(targetEntity = SurveyElement.class, orphanRemoval=true)
+	@Cascade({ CascadeType.ALL })
 	public SurveyElement getSurveyElement() {
 		return surveyElement;
 	}
@@ -137,7 +138,7 @@ public class SurveyCheckboxOption extends Orderable<Integer> implements Exportab
 	
 	@Transient
 	public Set<String> getTypeApplicable() {
-		return Utils.split(this.typeCodeString);
+		return Utils.split(this.typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 
 	public SurveyCheckboxOption deepCopy(SurveyCloner cloner) {

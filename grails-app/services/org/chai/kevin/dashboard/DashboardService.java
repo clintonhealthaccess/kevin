@@ -43,6 +43,7 @@ import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
+import org.chai.kevin.value.Value;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +56,7 @@ public class DashboardService {
 	private LanguageService languageService;
 	private SessionFactory sessionFactory;
 	private Set<String> skipLevels;
-	private DashboardPercentageService dashboardPercentageService;	
+	private DashboardValueService dashboardPercentageService;	
 	
 	@Transactional(readOnly = true)
 	public Dashboard getProgramDashboard(Location location, ReportProgram program, Period period, Set<DataLocationType> types){
@@ -63,11 +64,11 @@ public class DashboardService {
 		List<CalculationLocation> locations = new ArrayList<CalculationLocation>();		
 		locations.add(location);
 
-		List<DashboardEntity> dashboardEntities = getDashboardEntitiesWithTargets(program);
+		List<DashboardEntity> dashboardEntities = collectDashboardEntitiesWithTargets(program);
 		
 		List<Location> locationPath = new ArrayList<Location>();
-		Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> valueMap = 
-				new HashMap<CalculationLocation, Map<DashboardEntity, DashboardPercentage>>();
+		Map<CalculationLocation, Map<DashboardEntity, Value>> valueMap = 
+				new HashMap<CalculationLocation, Map<DashboardEntity, Value>>();
 		
 		if(dashboardEntities.isEmpty())
 			return new Dashboard(locations, dashboardEntities, locationPath, valueMap);
@@ -95,8 +96,8 @@ public class DashboardService {
 		dashboardEntities.add(getDashboardProgram(program));		
 		
 		List<Location> locationPath = new ArrayList<Location>();
-		Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> valueMap = 
-				new HashMap<CalculationLocation, Map<DashboardEntity, DashboardPercentage>>();
+		Map<CalculationLocation, Map<DashboardEntity, Value>> valueMap = 
+				new HashMap<CalculationLocation, Map<DashboardEntity, Value>>();
 		
 		if(locationEntities.isEmpty())
 			return new Dashboard(locationEntities, dashboardEntities, locationPath, valueMap);
@@ -107,20 +108,20 @@ public class DashboardService {
 		return new Dashboard(locationEntities, dashboardEntities, locationPath, valueMap);
 	}
 	
-	private Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> getValues(List<CalculationLocation> locations, List<DashboardEntity> dashboardEntities, Period period, Set<DataLocationType> types) {
-		Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> valueMap = new HashMap<CalculationLocation, Map<DashboardEntity, DashboardPercentage>>();
+	private Map<CalculationLocation, Map<DashboardEntity, Value>> getValues(List<CalculationLocation> locations, List<DashboardEntity> dashboardEntities, Period period, Set<DataLocationType> types) {
+		Map<CalculationLocation, Map<DashboardEntity, Value>> valueMap = new HashMap<CalculationLocation, Map<DashboardEntity, Value>>();
 
 		for (CalculationLocation location : locations) {
-			Map<DashboardEntity, DashboardPercentage> locationMap = getValues(dashboardEntities, period, location, types);
+			Map<DashboardEntity, Value> locationMap = getValues(dashboardEntities, period, location, types);
 			valueMap.put(location, locationMap);
 		}
 		return valueMap;
 	}
 
-	private Map<DashboardEntity, DashboardPercentage> getValues(List<DashboardEntity> dashboardEntities, Period period, CalculationLocation location, Set<DataLocationType> types) {
-		Map<DashboardEntity, DashboardPercentage> entityMap = new HashMap<DashboardEntity, DashboardPercentage>();
+	private Map<DashboardEntity, Value> getValues(List<DashboardEntity> dashboardEntities, Period period, CalculationLocation location, Set<DataLocationType> types) {
+		Map<DashboardEntity, Value> entityMap = new HashMap<DashboardEntity, Value>();
 		for (DashboardEntity dashboardEntity : dashboardEntities) {
-			DashboardPercentage percentage = dashboardPercentageService.getDashboardValue(period, location, types, dashboardEntity);
+			Value percentage = dashboardPercentageService.getDashboardValue(period, location, types, dashboardEntity);
 			entityMap.put(dashboardEntity, percentage);
 		}
 		return entityMap;
@@ -136,78 +137,48 @@ public class DashboardService {
 		return locationPath;
 	}
 	
-//	private List<DashboardProgram> getBreadcrumb(ReportProgram program) {
-//		List<DashboardProgram> programPath = new ArrayList<DashboardProgram>();
-//		while (program != null) {
-//			ReportProgram parent = program.getParent();
-//			if(parent != null) {
-//				DashboardProgram dashboardParent = (DashboardProgram) getDashboardProgram(parent);
-//				if(dashboardParent != null)	programPath.add(dashboardParent);
-//			}
-//			program = parent;
-//		}
-//		Collections.reverse(programPath);
-//		return programPath;
-//	}
-
-	//gets all dashboard program children and dashboard program targets
-	public List<DashboardEntity> getDashboardEntities(ReportProgram program) {		
+	//gets all dashboard program children and dashboard program targets (that have dashboard targets)
+	private List<DashboardEntity> collectDashboardEntitiesWithTargets(ReportProgram program) {
+		List<DashboardEntity> allEntities = getDashboardEntities(program);
+		
+		List<ReportProgram> programTreeWithTargets = new ArrayList<ReportProgram>();
+		List<DashboardTarget> collectedTargets = new ArrayList<DashboardTarget>();
+		reportService.collectReportTree(DashboardTarget.class, program, programTreeWithTargets, collectedTargets);
+		
+		List<DashboardEntity> entityTreeWithTargets = new ArrayList<DashboardEntity>();
+		entityTreeWithTargets.addAll(collectedTargets);
+		for (ReportProgram reportProgram : programTreeWithTargets) {
+			entityTreeWithTargets.add(getDashboardProgram(reportProgram));
+		}
+		
+		allEntities.retainAll(entityTreeWithTargets);
+		return allEntities;
+	}
+	
+	//gets all dashboard program children and dashboard target children
+	protected List<DashboardEntity> getDashboardEntities(ReportProgram program) {		
 		List<DashboardEntity> entities = new ArrayList<DashboardEntity>();		
-		List<DashboardEntity> dashboardChildren = getDashboardChildren(program);
+		List<DashboardProgram> dashboardChildren = getDashboardProgramChildren(program);
 		entities.addAll(dashboardChildren);
-		List<DashboardEntity> dashboardTargets = getDashboardTargets(program);
+		List<DashboardTarget> dashboardTargets = reportService.getReportTargets(DashboardTarget.class, program);
 		entities.addAll(dashboardTargets);
 		return entities;
 	}
 	
-	//gets all dashboard program children and dashboard program targets (that have dashboard targets)
-	public List<DashboardEntity> getDashboardEntitiesWithTargets(ReportProgram program) {
-		List<DashboardEntity> entities = new ArrayList<DashboardEntity>();		
-		List<DashboardEntity> dashboardChildren = getDashboardChildren(program);
-		List<DashboardEntity> dashboardProgramTree = getDashboardProgramTree();
-		for(DashboardEntity dashboardChild : dashboardChildren)
-			if(dashboardProgramTree.contains(dashboardChild))
-				entities.add(dashboardChild);
-		List<DashboardEntity> dashboardTargets = getDashboardTargets(program);
-		entities.addAll(dashboardTargets);
-		return entities;
-	}
 	
 	//gets all dashboard program children
-	public List<DashboardEntity> getDashboardChildren(ReportProgram program){
-		List<DashboardEntity> result = new ArrayList<DashboardEntity>();
+	private List<DashboardProgram> getDashboardProgramChildren(ReportProgram program){
+		List<DashboardProgram> result = new ArrayList<DashboardProgram>();
 		List<ReportProgram> children = program.getChildren();
-		if(children != null) {
-			for (ReportProgram child : children) {
-				DashboardEntity dashboardProgram = getDashboardProgram(child);
-				if(dashboardProgram != null)	
-					result.add(dashboardProgram);
-			}
+		for (ReportProgram child : children) {
+			DashboardProgram dashboardProgram = getDashboardProgram(child);
+			if(dashboardProgram != null)	
+				result.add(dashboardProgram);
 		}
 		return result;
 	}
 	
-	//gets all dashboard program targets
-	public List<DashboardEntity> getDashboardTargets(ReportProgram program){
-		List<DashboardEntity> entities = new ArrayList<DashboardEntity>();		
-		List<DashboardTarget> dashboardTargets = reportService.getReportTargets(DashboardTarget.class, program);		
-		entities.addAll(dashboardTargets);
-		return entities;
-	}
-	
-	//gets all dashboard program children, grandchildren, etc (that have dashboard targets)
-	public List<DashboardEntity> getDashboardProgramTree(){
-		List<ReportProgram> programTree = reportService.getProgramTree(DashboardTarget.class);
-		List<DashboardEntity> dashboardProgramTree = new ArrayList<DashboardEntity>();
-		for(ReportProgram program : programTree){
-			DashboardEntity dashboardProgram = getDashboardProgram(program);
-			if(dashboardProgram != null)
-				dashboardProgramTree.add(getDashboardProgram(program));
-		}		
-		return dashboardProgramTree;
-	}
-	
-	public DashboardEntity getDashboardProgram(ReportProgram program) {
+	public DashboardProgram getDashboardProgram(ReportProgram program) {
 		DashboardProgram dashboardProgram = (DashboardProgram) sessionFactory.getCurrentSession()
 				.createCriteria(DashboardProgram.class)
 				.add(Restrictions.eq("program", program))
@@ -228,7 +199,7 @@ public class DashboardService {
 		this.skipLevels = skipLevels;
 	}
 	
-	public void setDashboardPercentageService(DashboardPercentageService dashboardPercentageService) {
+	public void setDashboardPercentageService(DashboardValueService dashboardPercentageService) {
 		this.dashboardPercentageService = dashboardPercentageService;
 	}
 	

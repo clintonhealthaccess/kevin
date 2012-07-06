@@ -4,7 +4,6 @@ import grails.validation.ValidationException;
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.Period;
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocation;
@@ -116,7 +115,25 @@ class NormalizedDataElementSpec extends IntegrationTests {
 		
 		then:
 		NormalizedDataElement.count() == 1
+	}
+	
+	def "no dependency on normalized data element"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
 		
+		when:
+		def dataElement = new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: e([:])).save(failOnError: true)
+		
+		then:
+		NormalizedDataElement.count() == 1
+		
+		when:
+		dataElement.expressionMap = [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id,(HEALTH_CENTER_GROUP):"1"]]
+		dataElement.save(failOnError: true)
+		
+		then:
+		thrown ValidationException
 	}	
 	
 	//	def "expression can be a constant"() {

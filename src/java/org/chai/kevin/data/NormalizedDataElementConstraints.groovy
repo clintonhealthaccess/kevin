@@ -33,7 +33,9 @@ package org.chai.kevin.data
  */
 constraints = {
 	code(nullable: false, blank: false, unique: true)
-	expressionMap(nullable: false, expressionMapValid: true)
+	expressionMap(nullable: false, expressionMapValid: true, 
+		circularDependency: true
+	)
 	type(nullable: false, validator: {val, obj ->
 		return val.isValid();
 	})

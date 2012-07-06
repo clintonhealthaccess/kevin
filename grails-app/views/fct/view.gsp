@@ -22,20 +22,34 @@
 					<ul>
 			            <li class="push-20">
 			                <g:render template="/templates/reportTitle" model="[program: currentProgram, title: i18n(field:currentProgram.names), file: 'star_small.png']"/>		                             																
-							<g:render template="/fct/reportTargetFilter" model="[linkParams:params]"/>
+							<div class="selector">
+								<g:render template="/fct/reportTargetFilter" model="[linkParams:params]"/>
+								<g:render template="/fct/reportValueFilter"/>
+							</div>
 		              		<g:render template="/fct/reportProgramTable" model="[linkParams:params]"/>	
 		              	</li>
 		              	<li class="push-10">
 		                	<g:render template="/templates/reportTitle" model="[title: i18n(field:currentLocation.names), file: 'marker_small.png']"/>
-		                	<p>
-		                		<g:message code="fct.report.datalocationtype"/>: 
-								<g:each in="${currentLocationTypes}" var="dataLocationType" status="i">						
-									<g:i18n field="${dataLocationType.names}" />
-									<g:if test="${i != currentLocationTypes.size()-1}">, </g:if>
-								</g:each>
-							</p>
+		                	<div>
+			                	<div>
+			                		<g:message code="fct.report.datalocationtype"/>: 
+									<g:each in="${currentLocationTypes}" var="dataLocationType" status="i">						
+										<g:i18n field="${dataLocationType.names}" />
+										<g:if test="${i != currentLocationTypes.size()-1}">, </g:if>
+									</g:each>
+								</div>
+								<!-- chart legend -->
+								<ul class="horizontal chart_legend">
+									<g:if test="${fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
+										<g:each in="${fctTable.targetOptions}" var="targetOption" status="i">
+											<li><span class="bar${i+1}"></span> <g:i18n
+													field="${targetOption.names}" /></li>
+										</g:each>
+									</g:if>
+								</ul>
+							</div>
 							<br />
-		              		<g:render template="/fct/reportLocationBarChart" model="[linkParams:params]"/>
+							<g:render template="/fct/reportLocationBarChart" model="[linkParams:params]"/>
 				    	</li>
 		        	</ul>
 	        	</g:if>

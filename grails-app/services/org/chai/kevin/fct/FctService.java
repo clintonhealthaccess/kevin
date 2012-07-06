@@ -21,6 +21,7 @@ import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.value.CalculationValue;
+import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +39,7 @@ public class FctService {
 		if (log.isDebugEnabled()) 
 			log.debug("getFctTable(period="+period+",location="+location+",level="+level+",program="+program+",target="+target+")");				
 				
-		Map<CalculationLocation, Map<FctTargetOption, Value>> valueMap = new HashMap<CalculationLocation, Map<FctTargetOption, Value>>();
+		Map<CalculationLocation, Map<FctTargetOption, SumValue>> valueMap = new HashMap<CalculationLocation, Map<FctTargetOption, SumValue>>();
 		List<FctTargetOption> targetOptions = new ArrayList<FctTargetOption>();
 		List<FctTarget> targets = new ArrayList<FctTarget>();
 		List<CalculationLocation> topLevelLocations = new ArrayList<CalculationLocation>();
@@ -49,27 +50,17 @@ public class FctService {
 		Collections.sort(targetOptions);
 		
 		Set<LocationLevel> skips = reportService.getSkipLocationLevels(skipLevels);
-		List<Location> treeLocations = location.collectTreeWithDataLocations(skips, types);
-		List<DataLocation> dataLocations = location.collectDataLocations(skips, types);
+		List<CalculationLocation> treeLocations = new ArrayList<CalculationLocation>();
+		treeLocations.addAll(location.collectTreeWithDataLocations(skips, types));
+		treeLocations.addAll(location.collectDataLocations(skips, types));
 		
-		for (Location treeLocation : treeLocations) {
-			Map<FctTargetOption, Value> targetMap = new HashMap<FctTargetOption, Value>();
+		for (CalculationLocation treeLocation : treeLocations) {
+			Map<FctTargetOption, SumValue> targetMap = new HashMap<FctTargetOption, SumValue>();
 			for(FctTargetOption targetOption : targetOptions){
 				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+targetOption.getSum());
 				targetMap.put(targetOption, getFctValue(targetOption, treeLocation, period, types));
 			}
 			valueMap.put(treeLocation, targetMap);
-		}
-		
-		for (DataLocation dataLocation : dataLocations) {
-			Map<FctTargetOption, Value> targetMap = new HashMap<FctTargetOption, Value>();
-			for(FctTargetOption targetOption : targetOptions){
-				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+targetOption.getSum());
-				Set<DataLocationType> dataLocationTypes = new HashSet<DataLocationType>();
-				dataLocationTypes.add(dataLocation.getType());
-				targetMap.put(targetOption, getFctValue(targetOption, dataLocation, period, dataLocationTypes));
-			}
-			valueMap.put(dataLocation, targetMap);						
 		}
 		
 		topLevelLocations.addAll(location.getChildrenEntitiesWithDataLocations(skips, types));
@@ -82,12 +73,9 @@ public class FctService {
 		return fctTable;
 	}
 
-	private Value getFctValue(FctTargetOption targetOption, CalculationLocation location, Period period, Set<DataLocationType> types) {
-		Value value = null;
-		CalculationValue<?> calculationValue = valueService.getCalculationValue(targetOption.getSum(), location, period, types);
-		if (calculationValue != null) 
-			value = calculationValue.getValue();
-		return value;
+	private SumValue getFctValue(FctTargetOption targetOption, CalculationLocation location, Period period, Set<DataLocationType> types) {
+		SumValue sumValue = (SumValue) valueService.getCalculationValue(targetOption.getSum(), location, period, types);
+		return sumValue;
 	}
 
 	public List<FctTarget> getFctTargetsWithOptions(ReportProgram program){

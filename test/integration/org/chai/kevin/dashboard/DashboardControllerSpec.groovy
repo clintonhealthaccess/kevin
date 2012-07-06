@@ -5,6 +5,7 @@ import org.chai.kevin.location.Location;
 import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.JSONUtils;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value
 
 class DashboardControllerSpec extends DashboardIntegrationTests {
@@ -42,7 +43,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setupLocationTree()
 		def program = newReportProgram(PROGRAM1)
 		def dashboardProgram = newDashboardProgram(PROGRAM1, program, 1)
-		def calculation = newAverage("1", CODE(2))
+		def calculation = newSum("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, program, 1)
 		dashboardController = new DashboardController()
 		refresh()
@@ -63,7 +64,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setupLocationTree()
 		def program = newReportProgram(PROGRAM1)
 		def dashboardProgram = newDashboardProgram(PROGRAM1, program, 1)
-		def calculation = newAverage("1", CODE(2))
+		def calculation = newSum("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, program, 1)
 		dashboardController = new DashboardController()
 		refresh()
@@ -83,13 +84,13 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
 	
-	def "get dashboard with invalid parameters, redirect with correct parameter"(){
+	def "get dashboard with invalid parameters, redirect with correct parameters"(){
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
 		def program = newReportProgram(PROGRAM1)
 		def dashboardProgram = newDashboardProgram(PROGRAM1, program, 1)
-		def calculation = newAverage("1", CODE(2))
+		def calculation = newSum("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, program, 1)
 		dashboardController = new DashboardController()
 		refresh()
@@ -114,7 +115,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		def period = newPeriod()
 		setupLocationTree()
 		def program = newReportProgram(PROGRAM1)
-		def calculation = newAverage("1", CODE(2))
+		def calculation = newSum("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, program, 1)
 		dashboardController = new DashboardController()
 		refresh()
@@ -143,8 +144,6 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setupProgramTree()
 		setupDashboardTree()
 		dashboardController = new DashboardController()
-		def percentageCompareValue1 = newDashboardPercentage("30")
-		def percentageCompareValue2 = newDashboardPercentage("10")
 		refresh()
 		
 		when:
@@ -163,9 +162,9 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		compareValues != null
 		compareValues.size() > 0
 		compareValues[0].id == DashboardProgram.findByCode(PROGRAM1).id
-		compareValues[0].value == getPercentage(percentageCompareValue1)
+		compareValues[0].value == 30
 		compareValues[1].id == DashboardProgram.findByCode(PROGRAM2).id
-		compareValues[1].value == getPercentage(percentageCompareValue2)
+		compareValues[1].value == 10
 	}
 	
 	def "get location compare dashboard"() {
@@ -175,7 +174,6 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setupProgramTree()
 		setupDashboardTree()
 		dashboardController = new DashboardController()
-		def percentageCompareValue = newDashboardPercentage("20")
 		refresh()
 		
 		when:
@@ -194,7 +192,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		compareValues != null
 		compareValues.size() == 1
 		compareValues[0].id == DashboardProgram.findByCode(ROOT).id
-		compareValues[0].value == getPercentage(percentageCompareValue)
+		Utils.formatNumber("#.0", compareValues[0].value) == "16.7"
 	}
 
 }

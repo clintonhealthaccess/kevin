@@ -56,7 +56,7 @@ class BootStrap {
 		switch (GrailsUtil.environment) {
 		case "production":
 			
-			if (Role.findByName('reports-all-readonly') == null) {
+			if (Role.findByName('report-all-readonly') == null) {
 				def reportAllReadonly = new Role(name: "report-all-readonly")
 				reportAllReadonly.addToPermissions("menu:reports")
 				reportAllReadonly.addToPermissions("dashboard:*")

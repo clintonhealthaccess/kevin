@@ -28,7 +28,6 @@ package org.chai.kevin.dsr
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation
 import org.chai.kevin.data.Type
 
@@ -38,25 +37,25 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 	def dataService
 	def dsrService	
 	
-	def "create target with average calculation element"(){
+	def "create target with ratio calculation element"(){
 		setup:
 		setupLocationTree()
 		def program = newReportProgram(CODE(1))
-		def average = newAverage("1", CODE(2))
+		def ratio = newSum("1", CODE(2))
 		def category = newDsrTargetCategory(CODE(1), 1)
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
 		
 		when:
 		dsrTargetController.params.code = CODE(4)
-		dsrTargetController.params['data.id'] = average.id+""
+		dsrTargetController.params['data.id'] = ratio.id+""
 		dsrTargetController.params['program.id'] = program.id+""
 		dsrTargetController.params['category.id'] = category.id+""
 		dsrTargetController.saveWithoutTokenCheck()
 		
 		then:
 		DsrTarget.count() == 1
-		DsrTarget.list()[0].data.equals(average)				
+		DsrTarget.list()[0].data.equals(ratio)				
 	}
 	
 	def "create target with sum calculation element"(){

@@ -1,15 +1,11 @@
 package org.chai.kevin.fct;
 
-import java.util.Set;
-
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
@@ -26,8 +22,8 @@ public class FctTargetOption extends ReportEntity implements Exportable {
 
 	private Long id;
 	private Sum sum;
-	private FctTarget target;
-	private String format;
+	private FctTarget target;	
+//	private String format;
 	
 	@Id
 	@GeneratedValue
@@ -56,15 +52,15 @@ public class FctTargetOption extends ReportEntity implements Exportable {
 	public void setTarget(FctTarget target) {
 		this.target = target;
 	}
-	
-	@Basic
-	public String getFormat() {
-		return format;
-	}
-
-	public void setFormat(String format) {
-		this.format = format;
-	}
+		
+//	@Basic
+//	public String getFormat() {
+//		return format;
+//	}
+//
+//	public void setFormat(String format) {
+//		this.format = format;
+//	}
 
 	@Override
 	public String toString() {
