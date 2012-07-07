@@ -8,7 +8,7 @@
 			<th><g:message code="exporter.locations"/></th>
 			<th><g:message code="exporter.periods"/></th>
 			<th><g:message code="exporter.location.types"/></th>
-			<th><g:message code="exporter.dataelement.label"/></th>
+			<th><g:message code="exporter.data.label"/></th>
 			<th><g:message code="exporter.create.on"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
@@ -19,10 +19,10 @@
 				<td>
             		<ul class="horizontal">
 		           		<li>
-		           			<a class="edit-link" href="${createLinkWithTargetURI(controller:'dataElementExport', action:'edit', params:[id: export.id])}"><g:message code="default.link.edit.label" /></a>
+		           			<a class="edit-link" href="${createLinkWithTargetURI(controller:'dataExport', action:'edit', params:[id: export.id])}"><g:message code="default.link.edit.label" /></a>
 						</li>
 		           		<li>
-		           			<a class="delete-link" href="${createLinkWithTargetURI(controller:'dataElementExport', action:'delete', params:[id:export.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');"><g:message code="default.link.delete.label" /></a>
+		           			<a class="delete-link" href="${createLinkWithTargetURI(controller:'dataExport', action:'delete', params:[id:export.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');"><g:message code="default.link.delete.label" /></a>
 						</li>
 	           		</ul>
 				</td>
@@ -43,9 +43,9 @@
   					${export.typeCodeString}
   				</td>
   				<td>
-	  				<g:each in="${export.dataElements}" status="d" var="dataElement">
-	  				 	<g:i18n field="${dataElement.names}"/>
-						${(d < export.dataElements.size()-1)? ',' : ''}
+	  				<g:each in="${export.data}" status="d" var="data">
+	  				 	<g:i18n field="${data.names}"/>
+						${(d < export.data.size()-1)? ',' : ''}
 					</g:each>
 
   				</td>
@@ -56,10 +56,10 @@
 						<div class="dropdown-list js_dropdown-list">
 							<ul>
 								<li>
-	  								<a href="${createLinkWithTargetURI(controller:'dataElementExport', action:'export', params:['export.id': export.id, method: method])}"><g:message code="exporter.download.label" /></a>
+	  								<a href="${createLinkWithTargetURI(controller:'dataExport', action:'export', params:['export.id': export.id, method: method])}"><g:message code="exporter.download.label" /></a>
 	  							</li>
 	  							<li>
-	  								<a href="${createLinkWithTargetURI(controller:'dataElementExport', action:'clone', params:['export.id': export.id, method: method])}"><g:message code="exporter.clone.label" /></a>
+	  								<a href="${createLinkWithTargetURI(controller:'dataExport', action:'clone', params:['export.id': export.id, method: method])}"><g:message code="exporter.clone.label" /></a>
 	  							</li>
 	  						</ul>
   						</div>

@@ -69,7 +69,6 @@ import org.chai.kevin.security.UserType;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
-import org.chai.kevin.exports.DataElementExport;
 import org.chai.kevin.exports.DataExport;
 import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
@@ -1279,19 +1278,17 @@ class Initializer {
 	
 	
 	static def createExporter(){
-		if(!DataElementExport.count()){
+		if(!DataExport.count()){
 			def dh = DataLocationType.findByCode("District Hospital")
 			def hc = DataLocationType.findByCode("Health Center")
 			def periodOne = Period.list()[0];
 			def periodTwo = Period.list()[1];
-			
 			def dEtwo = RawDataElement.findByCode("CODE2");
 			def dEthree = RawDataElement.findByCode("CODE3");
 			def dEfour = RawDataElement.findByCode("CODE4");
 			def dEfive = RawDataElement.findByCode("CODE11");
 			def dEsix = RawDataElement.findByCode("CODE12");
 			def dMap = RawDataElement.findByCode("LISTMAP1");
-			
 			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
 			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
 			def burera = Location.findByCode("Burera");
@@ -1299,39 +1296,39 @@ class Initializer {
 			def south = Location.findByCode("South");
 			
 			
-			def exporterThree = new DataElementExport(
+			def exporterThree = new DataExport(
 				descriptions: j(["en":"Exporter Raw Data Element Three"]),
 				date: new Date(),
 				typeCodeString:"Health Center",
 				locations:[south,dataLocationTwo],
-				dataElements:[dMap,dEtwo,dEthree,dEfive,dEsix],
+				data:[dMap,dEtwo,dEthree,dEfive,dEsix],
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 			
-			def exporterTwo = new DataElementExport(
+			def exporterTwo = new DataExport(
 				descriptions: j(["en":"Exporter Raw Data Element Two"]),
 				date: new Date(),
 				typeCodeString:"Health Center",
 				locations:[south,burera],
-				dataElements:[dEtwo,dEthree,dMap],
+				data:[dEtwo,dEthree,dMap],
 				periods: [periodOne]
 				).save(failOnError: true)
 				
-			def exporterOne = new DataElementExport(
+			def exporterOne = new DataExport(
 				descriptions: j(["en":"Exporter Raw Data Element One"]),
 				date: new Date(),
 				locations:[est,burera,south],
 				typeCodeString:"District Hospital,Health Center",
-				dataElements:[dMap,dEtwo,dEthree,dEfour,dEfive,dEsix],
+				data:[dMap,dEtwo,dEthree,dEfour,dEfive,dEsix],
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 				
-			def exporterFour = new DataElementExport(
+			def exporterFour = new DataExport(
 				descriptions: j(["en":"Exporter Raw Data Element Four"]),
 				date: new Date(),
 				typeCodeString:"District Hospital",
 				locations:[est,dataLocationOne],
-				dataElements:[dMap,dEtwo,dEfour,dEfive,dEsix],
+				data:[dMap,dEtwo,dEfour,dEfive,dEsix],
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 			
