@@ -54,7 +54,7 @@ public class DataElementExport extends DataExport {
 	private Set<DataElement<DataValue>> dataElements = new HashSet<DataElement<DataValue>>();
 
 	@ManyToMany(targetEntity=DataElement.class, fetch=FetchType.LAZY)
-	@JoinTable(name="dhsst_data_element_export",
+	@JoinTable(name="dhsst_export_data_element_data",
 		joinColumns=@JoinColumn(name="exporter"),
 		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","dataElements"})
 	)
