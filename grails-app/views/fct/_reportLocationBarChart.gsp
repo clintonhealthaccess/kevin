@@ -12,15 +12,15 @@
 				<g:each in="${fctTable.topLevelLocations}" var="location">
 						<td>
 							<g:if test="${fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
-								<div class="js_bars_vertical">
+								<div class="bars-vertical">
 									<g:each in="${fctTable.targetOptions.reverse()}" var="targetOption" status="i">									
 										<g:if test="${!fctTable.getReportValue(location, targetOption).getAverage().isNull()}">
 											<g:set var="reportValue" value="${fctTable.getReportValue(location, targetOption).getAverage().numberValue * 100}"/>									
-											<div class="js_bar_vertical tooltip bar${fctTable.targetOptions.size()-i}"
+											<div class="js_bar_vertical bar-vertical tooltip bar${fctTable.targetOptions.size()-i}"
 												data-percentage="${reportValue}" title="${i18n(field: targetOption.names) + ': ' + reportValue}%"
-												style="height: ${reportValue}%;" onload="$(this).tipsy('show'); return false;">
+												style="height: ${reportValue}%;">
 												<g:if test="${reportValue > 0}">
-													<span>${reportValue}</span>
+													<span>${reportValue}%</span>
 												</g:if>												
 											</div>
 										</g:if>
