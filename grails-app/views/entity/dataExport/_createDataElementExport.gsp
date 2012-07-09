@@ -2,13 +2,13 @@
 <div class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">
-			<g:message code="default.new.label" args="[message(code:'export.label')]"/>
+			<g:message code="default.new.label" args="[message(code:'dataelement.export.label')]"/>
 		</h3>
 		<g:locales/>
 	</div>
 	<div class="forms-container">
 		<div class="data-field-column">
-			<g:form url="[controller:'dataExport', action:'save', params: [targetURI: targetURI]]" useToken="true">
+			<g:form url="[controller:'dataElementExport', action:'save', params: [targetURI: targetURI]]" useToken="true">
 				<g:i18nTextarea name="descriptions" bean="${exporter}" value="${exporter.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions" height="150"  width="300" maxHeight="150" />
 				
 				<g:selectFromList name="periodIds" label="${message(code:'period.label')}" bean="${exporter}" field="periods" 
@@ -22,10 +22,10 @@
 					from="${locations}" value="${exporter.locations*.id}" bean="${exporter}" 
 					values="${locations.collect {'['+it.class.simpleName+'] '+i18n(field:it.names)}}" />
 					
-				<g:selectFromList name="dataIds" label="${message(code:'exporter.data.label')}" field="data" 
-					optionKey="id" multiple="true" ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class: 'Data'])}" 
-					from="${data}" value="${exporter.data*.id}" bean="${exporter}" 
-					values="${data.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+				<g:selectFromList name="dataElementIds" label="${message(code:'exporter.dataelement.label')}" field="dataElements" 
+					optionKey="id" multiple="true" ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class: 'DataElement'])}" 
+					from="${dataElements}" value="${exporter.dataElements*.id}" bean="${exporter}" 
+					values="${dataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 						
 				<g:if test="${exporter.id != null}">
 					<input type="hidden" name="id" value="${exporter.id}"></input>
