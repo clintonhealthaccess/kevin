@@ -40,6 +40,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
@@ -52,7 +54,6 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
-import org.chai.kevin.data.Data;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
@@ -65,15 +66,16 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Entity(name="Exporter")
 @Table(name="dhsst_export")
+@Inheritance(strategy=InheritanceType.JOINED)
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DataExport {
+public abstract class DataExport {
 	private Long id;
 	private Translation descriptions = new Translation();
 	private Date date;
 	private String typeCodeString;
 	private Set<CalculationLocation> locations = new HashSet<CalculationLocation>();
 	private Set<Period> periods = new HashSet<Period>();
-	private Set<Data<?>> data = new HashSet<Data<?>>();
+	
 	
 	@Id
 	@GeneratedValue
@@ -151,18 +153,6 @@ public class DataExport {
 		this.periods = periods;
 	}
 	
-	@ManyToMany(targetEntity=Data.class, fetch=FetchType.LAZY)
-	@JoinTable(name="dhsst_export_data",
-		joinColumns=@JoinColumn(name="exporter"),
-		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","data"})
-	)
-	public Set<Data<?>> getData() {
-		return data;
-	}
-	
-	public void setData(Set<Data<?>> data) {
-		this.data = data;
-	}
 
 	@Override
 	public int hashCode() {
@@ -188,10 +178,5 @@ public class DataExport {
 		return true;
 	}
 	
-	@Override
-	public String toString() {
-		return "Exporter [id=" + id + ", descriptions=" + descriptions + ", date=" + date
-				+ "]";
-	}
-	
+	public abstract String toString();
 }

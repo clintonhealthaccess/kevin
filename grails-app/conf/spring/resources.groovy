@@ -36,12 +36,15 @@ import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.LanguageService;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardValueService
 import org.chai.kevin.dashboard.DashboardService
+import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.InfoService
 import org.chai.kevin.dsr.DsrService
+import org.chai.kevin.exports.DataElementExportService;
 import org.chai.kevin.exports.EntityExportService
 import org.chai.kevin.exports.SurveyExportService
 import org.chai.kevin.fct.FctService
@@ -57,6 +60,7 @@ import org.chai.kevin.value.RefreshValueService
 import org.chai.kevin.value.ValidationService
 import org.chai.kevin.value.ValueService
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
+import org.hibernate.SessionFactory;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 
 def config = CH.config
@@ -212,6 +216,13 @@ beans = {
 		sessionFactory = ref("sessionFactory")
 		refreshValueService = ref("refreshValueService")
 		locationService = ref("locationService")
+	}
+	
+	dataElementExportService(DataElementExportService){
+		languageService = ref("languageService")
+		locationService = ref("locationService")
+		valueService = ref("valueService")
+		sessionFactory = ref("sessionFactory")
 	}
 	
 	// override the spring cache manager to use the same as hibernate
