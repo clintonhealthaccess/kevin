@@ -894,8 +894,8 @@ class Initializer {
 					code: "Facility Water and Power Sources"
 					)
 
-			def dsrRatio = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Ratio constant 10", timestamp:new Date())
-			dsrRatio.save(failOnError: true)
+			def dsrAvg = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Average constant 10", timestamp:new Date())
+			dsrAvg.save(failOnError: true)
 			
 			def dsrSum = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Sum constant 10", timestamp:new Date());
 			dsrSum.save(failOnError: true);			
@@ -931,7 +931,8 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"A3"]), descriptions:j(["en":"A3"]),
 					program: hmr,
-					data: dsrRatio,
+					data: dsrAvg,
+					average: true,
 					order: 4,
 					code: "A3",
 					category: nursesCat,
