@@ -15,12 +15,15 @@
 								<div class="bars-vertical">
 									<g:each in="${fctTable.targetOptions.reverse()}" var="targetOption" status="i">									
 										<g:if test="${!fctTable.getReportValue(location, targetOption).getAverage().isNull()}">
-											<g:set var="reportValue" value="${fctTable.getReportValue(location, targetOption).getAverage().numberValue * 100}"/>									
+											<g:set var="reportAverage" value="${fctTable.getReportValue(location, targetOption).getAverage().numberValue * 100}"/>
+											<g:set var="reportValue" value="${fctTable.getReportValue(location, targetOption).getValue()}"/>
+											<g:set var="totalDataLocations" value="${fctTable.getReportValue(location, targetOption).getNumberOfDataLocations()}"/>
 											<div class="js_bar_vertical bar-vertical tooltip bar${fctTable.targetOptions.size()-i}"
-												data-percentage="${reportValue}" title="${i18n(field: targetOption.names) + ': ' + reportValue}%"
-												style="height: ${reportValue}%;">
-												<g:if test="${reportValue > 0}">
-													<span>${reportValue}%</span>
+												data-percentage="${reportAverage}" 
+												title="${reportTooltip(average: reportAverage, value: reportValue, type: targetOption.sum.type, totalDataLocations: totalDataLocations)}"
+												style="height: ${reportAverage}%;">
+												<g:if test="${reportAverage > 0}">
+													<span>${reportAverage}%</span>
 												</g:if>												
 											</div>
 										</g:if>
