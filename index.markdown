@@ -4,17 +4,19 @@ title: Home
 
 ---
 
+* In this section
+{:toc}
+
 What is the DHSST?
 ==================
 
 The DHSST is an integrated web-based system whose main goal is to help administrations such as governments **collect** and **analyze** information as well as **plan**.
-
-![DHSST](images/screenshots/cycle.png){: .margin style="background-color: white;" height=150px}
 - It contains a [survey tool](#survey) that helps collect data
 - It contains a [reporting tool](#reporting) that clearly displays data in order to identify infrastructure and service gaps
 - It contains a [planning tool](#planning) that integrates information coming from either the survey or other sources with user entered information
 
 For more information, refer to the [user documentation](TODO).
+![DHSST](images/screenshots/cycle.png){: .margin style="background-color: white;" height=150px}
 
 The system is flexible and can be customized by an administrator without requiring any technical expertise.
 - The survey questions, the reports and planning budget and output can be entered and edited by the administrator
@@ -58,5 +60,4 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 Who uses the DHSST ?
 ====================
 
-
-
+The DHSST is used in the Health Sector by the Rwanda Ministry of Health as the demand for information.

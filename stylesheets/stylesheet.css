@@ -265,7 +265,7 @@ img {
 
 .margin {
   position: absolute;
-  right: 0px;
+  right: 20px;
   margin: 0;
 }
 
@@ -330,6 +330,21 @@ Full-Width Styles
   font-weight: 300;
   background: none;
   text-shadow: #111 0px 0px 10px;
+}
+
+.maruku_toc {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  margin: 0px;
+  padding: 80px 10px 0px 10px;
+  width: 280px;
+  background-color: white;
+  height: 100%;
+}
+
+.maruku_toc li {
+  list-style: none;
 }
 
 #nav {
