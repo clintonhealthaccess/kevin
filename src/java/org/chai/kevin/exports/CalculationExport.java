@@ -25,15 +25,53 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.exports
+package org.chai.kevin.exports;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.value.CalculationPartialValue;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-constraints = {
-	periods(nullable:false,minSize: 1)
-	data(nullable:false, minSize: 1)
-	locations(nullable:false, minSize: 1)
-	typeCodeString(nullable:false,blank:false)
+@Entity(name="CalculationExport")
+@Table(name="dhsst_export_calculation")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+public class CalculationExport extends DataExport {
+	
+	private Set<Calculation<CalculationPartialValue>> calculations = new HashSet<Calculation<CalculationPartialValue>>();
+
+	@ManyToMany(targetEntity=Calculation.class, fetch=FetchType.LAZY)
+	@JoinTable(name="dhsst_export_calculation_data",
+		joinColumns=@JoinColumn(name="exporter"),
+		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","calculations"})
+	)
+	public Set<Calculation<CalculationPartialValue>> getCalculations() {
+		return calculations;
+	}
+
+	public void setCalculations(
+			Set<Calculation<CalculationPartialValue>> calculations) {
+		this.calculations = calculations;
+	}
+
+	@Override
+	public String toString() {
+		return "CalculationExport [getId()=" + getId() + ", getDescriptions()="
+				+ getDescriptions() + ", getDate()=" + getDate() + "]";
+	}
 }

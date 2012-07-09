@@ -44,6 +44,7 @@ import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.InfoService
 import org.chai.kevin.dsr.DsrService
+import org.chai.kevin.exports.CalculationExportService;
 import org.chai.kevin.exports.DataElementExportService;
 import org.chai.kevin.exports.EntityExportService
 import org.chai.kevin.exports.SurveyExportService
@@ -223,6 +224,13 @@ beans = {
 		locationService = ref("locationService")
 		valueService = ref("valueService")
 		sessionFactory = ref("sessionFactory")
+	}
+	calculationExportService(CalculationExportService){
+		languageService = ref("languageService")
+		locationService = ref("locationService")
+		valueService = ref("valueService")
+		sessionFactory = ref("sessionFactory")
+		reportService =ref("reportService")
 	}
 	
 	// override the spring cache manager to use the same as hibernate

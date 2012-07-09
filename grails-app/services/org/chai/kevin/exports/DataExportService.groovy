@@ -36,26 +36,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LocationService;
-import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
-import org.chai.kevin.data.Data;
-import org.chai.kevin.data.DataService;
-import org.chai.kevin.data.Enum;
-import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.data.Type.ValueVisitor;
 import org.chai.kevin.exports.DataExport;
-import org.chai.kevin.location.CalculationLocation
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.Value
-import org.chai.kevin.value.ValueService;
-
 import org.apache.commons.lang.StringUtils
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
@@ -64,17 +46,13 @@ import org.hibernate.criterion.MatchMode
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Projections
 import org.hibernate.criterion.Restrictions
-import org.supercsv.io.CsvListWriter;
-import org.supercsv.io.ICsvListWriter;
-import org.supercsv.prefs.CsvPreference;
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-class DataExportService {
-	
-	static transactional = true
+public class DataExportService {
+
 	def languageService;
 	def sessionFactory;
 	

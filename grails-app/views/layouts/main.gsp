@@ -143,7 +143,9 @@
 							<li><a class="${controllerName=='expression'?'active':''}" href="${createLink(controller: 'expression', action:'test')}"><g:message code="expression.test.label"/></a></li>
 							<li><a class="${controllerName=='generalImporter'?'active':''}" href="${createLink(controller: 'generalImporter', action:'importer')}"><g:message code="import.general.data.label" /></a></li>
 							<li><a class="${controllerName=='nominativeImporter'?'active':''}" href="${createLink(controller: 'nominativeImporter', action:'importer')}"><g:message code="import.nominative.data.label" /></a></li>
-							<li><a class="${controllerName=='dataElementExport'?'active':''}" href="${createLink(controller: 'dataElementExport', action:'list')}"><g:message code="dataelement.export.label" /></a></li>								  					
+							<li><a class="${controllerName=='dataElementExport'?'active':''}" href="${createLink(controller: 'dataElementExport', action:'list')}"><g:message code="dataelement.export.label" /></a></li>
+							<li><a class="${controllerName=='calculationExport'?'active':''}" href="${createLink(controller: 'calculationExport', action:'list')}"><g:message code="calculation.export.label" /></a></li>								  					
+															  					
 	  					</ul>
 	  				</li>
 	  			</shiro:hasPermission>

@@ -25,52 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.exports;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.value.DataValue;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+package org.chai.kevin.exports
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-@Entity(name="DataElementExport")
-@Table(name="dhsst_export_data_element")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DataElementExport extends DataExport {
-	private Set<DataElement<DataValue>> dataElements = new HashSet<DataElement<DataValue>>();
-
-	@ManyToMany(targetEntity=DataElement.class, fetch=FetchType.LAZY)
-	@JoinTable(name="dhsst_export_data_element_data",
-		joinColumns=@JoinColumn(name="exporter"),
-		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","dataElements"})
-	)
-	public Set<DataElement<DataValue>> getDataElements() {
-		return dataElements;
-	}
-
-	public void setDataElements(Set<DataElement<DataValue>> dataElements) {
-		this.dataElements = dataElements;
-	}
-	
-	@Override
-	public String toString() {
-		return "DataElementExport [getId()=" + getId() + ", getDescriptions()="
-				+ getDescriptions() + ", getDate()=" + getDate() + "]";
-	}
-	
-
+constraints = {
+	periods(nullable:false,minSize: 1)
+	dataElements(nullable:false, minSize: 1)
+	locations(nullable:false, minSize: 1)
+	typeCodeString(nullable:false,blank:false)
 }

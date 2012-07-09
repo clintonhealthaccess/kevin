@@ -38,12 +38,16 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Period;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.value.DataValue;
+import org.chai.kevin.reports.ReportService;
+import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.CalculationPartialValue;
+import org.chai.kevin.value.CalculationValue;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.io.ICsvListWriter;
 import org.supercsv.prefs.CsvPreference;
@@ -51,37 +55,48 @@ import org.supercsv.prefs.CsvPreference;
 /**
  * @author Jean Kahigiso M.
  */
-public class DataElementExportService extends ExportService{
-	
-	private static final Log log = LogFactory.getLog(DataElementExportService.class);
-	
-	@Override
+public class CalculationExportService extends ExportService {
+
+	private static final Log log = LogFactory.getLog(CalculationExportService.class);
+	private Set<String> skipLevels;
+	private ReportService reportService;
+
+    @Override
 	public File exportData(DataExport export) throws IOException{
 		if (log.isDebugEnabled()) log.debug("exportData("+export+")");
-		Set<DataLocationType> types = new HashSet<DataLocationType>();
 		
+		Set<DataLocationType> types = new HashSet<DataLocationType>();
+		List<CalculationLocation> calculationLocations = new ArrayList<CalculationLocation>();
+		List<Location> locations = new ArrayList<Location>();
+		List<DataLocation> dataLocations = new ArrayList<DataLocation>();
+		Set<LocationLevel> skips = reportService.getSkipLocationLevels(skipLevels);		
+
 		for(String code: export.getTypeCodes()){
 			DataLocationType type = locationService.findDataLocationTypeByCode(code);
 			if(type!=null) types.add(type);
 		}
 		
-		List<DataLocation> dataLocations = locationService.getDataLocationsOfType(export.getLocations(),types);
+		for(CalculationLocation location : export.getLocations())
+			location.collectLocations(locations, dataLocations, skips, types);
 		
-		if (log.isDebugEnabled()) log.debug(" Exporter dataLocations "+dataLocations+")");
-		return this.exportDataElements(languageService.getText(export.getDescriptions()),dataLocations,export.getPeriods(),((DataElementExport) export).getDataElements());
+		calculationLocations.addAll(Utils.removeDuplicates(locations));
+		calculationLocations.addAll(Utils.removeDuplicates(dataLocations));
+			
+		if (log.isDebugEnabled()) log.debug(" Exporter calculationLocations "+calculationLocations+")");
+		return this.exportCalculation(languageService.getText(export.getDescriptions()),calculationLocations,export.getPeriods(),((CalculationExport) export).getCalculations(),types);
 	}
 		
-	public File exportDataElements(String fileName,List<DataLocation> dataLocations,Set<Period> periods,Set<DataElement<DataValue>> dataElements) throws IOException{
-		if (log.isDebugEnabled()) log.debug(" exportDataElement(String "+fileName+" List<DataLocation>: " + dataLocations + " List<Period>: "+ periods + " Set<DataElement<DataValue>>: " + dataElements + ")");
+	public File exportCalculation(String fileName,List<CalculationLocation> calculationLocations,Set<Period> periods,Set<Calculation<CalculationPartialValue>> calculations,Set<DataLocationType> types) throws IOException{
+		if (log.isDebugEnabled()) log.debug(" exportDataElement(String "+fileName+" List<CalculationLocation>: " + calculationLocations + " List<Period>: "+ periods + " Set<Calculation<CalculationPartialValue>>: " + calculations + ")");
 		File csvFile = File.createTempFile(fileName, CSV_FILE_EXTENSION);
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
-		this.writeDataElements(writer, dataLocations, periods, dataElements);
+		this.writeCalculation(writer, calculationLocations, periods, calculations,types);
 		return csvFile;
 
 	}
 
-	private void writeDataElements(ICsvListWriter writer, List<DataLocation> dataLocations, Set<Period> periods,Set<DataElement<DataValue>> dataElements) throws IOException {
+	private void writeCalculation(ICsvListWriter writer, List<CalculationLocation> calculationLocations, Set<Period> periods,Set<Calculation<CalculationPartialValue>> calculations,Set<DataLocationType> types) throws IOException {
 		try{
 			String[] csvHeaders = null;
 			// headers
@@ -89,10 +104,10 @@ public class DataElementExportService extends ExportService{
 				csvHeaders = this.getExportDataHeaders().toArray(new String[getExportDataHeaders().size()]);
 				writer.writeHeader(csvHeaders);
 			}
-			for(DataLocation location: dataLocations)
+			for(CalculationLocation location: calculationLocations)
 				for(Period period: periods)
-					for(DataElement<DataValue> dataElement: dataElements){
-						List<List<String>> lines=this.getExportLineForValue(location,period,dataElement);
+					for(Calculation<CalculationPartialValue> calculation: calculations){
+						List<List<String>> lines=this.getExportLineForValue(location,period,calculation,types);
 						for(List<String> line: lines)
 							writer.write(line);
 					}
@@ -104,54 +119,62 @@ public class DataElementExportService extends ExportService{
 		}
 	}
 	
-	public List<List<String>> getExportLineForValue(DataLocation location,Period period, DataElement<DataValue> dataElement){
+	public List<List<String>> getExportLineForValue(CalculationLocation location,Period period, Calculation<CalculationPartialValue> calculation,Set<DataLocationType> types){
 		DataPointVisitor dataPointVisitor = new DataPointVisitor();
-		if(dataElement!=null){
-			DataValue dataValue = valueService.getDataElementValue(dataElement, location, period);
-			if(dataValue!=null){
-				List<String> basicInfo = this.getBasicInfo(location,period,dataElement);
+		if(calculation!=null){
+			CalculationValue<CalculationPartialValue> calculationPartialValue = valueService.getCalculationValue(calculation, location, period,types);
+			if(calculationPartialValue!=null){
+				List<String> basicInfo = this.getBasicInfo(location,period,calculation);
 				dataPointVisitor.setBasicInfo(basicInfo);
-				dataElement.getType().visit(dataValue.getValue(), dataPointVisitor);
+				calculation.getType().visit(calculationPartialValue.getValue(), dataPointVisitor);
 			}
 			
-			sessionFactory.getCurrentSession().evict(dataValue);
+			sessionFactory.getCurrentSession().evict(calculationPartialValue);
 		}
 		return dataPointVisitor.getLines();
 	}
 	
-	public List<String> getBasicInfo(DataLocation location,Period period, DataElement<DataValue> dataElement){
+	public List<String> getBasicInfo(CalculationLocation location,Period period, Calculation<CalculationPartialValue> calculation){
 		List<String> basicInfo = new ArrayList<String>();
-		for (LocationLevel level : locationService.listLevels()){
-			Location parent = locationService.getParentOfLevel(location, level);
-			if (parent != null) basicInfo.add(languageService.getText(parent.getNames()));
-			else basicInfo.add("");
-		}
 		basicInfo.add(location.getCode());
 		basicInfo.add(languageService.getText(location.getNames()));
-		basicInfo.add(languageService.getText(location.getType().getNames()));
+		
+		if(location instanceof Location)
+			basicInfo.add(languageService.getText(((Location) location).getLevel().getNames()));
+		else basicInfo.add("");
+		
+		if(location instanceof DataLocation)
+			basicInfo.add(languageService.getText(((DataLocation) location).getType().getNames()));
+		else basicInfo.add("");
+		
 		basicInfo.add(period.getCode()+"");
 		basicInfo.add("[ "+period.getStartDate().toString()+" - "+period.getEndDate().toString()+" ]");
-		basicInfo.add(dataElement.getClass().getSimpleName());
-		basicInfo.add(dataElement.getCode()+"");
-		basicInfo.add(languageService.getText(dataElement.getNames()));
+		basicInfo.add(calculation.getClass().getSimpleName());
+		basicInfo.add(calculation.getCode()+"");
 		return basicInfo;
 	}
 	
 	@Override
 	public List<String> getExportDataHeaders() {
 		List<String> headers = new ArrayList<String>();
-		for (LocationLevel level : locationService.listLevels())
-			headers.add(languageService.getText(level.getNames()));
 		headers.add(DATA_LOCATION_CODE);
 		headers.add(DATA_LOCATION_NAME);
+		headers.add(LOCATION_LEVEL);
 		headers.add(LOCATION_TYPE);
 		headers.add(PERIOD_CODE);
 		headers.add(PERIOD);
 		headers.add(DATA_CLASS);
 		headers.add(DATA_CODE);
-		headers.add(DATA_NAME);
 		headers.add(DATA_VALUE);
-		headers.add(DATA_VALUE_ADDRESS);
 		return headers;
 	}
+
+	public void setSkipLevels(Set<String> skipLevels) {
+		this.skipLevels = skipLevels;
+	}
+	
+	public void setReportService(ReportService reportService) {
+		this.reportService = reportService;
+	}
+	
 }

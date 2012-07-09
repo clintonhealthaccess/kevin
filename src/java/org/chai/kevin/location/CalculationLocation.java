@@ -88,7 +88,7 @@ public abstract class CalculationLocation {
 	@Transient
 	public abstract List<Location> getChildren(Set<LocationLevel> skipLevels);
 
-	protected boolean collectLocations(List<Location> locations, List<DataLocation> dataLocations, Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
+	public boolean collectLocations(List<Location> locations, List<DataLocation> dataLocations, Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
 		boolean result = false;
 		for (Location child : getChildren(skipLevels)) {
 			result = result | child.collectLocations(locations, dataLocations, skipLevels, types);

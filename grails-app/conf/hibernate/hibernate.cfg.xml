@@ -71,6 +71,8 @@
 		
 		<mapping class="org.chai.kevin.exports.DataExport" />
 		<mapping class="org.chai.kevin.exports.DataElementExport" />
+		<mapping class="org.chai.kevin.exports.CalculationExport" />
+		
 	</session-factory>
 
 </hibernate-configuration>

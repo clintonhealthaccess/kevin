@@ -69,6 +69,7 @@ import org.chai.kevin.security.UserType;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
+import org.chai.kevin.exports.CalculationExport;
 import org.chai.kevin.exports.DataElementExport;
 import org.chai.kevin.exports.DataExport;
 import org.chai.kevin.fct.FctTarget
@@ -1278,19 +1279,20 @@ class Initializer {
 	}
 	
 	
-	static def createExporter(){
+	static def createDataElementExport(){
 		if(!DataElementExport.count()){
 			def dh = DataLocationType.findByCode("District Hospital")
 			def hc = DataLocationType.findByCode("Health Center")
 			def periodOne = Period.list()[0];
 			def periodTwo = Period.list()[1];
 			
-			def dEtwo = RawDataElement.findByCode("CODE2");
+			def dEtwo = NormalizedDataElement.findByCode("SUMPLANNING2");
 			def dEthree = RawDataElement.findByCode("CODE3");
 			def dEfour = RawDataElement.findByCode("CODE4");
 			def dEfive = RawDataElement.findByCode("CODE11");
 			def dEsix = RawDataElement.findByCode("CODE12");
 			def dMap = RawDataElement.findByCode("LISTMAP1");
+			def nData = NormalizedDataElement.findByCode("Constant 10");
 			
 			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
 			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
@@ -1304,7 +1306,7 @@ class Initializer {
 				date: new Date(),
 				typeCodeString:"Health Center",
 				locations:[south,dataLocationTwo],
-				dataElements:[dMap,dEtwo,dEthree,dEfive,dEsix],
+				dataElements:[dMap,dEtwo,dEthree,nData,dEfive,dEsix],
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 			
@@ -1337,6 +1339,63 @@ class Initializer {
 			
 			
 				
+		}
+	}
+	
+	static def createCalculationExport(){
+		if(!CalculationExport.count()){
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
+			def periodOne = Period.list()[0];
+			def periodTwo = Period.list()[1];
+			
+			def dEtwo = Sum.findByCode("Ratio constant 20");
+			def dEthree = Sum.findByCode("Ratio constant 10");
+			def dEfour = Sum.findByCode("Dsr Ratio constant 10");
+			def dEfive = Sum.findByCode("Maps sum 1");
+		
+			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
+			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
+			def burera = Location.findByCode("Burera");
+			def est = Location.findByCode("East");
+			def south = Location.findByCode("South");
+			
+			
+			def exporterThree = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation Three"]),
+				date: new Date(),
+				typeCodeString:"Health Center",
+				locations:[south,dataLocationTwo],
+				calculations:[dEtwo,dEthree,dEfive],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+			
+			def exporterTwo = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation Two"]),
+				date: new Date(),
+				typeCodeString:"Health Center",
+				locations:[south,burera],
+				calculations:[dEtwo,dEthree],
+				periods: [periodOne]
+				).save(failOnError: true)
+				
+			def exporterOne = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation One"]),
+				date: new Date(),
+				locations:[est,burera,south],
+				typeCodeString:"District Hospital,Health Center",
+				calculations:[dEtwo,dEthree,dEfour,dEfive],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+				
+			def exporterFour = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation Four"]),
+				date: new Date(),
+				typeCodeString:"District Hospital",
+				locations:[est,dataLocationOne],
+				calculations:[dEtwo,dEfour,dEfive],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
 		}
 	}
 
