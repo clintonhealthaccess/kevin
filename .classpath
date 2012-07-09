@@ -240,8 +240,7 @@
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/org.hibernate/hibernate-validator/jars/hibernate-validator-4.1.0.Final.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/javax.validation/validation-api/jars/validation-api-1.0.0.GA.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/javassist/javassist/jars/javassist-3.12.0.GA.jar"/>
-	<classpathentry kind="var" path="GRAILS_IVYCACHE/org.hibernate/hibernate-ehcache/jars/hibernate-ehcache-3.6.7.Final.jar"/>
-	<classpathentry kind="var" path="GRAILS_IVYCACHE/net.bull.javamelody/javamelody-core/jars/javamelody-core-1.36.0.jar"/>
+	<classpathentry kind="var" path="GRAILS_IVYCACHE/org.hibernate/hibernate-ehcache/jars/hibernate-ehcache-3.6.7.Final.jar"/>	
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/org.jrobin/jrobin/jars/jrobin-1.5.9.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/com.lowagie/itext/jars/itext-2.1.7.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/org.aspectj/aspectjweaver/jars/aspectjweaver-1.6.10.jar"/>
