@@ -119,6 +119,7 @@ grails.project.dependency.resolution = {
 		compile ":cdn-resources:0.2.1"
 		compile ":mail:1.0"
 		compile ":build-info-tag:0.1"
+		compile ":yui-minify-resources:0.1.5"
 		
 		test (":spock:0.6") {changing = false}
 	}
