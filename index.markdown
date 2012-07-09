@@ -8,6 +8,8 @@ What is the DHSST?
 ==================
 
 The DHSST is an integrated web-based system whose main goal is to help administrations such as governments **collect** and **analyze** information as well as **plan**.
+
+![DHSST](images/screenshots/cycle.png){: .margin style="background-color: white;" height=150px}
 - It contains a [survey tool](#survey) that helps collect data
 - It contains a [reporting tool](#reporting) that clearly displays data in order to identify infrastructure and service gaps
 - It contains a [planning tool](#planning) that integrates information coming from either the survey or other sources with user entered information
