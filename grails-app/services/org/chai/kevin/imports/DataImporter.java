@@ -204,7 +204,7 @@ public abstract class DataImporter extends FileImporter {
 			if (log.isDebugEnabled()) log.debug("merging with data from map of header and data "+ positionsValueMap);
 			if (log.isTraceEnabled()) log.trace("value before merge" + rawDataElementValue.getValue());
 			rawDataElementValue.setValue(
-				rawDataElementValue.getData().getType().mergeValueFromMap(rawDataElementValue.getValue(), positionsValueMap, "", new HashSet<String>(), sanitizer, true)
+				rawDataElementValue.getData().getType().mergeValueFromMap(rawDataElementValue.getValue(), positionsValueMap, "", new HashSet<String>(), sanitizer)
 			);
 			if (log.isTraceEnabled()) log.trace("value after merge " + rawDataElementValue.getValue());
 			
