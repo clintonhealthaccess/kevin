@@ -1,46 +1,116 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="DHSST : District Health System Strengthening Tool" />
+<head>
+  <meta charset='utf-8' />
+  <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+  <meta name="description" content="DHSST : District Health System Strengthening Tool" />
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+  <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>DHSST</title>
-  </head>
+  <title>DHSST</title>
+</head>
 
-  <body>
+<body>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/fterrier/kevin">View on GitHub</a>
+  <!-- HEADER -->
+  <div id="header_wrap" class="outer">
+    <header class="inner">
+      <a id="forkme_banner" href="https://github.com/fterrier/kevin">View on GitHub</a>
 
-          <h1 id="project_title">DHSST</h1>
-          <h2 id="project_tagline">District Health System Strengthening Tool</h2>
+      <div id="title">
+        <h1 class="inline" id="project_title">DHSST</h1>
+        <h2 class="inline" id="project_tagline">District Health System Strengthening Tool</h2>
+      </div>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/fterrier/kevin/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/fterrier/kevin/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        {{ content }}
+      <section id="downloads">
+        <a class="zip_download_link" href="https://github.com/fterrier/kevin/zipball/master">Download this project as a .zip file</a>
+        <a class="tar_download_link" href="https://github.com/fterrier/kevin/tarball/master">Download this project as a .tar.gz file</a>
       </section>
-    </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
+      <section id="nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li class="dropdown-container">
+            <a href="#" onclick="document.getElementById('guide-dropdown').style.display='block';return false;" class="dropdown-link">Guides</a>
+            <ul id="guide-dropdown" class="dropdown" style="display: none;" onclick="document.getElementById('guide-dropdown').style.display='none';">
+              <li class="dropdown-link-box">
+                <a href="#" onclick="document.getElementById('guide-dropdown').style.display='none';return false;" class="dropdown-link">Guides</a>
+              </li>
+              <li class="dropdown-section">
+                <a class="dropdown-section-title" href="user/index.html">User Documentation</a>
+                <ul>
+                  <li>
+                    <a href="user/getting-started.html">Getting Started</a>
+                  </li>
+                  <li>
+                    <a href="user/survey.html">Survey</a>
+                  </li>
+                  <li>
+                    <a href="user/reports.html">Reports</a>
+                  </li>
+                  <li>
+                    <a href="user/planning.html">Planning</a>
+                  </li>
+                </ul>
+              </li>
 
-  </body>
+              <li class="dropdown-section">
+                <a class="dropdown-section-title" href="admin/index.html">Administrator Documentation</a>
+                <ul>
+                  <li>
+                    <a href="admin/concepts.html">Concepts</a>
+                  </li>
+                  <li>
+                    <a href="admin/location-hierarchy.html">Location Hierarchy</a>
+                  </li>
+                  <li>
+                    <a href="admin/survey.html">Survey</a>
+                  </li>
+                  <li>
+                    <a href="admin/reports.html">Reports</a>
+                  </li>
+                  <li>
+                    <a href="admin/planning.html">Planning</a>
+                  </li>
+                  <li>
+                    <a href="admin/data-hierarchy.html">Data Hierarchy</a>
+                  </li>
+                  <li>
+                    <a href="admin/user-management.html">User Management</a>
+                  </li>
+                  <li>
+                    <a href="admin/data-import-export.html">Data Import/Export</a>
+                  </li>
+                  <li>
+                    <a href="admin/entity-import-export.html">Entity Import/Export</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li><a href="#">Contribute</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </section>
+    </header>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+      <div id="content">
+        {{ content }}
+      </div>
+    </section>
+  </div>
+
+  <!-- FOOTER  -->
+  <div id="footer_wrap" class="outer">
+    <footer class="inner">
+      <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+    </footer>
+  </div>
+
+</body>
 </html>

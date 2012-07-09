@@ -169,9 +169,6 @@ pre, code {
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
-
-
-
 }
 
 pre {
@@ -258,8 +255,18 @@ form {
 }
 
 img {
-  width: 100%;
+  width: inherit;
   max-width: 100%;
+}
+
+.inline {
+  display: inline;
+}
+
+.margin {
+  position: absolute;
+  right: 0px;
+  margin: 0;
 }
 
 /*******************************************************************************
@@ -272,7 +279,7 @@ Full-Width Styles
 
 .inner {
   position: relative;
-  max-width: 640px;
+  max-width: 960px;
   padding: 20px 10px;
   margin: 0 auto;
 }
@@ -302,7 +309,11 @@ Full-Width Styles
 }
 
 #header_wrap .inner {
-  padding: 50px 10px 30px 10px;
+  padding: 00px 10px 10px 10px;
+}
+
+#title {
+  padding: 20px 0px 20px 0px;
 }
 
 #project_title {
@@ -319,6 +330,100 @@ Full-Width Styles
   font-weight: 300;
   background: none;
   text-shadow: #111 0px 0px 10px;
+}
+
+#nav {
+  font-size: 18px;
+}
+
+#nav a {
+  color: white;
+}
+
+#nav a:hover {
+  text-decoration: underline;
+}
+
+#nav ul {
+  list-style-type: disc;
+}
+
+#nav ul li {
+  list-style: none;
+  display: inline;
+}
+
+#nav ul li:first-child {
+  padding-left: 0px;
+}
+
+#nav .dropdown-link {
+  background-color: #373737;
+  padding: 5px 20px 5px 20px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+#nav .dropdown-container {
+  position: relative;
+}
+
+#nav .dropdown {
+  position: absolute;
+  width: 200px;
+  font-size: 14px;
+  background-color: #373737;
+  top: -5px;
+  left: 20px;
+  z-index: 10;
+  padding: 5px;
+  padding: 30px 10px 10px 20px;
+  box-shadow: 0 0 5px #ebebeb;
+  -webkit-box-shadow: 2px 2px 2px grey;
+  -moz-box-shadow: 2px 2px 2px grey;
+  -o-box-shadow: 2px 2px 2px grey;
+  -ms-box-shadow: 2px 2px 2px grey;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+#nav .dropdown .dropdown-section {
+  list-style: none;
+  display: block;
+  width: 200px;
+}
+
+#nav .dropdown .dropdown-link-box {
+  position: absolute;
+  top: 3px;
+  font-size: 18px;
+  left: 0px;
+}
+
+#nav .dropdown .dropdown-section > ul {
+  line-height: 18px;
+}
+
+#nav .dropdown .dropdown-section > ul > li {
+  display: block;
+}
+
+#nav .dropdown-section-title {
+  font-size: 16px;
+  color: grey;
+  border-bottom: 1px solid grey;
+}
+
+#nav .dropdown ul {
+  margin-bottom: 0px;
+}
+
+#nav .dropdown li {
+  padding-left: 0px;
 }
 
 #downloads {
@@ -368,6 +473,10 @@ Full-Width Styles
 
 #main_content {
   padding-top: 40px;
+}
+
+#content {
+  max-width: 640px;
 }
 
 #footer_wrap {
