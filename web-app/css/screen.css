@@ -723,7 +723,7 @@ ul.filtered li:hover { background-color: yellow; }
 .element { margin-bottom: 4px; }
 
 /* line 404, ../../src/stylesheets/partials/_forms.sass */
-.element-enum { height: 30px; margin-bottom: -10px; }
+.element-enum { height: 32px; margin-bottom: -10px; }
 /* line 408, ../../src/stylesheets/partials/_forms.sass */
 .element-enum .option-description-container { text-align: right; margin-bottom: -10px; margin-top: -5px; height: 20px; }
 /* line 414, ../../src/stylesheets/partials/_forms.sass */
