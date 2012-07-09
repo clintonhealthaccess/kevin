@@ -1068,44 +1068,50 @@ textarea.login-field { width: 400px; height: 50px; text-align: left; }
 .vertical-graph tr:first-child td { height: 200px; padding: 0px; }
 /* line 113, ../../src/stylesheets/partials/_graphs.sass */
 .vertical-graph td { padding-top: 5px; text-align: center; vertical-align: bottom; }
-/* line 118, ../../src/stylesheets/partials/_graphs.sass */
-.vertical-graph td div { display: inline-block; margin-bottom: -2px; width: 20px; }
-
+/* line 119, ../../src/stylesheets/partials/_graphs.sass */
+.vertical-graph td .bars-vertical { display: inline-block; height: 100%; margin-bottom: -1px; }
 /* line 124, ../../src/stylesheets/partials/_graphs.sass */
+.vertical-graph td .bar-vertical { display: block; width: 38px; }
+/* line 128, ../../src/stylesheets/partials/_graphs.sass */
+.vertical-graph td span { font-size: 10px; font-weight: bold; vertical-align: middle; }
+
+/* line 135, ../../src/stylesheets/partials/_graphs.sass */
 .chart_legend li { margin: 15px 15px 10px 0px !important; }
-/* line 126, ../../src/stylesheets/partials/_graphs.sass */
+/* line 137, ../../src/stylesheets/partials/_graphs.sass */
 .chart_legend li span { display: block; float: left; height: 10px; margin-right: 5px; width: 10px; }
 
-/* line 133, ../../src/stylesheets/partials/_graphs.sass */
+/* line 144, ../../src/stylesheets/partials/_graphs.sass */
 .chart { display: inline-block; float: left; font-size: 10px; padding-right: 8px; text-align: right; width: 20px; }
-/* line 141, ../../src/stylesheets/partials/_graphs.sass */
+/* line 152, ../../src/stylesheets/partials/_graphs.sass */
+.chart li { font-weight: bold; }
+/* line 155, ../../src/stylesheets/partials/_graphs.sass */
 .chart li:nth-child(2) { margin-top: 85px; }
-/* line 143, ../../src/stylesheets/partials/_graphs.sass */
+/* line 157, ../../src/stylesheets/partials/_graphs.sass */
 .chart li:last-child { margin-top: 85px; }
 
-/* line 147, ../../src/stylesheets/partials/_graphs.sass */
+/* line 161, ../../src/stylesheets/partials/_graphs.sass */
 .bar1 { background: #258cd5; }
 
-/* line 149, ../../src/stylesheets/partials/_graphs.sass */
+/* line 163, ../../src/stylesheets/partials/_graphs.sass */
 .bar2 { background: #d30000; }
 
-/* line 151, ../../src/stylesheets/partials/_graphs.sass */
+/* line 165, ../../src/stylesheets/partials/_graphs.sass */
 .bar3 { background: #65c029; }
 
-/* line 154, ../../src/stylesheets/partials/_graphs.sass */
+/* line 168, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-wrap { overflow: hidden; position: relative; width: 100%; }
 
-/* line 159, ../../src/stylesheets/partials/_graphs.sass */
+/* line 173, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-avg { bottom: 1px; position: absolute; right: 15px; top: 33px; width: 610px; }
 
-/* line 166, ../../src/stylesheets/partials/_graphs.sass */
+/* line 180, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-tip { background: #258cd5; color: white; font-size: 10px; font-weight: bold; height: 10px; left: 63%; margin: 0 0 0 -8px; opacity: 0.6; padding: 3px; position: absolute; text-align: center; top: -18px; width: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px; -o-border-radius: 10px; -ms-border-radius: 10px; -khtml-border-radius: 10px; border-radius: 10px; -moz-box-shadow: white 0 1px 0; -webkit-box-shadow: white 0 1px 0; -o-box-shadow: white 0 1px 0; box-shadow: white 0 1px 0; }
-/* line 182, ../../src/stylesheets/partials/_graphs.sass */
+/* line 196, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-tip:hover, .horizontal-graph-tip:focus { opacity: 1; }
-/* line 184, ../../src/stylesheets/partials/_graphs.sass */
+/* line 198, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-tip.expand-tick { background: #65c029; }
 
-/* line 187, ../../src/stylesheets/partials/_graphs.sass */
+/* line 201, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-marker { background: #fcfcfc; border-right: 1px solid #87e24b; bottom: 0; height: 100%; position: relative; top: 0; width: 63%; -moz-box-shadow: #eeeeee -2px 0 10px inset; -webkit-box-shadow: #eeeeee -2px 0 10px inset; -o-box-shadow: #eeeeee -2px 0 10px inset; box-shadow: #eeeeee -2px 0 10px inset; }
 
 /* line 1, ../../src/stylesheets/partials/_planning.sass */

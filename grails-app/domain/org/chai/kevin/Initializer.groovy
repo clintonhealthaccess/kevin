@@ -716,6 +716,8 @@ class Initializer {
 			
 			new NormalizedDataElement(names:j(["en":"ZERO"]), descriptions:j([:]), code:"ZERO", expressionMap: e([(period1.id+''):[(hc.code):"0", (dh.code):"0"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 			new NormalizedDataElement(names:j(["en":"ONE"]), descriptions:j([:]), code:"ONE", expressionMap: e([(period1.id+''):[(hc.code):"1", (dh.code):"1"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"MixHC"]), descriptions:j([:]), code:"MixHC", expressionMap: e([(period1.id+''):[(hc.code):"1", (dh.code):"0"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"MixDH"]), descriptions:j([:]), code:"MixDH", expressionMap: e([(period1.id+''):[(hc.code):"0", (dh.code):"1"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 		}
 	}
 
@@ -1033,7 +1035,13 @@ class Initializer {
 			
 			def sumOne = new Sum(expression: "\$"+NormalizedDataElement.findByCode("ONE").id, code:"Sum ONE", timestamp:new Date());
 			sumOne.save(failOnError: true);
-						
+			
+			def sumMixHC = new Sum(expression: "\$"+NormalizedDataElement.findByCode("MixHC").id, code:"Sum MixHC", timestamp:new Date());
+			sumMixHC.save(failOnError: true);
+				
+			def sumMixDH = new Sum(expression: "\$"+NormalizedDataElement.findByCode("MixDH").id, code:"Sum MixDH", timestamp:new Date());
+			sumMixDH.save(failOnError: true);
+			
 			FctTarget fctTarget1 = new FctTarget(
 
 				names:j(["en":"Fct Target 1"]), 
@@ -1092,6 +1100,25 @@ class Initializer {
 				targetOptions: [],
 				code:"TARGET 3"
 			).save(failOnError:true)
+			
+			FctTargetOption fctTargetOption5 = new FctTargetOption(
+				names:j(["en": "Target Option 5"]),
+				target: fctTarget3,
+				descriptions:j([:]),
+				code:"TARGET OPTION 5",
+				sum: sumMixHC
+			).save(failOnError:true)
+			
+			FctTargetOption fctTargetOption6 = new FctTargetOption(
+				names:j(["en": "Target Option 6"]),
+				target: fctTarget3,
+				descriptions:j([:]),
+				code:"TARGET OPTION 6",
+				sum: sumMixDH
+			).save(failOnError:true)
+			
+			fctTarget3.targetOptions << [fctTargetOption5, fctTargetOption6]
+			fctTarget3.save(failOnError:true)
 			
 			hmr.save(failOnError:true)
 		}
