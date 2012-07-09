@@ -1,1 +1,3 @@
-markdown:	maruku
+markdown: maruku
+source:   .
+include:  user
