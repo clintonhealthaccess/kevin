@@ -23,7 +23,7 @@
 
 		<div class="option-description-container">		
 			<g:eachOption enum="${enume}" var="option">
-				<div id="enum-${enume.id}-option-${option.id}" class="option-description">
+				<div id="enum-${enume.id}-option-${option.id}" class="option-description hidden">
 					<g:stripHtml field="${i18n(field: option.descriptions)}" chars="40"/>
 				</div>
 			</g:eachOption>
