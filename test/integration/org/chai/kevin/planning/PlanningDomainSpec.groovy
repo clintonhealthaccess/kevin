@@ -227,7 +227,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
 		
 		when:
-		new PlanningOutputColumn(planningOutput: planningOutput, header: '[_]').save(failOnError:true)
+		new PlanningOutputColumn(planningOutput: planningOutput, prefix: '[_]').save(failOnError:true)
 		
 		then:
 		PlanningOutputColumn.count() == 1
@@ -239,7 +239,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		thrown ValidationException
 		
 		when:
-		new PlanningOutputColumn(header: '[_]').save(failOnError: true)
+		new PlanningOutputColumn(prefix: '[_]').save(failOnError: true)
 		
 		then:
 		thrown ValidationException

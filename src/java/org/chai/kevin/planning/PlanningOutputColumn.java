@@ -22,7 +22,7 @@ public class PlanningOutputColumn extends Orderable<Integer> {
 	private Long id;
 	
 	private PlanningOutput planningOutput;
-	private String header;
+	private String prefix;
 	private Translation names = new Translation();
 	private Integer order;
 	
@@ -56,12 +56,12 @@ public class PlanningOutputColumn extends Orderable<Integer> {
 	}
 
 	@Basic
-	public String getHeader() {
-		return header;
+	public String getPrefix() {
+		return prefix;
 	}
 	
-	public void setHeader(String header) {
-		this.header = header;
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
 	}
 	
 	@Embedded

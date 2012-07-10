@@ -1283,7 +1283,7 @@ class Initializer {
 		
 		def planningOutputColumn = new PlanningOutputColumn(
 			planningOutput: planningOutput1,
-			header: '[_].basic.instances',
+			prefix: '[_].basic.instances',
 			names: j(["en": "Test"])
 		)
 		planningOutputColumn.save(failOnError: true)

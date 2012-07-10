@@ -35,6 +35,6 @@ import org.chai.kevin.data.Type.ValueType;
  *
  */
 constraints ={
-	header(nullable: false, blank: false)
+	prefix(nullable: false, blank: false)
 	planningOutput (nullable: false)
 }

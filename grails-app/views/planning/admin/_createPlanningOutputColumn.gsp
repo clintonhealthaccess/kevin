@@ -10,10 +10,10 @@
 	
 		<g:i18nInput name="names" bean="${planningOutputColumn}" value="${planningOutputColumn.names}" label="${message(code:'entity.name.label')}" field="names"/>
 
-		<g:selectFromList name="header" label="${message(code:'planning.planningoutput.planningoutputcolumn.header.label')}" bean="${planningOutputColumn}" field="header" multiple="false"
-			from="${valuePrefixes}" value="${planningOutputColumn.header}"/>
+		<g:selectFromList name="prefix" label="${message(code:'planning.planningoutput.planningoutputcolumn.prefix.label')}" bean="${planningOutputColumn}" field="prefix" multiple="false"
+			from="${valuePrefixes}" value="${planningOutputColumn.prefix}"/>
 		
-		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${planningCost}" field="order"/>
+		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${planningOutputColumn}" field="order"/>
 	
 		<g:if test="${planningOutputColumn.id != null}">
 			<input type="hidden" name="id" value="${planningOutputColumn.id}"></input>

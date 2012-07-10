@@ -32,12 +32,12 @@ public class PlanningOutputTable {
 	}
 	
 	public Type getValueType(PlanningOutputColumn column) {
-		return planningOutput.getDataElement().getType().getType(column.getHeader());
+		return planningOutput.getDataElement().getType().getType(column.getPrefix());
 	}
 	
 	public Value getValue(int row, PlanningOutputColumn column) {
 		if (value == null || value.getValue().isNull()) return null; 
-		return planningOutput.getDataElement().getType().getValue(value.getValue(), PlanningUtils.getPrefix(column.getHeader(), row));
+		return planningOutput.getDataElement().getType().getValue(value.getValue(), PlanningUtils.getPrefix(column.getPrefix(), row));
 	}
 	
 	public PlanningOutput getPlanningOutput() {

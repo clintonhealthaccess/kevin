@@ -44,13 +44,13 @@ class PlanningOutputColumnControllerSpec extends PlanningIntegrationTests {
 		
 		when:
 		planningOutputColumnController.params['planningOutput.id'] = planningOutput.id
-		planningOutputColumnController.params['header'] = '[_]'
+		planningOutputColumnController.params['prefix'] = '[_]'
 		planningOutputColumnController.saveWithoutTokenCheck()
 
 		then:
 		PlanningOutputColumn.count() == 1
 		PlanningOutputColumn.list()[0].planningOutput.equals(planningOutput)
-		PlanningOutputColumn.list()[0].normalizedDataElement.equals(normalizedDataElement)
+		PlanningOutputColumn.list()[0].prefix.equals('[_]')
 	}
 	
 }

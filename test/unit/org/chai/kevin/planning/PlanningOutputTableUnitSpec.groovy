@@ -67,7 +67,7 @@ class PlanningOutputTableUnitSpec extends UnitSpec  {
 		when:
 		def dataElement = new NormalizedDataElement(type: Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		def output = new PlanningOutput(dataElement: dataElement, fixedHeader: "[_]")
-		def outputColumn = new PlanningOutputColumn(header: '[_]')
+		def outputColumn = new PlanningOutputColumn(prefix: '[_]')
 		def outputTable = new PlanningOutputTable(output, null)
 		
 		then:
@@ -79,7 +79,7 @@ class PlanningOutputTableUnitSpec extends UnitSpec  {
 		when:
 		def dataElement = new NormalizedDataElement(type: Type.TYPE_NUMBER())
 		def output = new PlanningOutput(dataElement: dataElement, fixedHeader: "[_]")
-		def outputColumn = new PlanningOutputColumn(header: '[_]')
+		def outputColumn = new PlanningOutputColumn(prefix: '[_]')
 		def outputTable = new PlanningOutputTable(output, null)
 		outputTable.getValueType(outputColumn).equals(Type.TYPE_NUMBER())
 		
@@ -92,7 +92,7 @@ class PlanningOutputTableUnitSpec extends UnitSpec  {
 		when:
 		def dataElement = new NormalizedDataElement(type: Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		def output = new PlanningOutput(dataElement: dataElement, fixedHeader: "[_]")
-		def outputColumn = new PlanningOutputColumn(header: '[_]')
+		def outputColumn = new PlanningOutputColumn(prefix: '[_]')
 		def value = new NormalizedDataElementValue(value: Value.VALUE_LIST([Value.VALUE_NUMBER(1), Value.VALUE_NUMBER(2)]))
 		def outputTable = new PlanningOutputTable(output, value)
 		
@@ -104,7 +104,7 @@ class PlanningOutputTableUnitSpec extends UnitSpec  {
 	def "get column value when normalized data element value is null"() {
 		
 		when:
-		def outputColumn = new PlanningOutputColumn(header: '[_]')
+		def outputColumn = new PlanningOutputColumn(prefix: '[_]')
 		def outputTable = new PlanningOutputTable(null, null)
 		
 		then:
@@ -115,7 +115,7 @@ class PlanningOutputTableUnitSpec extends UnitSpec  {
 	def "get column value when normalized data element value value is null"() {
 		
 		when:
-		def outputColumn = new PlanningOutputColumn(header: '')
+		def outputColumn = new PlanningOutputColumn(prefix: '')
 		def value = new NormalizedDataElementValue(value: Value.NULL_INSTANCE())
 		def outputTable = new PlanningOutputTable(null, value)
 		
