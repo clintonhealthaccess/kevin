@@ -83,10 +83,10 @@ public class CalculationExportService extends ExportService {
 		calculationLocations.addAll(Utils.removeDuplicates(dataLocations));
 			
 		if (log.isDebugEnabled()) log.debug(" Exporter calculationLocations "+calculationLocations+")");
-		return this.exportCalculation(languageService.getText(export.getDescriptions()),calculationLocations,export.getPeriods(),((CalculationExport) export).getCalculations(),types);
+		return this.exportCalculations(languageService.getText(export.getDescriptions()),calculationLocations,export.getPeriods(),((CalculationExport) export).getCalculations(),types);
 	}
 		
-	public File exportCalculation(String fileName,List<CalculationLocation> calculationLocations,Set<Period> periods,Set<Calculation<CalculationPartialValue>> calculations,Set<DataLocationType> types) throws IOException{
+	public File exportCalculations(String fileName,List<CalculationLocation> calculationLocations,Set<Period> periods,Set<Calculation<CalculationPartialValue>> calculations,Set<DataLocationType> types) throws IOException{
 		if (log.isDebugEnabled()) log.debug(" exportDataElement(String "+fileName+" List<CalculationLocation>: " + calculationLocations + " List<Period>: "+ periods + " Set<Calculation<CalculationPartialValue>>: " + calculations + ")");
 		File csvFile = File.createTempFile(fileName, CSV_FILE_EXTENSION);
 		FileWriter csvFileWriter = new FileWriter(csvFile);

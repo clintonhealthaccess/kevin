@@ -100,7 +100,9 @@ public abstract class CalculationLocation {
 			if (dataLocations != null) dataLocations.addAll(dataLocationsChildren);
 		}
 		
-		if (result && locations != null) locations.add((Location) this);
+		if (result) {
+			if (locations != null && !this.collectsData()) locations.add((Location) this);
+		}
 		return result;
 	}
 	

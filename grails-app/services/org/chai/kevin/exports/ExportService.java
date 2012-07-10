@@ -82,7 +82,7 @@ public abstract class ExportService {
 	public abstract List<String> getExportDataHeaders();
 	public abstract File exportData(DataExport export) throws IOException;
 	
-	public class DataPointVisitor extends ValueVisitor{
+	public final class DataPointVisitor extends ValueVisitor{
 		private List<String> basicInfo = new ArrayList<String>();
 		private List<List<String>> lines= new ArrayList<List<String>>();
 
