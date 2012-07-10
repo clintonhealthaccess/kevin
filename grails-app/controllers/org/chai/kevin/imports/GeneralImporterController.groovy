@@ -28,7 +28,8 @@
 
 package org.chai.kevin.imports;
 
-import org.chai.kevin.AbstractController;
+import java.util.Arrays;
+import org.chai.kevin.AbstractFileUploadController;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.PeriodService;
@@ -36,16 +37,20 @@ import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.imports.GeneralDataImporter;
 import org.chai.kevin.imports.ImporterErrorManager;
+import org.chai.kevin.imports.FileImporter;
+import org.chai.kevin.imports.FileImporter.FileType
 import org.chai.kevin.value.ValueService;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+import org.chai.kevin.FileType
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-class GeneralImporterController extends AbstractController {
+class GeneralImporterController extends AbstractFileUploadController {
 	
 	LocationService locationService;
 	ValueService valueService;
@@ -58,6 +63,7 @@ class GeneralImporterController extends AbstractController {
 	final String IMPORT_OUTPUT = "importOutput";
 	
 	def importer = {
+		
 		this.getModel(null,null,IMPORT_FORM);
 	}
 	
@@ -65,42 +71,56 @@ class GeneralImporterController extends AbstractController {
 		ImporterErrorManager errorManager = new ImporterErrorManager();
 
 		if (!cmd.hasErrors()) {
-			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",delimiter="+cmd.delimiter+",encoding="+cmd.encoding+")")
+			if(log.isDebugEnabled()) log.debug("(file="+cmd.file+",delimiter="+cmd.delimiter+",encoding="+cmd.encoding+")")
 			GeneralDataImporter importer = new GeneralDataImporter(
 					locationService, valueService, dataService,
 					sessionFactory, transactionManager,
 					errorManager,periodService
 					);
-			if (cmd.file.getContentType().equals(FILE_TYPE_ZIP)) importer.importZipFiles(cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
-			if (cmd.file.getContentType().equals(FILE_TYPE_CSV)) importer.importCsvFile(cmd.file.getName(), cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
+				
+			if (getFileType(cmd.file) == FileType.ZIP){
+					importer.importZipFiles(cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
+			}
+			else if (getFileType(cmd.file) == FileType.CSV){
+					importer.importCsvFile(cmd.file.getName(), cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
+			}
+			else {
+				errorManager.getErrors().add(new ImporterError("\" " + cmd.file.getOriginalFilename() + " \"",1,"File Type Error","import.error.fileType.NotMatching"));
+			}
 			cmd.file.getInputStream().close();
 
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
+			
 		}else{
 			if(log.isDebugEnabled()) log.debug("up ok");
 			this.getModel(cmd,errorManager,IMPORT_FORM);
 		}
 	}
+	
 	def getModel(def cmd,ImporterErrorManager errorManager,String view) {
+		
 		render (view: '/import/'+view, model:[
 					generalImporter: cmd,
 					errorManager: errorManager
 				])
 	}
-
 }
 
 class GeneralImporterCommand {
-	
+
 	String encoding;
 	Character delimiter;
-	CommonsMultipartFile file;
+	MultipartFile file;
+
 	//TODO validate zip
 	static constraints = {
-		file(blank:false, nullable:false, validator: {val, obj ->
-			return !val.empty
-		})
+		
 		delimiter(blank:false,nullable:false)
 		encoding(blank:false,nullable:false)
+		file(blank:false, nullable:false, 
+			validator: {val, obj ->
+				return !val.empty
+			}
+		)
 	}
 }

@@ -20,6 +20,7 @@
 	<div class="error-list"><g:renderErrors bean="${bean}" field="file" /></div>
 	<div class="error-list"><g:renderErrors bean="${bean}" field="encoding" /></div>
 	<div class="error-list"><g:renderErrors bean="${bean}" field="delimiter" /></div>
+	<div class="error-list"><g:renderErrors bean="${bean}" field="fileType" /></div>
 </ul>
 <script type="text/javascript">
 	$(document).ready(function(){

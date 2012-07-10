@@ -15,6 +15,7 @@ import org.supercsv.exception.SuperCSVException;
 import org.supercsv.io.CsvMapReader;
 import org.supercsv.io.ICsvMapReader;
 import org.supercsv.prefs.CsvPreference;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 public abstract class FileImporter {
 
@@ -23,12 +24,14 @@ public abstract class FileImporter {
 	public FileImporter() {
 		super();
 	}
-
+	
 	public void importCsvFile(String fileName, InputStream inputStream, String encoding, Character delimiter) throws IOException {
-		importData(fileName, getReaderInCorrectEncodingWithDelimiter(inputStream, encoding, delimiter));
+		
+		importData(fileName, getReaderInCorrectEncodingWithDelimiter(inputStream, encoding, delimiter));	
 	}
 
 	public void importZipFiles(InputStream inputStream, String encoding, Character delimiter) throws IOException {
+		
 		ZipInputStream zipInputStream = null;
 		zipInputStream = new ZipInputStream(inputStream);
 		ZipEntry zipEntry;

@@ -42,11 +42,13 @@ import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
+import org.codehaus.groovy.grails.plugins.testing.GrailsMockMultipartFile
 import org.hibernate.SessionFactory;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.chai.kevin.FileType
 
 /**
  * @author Jean Kahigiso M.
@@ -54,40 +56,68 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  */
 class NominativeImporterControllerSpec extends IntegrationTests {
 	
-
+	def nominativeImporterController
 	//TODO find a way to test a controller using  CommonsMultipartFile
-/*
 	def "get uploader"(){
 	
 		setup:
-		setupLocationTree()
-		def period = newPeriod()
-		def type = Type.TYPE_LIST(Type.TYPE_MAP(["marital_status": Type.TYPE_BOOL()]))
-		def dataElement = newRawDataElement(CODE(1), type)
-		def importerErrorManager = new ImporterErrorManager();
-		
-		def csvString =
-		"code,marital_status\n"+
-		BUTARO+",0\n"+
-		BUTARO+",1\n"+
-		BUTARO+",N\n"
-		
-		MockMultipartFile file = new MockMultipartFile("data.csv",csvString.getBytes());
-		def cmd = new NormalizedImporterCommand();
-		cmd.dataElement = dataElement;
-		cmd.period = period;
-		cmd.file = file;
+			setupLocationTree()
+			def period = newPeriod()
+			def type = Type.TYPE_LIST(Type.TYPE_MAP(["marital_status": Type.TYPE_BOOL()]))
+			def dataElement = newRawDataElement(CODE(1), type)
+			def importerErrorManager = new ImporterErrorManager();
+			
+			final String ENCODING = "UTF-8";
+			final char DELIMITER = ',';
+			
+			File tempFileZip = new File("test/integration/org/chai/kevin/imports/nominativeTestFile.csv.zip");
+			File tempFileCsv = new File("test/integration/org/chai/kevin/imports/nominativeDataUgin.csv");
+			File tempFilePdf = new File("test/integration/org/chai/kevin/imports/Git1.pdf");
+			
+			GrailsMockMultipartFile grailsMockMultipartFileZip = new GrailsMockMultipartFile(
+				"nominativeTestFile",
+				"nominativeTestFile.csv.zip",
+				"",
+				 tempFileZip.getBytes())
+			
+			GrailsMockMultipartFile grailsMockMultipartFileCsv = new GrailsMockMultipartFile(
+				"nominativeDataUgin",
+				"nominativeDataUgin.csv",
+				"",
+				 tempFileCsv.getBytes())
+			
+			GrailsMockMultipartFile grailsMockMultipartFilePdf = new GrailsMockMultipartFile(
+				"Git1",
+				"Git1.pdf",
+				"",
+				 tempFilePdf.getBytes())
+			
+			def cmdZip = new NominativeImporterCommand();
+			def cmdCsv = new NominativeImporterCommand();
+			def cmdPdf = new NominativeImporterCommand();
+			
+			
+			cmdZip.file = grailsMockMultipartFileZip;
+			cmdZip.encoding = ENCODING;
+			cmdZip.delimiter = DELIMITER;
+			cmdZip.period = period;
+			cmdZip.dataElement = dataElement;
+			
+			cmdCsv.file = grailsMockMultipartFileCsv;
+			cmdCsv.encoding = ENCODING;
+			cmdCsv.delimiter = DELIMITER;
+			cmdCsv.period = period;
+			cmdCsv.dataElement = dataElement;
+			
+			cmdPdf.file = grailsMockMultipartFilePdf;
+			cmdPdf.encoding = ENCODING;
+			cmdPdf.delimiter = DELIMITER;
+			cmdPdf.period = period;
+			cmdPdf.dataElement = dataElement;
 		when:
-		normalizedImporterController = new NormalizedImporterController()
-		normalizedImporterController.uploader(cmd)
+			nominativeImporterController = new NominativeImporterController()
+			nominativeImporterController.uploader(cmdZip)
 		then:
-		normalizedImporterController.modelAndView.model.errorManager.errors.size()==1
+			normalizedImporterController.modelAndView.model.errorManager.errors.size()==1
 		}
-*/
-	
-	// TODO
-//	def "shows error page after succesful import"(){ 
-//		
-//	}
-	
 }
