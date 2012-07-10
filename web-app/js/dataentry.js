@@ -131,6 +131,8 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 			
 			self.toggleControls($.queue(document, self.queueName).length > 0);
 			
+			callback(self, data, element);
+			
 			if (data.status == 'success') {
 				// we reset null elements
 				$.each(data.elements, function(elementIndex, element) {
@@ -168,7 +170,6 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 					
 				});
 			}
-			callback(self, data, element);
 		},
 		error: function() {
 			$(element).removeClass('ajax-in-process');
@@ -201,38 +202,65 @@ DataEntry.prototype.toggleControls = function(hide) {
 }
 
 DataEntry.prototype.listRemoveClick = function(toRemove) {
-	var element = $(toRemove).parents('.element').first();
-	var index = $(toRemove).parents('.element-list-row').first().data('index');
+	var list = $(toRemove).parents('.element-list').first();
+	var suffix = $(list).data('suffix');
+	
 	$(toRemove).parents('.element-list-row').find('.js_list-input').remove();
 
-	this.surveyValueChanged(element, $(element).find('.js_list-input'), function(dataEntry, data, element) {
-
+	this.surveyValueChanged(list, $(list).find('.js_list-input'), function(dataEntry, data, element) {
 		$(toRemove).parents('.element-list-row').first().remove();	
+		
+		var listSize = $(list).find('> li.element-list-row').size()
+		
+		for (index = 0; index < listSize; index++) {
+			var item = $(list).find('> li.element-list-row')[index];
+			var numberOfInputs = $(item).find('.input').size();
+			
+			var oldValues = [];
+			for (inputIndex = 0; inputIndex < numberOfInputs; inputIndex++) {
+				var oldInput = $(item).find('.input')[inputIndex];
+				
+				oldValues[inputIndex] = $(oldInput).val();
+			}
+		
+			var clone = $(item).clone(true);
+			var copyHtml = clone.html().replace(RegExp(escape(suffix)+'\\[\\d+\\]', 'g'), suffix+'['+index+']');
+			
+			$(item).html(copyHtml);
+			var newItem = $(list).find('> li.element-list-row')[index];
+			
+			$(newItem).data('index', index);
+			$(newItem).find(".js_list-input").first().val('['+index+']');
+			
+			for (inputIndex = 0; inputIndex < numberOfInputs; inputIndex++) {
+				var newInput = $(newItem).find('.input')[inputIndex]
+			
+				$(newInput).val(oldValues[inputIndex]);
+			}
+		}
 	});
 }
 
-DataEntry.prototype.listAddClick = function(list, callback) {
-	var suffix = $(list).parents('.element').first().data('suffix');
+DataEntry.prototype.listAddClick = function(button, callback) {
+	var	list = $(button).parents('.element-list').first();
+	var suffix = $(list).data('suffix');
 
-	var clone = $(list).prev().clone(true);
-	var index = $(list).prev().prev().data('index');
+	var clone = $(button).prev().clone(true);
+	var index = $(button).prev().prev().data('index');
 	if (index == null) index = "0";
 	else index = parseInt(index)+1;
 
 	// we change the html	
 	$(clone).find(".js_list-input").first().val('['+index+']')
-	$(clone).find(".js_list-input-indexes").first().val('['+index+']')
 	var copyHtml = clone.html().replace(RegExp(escape(suffix)+'\\[_\\]', 'g'), suffix+'['+index+']')
 
-	$(list).prev().before(copyHtml);
-	$(list).prev().prev().data('index', index);
+	$(button).prev().before(copyHtml);
+	$(button).prev().prev().data('index', index);
 	
 	var self = this;
 
-	this.surveyValueChanged($(list).parents('.element').first(), $(list).parents('.element').first().find('.js_list-input'), function(dataEntry, data, element) {
-		$(list).prev().prev().show();
-
-		maximizeRow($(list).prev().prev());
+	this.surveyValueChanged($(list), $(list).find('.js_list-input'), function(dataEntry, data, element) {
+		maximizeRow($(button).prev().prev());
 		callback(self, data, element);
 	});
 }

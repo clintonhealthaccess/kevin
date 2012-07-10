@@ -30,7 +30,7 @@ package org.chai.kevin.exports
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.exports.DataExportController;
+import org.chai.kevin.exports.DataElementExportController;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
 
@@ -38,9 +38,9 @@ import org.chai.kevin.location.Location;
  * @author Jean Kahigiso M.
  *
  */
-class DataExportControllerSpec extends IntegrationTests {
+class DataElementExportControllerSpec extends IntegrationTests {
 	
-	def dataExportController;
+	def dataElementExportController;
 	
 	def "get dataExport"(){
 		setup:
@@ -54,15 +54,15 @@ class DataExportControllerSpec extends IntegrationTests {
 		def locations=new HashSet();
 		locations.addAll(getLocations([BURERA]));
 		locations.addAll(getDataLocations([KIVUYE]));
-		def data=new HashSet([dataElementOne,dataElementTwo]);
-		def dataExport = newDataExport(j("en":"Testing Seach One"), periods, locationType, locations, data);
-		dataExportController = new DataExportController();
+		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
+		def dataExport = newDataElementExport(j("en":"Testing Seach One"), periods, locationType, locations, dataElements);
+		dataElementExportController = new DataElementExportController();
 		
 		when:
-		dataExportController.params.('export.id')=dataExport.id
-		dataExportController.export()
+		dataElementExportController.params.('export.id')=dataExport.id
+		dataElementExportController.export()
 		then:
-		dataExportController.response.getContentType() == "application/zip"
+		dataElementExportController.response.getContentType() == "application/zip"
 		
 	}
 	
@@ -78,22 +78,22 @@ class DataExportControllerSpec extends IntegrationTests {
 		def locations = new HashSet();
 		locations.addAll(getLocations([BURERA]));
 		locations.addAll(getDataLocations([KIVUYE]));
-		def data=new HashSet([dataElementOne,dataElementTwo]);
-		dataExportController = new  DataExportController();
+		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
+		dataElementExportController = new  DataElementExportController();
 		
 		when:
-		dataExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+"",Location.findByCode(BURERA).id+""]
-		dataExportController.params.('periodIds')=[Period.list()[0].id+""]
-		dataExportController.params.('dataIds')=[dataElementOne.id+"",dataElementTwo.id+""]
-		dataExportController.params.('typeCodes')="Health Center,District Hospital";
-		dataExportController.save()
-		def dataExports = DataExport.list();
+		dataElementExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+"",Location.findByCode(BURERA).id+""]
+		dataElementExportController.params.('periodIds')=[Period.list()[0].id+""]
+		dataElementExportController.params.('dataElementIds')=[dataElementOne.id+"",dataElementTwo.id+""]
+		dataElementExportController.params.('typeCodes')="Health Center,District Hospital";
+		dataElementExportController.save()
+		def dataExports = DataElementExport.list();
 		then:
 		dataExports.size()==1;
 		dataExports[0].periods==periods;
 		dataExports[0].typeCodeString.equals('Health Center,District Hospital');
 		dataExports[0].locations==locations;
-		dataExports[0].data==data;
+		dataExports[0].dataElements==dataElements;
 		
 	}
 	
@@ -110,22 +110,22 @@ class DataExportControllerSpec extends IntegrationTests {
 		def locations=new HashSet();
 		locations.addAll(getLocations([BURERA]));
 		locations.addAll(getDataLocations([KIVUYE]));
-		def data=new HashSet([dataElementOne,dataElementTwo]);
-		dataExportController = new  DataExportController();
+		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
+		dataElementExportController = new  DataElementExportController();
 		
 		when:
-		dataExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
-		dataExportController.params.('periodIds')=[Period.list()[0].id+""]
-		dataExportController.params.('dataIds')=[dataElementOne.id+"",dataElementTwo.id+"",dataElementTwo.id+""]
-		dataExportController.params.('typeCodes')="Health Center,District Hospital";
-		dataExportController.save()
-		def dataExports = DataExport.list();
+		dataElementExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
+		dataElementExportController.params.('periodIds')=[Period.list()[0].id+""]
+		dataElementExportController.params.('dataElementIds')=[dataElementOne.id+"",dataElementTwo.id+"",dataElementTwo.id+""]
+		dataElementExportController.params.('typeCodes')="Health Center,District Hospital";
+		dataElementExportController.save()
+		def dataExports = DataElementExport.list();
 		then:
 		dataExports.size()==1;
 		dataExports[0].periods==periods;
 		dataExports[0].typeCodeString.equals('Health Center,District Hospital');
 		dataExports[0].locations==locations;
-		dataExports[0].data==data;
+		dataExports[0].dataElements==dataElements;
 		
 	}
 	
@@ -141,22 +141,22 @@ class DataExportControllerSpec extends IntegrationTests {
 		def locations=new HashSet();
 		locations.addAll(getLocations([BURERA]));
 		locations.addAll(getDataLocations([KIVUYE]));
-		def data=new HashSet([dataElementOne,dataElementTwo]);
-		dataExportController = new  DataExportController();
+		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
+		dataElementExportController = new  DataElementExportController();
 		
 		when:
-		dataExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
-		dataExportController.params.('periodIds')=[Period.list()[0].id+"",Period.list()[0].id+""]
-		dataExportController.params.('dataIds')=[dataElementOne.id+"",dataElementTwo.id+""]
-		dataExportController.params.('typeCodes')="Health Center,District Hospital";
-		dataExportController.save()
-		def dataExports = DataExport.list();
+		dataElementExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
+		dataElementExportController.params.('periodIds')=[Period.list()[0].id+"",Period.list()[0].id+""]
+		dataElementExportController.params.('dataElementIds')=[dataElementOne.id+"",dataElementTwo.id+""]
+		dataElementExportController.params.('typeCodes')="Health Center,District Hospital";
+		dataElementExportController.save()
+		def dataElementExports = DataElementExport.list();
 		then:
-		dataExports.size()==1;
-		dataExports[0].periods==periods;
-		dataExports[0].typeCodeString.equals('Health Center,District Hospital');
-		dataExports[0].locations==locations;
-		dataExports[0].data==data;
+		dataElementExports.size()==1;
+		dataElementExports[0].periods==periods;
+		dataElementExports[0].typeCodeString.equals('Health Center,District Hospital');
+		dataElementExports[0].locations==locations;
+		dataElementExports[0].dataElements==dataElements;
 	}
 	def "dataExport clone successfull"(){
 		setup:
@@ -170,19 +170,19 @@ class DataExportControllerSpec extends IntegrationTests {
 		def locations=new HashSet();
 		locations.addAll(getLocations([BURERA]));
 		locations.addAll(getDataLocations([KIVUYE]));
-		def data=new HashSet([dataElementOne,dataElementTwo]);
-		def dataExport = newDataExport(j("en":"Testing Seach One"),periods, locationType, locations, data);
-		dataExportController = new  DataExportController();
+		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
+		def dataElementExport = newDataElementExport(j("en":"Testing Seach One"),periods, locationType, locations, dataElements);
+		dataElementExportController = new  DataElementExportController();
 		
 		when:
-		dataExportController.params.('export.id')=dataExport.id
-		dataExportController.clone()
+		dataElementExportController.params.('export.id')=dataElementExport.id
+		dataElementExportController.clone()
 		then:
-		DataExport.list().size()==2;
-		DataExport.list()[0].periods.equals(DataExport.list()[1].periods)
-		DataExport.list()[0].typeCodeString.equals(DataExport.list()[1].typeCodeString)
-		DataExport.list()[0].locations.equals(DataExport.list()[1].locations)
-		DataExport.list()[0].data.equals(DataExport.list()[1].data)
+		DataElementExport.list().size()==2;
+		DataElementExport.list()[0].periods.equals(DataElementExport.list()[1].periods)
+		DataElementExport.list()[0].typeCodeString.equals(DataElementExport.list()[1].typeCodeString)
+		DataElementExport.list()[0].locations.equals(DataElementExport.list()[1].locations)
+		DataElementExport.list()[0].dataElements.equals(DataElementExport.list()[1].dataElements)
 		
 	}
 

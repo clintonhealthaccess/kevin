@@ -20,8 +20,13 @@
 		<g:selectFromList name="data.id" label="${message(code:'dsr.target.calculationelement.label')}" bean="${target}" field="data" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'Data'])}"
 			from="${data}" value="${target.data?.id}" values="${data.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+		
+		<div class="row">
+			<label>${message(code:'dsr.target.average.label')}</label>
+			<g:checkBox class="checkbox" name="average" value="${target.average}" />
+		</div>
 
-		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${target}" field="order"/>
+		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${target}" field="order"/>				
 		
 		<g:if test="${target != null}">
 			<input type="hidden" name="id" value="${target.id}"/>

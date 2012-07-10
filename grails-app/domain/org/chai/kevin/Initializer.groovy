@@ -69,6 +69,8 @@ import org.chai.kevin.security.UserType;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
+import org.chai.kevin.exports.CalculationExport;
+import org.chai.kevin.exports.DataElementExport;
 import org.chai.kevin.exports.DataExport;
 import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
@@ -716,6 +718,8 @@ class Initializer {
 			
 			new NormalizedDataElement(names:j(["en":"ZERO"]), descriptions:j([:]), code:"ZERO", expressionMap: e([(period1.id+''):[(hc.code):"0", (dh.code):"0"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 			new NormalizedDataElement(names:j(["en":"ONE"]), descriptions:j([:]), code:"ONE", expressionMap: e([(period1.id+''):[(hc.code):"1", (dh.code):"1"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"MixHC"]), descriptions:j([:]), code:"MixHC", expressionMap: e([(period1.id+''):[(hc.code):"1", (dh.code):"0"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"MixDH"]), descriptions:j([:]), code:"MixDH", expressionMap: e([(period1.id+''):[(hc.code):"0", (dh.code):"1"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 		}
 	}
 
@@ -894,8 +898,8 @@ class Initializer {
 					code: "Facility Water and Power Sources"
 					)
 
-			def dsrRatio = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Ratio constant 10", timestamp:new Date())
-			dsrRatio.save(failOnError: true)
+			def dsrAvg = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Average constant 10", timestamp:new Date())
+			dsrAvg.save(failOnError: true)
 			
 			def dsrSum = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Sum constant 10", timestamp:new Date());
 			dsrSum.save(failOnError: true);			
@@ -931,7 +935,8 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"A3"]), descriptions:j(["en":"A3"]),
 					program: hmr,
-					data: dsrRatio,
+					data: dsrAvg,
+					average: true,
 					order: 4,
 					code: "A3",
 					category: nursesCat,
@@ -1032,7 +1037,13 @@ class Initializer {
 			
 			def sumOne = new Sum(expression: "\$"+NormalizedDataElement.findByCode("ONE").id, code:"Sum ONE", timestamp:new Date());
 			sumOne.save(failOnError: true);
-						
+			
+			def sumMixHC = new Sum(expression: "\$"+NormalizedDataElement.findByCode("MixHC").id, code:"Sum MixHC", timestamp:new Date());
+			sumMixHC.save(failOnError: true);
+				
+			def sumMixDH = new Sum(expression: "\$"+NormalizedDataElement.findByCode("MixDH").id, code:"Sum MixDH", timestamp:new Date());
+			sumMixDH.save(failOnError: true);
+			
 			FctTarget fctTarget1 = new FctTarget(
 
 				names:j(["en":"Fct Target 1"]), 
@@ -1091,6 +1102,25 @@ class Initializer {
 				targetOptions: [],
 				code:"TARGET 3"
 			).save(failOnError:true)
+			
+			FctTargetOption fctTargetOption5 = new FctTargetOption(
+				names:j(["en": "Target Option 5"]),
+				target: fctTarget3,
+				descriptions:j([:]),
+				code:"TARGET OPTION 5",
+				sum: sumMixHC
+			).save(failOnError:true)
+			
+			FctTargetOption fctTargetOption6 = new FctTargetOption(
+				names:j(["en": "Target Option 6"]),
+				target: fctTarget3,
+				descriptions:j([:]),
+				code:"TARGET OPTION 6",
+				sum: sumMixDH
+			).save(failOnError:true)
+			
+			fctTarget3.targetOptions << [fctTargetOption5, fctTargetOption6]
+			fctTarget3.save(failOnError:true)
 			
 			hmr.save(failOnError:true)
 		}
@@ -1277,18 +1307,21 @@ class Initializer {
 	}
 	
 	
-	static def createExporter(){
-		if(!DataExport.count()){
+	static def createDataElementExport(){
+		if(!DataElementExport.count()){
 			def dh = DataLocationType.findByCode("District Hospital")
 			def hc = DataLocationType.findByCode("Health Center")
 			def periodOne = Period.list()[0];
 			def periodTwo = Period.list()[1];
-			def dEtwo = RawDataElement.findByCode("CODE2");
+			
+			def dEtwo = NormalizedDataElement.findByCode("SUMPLANNING2");
 			def dEthree = RawDataElement.findByCode("CODE3");
 			def dEfour = RawDataElement.findByCode("CODE4");
 			def dEfive = RawDataElement.findByCode("CODE11");
 			def dEsix = RawDataElement.findByCode("CODE12");
 			def dMap = RawDataElement.findByCode("LISTMAP1");
+			def nData = NormalizedDataElement.findByCode("Constant 10");
+			
 			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
 			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
 			def burera = Location.findByCode("Burera");
@@ -1296,44 +1329,101 @@ class Initializer {
 			def south = Location.findByCode("South");
 			
 			
-			def exporterThree = new DataExport(
+			def exporterThree = new DataElementExport(
 				descriptions: j(["en":"Exporter Raw Data Element Three"]),
 				date: new Date(),
 				typeCodeString:"Health Center",
 				locations:[south,dataLocationTwo],
-				data:[dMap,dEtwo,dEthree,dEfive,dEsix],
+				dataElements:[dMap,dEtwo,dEthree,nData,dEfive,dEsix],
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 			
-			def exporterTwo = new DataExport(
+			def exporterTwo = new DataElementExport(
 				descriptions: j(["en":"Exporter Raw Data Element Two"]),
 				date: new Date(),
 				typeCodeString:"Health Center",
 				locations:[south,burera],
-				data:[dEtwo,dEthree,dMap],
+				dataElements:[dEtwo,dEthree,dMap],
 				periods: [periodOne]
 				).save(failOnError: true)
 				
-			def exporterOne = new DataExport(
+			def exporterOne = new DataElementExport(
 				descriptions: j(["en":"Exporter Raw Data Element One"]),
 				date: new Date(),
 				locations:[est,burera,south],
 				typeCodeString:"District Hospital,Health Center",
-				data:[dMap,dEtwo,dEthree,dEfour,dEfive,dEsix],
+				dataElements:[dMap,dEtwo,dEthree,dEfour,dEfive,dEsix],
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 				
-			def exporterFour = new DataExport(
+			def exporterFour = new DataElementExport(
 				descriptions: j(["en":"Exporter Raw Data Element Four"]),
 				date: new Date(),
 				typeCodeString:"District Hospital",
 				locations:[est,dataLocationOne],
-				data:[dMap,dEtwo,dEfour,dEfive,dEsix],
+				dataElements:[dMap,dEtwo,dEfour,dEfive,dEsix],
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 			
 			
 				
+		}
+	}
+	
+	static def createCalculationExport(){
+		if(!CalculationExport.count()){
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
+			def periodOne = Period.list()[0];
+			def periodTwo = Period.list()[1];
+			
+			def dEtwo = Sum.findByCode("Ratio constant 20");
+			def dEthree = Sum.findByCode("Ratio constant 10");
+			def dEfour = Sum.findByCode("Dsr Ratio constant 10");
+			def dEfive = Sum.findByCode("Maps sum 1");
+		
+			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
+			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
+			def burera = Location.findByCode("Burera");
+			def est = Location.findByCode("East");
+			def south = Location.findByCode("South");
+			
+			
+			def exporterThree = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation Three"]),
+				date: new Date(),
+				typeCodeString:"Health Center",
+				locations:[south,dataLocationTwo],
+				calculations:[dEtwo,dEthree,dEfive],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+			
+			def exporterTwo = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation Two"]),
+				date: new Date(),
+				typeCodeString:"Health Center",
+				locations:[south,burera],
+				calculations:[dEtwo,dEthree],
+				periods: [periodOne]
+				).save(failOnError: true)
+				
+			def exporterOne = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation One"]),
+				date: new Date(),
+				locations:[est,burera,south],
+				typeCodeString:"District Hospital,Health Center",
+				calculations:[dEtwo,dEthree,dEfour,dEfive],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+				
+			def exporterFour = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation Four"]),
+				date: new Date(),
+				typeCodeString:"District Hospital",
+				locations:[est,dataLocationOne],
+				calculations:[dEtwo,dEfour,dEfive],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
 		}
 	}
 

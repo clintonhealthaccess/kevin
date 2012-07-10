@@ -38,6 +38,18 @@ class ValueTagLib {
 		}
 	}
 	
+	def reportTooltip = { attrs, body ->
+		def average = attrs['average']
+		def value = attrs['value']
+		def type = attrs['type']
+		def format = attrs['format']
+		def totalDataLocations = attrs['totalDataLocations']
+		
+		def formattedValue = languageService.getStringValue(value, type, null, format)
+		
+		out << "Percentage: " + average + '%<br />Number: ' + formattedValue + '<br />Facilities: ' +  totalDataLocations
+	}
+	
 	def adminValue = {attrs, body ->
 		def type = attrs['type']
 		def value = attrs['value']

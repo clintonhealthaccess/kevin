@@ -1,4 +1,4 @@
-/** 
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -25,89 +25,52 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.dsr;
+package org.chai.kevin.exports;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.value.DataValue;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 /**
  * @author Jean Kahigiso M.
  *
  */
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import org.chai.kevin.Exportable;
-import org.chai.kevin.Importable;
-import org.chai.kevin.data.Data;
-import org.chai.kevin.reports.AbstractReportTarget;
-import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.StoredValue;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-@Entity(name = "DsrTarget")
-@Table(name = "dhsst_dsr_target", uniqueConstraints={@UniqueConstraint(columnNames="code")})
+@Entity(name="DataElementExport")
+@Table(name="dhsst_export_data_element")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DsrTarget extends AbstractReportTarget implements Exportable, Importable {
-	
-	private Long id;
-	private Data<StoredValue> data; //this can be either a calculation or a data element
-	private DsrTargetCategory category;
-	private String format;
-	private Boolean average = false; //this can either be an average (true) or sum (null or false)
-	
-	@Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
-	}	
-	public void setId(Long id) {
-		this.id = id;
-	}	
-	
-	@ManyToOne(targetEntity=Data.class, optional=false)
-	public Data<StoredValue> getData() {
-		return data;
+public class DataElementExport extends DataExport {
+	private Set<DataElement<DataValue>> dataElements = new HashSet<DataElement<DataValue>>();
+
+	@ManyToMany(targetEntity=DataElement.class, fetch=FetchType.LAZY)
+	@JoinTable(name="dhsst_export_data_element_data",
+		joinColumns=@JoinColumn(name="exporter"),
+		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","dataElements"})
+	)
+	public Set<DataElement<DataValue>> getDataElements() {
+		return dataElements;
 	}
 
-	public void setData(Data<StoredValue> data) {
-		this.data = data;
-	}	
-
-	@ManyToOne(targetEntity=DsrTargetCategory.class)
-	public DsrTargetCategory getCategory() {
-		return category;
-	}
-
-	public void setCategory(DsrTargetCategory category) {
-		this.category = category;
-	}
-
-	@Basic
-	public String getFormat() {
-		return format;
-	}
-
-	public void setFormat(String format) {
-		this.format = format;
+	public void setDataElements(Set<DataElement<DataValue>> dataElements) {
+		this.dataElements = dataElements;
 	}
 	
 	@Override
-	public String toExportString() {
-		return "[" + Utils.formatExportCode(getCode().toString()) + "]";
+	public String toString() {
+		return "DataElementExport [getId()=" + getId() + ", getDescriptions()="
+				+ getDescriptions() + ", getDate()=" + getDate() + "]";
 	}
 	
-	@Override
-	public DsrTarget fromExportString(Object value) {
-		return (DsrTarget) value;
-	}
-	
-	public Boolean getAverage() {
-		return average;
-	}
-	public void setAverage(Boolean average) {
-		this.average = average;
-	}	
+
 }
