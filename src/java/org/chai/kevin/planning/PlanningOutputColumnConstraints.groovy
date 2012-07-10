@@ -35,8 +35,6 @@ import org.chai.kevin.data.Type.ValueType;
  *
  */
 constraints ={
-	normalizedDataElement (nullable: false, validator: {val, obj ->
-		return val.type.type == ValueType.LIST
-	})
+	header(nullable: false, blank: false)
 	planningOutput (nullable: false)
 }
