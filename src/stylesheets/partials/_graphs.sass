@@ -115,10 +115,21 @@
     text-align: center
     vertical-align: bottom
 
-    div
+    // slister start: converting bars to stacked bars
+    .bars-vertical
       display: inline-block
-      margin-bottom: -2px
-      width: 20px
+      height: 100%
+      margin-bottom: -1px
+      
+    .bar-vertical
+      display: block      
+      width: 38px
+      
+    span
+      font-size: 10px
+      font-weight: bold
+      vertical-align: middle
+      // slister end
 
 .chart_legend
   li
@@ -137,7 +148,10 @@
   padding-right: 8px
   text-align: right
   width: 20px
+  
   li
+    font-weight: bold
+    
     &:nth-child(2)
       margin-top: 85px
     &:last-child
