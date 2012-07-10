@@ -250,4 +250,21 @@ class CalculationLocationUnitSpec extends UnitSpec {
 		rwanda.getChildrenEntitiesWithDataLocations(new HashSet([province]), types).equals([burera, data1])
 		rwanda.getChildrenEntitiesWithDataLocations(new HashSet([province, district]), types).equals([data1, data2])
 	}
+	
+	def "test collect locations on DataLocation"() {
+		setup:
+		def rwanda = new Location(code: "rwanda")
+		def type1 = new DataLocationType(code: 'type1')
+		def data1 = new DataLocation(code: 'data1', location: rwanda, type: type1);
+		rwanda.dataLocations = [data1]
+		def locations = [] 
+		def dataLocations = []
+		
+		when:
+		data1.collectLocations(locations, dataLocations, null, new HashSet([type1]))
+		
+		then:
+		dataLocations == [data1]
+	}
+	
 }

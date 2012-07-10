@@ -38,7 +38,7 @@ import org.chai.kevin.location.Location;
  * @author Jean Kahigiso M.
  *
  */
-class DataExportControllerSpec extends IntegrationTests {
+class DataElementExportControllerSpec extends IntegrationTests {
 	
 	def dataElementExportController;
 	
