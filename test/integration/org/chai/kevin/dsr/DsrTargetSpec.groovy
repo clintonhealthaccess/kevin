@@ -30,7 +30,7 @@ class DsrTargetSpec extends DsrIntegrationTests {
 		
 		then:
 		DsrTarget.count() == 1
-		DsrTarget.list()[0].average.equals(false)
+		DsrTarget.list()[0].average.equals(null)
 		
 		when: "sum is specified"
 		new DsrTarget(program: program, code: CODE(2), data: data, average: false, category: category).save(failOnError: true)

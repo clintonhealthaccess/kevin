@@ -905,6 +905,7 @@ class Initializer {
 					names:j(["en":"A0"]), descriptions:j(["en":"A0"]),
 					program: hmr,
 					data: RawDataElement.findByCode("CODE1"),
+					average: null,
 					order: 1,
 					code: "A0",
 					category: nursesCat,
@@ -1337,6 +1338,66 @@ class Initializer {
 				
 		}
 	}
+<<<<<<< Updated upstream
+=======
+	
+	static def createCalculationExport(){
+		if(!CalculationExport.count()){
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
+			def periodOne = Period.list()[0];
+			def periodTwo = Period.list()[1];
+			
+			def dEtwo = Sum.findByCode("Ratio constant 20");
+			def dEthree = Sum.findByCode("Ratio constant 10");
+			def dEfour = Sum.findByCode("Ratio 1");
+			def dEfive = Sum.findByCode("Maps sum 1");
+		
+			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
+			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
+			def burera = Location.findByCode("Burera");
+			def est = Location.findByCode("East");
+			def south = Location.findByCode("South");
+			
+			
+			def exporterThree = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation Three"]),
+				date: new Date(),
+				typeCodeString:"Health Center",
+				locations:[south,dataLocationTwo],
+				calculations:[dEtwo,dEthree,dEfive],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+			
+			def exporterTwo = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation Two"]),
+				date: new Date(),
+				typeCodeString:"Health Center",
+				locations:[south,burera],
+				calculations:[dEtwo,dEthree],
+				periods: [periodOne]
+				).save(failOnError: true)
+				
+			def exporterOne = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation One"]),
+				date: new Date(),
+				locations:[est,burera,south],
+				typeCodeString:"District Hospital,Health Center",
+				calculations:[dEtwo,dEthree,dEfour,dEfive],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+				
+			def exporterFour = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation Four"]),
+				date: new Date(),
+				typeCodeString:"District Hospital",
+				locations:[est,dataLocationOne],
+				calculations:[dEtwo,dEfour,dEfive],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+		}
+	}
+>>>>>>> Stashed changes
 
 		
 	static def createQuestionaire(){

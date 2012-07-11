@@ -56,7 +56,7 @@ public class DsrTarget extends AbstractReportTarget implements Exportable, Impor
 	private Data<StoredValue> data; //this can be either a calculation or a data element
 	private DsrTargetCategory category;
 	private String format;
-	private Boolean average = false; //this can either be an average (true) or sum (null or false)
+	private Boolean average; //this can either be an average (true) or sum (null or false)
 	
 	@Id
 	@GeneratedValue
