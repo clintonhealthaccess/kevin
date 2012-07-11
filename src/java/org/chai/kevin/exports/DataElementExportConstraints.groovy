@@ -25,16 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.planning
-
-import org.chai.kevin.data.Type.ValueType;
-
+package org.chai.kevin.exports
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-constraints ={
-	prefix(nullable: false, blank: false)
-	planningOutput (nullable: false)
+constraints = {
+	periods(nullable:false,minSize: 1)
+	dataElements(nullable:false, minSize: 1)
+	locations(nullable:false, minSize: 1)
+	typeCodeString(nullable:false,blank:false)
 }

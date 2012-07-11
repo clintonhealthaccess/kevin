@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -50,7 +51,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.Value;
 
 /**
@@ -186,6 +186,13 @@ public class Utils {
 		}
 			
 		return zipFile;
+	}
+	
+	public static <E> List<E> removeDuplicates(List<E> list){
+		Set<E> set = new LinkedHashSet<E>(list);
+		list.clear();
+		list.addAll(set);
+		return list;
 	}
 	
 	public static Class<?> isExportable(Class<?> clazz){

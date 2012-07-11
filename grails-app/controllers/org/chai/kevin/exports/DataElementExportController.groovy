@@ -35,6 +35,7 @@ import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.PeriodSorter
 import org.chai.kevin.data.Data;
+import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.exports.DataExport;
 import org.chai.kevin.exports.SurveyExportService;
@@ -50,31 +51,32 @@ import org.chai.kevin.value.DataValue;
  * @author Jean Kahigiso M.
  *
  */
-class DataExportController extends AbstractEntityController {
+class DataElementExportController extends AbstractEntityController {
 	
 	def dataLocationService;
 	def dataExportService;
+	def dataElementExportService;
 	def languageService;
 	def dataService;
 	
 	def getEntity(def id) {
-		return DataExport.get(id);
+		return DataElementExport.get(id);
 	}
 
 	def createEntity() {
-		return new DataExport();
+		return new DataElementExport();
 	}
 
 	def getTemplate() {
-		return "/entity/dataExport/createDataExport"
+		return "/entity/dataExport/createDataElementExport"
 	}
 	
 	def getLabel() {
-		return "dataexport.label"
+		return "dataelement.export.label"
 	}
 	
 	def bindParams(def entity) {
-		params.dataOld= entity.data;
+		params.dataOld= entity.dataElements;
 		params.locationsOld = entity.locations
 		entity.properties= params
 		
@@ -92,14 +94,14 @@ class DataExportController extends AbstractEntityController {
 		}
 		entity.periods = periods
 		
-		Set<Data> dataSet = new HashSet();
-		params.list('dataIds').each { id ->
+		Set<DataElement<DataValue>> dataElements = new HashSet();
+		params.list('dataElementIds').each { id ->
 			if (NumberUtils.isDigits(id)) {
-				def data = dataService.getData(Long.parseLong(id), Data.class)
-				if (data != null && !dataSet.contains(data)) dataSet.add(data);
+				def dataElement = dataService.getData(Long.parseLong(id), DataElement.class)
+				if (dataElement != null && !dataElements.contains(dataElement)) dataElements.add(dataElement);
 			}
 		}
-		entity.data = dataSet
+		entity.dataElements = dataElements
 		
 		Set<CalculationLocation> dataLocations = new HashSet();
 		params.list('locationIds').each { id ->
@@ -116,29 +118,29 @@ class DataExportController extends AbstractEntityController {
 	}
 	
 	def getEntityClass() {
-		return DataExport.class;
+		return DataElementExport.class;
 	}
 	
 	def getModel(def entity) {
-		List<Data> data=[]
+		List<DataElement> dataElements=[]
 		List<CalculationLocation> locations=[]
-		if(entity.data) data = new ArrayList(entity.data)
+		if(entity.dataElements) dataElements = new ArrayList(entity.dataElements)
 		if(entity.locations) locations= new ArrayList(entity.locations)
 		[
 			exporter: entity,
 			periods: Period.list([cache: true]),
 			types: DataLocationType.list([cache: true]),
 			locations: locations,
-			data: data
+			dataElements: dataElements
 		]
 	}
 	
 	def export = {
-		DataExport export = DataExport.get(params.int('export.id'));
+		DataElementExport export = DataElementExport.get(params.int('export.id'));
 		if(log.isDebugEnabled()) log.debug("export(export="+export+")")
 		
 		if (export) {
-			File csvFile = dataExportService.exportData(export);
+			File csvFile = dataElementExportService.exportData(export);
 			def zipFile = Utils.getZipFile(csvFile, export.descriptions[languageService.getCurrentLanguage()])
 			
 			if(zipFile.exists()){
@@ -154,22 +156,22 @@ class DataExportController extends AbstractEntityController {
 		
 	def list = {
 		adaptParamsForList()
-		List<DataExport> exports = DataExport.list(params)
-		this.getDataExportListModel(exports,dataExportService,list)
+		List<DataElementExport> exports = DataElementExport.list(params)
+		this.getDataExportListModel(exports,list)
 	}
 	
 	def search = {
 		adaptParamsForList()
-		List<DataExport> exports = dataExportService.searchDataExports(DataExport.class, params['q'],params);
-		getDataExportListModel(exports,dataExportService,search)
+		List<DataElementExport> exports = dataExportService.searchDataExports(DataElementExport.class, params['q'],params);
+		getDataExportListModel(exports,search)
 	}
 	
-	def getDataExportListModel(def exports, def dataExportService, def method){
-		if(log.isDebugEnabled()) log.debug("getExporterModel(exports="+exports+",dataExportService="+dataExportService+"method="+method+")")
+	def getDataExportListModel(def exports,def method){
+		if(log.isDebugEnabled()) log.debug("getExporterModel(exports="+exports+",method="+method+")")
 		render (view: '/entity/list', model:[
-			template:"dataExport/dataExportList",
+			template:"dataExport/dataElementExportList",
 			entities: exports,
-			entityCount: dataExportService.countDataExports(DataExport.class, params['q']),
+			entityCount: dataExportService.countDataExports(DataElementExport.class, params['q']),
 			code: getLabel(),
 			method: method,
 			q:params['q']
@@ -177,10 +179,10 @@ class DataExportController extends AbstractEntityController {
 	}
 	
 	def clone = {
-		DataExport exportExisting= DataExport.get(params.int('export.id'));
+		DataElementExport exportExisting= DataElementExport.get(params.int('export.id'));
 		if (log.isDebugEnabled()) log.debug("clone(exporter="+exportExisting+")")
 		if (exportExisting) {
-			def newExport= new DataExport()
+			def newExport= new DataElementExport()
 			for (String language : languageService.getAvailableLanguages()) {
 				newExport.getDescriptions().put(language,exportExisting.getDescriptions().get(language) + "(copy)")
 			}		
@@ -188,7 +190,7 @@ class DataExportController extends AbstractEntityController {
 			newExport.setTypeCodeString(exportExisting.getTypeCodeString());
 			newExport.getLocations().addAll(exportExisting.getLocations());
 			newExport.getPeriods().addAll(exportExisting.getPeriods());
-			newExport.getData().addAll(exportExisting.getData());
+			newExport.getDataElements().addAll(exportExisting.getDataElements());
 			newExport.save(failOnError: true);
 			
 			if(newExport) flash.message = message(code: 'exporter.cloned')

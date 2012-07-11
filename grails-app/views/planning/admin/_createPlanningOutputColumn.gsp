@@ -10,11 +10,10 @@
 	
 		<g:i18nInput name="names" bean="${planningOutputColumn}" value="${planningOutputColumn.names}" label="${message(code:'entity.name.label')}" field="names"/>
 
-		<g:selectFromList name="normalizedDataElement.id" label="${message(code:'planning.planningoutput.planningoutputcolumn.normalizeddataelement.label')}" bean="${planningOutputColumn}" field="normalizedDataElement" optionKey="id" multiple="false"
-			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'NormalizedDataElement'])}"
-			from="${dataElements}" value="${planningOutputColumn?.normalizedDataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
-	
-		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${planningCost}" field="order"/>
+		<g:selectFromList name="prefix" label="${message(code:'planning.planningoutput.planningoutputcolumn.prefix.label')}" bean="${planningOutputColumn}" field="prefix" multiple="false"
+			from="${valuePrefixes}" value="${planningOutputColumn.prefix}"/>
+		
+		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${planningOutputColumn}" field="order"/>
 	
 		<g:if test="${planningOutputColumn.id != null}">
 			<input type="hidden" name="id" value="${planningOutputColumn.id}"></input>

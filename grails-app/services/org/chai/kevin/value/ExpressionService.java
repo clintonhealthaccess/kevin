@@ -206,7 +206,11 @@ public class ExpressionService {
             	if (log.isErrorEnabled()) log.error("wrong format for dataelement: "+placeholder);
             }
 
-            dataInExpression.put(placeholder, data);
+            if (data != null && !clazz.isAssignableFrom(data.getClass())) {
+            	if (log.isWarnEnabled()) log.warn("the data class "+data.getClass()+" is not assignable from the specified class: "+clazz);
+            	data = null;
+            }
+        	dataInExpression.put(placeholder, data);
         }
     	
     	if (log.isDebugEnabled()) log.debug("getDataInExpression()="+dataInExpression);
