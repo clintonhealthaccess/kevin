@@ -133,10 +133,14 @@ environments {
 	development {
 		grails.resources.cdn.enabled = false
 		grails.resources.processing.enabled = false
+		grails.resources.mappers.yuicssminify.disable=true
+		grails.resources.mappers.yuijsminify.disable=true
 	}
 	test {
 		grails.resources.cdn.enabled = false
 		grails.resources.processing.enabled = false
+		grails.resources.mappers.yuicssminify.disable=true
+		grails.resources.mappers.yuijsminify.disable=true
 	}
 }
 

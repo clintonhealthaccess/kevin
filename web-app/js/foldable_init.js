@@ -5,7 +5,7 @@ $(document).ready(function(){
 	$('.js_foldable .js_foldable-toggle').click(function(event) {
 		$(this).parents('.js_foldable').first().children('.js_foldable-container').toggle();
 		$(this).parents('.js_foldable').first().next('.js_foldable-container').toggle();
-		$(this).parents('.js_foldable').first().children('.js_foldable-toggle').first().toggleClass('toggled');
+		$(this).parents('.js_foldable').first().children('td').first().toggleClass('toggled');
 		return false;
 	});
 	// we hide everything

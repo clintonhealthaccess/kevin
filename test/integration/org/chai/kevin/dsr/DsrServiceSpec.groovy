@@ -38,16 +38,46 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		then:
 		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target).getNumberValue() == 10d
 	}
-
-	def "get dsr with ratio calculation element"(){
+		
+	def "get dsr with average calculation element"(){
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(1))
 		def burera = Location.findByCode(BURERA)
-		def ratio = newSum("1", CODE(2))
+		def average = newSum("1", CODE(2))
+		def isAverage = true
 		def category = newDsrTargetCategory(CODE(1), 1)
-		def target = newDsrTarget(CODE(3), 1, ratio, program, category)
+		def target = newDsrTarget(CODE(3), 1, average, isAverage, program, category)
+		def types = new HashSet([
+			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
+			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
+		])
+		refreshCalculation()
+
+		when:
+		def dsrTable = dsrService.getDsrTable(burera, program, period, types, category)
+
+		then:
+		dsrTable != null
+		dsrTable.hasData() == true
+		dsrTable.locations.findAll{ it -> it instanceof DataLocation }.size() == 2
+		dsrTable.locations.findAll{ it -> it instanceof Location }.size() == 1
+		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target).getNumberValue() == 1
+		dsrTable.getReportValue(DataLocation.findByCode(KIVUYE), target).getNumberValue() == 1
+		dsrTable.getReportValue(Location.findByCode(BURERA), target).getNumberValue() == 1
+	}
+
+	def "get dsr with null average calculation element, default to sum calculation element"(){
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def program = newReportProgram(CODE(1))
+		def burera = Location.findByCode(BURERA)
+		def average = newSum("1", CODE(2))
+		def isAverage = null
+		def category = newDsrTargetCategory(CODE(1), 1)
+		def target = newDsrTarget(CODE(3), 1, average, isAverage, program, category)
 		def types = new HashSet([
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
@@ -66,7 +96,6 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		dsrTable.getReportValue(DataLocation.findByCode(KIVUYE), target).getNumberValue() == 1
 		dsrTable.getReportValue(Location.findByCode(BURERA), target).getNumberValue() == 2
 	}
-
 
 	def "get dsr with sum calculation element"(){
 		setup:

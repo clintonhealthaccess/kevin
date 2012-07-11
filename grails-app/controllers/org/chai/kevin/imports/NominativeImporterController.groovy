@@ -30,7 +30,7 @@ package org.chai.kevin.imports
 
 import java.io.InputStreamReader
 
-import org.chai.kevin.AbstractController
+import org.chai.kevin.AbstractFileUploadController
 import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.DataService;
@@ -41,15 +41,18 @@ import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValueService;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.multipart.commons.CommonsMultipartFile
+import org.springframework.web.multipart.MultipartFile;
+import org.chai.kevin.FileType
 
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-class NominativeImporterController extends AbstractController {
+class NominativeImporterController extends AbstractFileUploadController {
 	
 	LocationService locationService;
 	ValueService valueService;
@@ -74,10 +77,11 @@ class NominativeImporterController extends AbstractController {
 				sessionFactory, transactionManager,
 				errorManager, cmd.dataElement, cmd.period
 			);
-			if (cmd.file.getContentType().equals(FILE_TYPE_ZIP)) importer.importZipFiles(cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
-			if (cmd.file.getContentType().equals(FILE_TYPE_CSV)) importer.importCsvFile(cmd.file.getName(), cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
-			cmd.file.getInputStream().close();
+		
+			importFile(importer, cmd.file, cmd.encoding, cmd.delimiter, errorManager)
 			
+			cmd.file.getInputStream().close();
+
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 		}else{
 			this.getModel(cmd,errorManager,IMPORT_FORM);
@@ -102,7 +106,7 @@ class NominativeImporterController extends AbstractController {
 class NominativeImporterCommand {
 
 	Period period;
-	CommonsMultipartFile file;
+	MultipartFile file;
 	String encoding;
 	Character delimiter;
 	RawDataElement dataElement;

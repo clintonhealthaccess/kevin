@@ -10,13 +10,13 @@
     padding: 7px 15px
     +linear-gradient(color-stops($filler + #060606, $filler))
     +text-shadow(#fff, 0, 1px, 0)
-  
-    .errors
+
+    .error-list
       display: none
-    
+
   &.row-errors
     border-color: red
-  
+
 .adv-form-section
   +pie-clearfix
   &.last
@@ -310,7 +310,12 @@ select
 
   input, textarea
     width: 280px
-    
+
+  input.checkbox
+    display: inline
+    width: 13px
+    vertical-align: middle    
+        
   input.radio
     width: auto
   
@@ -402,7 +407,7 @@ ul.filtered
   margin-bottom: 4px
   
 .element-enum
-  height: 30px
+  height: 32px
   margin-bottom: -10px
 
   .option-description-container

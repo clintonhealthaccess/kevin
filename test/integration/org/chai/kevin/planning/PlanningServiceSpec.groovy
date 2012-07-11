@@ -578,9 +578,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_LIST([Value.VALUE_MAP(["key0": Value.VALUE_STRING("123"), "key1": Value.VALUE_NUMBER(1)])]))
 		def planningOutput = newPlanningOutput(planning, dataElement, "[_].key0")
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
-		newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, Value.VALUE_LIST([Value.VALUE_NUMBER(1)]))
-		def planningColumn = newPlanningOutputColumn(planningOutput, normalizedDataElement)
+		def planningColumn = newPlanningOutputColumn(planningOutput, '[_].key1')
 		
 		when:
 		def outputTable = planningService.getPlanningOutputTable(planningOutput, DataLocation.findByCode(BUTARO))

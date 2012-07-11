@@ -21,7 +21,7 @@
 					<g:each in="${errorManager.errors}" var="error" status="i">
 						<g:if test="${j!=error.lineNumber}">
 							<g:set var="j" value="${error.lineNumber}"/>
-							<li><g:message code="import.result.filename" />: ${error.fileName} <g:message code="import.result.line" />: ${error.lineNumber}<li>
+							<li><g:message code="import.result.filename" />: ${error.fileName} <g:message code="import.result.line" />:${error.lineNumber}<li>
 						</g:if> 
 						<li>
 							<ul class="import-error-list">

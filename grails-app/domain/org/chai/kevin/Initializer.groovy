@@ -1,83 +1,60 @@
 package org.chai.kevin
 
-/*
- * Copyright (c) 2011, Clinton Health Access Initiative.
- *
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the <organization> nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.chai.kevin.cost.CostRampUp;
-import org.chai.kevin.cost.CostRampUpYear;
-import org.chai.kevin.cost.CostTarget;
-import org.chai.kevin.cost.CostTarget.CostType;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.maps.MapsTarget;
-import org.chai.kevin.util.JSONUtils;
-import org.chai.kevin.value.RawDataElementValue;
-import org.chai.kevin.value.Value;
+import org.apache.shiro.crypto.hash.Sha256Hash
+import org.chai.kevin.cost.CostRampUp
+import org.chai.kevin.cost.CostRampUpYear
+import org.chai.kevin.cost.CostTarget
+import org.chai.kevin.cost.CostTarget.CostType
 import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardTarget
-import org.chai.kevin.data.ExpressionMap;
-import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Enum;
-import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.data.Enum
+import org.chai.kevin.data.EnumOption
+import org.chai.kevin.data.ExpressionMap
+import org.chai.kevin.data.NormalizedDataElement
+import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Sum
-import org.chai.kevin.data.Type;
-import org.chai.kevin.planning.Planning;
-import org.chai.kevin.planning.PlanningCost;
-import org.chai.kevin.planning.PlanningCost.PlanningCostType;
-import org.chai.kevin.planning.PlanningOutput;
-import org.chai.kevin.planning.PlanningOutputColumn;
-import org.chai.kevin.planning.PlanningSkipRule;
-import org.chai.kevin.planning.PlanningType;
-import org.chai.kevin.reports.ReportProgram
-import org.chai.kevin.security.User;
-import org.chai.kevin.security.Role;
-import org.chai.kevin.security.UserType;
-import org.chai.kevin.survey.*;
-import org.chai.kevin.dsr.DsrTarget;
-import org.chai.kevin.dsr.DsrTargetCategory;
-import org.chai.kevin.exports.DataExport;
+import org.chai.kevin.data.Type
+import org.chai.kevin.dsr.DsrTarget
+import org.chai.kevin.dsr.DsrTargetCategory
+import org.chai.kevin.exports.CalculationExport
+import org.chai.kevin.exports.DataElementExport
 import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
-import org.chai.kevin.form.FormElement;
-import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.form.FormSkipRule;
-import org.chai.kevin.form.FormValidationRule;
+import org.chai.kevin.form.FormElement
+import org.chai.kevin.form.FormEnteredValue
+import org.chai.kevin.form.FormValidationRule
+import org.chai.kevin.location.DataLocation
+import org.chai.kevin.location.DataLocationType
+import org.chai.kevin.location.Location
+import org.chai.kevin.location.LocationLevel
+import org.chai.kevin.maps.MapsTarget
+import org.chai.kevin.planning.Planning
+import org.chai.kevin.planning.PlanningCost
+import org.chai.kevin.planning.PlanningOutput
+import org.chai.kevin.planning.PlanningOutputColumn
+import org.chai.kevin.planning.PlanningSkipRule
+import org.chai.kevin.planning.PlanningType
+import org.chai.kevin.planning.PlanningCost.PlanningCostType
+import org.chai.kevin.reports.ReportProgram
+import org.chai.kevin.security.Role
+import org.chai.kevin.security.User
+import org.chai.kevin.security.UserType
+import org.chai.kevin.survey.Survey
+import org.chai.kevin.survey.SurveyCheckboxOption
+import org.chai.kevin.survey.SurveyCheckboxQuestion
+import org.chai.kevin.survey.SurveyElement
+import org.chai.kevin.survey.SurveyProgram
+import org.chai.kevin.survey.SurveySection
+import org.chai.kevin.survey.SurveySimpleQuestion
+import org.chai.kevin.survey.SurveySkipRule
+import org.chai.kevin.survey.SurveyTableColumn
+import org.chai.kevin.survey.SurveyTableQuestion
+import org.chai.kevin.survey.SurveyTableRow
+import org.chai.kevin.util.JSONUtils
+import org.chai.kevin.value.RawDataElementValue
+import org.chai.kevin.value.Value
 
-class Initializer {
+public class Initializer {
 
 	static Date mar01 = getDate( 2005, 3, 1 );
 	static Date mar31 = getDate( 2005, 3, 31 );
@@ -896,8 +873,8 @@ class Initializer {
 					code: "Facility Water and Power Sources"
 					)
 
-			def dsrRatio = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Ratio constant 10", timestamp:new Date())
-			dsrRatio.save(failOnError: true)
+			def dsrAvg = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Average constant 10", timestamp:new Date())
+			dsrAvg.save(failOnError: true)
 			
 			def dsrSum = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Sum constant 10", timestamp:new Date());
 			dsrSum.save(failOnError: true);			
@@ -907,6 +884,7 @@ class Initializer {
 					names:j(["en":"A0"]), descriptions:j(["en":"A0"]),
 					program: hmr,
 					data: RawDataElement.findByCode("CODE1"),
+					average: null,
 					order: 1,
 					code: "A0",
 					category: nursesCat,
@@ -933,7 +911,8 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"A3"]), descriptions:j(["en":"A3"]),
 					program: hmr,
-					data: dsrRatio,
+					data: dsrAvg,
+					average: true,
 					order: 4,
 					code: "A3",
 					category: nursesCat,
@@ -1280,7 +1259,7 @@ class Initializer {
 		
 		def planningOutputColumn = new PlanningOutputColumn(
 			planningOutput: planningOutput1,
-			normalizedDataElement: planningElement2,
+			prefix: '[_].basic.instances',
 			names: j(["en": "Test"])
 		)
 		planningOutputColumn.save(failOnError: true)
@@ -1304,18 +1283,21 @@ class Initializer {
 	}
 	
 	
-	static def createExporter(){
-		if(!DataExport.count()){
+	static def createDataElementExport(){
+		if(!DataElementExport.count()){
 			def dh = DataLocationType.findByCode("District Hospital")
 			def hc = DataLocationType.findByCode("Health Center")
 			def periodOne = Period.list()[0];
 			def periodTwo = Period.list()[1];
-			def dEtwo = RawDataElement.findByCode("CODE2");
+			
+			def dEtwo = NormalizedDataElement.findByCode("SUMPLANNING2");
 			def dEthree = RawDataElement.findByCode("CODE3");
 			def dEfour = RawDataElement.findByCode("CODE4");
 			def dEfive = RawDataElement.findByCode("CODE11");
 			def dEsix = RawDataElement.findByCode("CODE12");
 			def dMap = RawDataElement.findByCode("LISTMAP1");
+			def nData = NormalizedDataElement.findByCode("Constant 10");
+			
 			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
 			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
 			def burera = Location.findByCode("Burera");
@@ -1323,39 +1305,39 @@ class Initializer {
 			def south = Location.findByCode("South");
 			
 			
-			def exporterThree = new DataExport(
+			def exporterThree = new DataElementExport(
 				descriptions: j(["en":"Exporter Raw Data Element Three"]),
 				date: new Date(),
 				typeCodeString:"Health Center",
 				locations:[south,dataLocationTwo],
-				data:[dMap,dEtwo,dEthree,dEfive,dEsix],
+				dataElements:[dMap,dEtwo,dEthree,nData,dEfive,dEsix],
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 			
-			def exporterTwo = new DataExport(
+			def exporterTwo = new DataElementExport(
 				descriptions: j(["en":"Exporter Raw Data Element Two"]),
 				date: new Date(),
 				typeCodeString:"Health Center",
 				locations:[south,burera],
-				data:[dEtwo,dEthree,dMap],
+				dataElements:[dEtwo,dEthree,dMap],
 				periods: [periodOne]
 				).save(failOnError: true)
 				
-			def exporterOne = new DataExport(
+			def exporterOne = new DataElementExport(
 				descriptions: j(["en":"Exporter Raw Data Element One"]),
 				date: new Date(),
 				locations:[est,burera,south],
 				typeCodeString:"District Hospital,Health Center",
-				data:[dMap,dEtwo,dEthree,dEfour,dEfive,dEsix],
+				dataElements:[dMap,dEtwo,dEthree,dEfour,dEfive,dEsix],
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 				
-			def exporterFour = new DataExport(
+			def exporterFour = new DataElementExport(
 				descriptions: j(["en":"Exporter Raw Data Element Four"]),
 				date: new Date(),
 				typeCodeString:"District Hospital",
 				locations:[est,dataLocationOne],
-				data:[dMap,dEtwo,dEfour,dEfive,dEsix],
+				dataElements:[dMap,dEtwo,dEfour,dEfive,dEsix],
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 			
@@ -1363,7 +1345,63 @@ class Initializer {
 				
 		}
 	}
-
+	
+	static def createCalculationExport(){
+		if(!CalculationExport.count()){
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
+			def periodOne = Period.list()[0];
+			def periodTwo = Period.list()[1];
+			
+			def dEtwo = Sum.findByCode("Ratio constant 20");
+			def dEthree = Sum.findByCode("Ratio constant 10");
+			def dEfour = Sum.findByCode("Ratio 1");
+			def dEfive = Sum.findByCode("Maps sum 1");
+		
+			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
+			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
+			def burera = Location.findByCode("Burera");
+			def est = Location.findByCode("East");
+			def south = Location.findByCode("South");
+			
+			
+			def exporterThree = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation Three"]),
+				date: new Date(),
+				typeCodeString:"Health Center",
+				locations:[south,dataLocationTwo],
+				calculations:[dEtwo,dEthree,dEfive],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+			
+			def exporterTwo = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation Two"]),
+				date: new Date(),
+				typeCodeString:"Health Center",
+				locations:[south,burera],
+				calculations:[dEtwo,dEthree],
+				periods: [periodOne]
+				).save(failOnError: true)
+				
+			def exporterOne = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation One"]),
+				date: new Date(),
+				locations:[est,burera,south],
+				typeCodeString:"District Hospital,Health Center",
+				calculations:[dEtwo,dEthree,dEfour,dEfive],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+				
+			def exporterFour = new CalculationExport(
+				descriptions: j(["en":"Exporter Calculation Four"]),
+				date: new Date(),
+				typeCodeString:"District Hospital",
+				locations:[est,dataLocationOne],
+				calculations:[dEtwo,dEfour,dEfive],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+		}
+	}
 		
 	static def createQuestionaire(){
 		if(!Survey.count()){
