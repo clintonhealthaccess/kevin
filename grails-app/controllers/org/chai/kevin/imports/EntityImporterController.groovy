@@ -26,9 +26,7 @@ class EntityImporterController extends AbstractFileUploadController {
 
 			EntityImporter importer = new EntityImporter(sessionFactory, errorManager, clazz);
 			
-			//Error manager is private in the importer so errors displayed from here
-			if(importFile(importer, cmd.file, cmd.encoding, cmd.delimiter)){}
-			else errorManager.getErrors().add(new ImporterError("\" " + cmd.file.getOriginalFilename() + " \"",1,"File Type Error","import.error.fileType.NotMatching"));
+			importFile(importer, cmd.file, cmd.encoding, cmd.delimiter, errorManager)
 			
 			cmd.file.getInputStream().close();
 			
