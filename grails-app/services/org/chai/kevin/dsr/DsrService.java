@@ -103,7 +103,7 @@ public class DsrService {
 		if(calculationValue != null){
 			if(target.getAverage() != null && target.getAverage()) value = calculationValue.getAverage();
 			else value = calculationValue.getValue();
-		}		
+		}
 		return value;
 	}
 	
