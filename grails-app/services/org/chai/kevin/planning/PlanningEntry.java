@@ -41,19 +41,6 @@ public class PlanningEntry {
 		this.enums = enums;
 	}
 
-//	public String getUuid() {
-//		return getValue().getAttribute(UUID);
-//	}
-//	
-//	protected void setUuid(String uuid) {
-//		if (getValue().getAttribute(UUID) != null) throw new IllegalStateException("uuid already set");
-//		setAttribute(UUID, uuid);
-//	}
-	
-	private void setAttribute(String attribute, String value) {
-		validatable.getType().setAttribute(validatable.getValue(), PlanningUtils.getPrefix("[_]", lineNumber), attribute, value);
-	}
-	
 	public Set<String> getInvalidSections() {
 		Set<String> result = new HashSet<String>();
 		for (String section : type.getSections()) {
@@ -94,10 +81,6 @@ public class PlanningEntry {
 		return getValue(type.getFixedHeader());
 	}
 	
-	private Value getValue() {
-		return getValue("[_]");
-	}
-
 	public void mergeValues(Map<String, Object> params) {
 		params.put("elements["+type.getFormElement().getId()+"].value", getLineNumbers(null));
 		getValidatable().mergeValue(params, "elements["+type.getFormElement().getId()+"].value", new HashSet<String>());

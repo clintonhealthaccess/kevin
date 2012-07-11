@@ -13,7 +13,6 @@ import javax.persistence.Table;
 
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
-import org.chai.kevin.data.NormalizedDataElement;
 
 @Entity(name="PlanningOutputColumn")
 @Table(name="dhsst_planning_output_column")
@@ -23,7 +22,7 @@ public class PlanningOutputColumn extends Orderable<Integer> {
 	private Long id;
 	
 	private PlanningOutput planningOutput;
-	private NormalizedDataElement normalizedDataElement;
+	private String prefix;
 	private Translation names = new Translation();
 	private Integer order;
 	
@@ -55,14 +54,14 @@ public class PlanningOutputColumn extends Orderable<Integer> {
 	public void setPlanningOutput(PlanningOutput planningOutput) {
 		this.planningOutput = planningOutput;
 	}
-	
-	@ManyToOne(targetEntity=NormalizedDataElement.class)
-	public NormalizedDataElement getNormalizedDataElement() {
-		return normalizedDataElement;
+
+	@Basic
+	public String getPrefix() {
+		return prefix;
 	}
 	
-	public void setNormalizedDataElement(NormalizedDataElement normalizedDataElement) {
-		this.normalizedDataElement = normalizedDataElement;
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
 	}
 	
 	@Embedded
