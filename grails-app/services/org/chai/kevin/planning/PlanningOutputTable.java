@@ -18,7 +18,11 @@ public class PlanningOutputTable {
 	}
 
 	public Type getHeaderType() {
-		return planningOutput.getDataElement().getType().getType(planningOutput.getFixedHeader());
+		try {
+			return planningOutput.getDataElement().getType().getType(planningOutput.getFixedHeader());
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 	
 	public List<Value> getRows() {
