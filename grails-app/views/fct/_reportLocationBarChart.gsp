@@ -12,9 +12,10 @@
 				<g:each in="${fctTable.topLevelLocations}" var="location">
 						<td>
 							<g:if test="${fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
-								<div class="bars-vertical">
-									<g:each in="${fctTable.targetOptions.reverse()}" var="targetOption" status="i">									
-										<g:if test="${!fctTable.getReportValue(location, targetOption).getAverage().isNull()}">
+								<g:set var="totalReportAverage" value="${fctTable.getTotalReportAverage(location)}" />
+								<div class="bars-vertical" data-total-report-average="${totalReportAverage}" style="margin-bottom:${totalReportAverage < 1 ? (totalReportAverage-1)*200 : 0}px;">								
+									<g:each in="${fctTable.targetOptions.reverse()}" var="targetOption" status="i">
+										<g:if test="${!fctTable.getReportValue(location, targetOption).getAverage().isNull()}">																						
 											<g:set var="reportAverage" value="${g.reportValue(value: fctTable.getReportValue(location, targetOption).getAverage(), type: targetOption.sum.type, format: '#%')}"/>
 											<g:set var="reportValue" value="${g.reportValue(value: fctTable.getReportValue(location, targetOption).getValue(), type: targetOption.sum.type)}"/>
 											<div class="js_bar_vertical bar-vertical tooltip bar${fctTable.targetOptions.size()-i}"

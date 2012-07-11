@@ -1,12 +1,10 @@
 package org.chai.kevin.fct
 
-import org.chai.kevin.Period;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.value.SumValue;
+import src.java.org.chai.kevin.data.Type
+import src.java.org.chai.kevin.location.DataLocation
+import src.java.org.chai.kevin.location.DataLocationType
+import src.java.org.chai.kevin.location.Location
+import src.java.org.chai.kevin.location.LocationLevel
 
 class FctServiceSpec extends FctIntegrationTests { 
 
@@ -70,7 +68,7 @@ class FctServiceSpec extends FctIntegrationTests {
 				
 	}
 	
-	//TODO fix tests
+//	TODO fix tests
 //	def "get fct with sorted target options"(){
 //		setup:
 //		setupLocationTree()
@@ -165,6 +163,37 @@ class FctServiceSpec extends FctIntegrationTests {
 		
 		then:
 		fctTable.topLevelLocations.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
+	}
+	
+	def "get fct total report average"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def program = newReportProgram(CODE(1))
+		def location = Location.findByCode(RWANDA)
+		def lessThan100 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
+		def sum = newSum("\$"+lessThan100.id, CODE(3))
+		def target = newFctTarget(CODE(4), [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def targetOption = newFctTargetOption(CODE(5), 1, target, sum)
+		def level = locationService.getLevelAfter(location.getLevel(), new HashSet([LocationLevel.findByCode(SECTOR)]))
+		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		def fctTable = null
+		refresh()
+		
+		when:
+		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
+		
+		then:
+		fctTable.getTotalReportAverage() == 1d
+		
+		when:
+		when:
+		def dummy = newDataLocation("dummy", location, level)
+		refresh()
+		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
+		
+		then:
+		fctTable.getTotalReportAverage() == 1d
 	}
 
 	def "get fct skip levels"(){
