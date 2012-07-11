@@ -32,6 +32,8 @@ package org.chai.kevin
 
 import org.chai.kevin.imports.FileImporter
 import org.chai.kevin.imports.GeneralDataImporter
+import org.chai.kevin.imports.ImporterErrorManager
+import org.chai.kevin.imports.ImporterError
 import org.springframework.web.multipart.MultipartFile;
 
 enum FileType{
@@ -49,16 +51,16 @@ public abstract class AbstractFileUploadController extends AbstractController {
 		return FileType.NONE;
 	}
 	
-	public boolean importFile(FileImporter importer, MultipartFile file, String encoding, Character delimiter){
+	public void importFile(FileImporter importer, MultipartFile file, String encoding, Character delimiter, ImporterErrorManager errorManager){
 		
 		if (getFileType(file) == FileType.ZIP){
 			importer.importZipFiles(file.getInputStream(), encoding, delimiter);
-			return true;
 		}
 		else if (getFileType(file) == FileType.CSV){
 			importer.importCsvFile(file.getName(), file.getInputStream(), encoding, delimiter);
-			return true;
 		}
-		return false;
+		else{
+			errorManager.getErrors().add(new ImporterError("\" " + file.getOriginalFilename() + " \"",1,"","import.error.message.file.type.not.supported"));
+		}
 	}
 }
