@@ -24,7 +24,6 @@ class FormEnteredValueSpec extends UnitSpec {
 		
 		value1.equals(value11)
 		value1.hashCode() == value11.hashCode()
-		
 	}
 	
 }

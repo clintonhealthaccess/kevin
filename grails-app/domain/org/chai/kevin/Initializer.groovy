@@ -1259,7 +1259,7 @@ public class Initializer {
 		
 		def planningOutputColumn = new PlanningOutputColumn(
 			planningOutput: planningOutput1,
-			normalizedDataElement: planningElement2,
+			prefix: '[_].basic.instances',
 			names: j(["en": "Test"])
 		)
 		planningOutputColumn.save(failOnError: true)

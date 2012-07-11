@@ -197,8 +197,8 @@ public class GeneralDataImporter extends DataImporter{
 		if (log.isInfoEnabled()) log.info("importData( fileName "+fileName+" reader "+csvMapReader+")");
 		manager.setCurrentFileName(fileName);
 		final String[] headers = csvMapReader.getCSVHeader(true);
-		Map<String,Type> types = new HashMap<String,Type>();	
-		
+		Map<String,Type> types = new HashMap<String,Type>();
+
 		final ImportSanitizer sanitizer = new ImportSanitizer(fileName,manager.getErrors(), types, dataService);
 		final Map<String,Integer> positions = new HashMap<String,Integer>();
 		final Set<DuplicateHelper> duplicateHelpers = new HashSet<DuplicateHelper>();

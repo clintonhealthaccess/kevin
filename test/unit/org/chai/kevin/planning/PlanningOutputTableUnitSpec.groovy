@@ -17,7 +17,7 @@ class PlanningOutputTableUnitSpec extends UnitSpec  {
 		def type = Type.TYPE_LIST(Type.TYPE_MAP(["header": Type.TYPE_STRING()]))
 		def dataElement = new RawDataElement(type: type)
 		def output = new PlanningOutput(dataElement: dataElement, fixedHeader: "[_].header")
-		def outputTable = new PlanningOutputTable(output, null, [:])
+		def outputTable = new PlanningOutputTable(output, null)
 		
 		then:
 		outputTable.headerType.equals(Type.TYPE_STRING())
@@ -29,7 +29,7 @@ class PlanningOutputTableUnitSpec extends UnitSpec  {
 		def type = Type.TYPE_LIST(Type.TYPE_MAP(["header": Type.TYPE_STRING()]))
 		def dataElement = new RawDataElement(type: type)
 		def output = new PlanningOutput(dataElement: dataElement, fixedHeader: "[_].header")
-		def outputTable = new PlanningOutputTable(output, null, [:])
+		def outputTable = new PlanningOutputTable(output, null)
 		
 		then:
 		outputTable.rows == []
@@ -42,7 +42,7 @@ class PlanningOutputTableUnitSpec extends UnitSpec  {
 		def dataElement = new RawDataElement(type: type)
 		def output = new PlanningOutput(dataElement: dataElement, fixedHeader: "[_].header")
 		def value = new RawDataElementValue(value: Value.NULL_INSTANCE())
-		def outputTable = new PlanningOutputTable(output, value, [:])
+		def outputTable = new PlanningOutputTable(output, value)
 		
 		then:
 		outputTable.rows == []
@@ -56,7 +56,7 @@ class PlanningOutputTableUnitSpec extends UnitSpec  {
 		def output = new PlanningOutput(dataElement: dataElement, fixedHeader: "[_].header")
 		def value = new RawDataElementValue(value: Value.VALUE_LIST(
 			[Value.VALUE_MAP(["header": Value.VALUE_STRING("123")]), Value.VALUE_MAP("header": Value.VALUE_STRING("456"))]))
-		def outputTable = new PlanningOutputTable(output, value, [:])
+		def outputTable = new PlanningOutputTable(output, value)
 		
 		then:
 		outputTable.rows.equals([Value.VALUE_STRING("123"), Value.VALUE_STRING("456")])
@@ -66,8 +66,9 @@ class PlanningOutputTableUnitSpec extends UnitSpec  {
 		
 		when:
 		def dataElement = new NormalizedDataElement(type: Type.TYPE_LIST(Type.TYPE_NUMBER()))
-		def outputColumn = new PlanningOutputColumn(normalizedDataElement: dataElement)
-		def outputTable = new PlanningOutputTable(null, null, [(outputColumn): null])
+		def output = new PlanningOutput(dataElement: dataElement, fixedHeader: "[_]")
+		def outputColumn = new PlanningOutputColumn(prefix: '[_]')
+		def outputTable = new PlanningOutputTable(output, null)
 		
 		then:
 		outputTable.getValueType(outputColumn).equals(Type.TYPE_NUMBER())
@@ -77,21 +78,23 @@ class PlanningOutputTableUnitSpec extends UnitSpec  {
 		
 		when:
 		def dataElement = new NormalizedDataElement(type: Type.TYPE_NUMBER())
-		def outputColumn = new PlanningOutputColumn(normalizedDataElement: dataElement)
-		def outputTable = new PlanningOutputTable(null, null, [(outputColumn): null])
+		def output = new PlanningOutput(dataElement: dataElement, fixedHeader: "[_]")
+		def outputColumn = new PlanningOutputColumn(prefix: '[_]')
+		def outputTable = new PlanningOutputTable(output, null)
 		outputTable.getValueType(outputColumn).equals(Type.TYPE_NUMBER())
 		
 		then:
-		thrown IllegalStateException
+		thrown IllegalArgumentException
 	}
 	
 	def "get column value works"() {
 		
 		when:
-		def dataElement = new NormalizedDataElement(type: Type.TYPE_NUMBER())
-		def outputColumn = new PlanningOutputColumn(normalizedDataElement: dataElement)
+		def dataElement = new NormalizedDataElement(type: Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		def output = new PlanningOutput(dataElement: dataElement, fixedHeader: "[_]")
+		def outputColumn = new PlanningOutputColumn(prefix: '[_]')
 		def value = new NormalizedDataElementValue(value: Value.VALUE_LIST([Value.VALUE_NUMBER(1), Value.VALUE_NUMBER(2)]))
-		def outputTable = new PlanningOutputTable(null, null, [(outputColumn): value])
+		def outputTable = new PlanningOutputTable(output, value)
 		
 		then:
 		outputTable.getValue(0, outputColumn).equals(Value.VALUE_NUMBER(1))
@@ -101,9 +104,8 @@ class PlanningOutputTableUnitSpec extends UnitSpec  {
 	def "get column value when normalized data element value is null"() {
 		
 		when:
-		def dataElement = new NormalizedDataElement(type: Type.TYPE_NUMBER())
-		def outputColumn = new PlanningOutputColumn(normalizedDataElement: dataElement)
-		def outputTable = new PlanningOutputTable(null, null, [(outputColumn): null])
+		def outputColumn = new PlanningOutputColumn(prefix: '[_]')
+		def outputTable = new PlanningOutputTable(null, null)
 		
 		then:
 		outputTable.getValue(0, outputColumn) == null
@@ -113,10 +115,9 @@ class PlanningOutputTableUnitSpec extends UnitSpec  {
 	def "get column value when normalized data element value value is null"() {
 		
 		when:
-		def dataElement = new NormalizedDataElement(type: Type.TYPE_NUMBER())
-		def outputColumn = new PlanningOutputColumn(normalizedDataElement: dataElement)
+		def outputColumn = new PlanningOutputColumn(prefix: '')
 		def value = new NormalizedDataElementValue(value: Value.NULL_INSTANCE())
-		def outputTable = new PlanningOutputTable(null, null, [(outputColumn): value])
+		def outputTable = new PlanningOutputTable(null, value)
 		
 		then:
 		outputTable.getValue(0, outputColumn) == null
