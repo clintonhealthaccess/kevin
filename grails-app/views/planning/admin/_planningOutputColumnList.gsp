@@ -3,7 +3,7 @@
 		<tr>
 			<th/>
 			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="planning.planningoutput.planningoutputcolumn.normalizeddataelement.label"/></th>
+			<th><g:message code="planning.planningoutput.planningoutputcolumn.prefix.label"/></th>
 			<th><g:message code="entity.order.label"/></th>
 		</tr>
 	</thead>
@@ -25,7 +25,7 @@
 					</ul>
 				</td>
 				<td><g:i18n field="${planningOutputColumn.names}"/></td>
-				<td><g:i18n field="${planningOutputColumn.normalizedDataElement.names}"/></td>
+				<td>${planningOutputColumn.prefix}</td>
 				<td>${planningOutputColumn.order}</td>
 			</tr>
 		</g:each>

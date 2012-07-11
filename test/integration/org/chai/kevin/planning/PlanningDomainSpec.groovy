@@ -227,7 +227,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
 		
 		when:
-		new PlanningOutputColumn(planningOutput: planningOutput, normalizedDataElement: normalizedDataElement).save(failOnError:true)
+		new PlanningOutputColumn(planningOutput: planningOutput, prefix: '[_]').save(failOnError:true)
 		
 		then:
 		PlanningOutputColumn.count() == 1
@@ -239,26 +239,12 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		thrown ValidationException
 		
 		when:
-		new PlanningOutputColumn(normalizedDataElement: normalizedDataElement).save(failOnError: true)
+		new PlanningOutputColumn(prefix: '[_]').save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 	}
 	
-	def "planning column output - data element must be a list"() {
-		setup:
-		def period = newPeriod()
-		def planning = newPlanning(period, [])
-		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
-		def planningOutput = newPlanningOutput(planning, dataElement, planning)
-		
-		when:
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
-		new PlanningOutputColumn(planningOutput: planningOutput, normalizedDataElement: normalizedDataElement).save(failOnError:true)
-		
-		then:
-		thrown ValidationException
-	}
 	
 	def "planning column output order"() {
 		setup:
@@ -266,11 +252,10 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def planning = newPlanning(period, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		def planningOutput = newPlanningOutput(planning, dataElement, planning)
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
 		
 		when:
-		def column1 = newPlanningOutputColumn(planningOutput, normalizedDataElement, 2).save(failOnError:true)
-		def column2 = newPlanningOutputColumn(planningOutput, normalizedDataElement, 1).save(failOnError:true)
+		def column1 = newPlanningOutputColumn(planningOutput, '[_]', 2).save(failOnError:true)
+		def column2 = newPlanningOutputColumn(planningOutput, '[_]', 1).save(failOnError:true)
 		
 		then:
 		planningOutput.columns.equals([column2, column1])
