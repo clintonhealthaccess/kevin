@@ -28,12 +28,7 @@
 package org.chai.kevin.imports
 
 import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.value.RawDataElementValue;
-import org.chai.kevin.value.Value;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.mock.web.MockMultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
 
 /**
  * @author Jean Kahigiso M.
@@ -41,38 +36,68 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  */
 class GeneralImporterControllerSpec extends IntegrationTests {
 	
+	/*
+	 * Could not work because of transaction errors
+	 */
+	/*
 	def generalImporterController;
 	//TODO find a way to test a controller using  CommonsMultipartFile
-	/*
+	
 	def "get uploader"(){
 		
 		setup:
-		setupLocationTree()
-		def period = newPeriod()
-		def type = Type.TYPE_STRING()
-		def dataElement = newRawDataElement(CODE(1), type)
-		def importerErrorManager = new ImporterErrorManager();
-				
-		def csvCodeString =
-		"code,raw_data_element,data_value\n"+
-		BUTARO+","+dataElement.code+",overrideStringOne\n"+
-		BUTARO+","+dataElement.code+",overrideStringTwo\n"
-		
-		MockMultipartFile file = new MockMultipartFile("data.csv",csvCodeString.getBytes());
-		def cmd = new GeneralImporterCommand();
-		cmd.period = period;
-		cmd.file = file;
+			setupLocationTree()
+			def period = newPeriod()
+			def type = Type.TYPE_STRING()
+			def dataElement = newRawDataElement(CODE(1), type)
+			def importerErrorManager = new ImporterErrorManager();
+			
+			final String ENCODING = "UTF-8";
+			final char DELIMITER = ',';
+			
+			File tempFileZip = new File("test/integration/org/chai/kevin/imports/nominativeDataUgin.zip");
+			File tempFileCsv = new File("test/integration/org/chai/kevin/imports/nominativeDataUgin.csv");
+			File tempFilePdf = new File("test/integration/org/chai/kevin/imports/Git1.pdf");
+			
+			GrailsMockMultipartFile grailsMockMultipartFileZip = new GrailsMockMultipartFile(
+				"nominativeTestFile",
+				"nominativeTestFile.csv.zip",
+				"",
+				 tempFileZip.getBytes())
+			
+			GrailsMockMultipartFile grailsMockMultipartFileCsv = new GrailsMockMultipartFile(
+				"nominativeDataUgin",
+				"nominativeDataUgin.csv",
+				"",
+				 tempFileCsv.getBytes())
+			
+			GrailsMockMultipartFile grailsMockMultipartFilePdf = new GrailsMockMultipartFile(
+				"Git1",
+				"Git1.pdf",
+				"",
+				 tempFilePdf.getBytes())
+			
+			def cmdZip = new GeneralImporterCommand();
+			def cmdCsv = new GeneralImporterCommand();
+			def cmdPdf = new GeneralImporterCommand();
+			
+			
+			cmdZip.file = grailsMockMultipartFileZip;
+			cmdZip.encoding = ENCODING;
+			cmdZip.delimiter = DELIMITER;
+			
+			cmdCsv.file = grailsMockMultipartFileCsv;
+			cmdCsv.encoding = ENCODING;
+			cmdCsv.delimiter = DELIMITER;
+			
+			cmdPdf.file = grailsMockMultipartFilePdf;
+			cmdPdf.encoding = ENCODING;
+			cmdPdf.delimiter = DELIMITER;
 		when:
-		generalImporterController = new GeneralImporterController()
-		generalImporterController.uploader(cmd)
+			generalImporterController = new GeneralImporterController()
+			generalImporterController.uploader(cmdZip)
 		then:
-		generalImporterController.modelAndView.model.errorManager.errors.size()==1		
+			generalImporterController.modelAndView.model.errorManager.errors.size()==1		
 
-	}
-	*/
-	
-	// TODO
-	//	def "shows error page after succesful import"(){
-	//
-	//	}
+	}*/
 }

@@ -1,11 +1,11 @@
-package org.chai.kevin.imports
+package org.chai.kevin.imports;
 
-import org.chai.kevin.AbstractController
+import org.chai.kevin.AbstractFileUploadController;
 import org.chai.kevin.imports.EntityImporter;
 import org.chai.kevin.imports.ImporterErrorManager;
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 
-class EntityImporterController extends AbstractController {
+class EntityImporterController extends AbstractFileUploadController {
 	
 	def sessionFactory
 	
@@ -25,8 +25,10 @@ class EntityImporterController extends AbstractController {
 			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",clazz="+cmd.entityClass+")")
 
 			EntityImporter importer = new EntityImporter(sessionFactory, errorManager, clazz);
-			if (cmd.file.getContentType().equals(FILE_TYPE_ZIP)) importer.importZipFiles(cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
-			if (cmd.file.getContentType().equals(FILE_TYPE_CSV)) importer.importCsvFile(cmd.file.getName(), cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
+			
+			//Error manager is private in the importer so errors displayed from here
+			if(importFile(importer, cmd.file, cmd.encoding, cmd.delimiter)){}
+			else errorManager.getErrors().add(new ImporterError("\" " + cmd.file.getOriginalFilename() + " \"",1,"File Type Error","import.error.fileType.NotMatching"));
 			
 			cmd.file.getInputStream().close();
 			
