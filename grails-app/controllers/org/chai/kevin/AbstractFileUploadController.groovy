@@ -30,6 +30,8 @@
   */
 package org.chai.kevin
 
+import org.chai.kevin.imports.FileImporter
+import org.chai.kevin.imports.GeneralDataImporter
 import org.springframework.web.multipart.MultipartFile;
 
 enum FileType{
@@ -43,7 +45,20 @@ public abstract class AbstractFileUploadController extends AbstractController {
 
 		if(fileExtension.equalsIgnoreCase("csv")) return FileType.CSV;
 		else if(fileExtension.equalsIgnoreCase("zip")) return FileType.ZIP;
-		
+			
 		return FileType.NONE;
+	}
+	
+	public boolean importFile(FileImporter importer, MultipartFile file, String encoding, Character delimiter){
+		
+		if (getFileType(file) == FileType.ZIP){
+			importer.importZipFiles(file.getInputStream(), encoding, delimiter);
+			return true;
+		}
+		else if (getFileType(file) == FileType.CSV){
+			importer.importCsvFile(file.getName(), file.getInputStream(), encoding, delimiter);
+			return true;
+		}
+		return false;
 	}
 }

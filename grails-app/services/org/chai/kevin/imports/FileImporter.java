@@ -17,7 +17,7 @@ import org.supercsv.io.ICsvMapReader;
 import org.supercsv.prefs.CsvPreference;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-public abstract class FileImporter {
+public abstract class FileImporter{
 
 	protected static final Log log = LogFactory.getLog(DataImporter.class);
 

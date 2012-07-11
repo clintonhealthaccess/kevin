@@ -77,16 +77,10 @@ class GeneralImporterController extends AbstractFileUploadController {
 					sessionFactory, transactionManager,
 					errorManager,periodService
 					);
-				
-			if (getFileType(cmd.file) == FileType.ZIP){
-					importer.importZipFiles(cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
-			}
-			else if (getFileType(cmd.file) == FileType.CSV){
-					importer.importCsvFile(cmd.file.getName(), cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
-			}
-			else {
-				errorManager.getErrors().add(new ImporterError("\" " + cmd.file.getOriginalFilename() + " \"",1,"File Type Error","import.error.fileType.NotMatching"));
-			}
+			//Error manager is private in the importer so errors displayed from here
+			if(importFile(importer, cmd.file, cmd.encoding, cmd.delimiter)){}
+			else errorManager.getErrors().add(new ImporterError("\" " + cmd.file.getOriginalFilename() + " \"",1,"File Type Error","import.error.fileType.NotMatching"));
+			
 			cmd.file.getInputStream().close();
 
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
