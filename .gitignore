@@ -17,3 +17,5 @@ bin/
 build.info
 *.sql
 *.gz
+.classpath
+.project

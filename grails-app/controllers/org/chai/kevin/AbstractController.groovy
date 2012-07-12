@@ -55,8 +55,6 @@ public abstract class AbstractController {
 	LanguageService languageService;
 	ReportService reportService;
 	LocationService locationService;
-	protected final static String FILE_TYPE_ZIP="application/zip";
-	protected final static String FILE_TYPE_CSV="text/csv";
 	
 	def getTargetURI() {
 		return params.targetURI?: "/"
