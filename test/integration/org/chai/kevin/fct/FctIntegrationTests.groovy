@@ -8,7 +8,7 @@ import org.chai.kevin.util.Utils;
 
 abstract class FctIntegrationTests extends IntegrationTests {
 
-	static def newFctTarget(def code, def types, def program) {
+	static def newFctTarget(def code, def program) {
 		def target = new FctTarget(names: [:],
 			code: code,
 			program: program,
@@ -16,8 +16,8 @@ abstract class FctIntegrationTests extends IntegrationTests {
 		program.save(failOnError: true)
 		return target
 	}
-		
-	static def newFctTarget(def code, def order, def types, def program) {
+	
+	static def newFctTarget(def code, def order, def program) {
 		def target = new FctTarget(names: [:],
 			code: code,
 			order: order,

@@ -15,7 +15,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
-		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
 		
@@ -33,7 +33,6 @@ class FctControllerSpec extends FctIntegrationTests {
 		model.currentProgram.equals(program)
 		model.currentLocation.equals(Location.findByCode(RWANDA))		
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
-		model.currentChildLevel.equals(LocationLevel.findByCode(PROVINCE))
 		model.currentTarget.equals(target)
 		model.fctTable != null
 		model.fctTable.hasData() == true
@@ -44,7 +43,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
-		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
 		
@@ -64,7 +63,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
-		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
 		
 		when: "no parameters"
@@ -84,7 +83,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
-		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
 		
@@ -109,7 +108,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
-		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
 		
@@ -134,7 +133,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
-		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
 		
@@ -160,7 +159,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("1", CODE(2))
-		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(3), 1, program)
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
 		
 		when:
@@ -202,7 +201,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("1", CODE(2))
-		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(3), 1, program)
 		
 		when:
 		fctController = new FctController()
@@ -224,7 +223,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("1", CODE(2))
-		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(3), 1, program)
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
 		
 		when:
@@ -238,7 +237,6 @@ class FctControllerSpec extends FctIntegrationTests {
 		
 		then:
 		model.currentLocation.equals(Location.findByCode(BURERA))
-		model.currentChildLevel.equals(null)
 		model.fctTable != null
 		model.fctTable.hasData() == true
 	}

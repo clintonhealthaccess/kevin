@@ -168,7 +168,8 @@ public class Initializer {
 			
 			def butaro = new DataLocation(names: j(["en":"Butaro"]), code: "Butaro DH", location: burera, type: dh).save(failOnError: true)
 			def kivuye = new DataLocation(names: j(["en":"Kivuye"]), code: "Kivuye HC", location: burera, type: hc).save(failOnError: true)
-			burera.dataLocations = [butaro, kivuye]
+			def newDataLocationHc = new DataLocation(names: j(["en":"New Data Location"]), code: "New Data Location HC", location: burera, type: hc).save(failOnError: true)
+			burera.dataLocations = [butaro, kivuye, newDataLocationHc]
 			burera.save(failOnError: true)
 		}
 
@@ -1097,6 +1098,23 @@ public class Initializer {
 			
 			fctTarget3.targetOptions << [fctTargetOption5, fctTargetOption6]
 			fctTarget3.save(failOnError:true)
+			
+			FctTarget fctTarget4 = new FctTarget(
+				names:j(["en":"Fct Target 4"]), descriptions:j([:]),
+				program: hmr,
+				targetOptions: [],
+				code:"TARGET 4"
+			).save(failOnError:true)
+			
+			FctTargetOption fctTargetOption7 = new FctTargetOption(
+				names:j(["en": "Target Option 7"]),
+				target: fctTarget4,
+				descriptions:j([:]),
+				code:"TARGET OPTION 7",
+				sum: sumMixHC
+			).save(failOnError:true)
+			
+			fctTarget4.targetOptions << [fctTargetOption7]
 			
 			hmr.save(failOnError:true)
 		}
