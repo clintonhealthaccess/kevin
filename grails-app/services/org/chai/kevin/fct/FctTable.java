@@ -52,18 +52,18 @@ public class FctTable extends ReportTable<FctTargetOption, CalculationLocation, 
 		this.topLevelLocations = topLevelLocations;
 	}
 	
-	public Double getTotalReportAverage(CalculationLocation topLevelLocation){
-		Double totalReportAverage = 0d;
+	public Double getTotalAverage(CalculationLocation topLevelLocation){
+		Double totalAverage = 0d;
 		for(FctTargetOption targetOption : targetOptions){
 			if(getReportValue(topLevelLocation, targetOption) != null && !getReportValue(topLevelLocation, targetOption).getAverage().isNull()){
 				Value average = getReportValue(topLevelLocation, targetOption).getAverage();
 				if(!average.isNull()){
-					totalReportAverage += average.getNumberValue().doubleValue();
+					totalAverage += average.getNumberValue().doubleValue();
 				}
 			}
 		}
 		DecimalFormat frmt = new DecimalFormat("#.##");
-		return Double.parseDouble(frmt.format(totalReportAverage));		
+		return Double.parseDouble(frmt.format(totalAverage));		
 	}
 	
 	public List<FctTargetOption> getTargetOptions(){

@@ -180,7 +180,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		def fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes)
 		
 		then:
-		Utils.formatNumber("#.##", fctTable.getTotalReportAverage(location)) == "1"
+		Utils.formatNumber("#.##", fctTable.getTotalAverage(location)) == "1"
 		
 		when: "add another data location such that total report average < 1"
 		def dummy = newDataLocation(j(["en":"dummy"]), "dummy", Location.findByCode(BURERA), DataLocationType.findByCode(HEALTH_CENTER_GROUP))
@@ -192,7 +192,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		fctTable = fctService.getFctTable(location, program, targetHC, period, dataLocationTypes)
 		
 		then:
-		Utils.formatNumber("#.##", fctTable.getTotalReportAverage(location)) == "0.67"
+		Utils.formatNumber("#.##", fctTable.getTotalAverage(location)) == "0.67"
 	}
 
 	def "get fct skip levels"(){
