@@ -17,16 +17,19 @@
 										style="margin-bottom:${totalAverage > 0 && totalAverage < 1 ? ((totalAverage-1)*200).round() : 0}px;">
 									<g:each in="${fctTable.targetOptions.reverse()}" var="targetOption" status="i">
 										<g:if test="${!fctTable.getReportValue(location, targetOption).getAverage().isNull()}">																						
+											
 											<g:set var="reportAverage" value="${g.reportValue(value: fctTable.getReportValue(location, targetOption).getAverage(), type: targetOption.sum.type, format: '#%')}"/>
 											<g:set var="reportValue" value="${g.reportValue(value: fctTable.getReportValue(location, targetOption).getValue(), type: targetOption.sum.type)}"/>
+											
 											<div class="js_bar_vertical bar-vertical tooltip bar${fctTable.targetOptions.size()-i}"
 												data-percentage="${reportAverage}"
-												title="${reportTooltip(average: reportAverage, value: reportValue, 
-														totalLocations: fctTable.getReportValue(location, targetOption).getNumberOfDataLocations())}"															
+												title="${reportTooltip(average: reportAverage, value: reportValue, totalLocations: fctTable.getReportValue(location, targetOption).getNumberOfDataLocations())}"
 												style="height: ${reportAverage};">
-												<g:if test="${reportValue != '0'}">
-													<span>${reportValue}</span>
+												
+												<g:if test="${fctTable.getReportValue(location, targetOptionHC).getAverage().numberValue.round(2) >= 0.06}">
+													<span data-average="${fctTable.getReportValue(location, targetOptionHC).getAverage().numberValue.round(2)}">${reportValue}</span>
 												</g:if>												
+											
 											</div>
 										</g:if>
 										<g:else>
