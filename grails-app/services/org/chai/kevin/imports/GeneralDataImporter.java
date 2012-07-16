@@ -28,9 +28,11 @@
 package org.chai.kevin.imports;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -106,9 +108,11 @@ public class GeneralDataImporter extends DataImporter{
 		while (rowValues != null && importedLines < numberOfLinesToImport) {
 			if (log.isInfoEnabled()) log.info("starting import of line with values: "+rowValues);
 			
+			if(sanitizer.getLineNumberAddress().values().size()==1)
+				if(((sanitizer.getLineNumberAddress().values()).toArray())[0].equals("")) sanitizer.clearLineNumberMap();
+				
 			sanitizer.addLineNumberMap(reader.getLineNumber(), rowValues.get(ImportExportConstant.DATA_VALUE_ADDRESS));
 			Integer lineNumber=  Utils.getKeyByValue(sanitizer.getLineNumberAddress(),rowValues.get(ImportExportConstant.DATA_VALUE_ADDRESS));
-			//sanitizer.setLineNumber(reader.getLineNumber());
 			sanitizer.setNumberOfErrorInRows(0);
 			
 			String newDataLocationCode = rowValues.get(ImportExportConstant.DATA_LOCATION_CODE);
@@ -186,6 +190,7 @@ public class GeneralDataImporter extends DataImporter{
 		}
 		
 		saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, sanitizer);
+		sanitizer.clearLineNumberMap();
 		sanitizer.clearType();
 		return rowValues == null;
 	}

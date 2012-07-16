@@ -33,10 +33,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
@@ -54,8 +51,6 @@ import org.springframework.transaction.support.TransactionTemplate;
  *
  */
 public abstract class DataImporter extends FileImporter {
-
-	private static final Log log = LogFactory.getLog(DataImporter.class);
 	
 	protected ValueService valueService;
 	protected PlatformTransactionManager transactionManager;
@@ -77,7 +72,6 @@ public abstract class DataImporter extends FileImporter {
 
 	protected class ImportSanitizer implements Sanitizer {
 		private Map<String, Enum> enumMap = new HashMap<String, Enum>();
-		private Map<Integer,String> lineNumberAddress = new HashMap<Integer, String>();
 		
 		private DataService dataService;
 		private final List<ImporterError> errors;
@@ -93,6 +87,7 @@ public abstract class DataImporter extends FileImporter {
 		}
 		
 		private Integer lineNumber;
+		private Map<Integer,String> lineNumberAddress = new HashMap<Integer, String>();
 		private Integer numberOfErrorInRows;
 		
 		private Enum getAndStoreEnum(String code) {
@@ -143,17 +138,17 @@ public abstract class DataImporter extends FileImporter {
 			case ENUM:
 				return validateImportEnum(fileName,prefix,genericPrefix, value);
 			case BOOL:
-				return validateImportBool(fileName,genericPrefix, value);
+				return validateImportBool(fileName,prefix,genericPrefix, value);
 			case NUMBER:
-				return validateImportNumber(fileName,genericPrefix, value);
+				return validateImportNumber(fileName,prefix,genericPrefix, value);
 			case TEXT:
-				return validateImportString(fileName,genericPrefix, value);
+				return validateImportString(fileName,prefix,genericPrefix, value);
 			case STRING:
-				return validateImportString(fileName,genericPrefix, value);
+				return validateImportString(fileName,prefix,genericPrefix, value);
 			case DATE:
-				return validateImportDate(fileName,genericPrefix, value);
+				return validateImportDate(fileName,prefix,genericPrefix, value);
 			default:
-				errors.add(new ImporterError(fileName,lineNumber, prefix, "import.error.message.unknown.type")); 
+				errors.add(new ImporterError(fileName,Utils.getKeyByValue(lineNumberAddress, prefix), genericPrefix, "import.error.message.unknown.type")); 
 				return null;
 			}
 		}
@@ -174,12 +169,12 @@ public abstract class DataImporter extends FileImporter {
 					return option.getValue();
 			}
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows() + 1);
-			errors.add(new ImporterError(fileName, lineNumber, prefixHeader,
+			errors.add(new ImporterError(fileName, Utils.getKeyByValue(lineNumberAddress, prefixHeader+""+genericPrefixHeader), prefixHeader,
 					"import.error.message.enume"));
 			return value.toString();
 		}
 
-		private Boolean validateImportBool(String fileName,String header, Object value){
+		private Boolean validateImportBool(String fileName,String prefixHeader,String header, Object value){
 			if(log.isTraceEnabled()) log.trace("imported bool value :"+value);
 			if (((String) value).equals(ImportExportConstant.TRUE) || ((String) value).equals(ImportExportConstant.FALSE))
 				if (((String) value).equals(ImportExportConstant.TRUE))
@@ -188,30 +183,30 @@ public abstract class DataImporter extends FileImporter {
 					return false;
 			
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows() + 1);
-			errors.add(new ImporterError(fileName,lineNumber, header,"import.error.message.boolean"));
+			errors.add(new ImporterError(fileName,Utils.getKeyByValue(lineNumberAddress, prefixHeader), header,"import.error.message.boolean"));
 			return null;
 		}
 		
-		private Number validateImportNumber(String fileName,String header, Object value) {
+		private Number validateImportNumber(String fileName,String prefixHeader,String header, Object value) {
 			try {
 				return Double.parseDouble((String) value);
 			} catch (NumberFormatException e) {
 				if (log.isDebugEnabled()) log.debug("value in this cell [Line: " + lineNumber+ ",Column: " + header + "] has to be a Number"+ value, e);
 			}
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(fileName,lineNumber, header,"import.error.message.number"));
+			errors.add(new ImporterError(fileName,Utils.getKeyByValue(lineNumberAddress, prefixHeader), header,"import.error.message.number"));
 			return null;
 		}
 		
-		private String validateImportString(String fileName,String header, Object value){
+		private String validateImportString(String fileName,String prefixHeader,String header, Object value){
 			if(value instanceof String || value.equals(""))
 				return (String) value;
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(fileName,lineNumber, header, "import.error.message.string.text")); 
+			errors.add(new ImporterError(fileName,Utils.getKeyByValue(lineNumberAddress, prefixHeader), header, "import.error.message.string.text")); 
 			return null;
 		}
 		
-		private Date validateImportDate(String fileName,String header, Object value){
+		private Date validateImportDate(String fileName,String prefixHeader,String header, Object value){
 			if(value instanceof String)
 				try {
 					return Utils.parseDate((String)value);
@@ -219,7 +214,7 @@ public abstract class DataImporter extends FileImporter {
 					if (log.isDebugEnabled()) log.debug("value in this cell [Line: " + lineNumber+ ",Column: " + header + "] has to be a Date (dd-MM-yyyy)"+ value, e);
 				}
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(fileName,lineNumber, header, "import.error.message.date")); 
+			errors.add(new ImporterError(fileName,Utils.getKeyByValue(lineNumberAddress, prefixHeader), header, "import.error.message.date")); 
 			return null;
 		}
 

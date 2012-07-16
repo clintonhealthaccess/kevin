@@ -1379,7 +1379,7 @@ class Initializer {
 			
 			def dEtwo = Sum.findByCode("Ratio constant 20");
 			def dEthree = Sum.findByCode("Ratio constant 10");
-			def dEfour = Sum.findByCode("Dsr Ratio constant 10");
+			def dEfour = Sum.findByCode("Ratio 1");
 			def dEfive = Sum.findByCode("Maps sum 1");
 		
 			def dataLocationOne = DataLocation.findByCode("Kivuye HC");

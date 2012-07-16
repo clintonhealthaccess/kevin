@@ -18,7 +18,7 @@ import org.supercsv.prefs.CsvPreference;
 
 public abstract class FileImporter {
 
-	protected static final Log log = LogFactory.getLog(DataImporter.class);
+	protected static final Log log = LogFactory.getLog(FileImporter.class);
 
 	public FileImporter() {
 		super();

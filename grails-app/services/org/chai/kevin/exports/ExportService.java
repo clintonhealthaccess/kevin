@@ -52,19 +52,6 @@ public abstract class ExportService {
 	public ValueService valueService;
 	public SessionFactory sessionFactory;
 	
-	public final static String CSV_FILE_EXTENSION = ".csv";
-	public final static String LOCATION_LEVEL = "Location Level";
-	public final static String LOCATION_TYPE = "Data Location Type";
-	public final static String DATA_LOCATION_CODE = "Data Location Code";
-	public final static String DATA_LOCATION_NAME = "Data Location Name";
-	public final static String DATA_CLASS = "Data Class";
-	public final static String DATA_CODE = "Data Code";
-	public final static String DATA_NAME = "Data Name";
-	public final static String PERIOD_CODE = "Period Code";
-	public final static String PERIOD = "Period";
-	public final static String DATA_VALUE = "Data Value";
-	public final static String DATA_VALUE_ADDRESS = "Data Value Address";
-	
 	public void setLanguageService(LanguageService languageService) {
 		this.languageService = languageService;
 	}

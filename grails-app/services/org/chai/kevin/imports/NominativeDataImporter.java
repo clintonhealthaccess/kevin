@@ -28,6 +28,7 @@
 package org.chai.kevin.imports;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.logging.Log;
@@ -109,8 +110,6 @@ public class NominativeDataImporter extends DataImporter {
 			if (log.isInfoEnabled()) log.info("starting import of line with values: "+values);
 			sanitizer.addLineNumberMap(readFileAsMap.getLineNumber(),values.get(ImportExportConstant.DATA_VALUE_ADDRESS));
 			Integer lineNumber=  Utils.getKeyByValue(sanitizer.getLineNumberAddress(),values.get(ImportExportConstant.DATA_VALUE_ADDRESS));
-			
-			//sanitizer.setLineNumber(readFileAsMap.getLineNumber());
 			sanitizer.setNumberOfErrorInRows(0);
 			
 			if(log.isDebugEnabled()) log.debug("current facility code: "+values.get(ImportExportConstant.DATA_LOCATION_CODE));
@@ -126,6 +125,8 @@ public class NominativeDataImporter extends DataImporter {
 					
 					// clear the value map since we are reading a line for a new location
 					positionsValueMap.clear();
+					sanitizer.clearLineNumberMap();
+
 				}
 				
 				// second we get the new location
@@ -174,6 +175,7 @@ public class NominativeDataImporter extends DataImporter {
 		}
 		
 		saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, sanitizer);
+		sanitizer.clearLineNumberMap();
 		return values == null;
 	}
 	
@@ -196,7 +198,7 @@ public class NominativeDataImporter extends DataImporter {
 					types.put("[_]."+header,rawDataElement.getType().getType("[_]."+header));
 			} catch(IllegalArgumentException e){
 				if(log.isWarnEnabled()) log.warn("Column type not found for header"+header, e);
-				manager.getErrors().add(new ImporterError(fileName,lineNumber,header,"import.error.message.unknowm.column.type"));
+				manager.getErrors().add(new ImporterError(fileName,1,header,"import.error.message.unknowm.column.type"));
 			}
 		}
 				
@@ -204,24 +206,26 @@ public class NominativeDataImporter extends DataImporter {
 		final Map<String,Integer> positions = new HashMap<String,Integer>();
 		
 		boolean readEntirely = false;
-		
-		while (!readEntirely) {
-			readEntirely = (Boolean)getTransactionTemplate().execute(new TransactionCallback() {
-				@Override
-				public Object doInTransaction(TransactionStatus arg0) {
-					sessionFactory.getCurrentSession().refresh(rawDataElement);
-					sessionFactory.getCurrentSession().refresh(period);
-					
-					try {
-						return importData(fileName,csvMapReader,ImportExportConstant.NUMBER_OF_LINES_TO_IMPORT, sanitizer,  headers, positions);
-					} catch (IOException e) {
-						return true;
+		if(!Arrays.asList(headers).contains(ImportExportConstant.DATA_LOCATION_CODE))
+			manager.getErrors().add(new ImporterError(fileName,1, Arrays.asList(headers).toString(),"import.error.message.unknowm.header"));
+		else{
+			while (!readEntirely) {
+				readEntirely = (Boolean)getTransactionTemplate().execute(new TransactionCallback() {
+					@Override
+					public Object doInTransaction(TransactionStatus arg0) {
+						sessionFactory.getCurrentSession().refresh(rawDataElement);
+						sessionFactory.getCurrentSession().refresh(period);
+						
+						try {
+							return importData(fileName,csvMapReader,ImportExportConstant.NUMBER_OF_LINES_TO_IMPORT, sanitizer,  headers, positions);
+						} catch (IOException e) {
+							return true;
+						}
 					}
-				}
-			});
-			sessionFactory.getCurrentSession().clear();
+				});
+				sessionFactory.getCurrentSession().clear();
+			}
 		}
-		
 	}
 
 }

@@ -74,7 +74,7 @@ class NominativeImporterController extends AbstractController {
 				sessionFactory, transactionManager,
 				errorManager, cmd.dataElement, cmd.period
 			);
-			if (cmd.file.getContentType().equals(FILE_TYPE_ZIP)) importer.importZipFiles(cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
+			if (cmd.file.getContentType().equals(FILE_TYPE_ZIP)) importer.importZipFiles(cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)			
 			if (cmd.file.getContentType().equals(FILE_TYPE_CSV)) importer.importCsvFile(cmd.file.getName(), cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
 			cmd.file.getInputStream().close();
 			

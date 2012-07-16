@@ -34,6 +34,7 @@ package org.chai.kevin.util;
 public class ImportExportConstant {
 	
 	public final static String CSV_FILE_EXTENSION = ".csv";
+	public final static String LOCATION_LEVEL = "Location Level";
 	public final static String LOCATION_TYPE = "Data Location Type";
 	public final static String DATA_LOCATION_NAME = "Data Location Name";
 	public final static String DATA_CLASS = "Data Class";
@@ -49,6 +50,5 @@ public class ImportExportConstant {
 	public final static String DATA_VALUE = "data_value";
 	public final static String DATA_VALUE_ADDRESS = "value_address";
 	public final static Integer NUMBER_OF_LINES_TO_IMPORT = 100;
-	
 	
 }
