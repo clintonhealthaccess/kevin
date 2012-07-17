@@ -28,11 +28,13 @@
 package org.chai.kevin.imports;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
@@ -45,6 +47,7 @@ import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValueService;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+
 
 /**
  * @author Jean Kahigiso M.
@@ -86,8 +89,7 @@ public abstract class DataImporter extends FileImporter {
 			this.dataService = dataService;
 		}
 		
-		private Integer lineNumber;
-		private Map<Integer,String> lineNumberAddress = new HashMap<Integer, String>();
+		private Map<Integer,List<String>> lineNumberAddress = new HashMap<Integer, List<String>>();
 		private Integer numberOfErrorInRows;
 		
 		private Enum getAndStoreEnum(String code) {
@@ -97,11 +99,7 @@ public abstract class DataImporter extends FileImporter {
 			}
 			return enumMap.get(code);
 		}
-		
-		public void setLineNumber(Integer lineNumber) {
-			this.lineNumber = lineNumber;
-		}
-		
+				
 		public Integer getNumberOfErrorInRows() {
 			return numberOfErrorInRows;
 		}
@@ -118,17 +116,23 @@ public abstract class DataImporter extends FileImporter {
 		}
 		
 		public void addLineNumberMap(Integer lineNumber,String address){
-			lineNumberAddress.put(lineNumber,address);
+			if(lineNumberAddress.get(lineNumber)!=null)
+				lineNumberAddress.get(lineNumber).add(address);
+			else{
+				List<String> addresses = new ArrayList<String>();
+				addresses.add(address);
+				lineNumberAddress.put(lineNumber,addresses);
+			}	
 		}
 		public void clearLineNumberMap(){
 			lineNumberAddress.clear();
 		}
 
-		public Map<Integer,String> getLineNumberAddress() {
+		public Map<Integer,List<String>> getLineNumberAddress() {
 			return lineNumberAddress;
 		}
 
-		public void setLineNumberAddress(Map<Integer,String> lineNumberAddress) {
+		public void setLineNumberAddress(Map<Integer,List<String>> lineNumberAddress) {
 			this.lineNumberAddress = lineNumberAddress;
 		}
 		
@@ -148,7 +152,7 @@ public abstract class DataImporter extends FileImporter {
 			case DATE:
 				return validateImportDate(fileName,prefix,genericPrefix, value);
 			default:
-				errors.add(new ImporterError(fileName,Utils.getKeyByValue(lineNumberAddress, prefix), genericPrefix, "import.error.message.unknown.type")); 
+				errors.add(new ImporterError(fileName,getLineNumberFromMap(lineNumberAddress, prefix), genericPrefix, "import.error.message.unknown.type")); 
 				return null;
 			}
 		}
@@ -169,7 +173,7 @@ public abstract class DataImporter extends FileImporter {
 					return option.getValue();
 			}
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows() + 1);
-			errors.add(new ImporterError(fileName, Utils.getKeyByValue(lineNumberAddress, prefixHeader+""+genericPrefixHeader), prefixHeader,
+			errors.add(new ImporterError(fileName, getLineNumberFromMap(lineNumberAddress, prefixHeader), prefixHeader,
 					"import.error.message.enume"));
 			return value.toString();
 		}
@@ -183,7 +187,7 @@ public abstract class DataImporter extends FileImporter {
 					return false;
 			
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows() + 1);
-			errors.add(new ImporterError(fileName,Utils.getKeyByValue(lineNumberAddress, prefixHeader), header,"import.error.message.boolean"));
+			errors.add(new ImporterError(fileName,getLineNumberFromMap(lineNumberAddress, prefixHeader), header,"import.error.message.boolean"));
 			return null;
 		}
 		
@@ -191,10 +195,10 @@ public abstract class DataImporter extends FileImporter {
 			try {
 				return Double.parseDouble((String) value);
 			} catch (NumberFormatException e) {
-				if (log.isDebugEnabled()) log.debug("value in this cell [Line: " + lineNumber+ ",Column: " + header + "] has to be a Number"+ value, e);
+				if (log.isDebugEnabled()) log.debug("value in lineNumberAddress map:"+lineNumberAddress+" in this cell [Line: " + getLineNumberFromMap(lineNumberAddress, prefixHeader)+ ",Column: prefixHeader:"+prefixHeader+ "genericHeader :" + header + "] has to be a Number"+ value, e);
 			}
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(fileName,Utils.getKeyByValue(lineNumberAddress, prefixHeader), header,"import.error.message.number"));
+			errors.add(new ImporterError(fileName,getLineNumberFromMap(lineNumberAddress, prefixHeader), header,"import.error.message.number"));
 			return null;
 		}
 		
@@ -202,7 +206,7 @@ public abstract class DataImporter extends FileImporter {
 			if(value instanceof String || value.equals(""))
 				return (String) value;
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(fileName,Utils.getKeyByValue(lineNumberAddress, prefixHeader), header, "import.error.message.string.text")); 
+			errors.add(new ImporterError(fileName,getLineNumberFromMap(lineNumberAddress, prefixHeader), header, "import.error.message.string.text")); 
 			return null;
 		}
 		
@@ -211,19 +215,26 @@ public abstract class DataImporter extends FileImporter {
 				try {
 					return Utils.parseDate((String)value);
 				} catch (ParseException e) {
-					if (log.isDebugEnabled()) log.debug("value in this cell [Line: " + lineNumber+ ",Column: " + header + "] has to be a Date (dd-MM-yyyy)"+ value, e);
+					if (log.isDebugEnabled()) log.debug("value in lineNumberAddress map:"+lineNumberAddress+" in this cell [Line: " + getLineNumberFromMap(lineNumberAddress, prefixHeader)+ ",Column: prefixHeader:"+prefixHeader+ "genericHeader :" + header + "] has to be a Date (dd-MM-yyyy)"+ value, e);
 				}
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(fileName,Utils.getKeyByValue(lineNumberAddress, prefixHeader), header, "import.error.message.date")); 
+			errors.add(new ImporterError(fileName,getLineNumberFromMap(lineNumberAddress, prefixHeader), header, "import.error.message.date")); 
 			return null;
 		}
 
 		@Override
 		public String toString() {	
-			return "ImportSanitizer [types=" + types + ", lineNumber="
-					+ lineNumber + "]";
+			return "ImportSanitizer [types=" + types + ", lineNumberAddress="
+					+ lineNumberAddress + "]";
 		}
 		
+	}
+	public Integer getLineNumberFromMap(Map<Integer,List<String>> map, String address){
+		for(Entry<Integer, List<String>> element : map.entrySet()){
+			if(element.getValue().contains(address))
+				return element.getKey();
+		}
+		return null;
 	}
 	
 	protected void saveAndMergeIfNotNull(RawDataElementValue rawDataElementValue, Map<String,Object> positionsValueMap, ImportSanitizer sanitizer) {
@@ -238,6 +249,7 @@ public abstract class DataImporter extends FileImporter {
 			
 			valueService.save(rawDataElementValue);
 			if (log.isTraceEnabled()) log.trace("saved rawDataElement: "+ rawDataElementValue.getValue());
+			sanitizer.clearLineNumberMap();
 		}
 	}
 	

@@ -28,9 +28,14 @@
 package org.chai.kevin.imports;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LocationService;
@@ -40,7 +45,6 @@ import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.util.ImportExportConstant;
-import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
@@ -108,8 +112,6 @@ public class NominativeDataImporter extends DataImporter {
 		int importedLines = 0;
 		while (values != null && importedLines < numberOfLinesToImport) {
 			if (log.isInfoEnabled()) log.info("starting import of line with values: "+values);
-			sanitizer.addLineNumberMap(readFileAsMap.getLineNumber(),values.get(ImportExportConstant.DATA_VALUE_ADDRESS));
-			Integer lineNumber=  Utils.getKeyByValue(sanitizer.getLineNumberAddress(),values.get(ImportExportConstant.DATA_VALUE_ADDRESS));
 			sanitizer.setNumberOfErrorInRows(0);
 			
 			if(log.isDebugEnabled()) log.debug("current facility code: "+values.get(ImportExportConstant.DATA_LOCATION_CODE));
@@ -125,7 +127,6 @@ public class NominativeDataImporter extends DataImporter {
 					
 					// clear the value map since we are reading a line for a new location
 					positionsValueMap.clear();
-					sanitizer.clearLineNumberMap();
 
 				}
 				
@@ -137,6 +138,7 @@ public class NominativeDataImporter extends DataImporter {
 				// 3 update the location
 				dataLocation = locationService.findCalculationLocationByCode(code, DataLocation.class);
 				// if the location is not found, we add an error
+				Integer lineNumber=  readFileAsMap.getLineNumber();
 				if (dataLocation == null) {
 					manager.getErrors().add(new ImporterError(fileName,lineNumber,ImportExportConstant.DATA_LOCATION_CODE,"import.error.message.unknown.location"));
 				} 
@@ -156,6 +158,7 @@ public class NominativeDataImporter extends DataImporter {
 				// read values from line and put into valueMap
 				for (String header : headers){
 					if (!header.equals(ImportExportConstant.DATA_LOCATION_CODE)){
+						sanitizer.addLineNumberMap(readFileAsMap.getLineNumber(), "[" + positions.get(code) + "]."+ header);
 						positionsValueMap.put("[" + positions.get(code) + "]."+ header, values.get(header));
 					}		
 				}
@@ -175,7 +178,6 @@ public class NominativeDataImporter extends DataImporter {
 		}
 		
 		saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, sanitizer);
-		sanitizer.clearLineNumberMap();
 		return values == null;
 	}
 	
@@ -205,10 +207,17 @@ public class NominativeDataImporter extends DataImporter {
 		final ImportSanitizer sanitizer = new ImportSanitizer(fileName,manager.getErrors(), types, dataService);
 		final Map<String,Integer> positions = new HashMap<String,Integer>();
 		
+		//check for duplicate column in the file
+		Set<String> removeDuplicate = new HashSet<String>(new ArrayList<String>(Arrays.asList(headers)));
+		if(log.isWarnEnabled()) log.warn(" removeDuplicate "+removeDuplicate.size()+" headers length "+headers.length);
+		
 		boolean readEntirely = false;
-		if(!Arrays.asList(headers).contains(ImportExportConstant.DATA_LOCATION_CODE))
-			manager.getErrors().add(new ImporterError(fileName,1, Arrays.asList(headers).toString(),"import.error.message.unknowm.header"));
-		else{
+		if(!Arrays.asList(headers).contains(ImportExportConstant.DATA_LOCATION_CODE) || !(removeDuplicate.size() == headers.length)){
+			if(removeDuplicate.size() < headers.length)
+				manager.getErrors().add(new ImporterError(fileName,1,Arrays.asList(headers).toString(),"import.error.message.duplicate.column"));
+			if(!Arrays.asList(headers).contains(ImportExportConstant.DATA_LOCATION_CODE))
+				manager.getErrors().add(new ImporterError(fileName,1, Arrays.asList(headers).toString(),"import.error.message.unknowm.header"));
+		}else{
 			while (!readEntirely) {
 				readEntirely = (Boolean)getTransactionTemplate().execute(new TransactionCallback() {
 					@Override

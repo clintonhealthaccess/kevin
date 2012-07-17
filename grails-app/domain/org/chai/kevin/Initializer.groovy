@@ -1,85 +1,60 @@
 package org.chai.kevin
 
-/*
- * Copyright (c) 2011, Clinton Health Access Initiative.
- *
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the <organization> nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.chai.kevin.cost.CostRampUp;
-import org.chai.kevin.cost.CostRampUpYear;
-import org.chai.kevin.cost.CostTarget;
-import org.chai.kevin.cost.CostTarget.CostType;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.maps.MapsTarget;
-import org.chai.kevin.util.JSONUtils;
-import org.chai.kevin.value.RawDataElementValue;
-import org.chai.kevin.value.Value;
+import org.apache.shiro.crypto.hash.Sha256Hash
+import org.chai.kevin.cost.CostRampUp
+import org.chai.kevin.cost.CostRampUpYear
+import org.chai.kevin.cost.CostTarget
+import org.chai.kevin.cost.CostTarget.CostType
 import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardTarget
-import org.chai.kevin.data.ExpressionMap;
-import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Enum;
-import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.data.Enum
+import org.chai.kevin.data.EnumOption
+import org.chai.kevin.data.ExpressionMap
+import org.chai.kevin.data.NormalizedDataElement
+import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Sum
-import org.chai.kevin.data.Type;
-import org.chai.kevin.planning.Planning;
-import org.chai.kevin.planning.PlanningCost;
-import org.chai.kevin.planning.PlanningCost.PlanningCostType;
-import org.chai.kevin.planning.PlanningOutput;
-import org.chai.kevin.planning.PlanningOutputColumn;
-import org.chai.kevin.planning.PlanningSkipRule;
-import org.chai.kevin.planning.PlanningType;
-import org.chai.kevin.reports.ReportProgram
-import org.chai.kevin.security.User;
-import org.chai.kevin.security.Role;
-import org.chai.kevin.security.UserType;
-import org.chai.kevin.survey.*;
-import org.chai.kevin.dsr.DsrTarget;
-import org.chai.kevin.dsr.DsrTargetCategory;
-import org.chai.kevin.exports.CalculationExport;
-import org.chai.kevin.exports.DataElementExport;
-import org.chai.kevin.exports.DataExport;
+import org.chai.kevin.data.Type
+import org.chai.kevin.dsr.DsrTarget
+import org.chai.kevin.dsr.DsrTargetCategory
+import org.chai.kevin.exports.CalculationExport
+import org.chai.kevin.exports.DataElementExport
 import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
-import org.chai.kevin.form.FormElement;
-import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.form.FormSkipRule;
-import org.chai.kevin.form.FormValidationRule;
+import org.chai.kevin.form.FormElement
+import org.chai.kevin.form.FormEnteredValue
+import org.chai.kevin.form.FormValidationRule
+import org.chai.kevin.location.DataLocation
+import org.chai.kevin.location.DataLocationType
+import org.chai.kevin.location.Location
+import org.chai.kevin.location.LocationLevel
+import org.chai.kevin.maps.MapsTarget
+import org.chai.kevin.planning.Planning
+import org.chai.kevin.planning.PlanningCost
+import org.chai.kevin.planning.PlanningOutput
+import org.chai.kevin.planning.PlanningOutputColumn
+import org.chai.kevin.planning.PlanningSkipRule
+import org.chai.kevin.planning.PlanningType
+import org.chai.kevin.planning.PlanningCost.PlanningCostType
+import org.chai.kevin.reports.ReportProgram
+import org.chai.kevin.security.Role
+import org.chai.kevin.security.User
+import org.chai.kevin.security.UserType
+import org.chai.kevin.survey.Survey
+import org.chai.kevin.survey.SurveyCheckboxOption
+import org.chai.kevin.survey.SurveyCheckboxQuestion
+import org.chai.kevin.survey.SurveyElement
+import org.chai.kevin.survey.SurveyProgram
+import org.chai.kevin.survey.SurveySection
+import org.chai.kevin.survey.SurveySimpleQuestion
+import org.chai.kevin.survey.SurveySkipRule
+import org.chai.kevin.survey.SurveyTableColumn
+import org.chai.kevin.survey.SurveyTableQuestion
+import org.chai.kevin.survey.SurveyTableRow
+import org.chai.kevin.util.JSONUtils
+import org.chai.kevin.value.RawDataElementValue
+import org.chai.kevin.value.Value
 
-class Initializer {
+public class Initializer {
 
 	static Date mar01 = getDate( 2005, 3, 1 );
 	static Date mar31 = getDate( 2005, 3, 31 );
@@ -193,7 +168,8 @@ class Initializer {
 			
 			def butaro = new DataLocation(names: j(["en":"Butaro"]), code: "Butaro DH", location: burera, type: dh).save(failOnError: true)
 			def kivuye = new DataLocation(names: j(["en":"Kivuye"]), code: "Kivuye HC", location: burera, type: hc).save(failOnError: true)
-			burera.dataLocations = [butaro, kivuye]
+			def newDataLocationHc = new DataLocation(names: j(["en":"New Data Location"]), code: "New Data Location HC", location: burera, type: hc).save(failOnError: true)
+			burera.dataLocations = [butaro, kivuye, newDataLocationHc]
 			burera.save(failOnError: true)
 		}
 
@@ -909,6 +885,7 @@ class Initializer {
 					names:j(["en":"A0"]), descriptions:j(["en":"A0"]),
 					program: hmr,
 					data: RawDataElement.findByCode("CODE1"),
+					average: null,
 					order: 1,
 					code: "A0",
 					category: nursesCat,
@@ -1122,6 +1099,23 @@ class Initializer {
 			fctTarget3.targetOptions << [fctTargetOption5, fctTargetOption6]
 			fctTarget3.save(failOnError:true)
 			
+			FctTarget fctTarget4 = new FctTarget(
+				names:j(["en":"Fct Target 4"]), descriptions:j([:]),
+				program: hmr,
+				targetOptions: [],
+				code:"TARGET 4"
+			).save(failOnError:true)
+			
+			FctTargetOption fctTargetOption7 = new FctTargetOption(
+				names:j(["en": "Target Option 7"]),
+				target: fctTarget4,
+				descriptions:j([:]),
+				code:"TARGET OPTION 7",
+				sum: sumMixHC
+			).save(failOnError:true)
+			
+			fctTarget4.targetOptions << [fctTargetOption7]
+			
 			hmr.save(failOnError:true)
 		}
 	}
@@ -1283,7 +1277,7 @@ class Initializer {
 		
 		def planningOutputColumn = new PlanningOutputColumn(
 			planningOutput: planningOutput1,
-			normalizedDataElement: planningElement2,
+			prefix: '[_].basic.instances',
 			names: j(["en": "Test"])
 		)
 		planningOutputColumn.save(failOnError: true)
@@ -1426,7 +1420,6 @@ class Initializer {
 				).save(failOnError: true)
 		}
 	}
-
 		
 	static def createQuestionaire(){
 		if(!Survey.count()){

@@ -101,11 +101,11 @@ public class DsrService {
 		Value value = null;
 		SumValue calculationValue = (SumValue) valueService.getCalculationValue(calculation, location, period, types);
 		if(calculationValue != null){
-			if(target.getAverage()) value = calculationValue.getAverage();
+			if(target.getAverage() != null && target.getAverage()) value = calculationValue.getAverage();
 			else value = calculationValue.getValue();
 		}
 		return value;
-	}	
+	}
 	
 	public List<DsrTargetCategory> getTargetCategories(ReportProgram program){
 		Set<DsrTargetCategory> categories = new HashSet<DsrTargetCategory>();

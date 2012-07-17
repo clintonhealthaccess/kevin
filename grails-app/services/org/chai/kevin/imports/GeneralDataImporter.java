@@ -28,11 +28,9 @@
 package org.chai.kevin.imports;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,12 +40,13 @@ import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.PeriodService;
 import org.chai.kevin.data.Data;
+import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.util.ImportExportConstant;
-import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
@@ -86,6 +85,7 @@ public class GeneralDataImporter extends DataImporter{
 	}
 	
 	private boolean importData(String fileName,ICsvMapReader reader,Integer numberOfLinesToImport, ImportSanitizer sanitizer, String[] headers, Set<DuplicateHelper> duplicateHelpers, Map<String,Integer> positions) throws IOException{
+		Data<?> data=null;
 		// keep data location in memory between rows to optimize
 		DataLocation dataLocation = null;
 		String dataLocationCode = null;
@@ -108,11 +108,9 @@ public class GeneralDataImporter extends DataImporter{
 		while (rowValues != null && importedLines < numberOfLinesToImport) {
 			if (log.isInfoEnabled()) log.info("starting import of line with values: "+rowValues);
 			
-			if(sanitizer.getLineNumberAddress().values().size()==1)
-				if(((sanitizer.getLineNumberAddress().values()).toArray())[0].equals("")) sanitizer.clearLineNumberMap();
 				
 			sanitizer.addLineNumberMap(reader.getLineNumber(), rowValues.get(ImportExportConstant.DATA_VALUE_ADDRESS));
-			Integer lineNumber=  Utils.getKeyByValue(sanitizer.getLineNumberAddress(),rowValues.get(ImportExportConstant.DATA_VALUE_ADDRESS));
+			Integer lineNumber=  reader.getLineNumber();
 			sanitizer.setNumberOfErrorInRows(0);
 			
 			String newDataLocationCode = rowValues.get(ImportExportConstant.DATA_LOCATION_CODE);
@@ -130,13 +128,19 @@ public class GeneralDataImporter extends DataImporter{
 					// clear the value map since we are reading a line for a new location
 					positionsValueMap.clear();
 					sanitizer.clearType();
-					sanitizer.clearLineNumberMap();
 				}
 				
 				dataLocationCode = newDataLocationCode;
 				dataLocation = locationService.findCalculationLocationByCode(dataLocationCode, DataLocation.class);
 				dataElementCode = newDataElementCode;
-				dataElement = dataService.getDataByCode(dataElementCode, RawDataElement.class);
+				
+				data  = dataService.getDataByCode(dataElementCode, Data.class);
+				if(data instanceof RawDataElement)
+					dataElement=(RawDataElement) data;
+				else{
+					dataElement=null;
+					manager.getErrors().add(new ImporterError(fileName,lineNumber,ImportExportConstant.DATA_CODE,"import.error.message.not.raw.data.element"));	
+				}	
 				periodCode = newPeriodCode;
 				period = periodService.getPeriodByCode(periodCode);
 				
@@ -175,7 +179,6 @@ public class GeneralDataImporter extends DataImporter{
 
 			} else {
 					if(dataLocation==null) manager.getErrors().add(new ImporterError(fileName,lineNumber,ImportExportConstant.DATA_LOCATION_CODE,"import.error.message.unknown.data.location"));
-					if(dataElement==null) manager.getErrors().add(new ImporterError(fileName,lineNumber,ImportExportConstant.DATA_CODE,"import.error.message.unknown.raw.data.element"));	
 					if(period==null) manager.getErrors().add(new ImporterError(fileName,lineNumber,ImportExportConstant.PERIOD_CODE,"import.error.message.unknown.period"));	
 					manager.incrementNumberOfUnsavedRows();
 			}
@@ -190,7 +193,6 @@ public class GeneralDataImporter extends DataImporter{
 		}
 		
 		saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, sanitizer);
-		sanitizer.clearLineNumberMap();
 		sanitizer.clearType();
 		return rowValues == null;
 	}
@@ -202,8 +204,8 @@ public class GeneralDataImporter extends DataImporter{
 		if (log.isInfoEnabled()) log.info("importData( fileName "+fileName+" reader "+csvMapReader+")");
 		manager.setCurrentFileName(fileName);
 		final String[] headers = csvMapReader.getCSVHeader(true);
-		Map<String,Type> types = new HashMap<String,Type>();	
-		
+		Map<String,Type> types = new HashMap<String,Type>();
+
 		final ImportSanitizer sanitizer = new ImportSanitizer(fileName,manager.getErrors(), types, dataService);
 		final Map<String,Integer> positions = new HashMap<String,Integer>();
 		final Set<DuplicateHelper> duplicateHelpers = new HashSet<DuplicateHelper>();

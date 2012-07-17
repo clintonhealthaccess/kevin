@@ -65,7 +65,7 @@ class FctController extends AbstractController {
 		else {
 			FctTable fctTable = null
 			if (fctTarget != null)		
-				fctTable = fctService.getFctTable(location, program, fctTarget, period, level, dataLocationTypes);
+				fctTable = fctService.getFctTable(location, program, fctTarget, period, dataLocationTypes);
 			
 			if (log.isDebugEnabled()) log.debug('fct: '+fctTable+", root program: "+program+", root location: "+location)				
 			[
@@ -77,8 +77,7 @@ class FctController extends AbstractController {
 				currentLocation: location,
 				locationTree: locationTree,
 				currentLocationTypes: dataLocationTypes,		
-				skipLevels: skipLevels,
-				currentChildLevel: level
+				skipLevels: skipLevels
 			]
 		}
 	}		

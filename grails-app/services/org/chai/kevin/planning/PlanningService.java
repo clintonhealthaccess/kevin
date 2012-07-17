@@ -11,6 +11,7 @@ import java.util.Set;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
+import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormElement.ElementCalculator;
@@ -104,12 +105,7 @@ public class PlanningService {
 	@Transactional(readOnly=true)
 	public PlanningOutputTable getPlanningOutputTable(PlanningOutput output, DataLocation location) {
 		StoredValue value = (StoredValue)valueService.getDataElementValue(output.getDataElement(), location, output.getPlanning().getPeriod());
-		Map<PlanningOutputColumn, NormalizedDataElementValue> columns = new HashMap<PlanningOutputColumn, NormalizedDataElementValue>();
-		
-		for (PlanningOutputColumn column : output.getColumns()) {
-			columns.put(column, valueService.getDataElementValue(column.getNormalizedDataElement(), location, output.getPlanning().getPeriod()));
-		}
-		return new PlanningOutputTable(output, value, columns);
+		return new PlanningOutputTable(output, value);
 	}
 	
 	private Map<String, Enum> getEnums(PlanningType type) {
@@ -215,12 +211,10 @@ public class PlanningService {
 			refreshValueService.refreshNormalizedDataElement(cost.getDataElement(), location, cost.getPlanningType().getPeriod());
 		}
 	}
-	
+
 	@Transactional(readOnly=false)
 	public void refreshOutputTableIfNeeded(PlanningOutput planningOutput, DataLocation location) {
-		for (PlanningOutputColumn column : planningOutput.getColumns()) {
-			refreshValueService.refreshNormalizedDataElement(column.getNormalizedDataElement(), location, planningOutput.getPlanning().getPeriod());
-		}
+		if (planningOutput.getDataElement() instanceof NormalizedDataElement) refreshValueService.refreshNormalizedDataElement((NormalizedDataElement)planningOutput.getDataElement(), location, planningOutput.getPlanning().getPeriod());
 	}
 	
 	public void setFormValidationService(FormValidationService formValidationService) {

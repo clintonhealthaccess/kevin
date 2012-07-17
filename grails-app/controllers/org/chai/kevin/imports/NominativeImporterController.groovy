@@ -30,7 +30,7 @@ package org.chai.kevin.imports
 
 import java.io.InputStreamReader
 
-import org.chai.kevin.AbstractController
+import org.chai.kevin.AbstractFileUploadController
 import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.DataService;
@@ -41,15 +41,18 @@ import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValueService;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.multipart.commons.CommonsMultipartFile
+import org.springframework.web.multipart.MultipartFile;
+import org.chai.kevin.FileType
 
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-class NominativeImporterController extends AbstractController {
+class NominativeImporterController extends AbstractFileUploadController {
 	
 	LocationService locationService;
 	ValueService valueService;
@@ -67,17 +70,16 @@ class NominativeImporterController extends AbstractController {
 	def uploader = { NominativeImporterCommand cmd ->
 		ImporterErrorManager errorManager = new ImporterErrorManager();
 		if (!cmd.hasErrors()) {
-			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",period="+cmd.period+",dataElement="+cmd.dataElement+" delimiter="+cmd.delimiter+",encoding="+cmd.encoding+")")
+			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",period="+cmd.period+",dataElement="+cmd.rawDataElement+" delimiter="+cmd.delimiter+",encoding="+cmd.encoding+")")
 			
 			NominativeDataImporter importer = new NominativeDataImporter(
 				locationService, valueService, dataService,
 				sessionFactory, transactionManager,
-				errorManager, cmd.dataElement, cmd.period
+				errorManager, cmd.rawDataElement, cmd.period
 			);
-			if (cmd.file.getContentType().equals(FILE_TYPE_ZIP)) importer.importZipFiles(cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)			
-			if (cmd.file.getContentType().equals(FILE_TYPE_CSV)) importer.importCsvFile(cmd.file.getName(), cmd.file.getInputStream(), cmd.encoding, cmd.delimiter)
+			importFile(importer, cmd.file, cmd.encoding, cmd.delimiter, errorManager)			
 			cmd.file.getInputStream().close();
-			
+
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 		}else{
 			this.getModel(cmd,errorManager,IMPORT_FORM);
@@ -88,11 +90,11 @@ class NominativeImporterController extends AbstractController {
 		if(log.isDebugEnabled()) log.debug("getModel(cmd="+cmd+",errorManager="+errorManager+",view="+view+")")
 		
 		List<Period> periods = Period.list([cache: true])
-		List<RawDataElement> dataElements =[]
-		if (cmd?.dataElement != null) dataElements << cmd.dataElement
+		List<RawDataElement> rawDataElements =[]
+		if (cmd?.rawDataElement != null) rawDataElements << cmd.rawDataElement
 		render (view: '/import/'+view, model:[
 					periods: periods,
-					dataElements: dataElements,
+					rawDataElements: rawDataElements,
 					nominativeImporter: cmd,
 					errorManager: errorManager
 				])
@@ -102,10 +104,10 @@ class NominativeImporterController extends AbstractController {
 class NominativeImporterCommand {
 
 	Period period;
-	CommonsMultipartFile file;
+	MultipartFile file;
 	String encoding;
 	Character delimiter;
-	RawDataElement dataElement;
+	RawDataElement rawDataElement;
 	//TODO validate zip file
 	static constraints = {
 		file(blank:false, nullable:false, validator: {val, obj ->
@@ -114,6 +116,6 @@ class NominativeImporterCommand {
 		delimiter(blank:false,nullable:false)
 		encoding(blank:false,nullable:false)
 		period(blank:false,nullable:false)
-		dataElement(blank:false,nullable:false)
+		rawDataElement(blank:false,nullable:false)
 	}
 }

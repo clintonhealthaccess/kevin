@@ -313,7 +313,7 @@ class DataImporterSpec extends IntegrationTests {
 		importer.importZipFiles(new FileInputStream(file), null, null);
 
 		then:
-		importerErrorManagerDate.errors.size() == 1
+		importerErrorManagerDate.errors.size() == 2
 		RawDataElementValue.count()==1
 		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].birth_date").getDateValue().equals(new SimpleDateFormat("dd-MM-yyyy").parse("15-08-1971"));
 	}
@@ -335,7 +335,7 @@ class DataImporterSpec extends IntegrationTests {
 		importer.importZipFiles(new FileInputStream(file), null, ',' as Character);
 
 		then:
-		importerErrorManagerDate.errors.size() == 1
+		importerErrorManagerDate.errors.size() == 2
 		RawDataElementValue.count()==1
 		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].birth_date").getDateValue().equals(new SimpleDateFormat("dd-MM-yyyy").parse("15-08-1971"));
 		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].test").getStringValue() == "éééé"
@@ -358,7 +358,7 @@ class DataImporterSpec extends IntegrationTests {
 		importer.importZipFiles(new FileInputStream(file), null, ';' as Character);
 
 		then:
-		importerErrorManagerDate.errors.size() == 3
+		importerErrorManagerDate.errors.size() == 5
 		RawDataElementValue.count()==0
 	}
 
@@ -379,7 +379,7 @@ class DataImporterSpec extends IntegrationTests {
 		importer.importZipFiles(new FileInputStream(file), "utf-8", null);
 
 		then:
-		importerErrorManagerDate.errors.size() == 1
+		importerErrorManagerDate.errors.size() == 2
 		RawDataElementValue.count()==1
 		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].birth_date").getDateValue().equals(new SimpleDateFormat("dd-MM-yyyy").parse("15-08-1971"));
 		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].test").getStringValue() == "éééé"
@@ -402,7 +402,7 @@ class DataImporterSpec extends IntegrationTests {
 		importer.importZipFiles(new FileInputStream(file), "ISO-8859-1", null);
 
 		then:
-		importerErrorManagerDate.errors.size() == 1
+		importerErrorManagerDate.errors.size() ==2
 		RawDataElementValue.count()==1
 		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].birth_date").getDateValue().equals(new SimpleDateFormat("dd-MM-yyyy").parse("15-08-1971"));
 		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].test").getStringValue() != "éééé"
@@ -583,7 +583,7 @@ class DataImporterSpec extends IntegrationTests {
 		importerErrorManager.errors.size() == 3
 		//please change this error msg code if it is changed in ImporterService
 		importerErrorManager.errors[0].messageCode.equals("import.error.message.unknown.data.location");
-		importerErrorManager.errors[1].messageCode.equals("import.error.message.unknown.raw.data.element");
+		importerErrorManager.errors[1].messageCode.equals("import.error.message.not.raw.data.element");
 		importerErrorManager.errors[2].messageCode.equals("import.error.message.unknown.period");
 
 	}
@@ -639,6 +639,31 @@ class DataImporterSpec extends IntegrationTests {
 		RawDataElementValue.list()[0].value.listValue.size() == 2
 		RawDataElementValue.list()[0].value.listValue[0].numberValue == 1d
 		RawDataElementValue.list()[0].value.listValue[1].numberValue == 1d
+	}
+	
+	def "general import nominative with duplicate column in the file"(){
+		when:
+		def typeCode = Type.TYPE_LIST(Type.TYPE_MAP(["string": Type.TYPE_STRING()]))
+
+		def csvCodeString =
+				"location_code,string,string\n"+
+				BUTARO+",best String,string\n"
+
+		def dataCodeElement = newRawDataElement(CODE(6), typeCode)
+
+		def importerErrorManagerCode = new ImporterErrorManager();
+
+		NominativeDataImporter importer = new NominativeDataImporter(
+				locationService, valueService, dataService,
+				sessionFactory, transactionManager,
+				importerErrorManagerCode, dataCodeElement, Period.list()[0]
+				);
+		importer.importData("File Name",new CsvMapReader(new StringReader(csvCodeString), CsvPreference.EXCEL_PREFERENCE))
+
+		then:
+		importerErrorManagerCode.errors.size() == 1
+		//please change this error msg code if it is changed in ImporterService
+		importerErrorManagerCode.errors[0].messageCode.equals("import.error.message.duplicate.column");
 	}
 
 
@@ -783,11 +808,8 @@ class DataImporterSpec extends IntegrationTests {
 		importerErrorManager.errors.size() == 3
 		//Change message code if changed in messages.properties
 		importerErrorManager.errors[0].messageCode.equals("import.error.message.boolean")
-		//importerErrorManager.errors[0].lineNumber==3
 		importerErrorManager.errors[1].messageCode.equals("import.error.message.number")
-		//importerErrorManager.errors[1].lineNumber==4		
 		importerErrorManager.errors[2].messageCode.equals("import.error.message.number")
-		importerErrorManager.errors[2].lineNumber==5		
 		
 		
 

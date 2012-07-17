@@ -54,12 +54,12 @@ class PlanningOutputColumnController extends AbstractEntityController {
 	}
 
 	def getModel(def entity) {
-		def dataElements = []
-		if (entity.normalizedDataElement != null) dataElements << entity.normalizedDataElement
+		def valuePrefixes = []
+		if (entity.planningOutput?.dataElement != null) valuePrefixes.addAll entity.planningOutput.dataElement.getValuePrefixes("")
 		
 		[
 			planningOutputColumn: entity,
-			dataElements: dataElements
+			valuePrefixes: valuePrefixes
 		]
 	}
 
