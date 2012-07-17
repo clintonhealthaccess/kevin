@@ -1,7 +1,6 @@
 package org.chai.kevin;
 
-import java.util.Map;
-import java.util.Set;
+import grails.plugin.spock.UnitSpec;
 
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
@@ -10,12 +9,8 @@ import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.data.Type.ValueVisitor;
-import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
-
-import grails.plugin.spock.IntegrationSpec;
-import grails.plugin.spock.UnitSpec;
 
 public class TypeUnitSpec extends UnitSpec {
 
