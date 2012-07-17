@@ -96,26 +96,6 @@ public class Utils {
 		if (value == null) return false;
 		return value.matches("(?i).*"+text+".*");
 	}
-	/**
-	 * Return the first occurrence of the key if the map matching the value(one-to-one)
-	 * @param map
-	 * @param value
-	 * @return key
-	 */
-	public static <T,E> T getKeyByValue(Map<T,E> map, E value){
-		for(Entry<T, E> entry: map.entrySet())
-			if(value.equals(entry.getValue()))
-				return entry.getKey();
-		return null;
-	}
-	
-	public static Set<String> getUuids(List<DataLocationType> types) {
-		Set<String> result = new HashSet<String>();
-		for (DataLocationType type : types) {
-			result.add(type.getCode());
-		}
-		return result;
-	}
 	
 	public static String formatNumber(String format, Number value) {
 		if (format == null) format = "#";
