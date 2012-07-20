@@ -9,6 +9,7 @@ abstract class Task {
 	
 	User user
 	TaskStatus status
+	Date added
 	Integer numberOfTries = 0
 	Progress progress
 	Boolean sentToQueue = false

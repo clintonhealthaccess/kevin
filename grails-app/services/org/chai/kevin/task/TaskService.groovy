@@ -13,6 +13,7 @@ class TaskService {
 		
 		// handle Long message…
 		def task = Task.get(taskId)
+		task.merge()
 		
 		if (task != null && task.status != TaskStatus.COMPLETED) {
 			task.status = TaskStatus.IN_PROGRESS

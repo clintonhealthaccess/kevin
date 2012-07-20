@@ -20,7 +20,8 @@ class TaskController extends AbstractController {
 			template: "task/taskList",
 			code: 'task.label',
 			entityCount: Task.count(),
-			entityClass: Task.class
+			entityClass: Task.class,
+			search: true
 		])
 	}
 	
@@ -49,6 +50,7 @@ class TaskController extends AbstractController {
 			// we set the status
 			task.status = TaskStatus.NEW
 			task.user = currentUser
+			task.added = new Date()
 			
 			if (task.validate()) {
 				// we check that it doesn't already exist
