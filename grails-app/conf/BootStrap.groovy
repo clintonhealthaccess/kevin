@@ -1,3 +1,5 @@
+import java.nio.channels.Channel;
+
 import org.chai.kevin.security.Role;
 
 /*
@@ -47,12 +49,42 @@ import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.security.User;
+import org.chai.kevin.task.Task;
+import org.chai.kevin.task.Task.TaskStatus;
 import org.chai.kevin.value.RawDataElementValue;
+import org.springframework.amqp.rabbit.core.ChannelCallback;
 
 class BootStrap {
+	
+	def rabbitTemplate
+	def taskService
 
     def init = { servletContext ->
 
+		// we clear the queue
+		// assumption is that at this point of the startup process,
+		// no task has been picked for processing if
+		// some tasks are still in the queue
+		try {
+			rabbitTemplate.execute(new ChannelCallback() {
+				public Object doInRabbit(com.rabbitmq.client.Channel channel) throws Exception {
+					if (log.isDebugEnabled()) log.debug("deleting adminQueues queue")
+					channel.queueDelete('adminQueues')
+					return null;
+				}
+			})
+		} catch (Exception e) {
+			if (log.isWarnEnabled()) log.warn("cannot connect to rabbitmq - did not delete queues", e);
+		}
+		
+		// we send all the tasks to the queue, except those who are already COMPLETED
+		def tasks = Task.findByStatusNotEqual(TaskStatus.COMPLETED)
+		tasks.each { task ->
+			task.status = TaskStatus.NEW
+			task.save(failOnError: true) 
+			taskService.sendToQueue(task) 
+		}
+		
 		switch (GrailsUtil.environment) {
 		case "production":
 			

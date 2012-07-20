@@ -120,6 +120,7 @@ grails.project.dependency.resolution = {
 		compile ":mail:1.0"
 		compile ":build-info-tag:0.1"
 		compile ":yui-minify-resources:0.1.5"
+		compile ":rabbitmq:1.0.0.RC1"
 		
 		test (":spock:0.6") {changing = false}
 	}

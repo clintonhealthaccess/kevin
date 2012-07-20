@@ -19,6 +19,7 @@ import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.task.Progress;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -48,7 +49,7 @@ public class RefreshValueService {
 	}
 	
 	@Transactional(readOnly = false)
-	public void refreshNormalizedDataElements() {
+	public void refreshNormalizedDataElements(final Progress progress) {
 		final List<NormalizedDataElement> normalizedDataElements = sessionFactory.getCurrentSession().createCriteria(NormalizedDataElement.class).list();
 		while (!normalizedDataElements.isEmpty()) {
 			final NormalizedDataElement normalizedDataElement = normalizedDataElements.get(0);
@@ -56,7 +57,7 @@ public class RefreshValueService {
 			getTransactionTemplate().execute(new TransactionCallbackWithoutResult() {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
-					List<NormalizedDataElement> uptodateElements = refreshNormalizedDataElement(normalizedDataElement);
+					List<NormalizedDataElement> uptodateElements = refreshNormalizedDataElement(normalizedDataElement, progress);
 					normalizedDataElements.removeAll(uptodateElements);
 				}
 			});
@@ -65,7 +66,7 @@ public class RefreshValueService {
 	}
 	
 	@Transactional(readOnly = false)
-	public List<NormalizedDataElement> refreshNormalizedDataElement(NormalizedDataElement normalizedDataElement) {
+	public List<NormalizedDataElement> refreshNormalizedDataElement(NormalizedDataElement normalizedDataElement, Progress progress) {
 		List<NormalizedDataElement> uptodateElements = new ArrayList<NormalizedDataElement>();
 		refreshDataElement(normalizedDataElement, uptodateElements);
 		return uptodateElements;
@@ -190,7 +191,7 @@ public class RefreshValueService {
 	}
 	
 	@Transactional(readOnly = false)
-	public void refreshCalculations() {
+	public void refreshCalculations(final Progress progress) {
 		// TODO get only those who need to be refreshed
 		List<Calculation<?>> calculations = sessionFactory.getCurrentSession().createCriteria(Calculation.class).list();
 		
@@ -198,7 +199,7 @@ public class RefreshValueService {
 			getTransactionTemplate().execute(new TransactionCallbackWithoutResult() {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
-					refreshCalculation(calculation);
+					refreshCalculation(calculation, progress);
 				}
 			});
 			sessionFactory.getCurrentSession().clear();
@@ -206,7 +207,7 @@ public class RefreshValueService {
 	}
 	
 	@Transactional(readOnly = false)
-	public void refreshCalculation(Calculation<?> calculation) {
+	public void refreshCalculation(Calculation<?> calculation, Progress progress) {
 		Map<String, DataElement> dependenciesMap = expressionService.getDataInExpression(calculation.getExpression(), DataElement.class);
 		
 		Date latestDependency = null;

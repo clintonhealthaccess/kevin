@@ -38,6 +38,7 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.task.Progress;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.RawDataElementValue;
@@ -60,7 +61,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		NormalizedDataElementValue.count() == 0
 		
 		when:
-		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new Progress());
 		
 		then:
 		NormalizedDataElementValue.count() == 2
@@ -84,7 +85,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def date2 = value2.timestamp
 		
 		Thread.sleep(1100)
-		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new Progress());
 		
 		then:
 		NormalizedDataElementValue.count() == 2
@@ -130,7 +131,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		normalizedDataElement.timestamp = new Date()
 		normalizedDataElement.save(failOnError: true)
 		Thread.sleep(1100)
-		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new Progress());
 		
 		then:
 		NormalizedDataElementValue.count() == 2
@@ -176,7 +177,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def date2 = value2.timestamp
 		rawDataElement.lastValueChanged = new Date()
 		Thread.sleep(1100)
-		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new Progress());
 		
 		then:
 		NormalizedDataElementValue.count() == 2
@@ -202,7 +203,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
 		def date2 = value2.timestamp
 		Thread.sleep(1100)
-		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new Progress());
 		
 		then:
 		NormalizedDataElementValue.count() == 2
@@ -222,7 +223,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		normalizedDataElement.refreshed = date
 		normalizedDataElement.lastValueChanged = new Date();
-		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new Progress());
 		
 		then:
 		NormalizedDataElementValue.count() == 2
@@ -308,7 +309,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
 		def date2 = value2.timestamp
 		Thread.sleep(1100)
-		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new Progress());
 		
 		then:
 		NormalizedDataElementValue.count() == 2
@@ -330,7 +331,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		
 		when:
 		Thread.sleep(1100)
-		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new Progress());
 
 		then:
 		NormalizedDataElementValue.count() == 2
@@ -342,7 +343,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
-		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new Progress());
 		
 		then:
 		NormalizedDataElementValue.count() == 2
@@ -359,7 +360,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		ratio.refreshed == null
 		
 		when:
-		refreshValueService.refreshCalculation(ratio);
+		refreshValueService.refreshCalculation(ratio, new Progress());
 
 		then:
 		SumPartialValue.count() == 8
@@ -380,7 +381,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		ratio.refreshed == null
 		
 		when:
-		refreshValueService.refreshCalculation(ratio);
+		refreshValueService.refreshCalculation(ratio, new Progress());
 
 		then:
 		RawDataElementValue.count() == 0
@@ -403,7 +404,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		ratio.refreshed == null
 		
 		when:
-		refreshValueService.refreshCalculation(ratio);
+		refreshValueService.refreshCalculation(ratio, new Progress());
 
 		then:
 		NormalizedDataElementValue.count() == 2
@@ -423,7 +424,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		sum.refreshed = date
 		sum.lastValueChanged = new Date();
-		refreshValueService.refreshCalculation(sum);
+		refreshValueService.refreshCalculation(sum, new Progress());
 		
 		then:
 		SumPartialValue.count() == 8
@@ -445,7 +446,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		SumPartialValue.count() == 1
 		
 		when:
-		refreshValueService.refreshCalculation(ratio);
+		refreshValueService.refreshCalculation(ratio, new Progress());
 
 		then:
 		SumPartialValue.count() == 8
@@ -461,7 +462,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
 		
 		when:
-		refreshValueService.refreshNormalizedDataElement(normalizedDataElement2);
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement2, new Progress());
 		
 		then:
 		NormalizedDataElementValue.count() == 4
@@ -496,7 +497,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 //		normalizedDataElement1.save(failOnError: true)
 		
 		when:
-		refreshValueService.refreshNormalizedDataElement(normalizedDataElement2);
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement2, new Progress());
 		
 		then:
 		NormalizedDataElementValue.count() == 4

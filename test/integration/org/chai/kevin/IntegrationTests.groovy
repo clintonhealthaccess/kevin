@@ -58,6 +58,7 @@ import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
+import org.chai.kevin.task.Progress;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.AggregationPartialValue;
@@ -381,16 +382,16 @@ abstract class IntegrationTests extends IntegrationSpec {
 	
 	def refreshNormalizedDataElement() {
 		NormalizedDataElement.list().each {
-			refreshValueService.refreshNormalizedDataElement(it)
+			refreshValueService.refreshNormalizedDataElement(it, new Progress())
 		}
 	}
 	
 	def refreshCalculation() {
 		Sum.list().each {
-			refreshValueService.refreshCalculation(it)
+			refreshValueService.refreshCalculation(it, new Progress())
 		}
 		Aggregation.list().each {
-			refreshValueService.refreshCalculation(it)
+			refreshValueService.refreshCalculation(it, new Progress())
 		}
 	}
 	

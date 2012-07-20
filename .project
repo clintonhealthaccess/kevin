@@ -18,6 +18,16 @@
         </natures>
         <linkedResources>
 	        <link>
+	                <name>.plugin-src-yui-minify-resources-0.1.5-grails-app-resourceMappers</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/yui-minify-resources-0.1.5/grails-app/resourceMappers</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-yui-minify-resources-0.1.5-src-groovy</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/yui-minify-resources-0.1.5/src/groovy</locationURI>
+	        </link>
+	        <link>
 	                <name>.plugin-src-webxml-1.4.1-grails-app-conf</name>
 	                <type>2</type>
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/webxml-1.4.1/grails-app/conf</locationURI>
@@ -103,6 +113,11 @@
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.2-RC1/src/groovy</locationURI>
 	        </link>
 	        <link>
+	                <name>.plugin-src-rabbitmq-1.0.0.RC1-src-groovy</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/rabbitmq-1.0.0.RC1/src/groovy</locationURI>
+	        </link>
+	        <link>
 	                <name>.plugin-src-quartz-1.0-RC2-grails-app-conf</name>
 	                <type>2</type>
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/quartz-1.0-RC2/grails-app/conf</locationURI>
@@ -171,11 +186,6 @@
 	                <name>.plugin-src-jquery-1.7.1-src-groovy</name>
 	                <type>2</type>
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/jquery-1.7.1/src/groovy</locationURI>
-	        </link>
-	        <link>
-	                <name>.plugin-src-grails-melody-1.13-src-groovy</name>
-	                <type>2</type>
-	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/grails-melody-1.13/src/groovy</locationURI>
 	        </link>
 	        <link>
 	                <name>.plugin-src-google-analytics-1.0-grails-app-taglib</name>

@@ -153,18 +153,4 @@ class DataControllerSpec extends IntegrationTests {
 		NormalizedDataElementValue.count() == 0
 	}
 	
-	def "calculate values"() {
-		setup:
-		setupLocationTree()
-		def period1 = newPeriod()
-		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
-		dataController = new DataController()
-		
-		when:
-		dataController.params.data = dataElement.id
-		dataController.calculateValues()
-		
-		then:
-		NormalizedDataElementValue.count() == 2
-	}
 }

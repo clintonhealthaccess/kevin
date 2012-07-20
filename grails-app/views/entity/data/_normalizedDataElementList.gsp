@@ -44,7 +44,7 @@
   									</a>
   								</li>
   								<li>
-  									<a href="${createLinkWithTargetURI(controller:'data', action:'calculateValues', params:[data:normalizedDataElement.id])}">
+  									<a href="${createLinkWithTargetURI(controller:'task', action:'create', params:[class:'CalculateTask', dataId:normalizedDataElement.id])}">
   										<g:message code="dataelement.calculatevalues.label"/>
   									</a>
   								</li>
