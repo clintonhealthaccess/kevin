@@ -18,6 +18,10 @@ abstract class Task {
 	
 	abstract boolean isUnique()
 	
+	static mapping = {
+		version false
+	}
+	
 	static constraints = {
 		user(nullable: false)
 		status(nullable: false)
