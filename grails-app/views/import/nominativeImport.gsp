@@ -13,9 +13,9 @@
 				<div class="clear"></div>
 			</div>
 				<g:form url="[controller:'nominativeImporter', action:'uploader']" useToken="true" method="post" enctype="multipart/form-data">
-					<g:selectFromList name="dataElement.id" label="${message(code:'dataelement.label')}" bean="${nominativeImporter}" field="dataElement" optionKey="id" multiple="false"
-					ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'DataElement'])}"
-					from="${dataElements}" value="${normalizedImporter?.dataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+					<g:selectFromList name="rawDataElement.id" label="${message(code:'rawdataelement.label')}" bean="${nominativeImporter}" field="rawDataElement" optionKey="id" multiple="false"
+					ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'RawDataElement'])}"
+					from="${rawDataElements}" value="${normalizedImporter?.rawDataElement?.id}" values="${rawDataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 					
 					<g:selectFromList name="period.id" label="${message(code:'period.label')}" bean="${nominativeImporter}" field="period" optionKey="id" multiple="false"
 					from="${periods}" value="${normalizedImporter?.period?.id}" optionValue="startDate" />

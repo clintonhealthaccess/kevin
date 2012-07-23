@@ -75,17 +75,14 @@ class GeneralImporterController extends AbstractFileUploadController {
 			GeneralDataImporter importer = new GeneralDataImporter(
 					locationService, valueService, dataService,
 					sessionFactory, transactionManager,
-					errorManager,periodService
+					errorManager, periodService
 					);
-				
 			importFile(importer, cmd.file, cmd.encoding, cmd.delimiter, errorManager)
-			
 			cmd.file.getInputStream().close();
-
+			
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 			
 		}else{
-			if(log.isDebugEnabled()) log.debug("up ok");
 			this.getModel(cmd,errorManager,IMPORT_FORM);
 		}
 	}

@@ -28,10 +28,14 @@
 package org.chai.kevin.imports;
 
 import java.io.IOException;
-import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LocationService;
@@ -40,6 +44,7 @@ import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
@@ -47,10 +52,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.supercsv.io.CsvMapReader;
 import org.supercsv.io.ICsvMapReader;
-import org.supercsv.prefs.CsvPreference;
 
 /**
  * @author Jean Kahigiso M.
@@ -58,7 +60,6 @@ import org.supercsv.prefs.CsvPreference;
  */
 public class NominativeDataImporter extends DataImporter {
 	
-	private static final Integer NUMBER_OF_LINES_TO_IMPORT = 100;
 	private static final Log log = LogFactory.getLog(NominativeDataImporter.class);
 	
 	private LocationService locationService;
@@ -111,13 +112,11 @@ public class NominativeDataImporter extends DataImporter {
 		int importedLines = 0;
 		while (values != null && importedLines < numberOfLinesToImport) {
 			if (log.isInfoEnabled()) log.info("starting import of line with values: "+values);
-			
-			sanitizer.setLineNumber(readFileAsMap.getLineNumber());
 			sanitizer.setNumberOfErrorInRows(0);
 			
-			if(log.isDebugEnabled()) log.debug("current facility code: "+values.get(LOCATION_CODE_HEADER));
+			if(log.isDebugEnabled()) log.debug("current facility code: "+values.get(ImportExportConstant.DATA_LOCATION_CODE));
 			
-			if (values.get(LOCATION_CODE_HEADER)!=null && !values.get(LOCATION_CODE_HEADER).equals(code)) {
+			if (values.get(ImportExportConstant.DATA_LOCATION_CODE)!=null && !values.get(ImportExportConstant.DATA_LOCATION_CODE).equals(code)) {
 				// either we are reading the first line and there is no current location
 				// or we change location
 				
@@ -128,18 +127,20 @@ public class NominativeDataImporter extends DataImporter {
 					
 					// clear the value map since we are reading a line for a new location
 					positionsValueMap.clear();
+
 				}
 				
 				// second we get the new location
 				// 1 update the current code
-				code = values.get(LOCATION_CODE_HEADER);
+				code = values.get(ImportExportConstant.DATA_LOCATION_CODE);
 				// 2 update and save the position	
 				if (positions.get(code) == null) positions.put(code, 0);
 				// 3 update the location
 				dataLocation = locationService.findCalculationLocationByCode(code, DataLocation.class);
 				// if the location is not found, we add an error
+				Integer lineNumber=  readFileAsMap.getLineNumber();
 				if (dataLocation == null) {
-					manager.getErrors().add(new ImporterError(fileName,readFileAsMap.getLineNumber(),LOCATION_CODE_HEADER,"import.error.message.unknown.location"));
+					manager.getErrors().add(new ImporterError(fileName,lineNumber,ImportExportConstant.DATA_LOCATION_CODE,"import.error.message.unknown.location"));
 				} 
 				else {
 					// get the value associated to the new location
@@ -156,7 +157,8 @@ public class NominativeDataImporter extends DataImporter {
 			else {
 				// read values from line and put into valueMap
 				for (String header : headers){
-					if (!header.equals(LOCATION_CODE_HEADER)){
+					if (!header.equals(ImportExportConstant.DATA_LOCATION_CODE)){
+						sanitizer.addLineNumberMap(readFileAsMap.getLineNumber(), "[" + positions.get(code) + "]."+ header);
 						positionsValueMap.put("[" + positions.get(code) + "]."+ header, values.get(header));
 					}		
 				}
@@ -194,36 +196,45 @@ public class NominativeDataImporter extends DataImporter {
 		
 		for (String header : headers)  { 
 			try {
-				if(!header.equals(LOCATION_CODE_HEADER))
+				if(!header.equals(ImportExportConstant.DATA_LOCATION_CODE))
 					types.put("[_]."+header,rawDataElement.getType().getType("[_]."+header));
 			} catch(IllegalArgumentException e){
 				if(log.isWarnEnabled()) log.warn("Column type not found for header"+header, e);
-				manager.getErrors().add(new ImporterError(fileName,csvMapReader.getLineNumber(),header,"import.error.message.unknowm.column.type"));
+				manager.getErrors().add(new ImporterError(fileName,1,header,"import.error.message.unknowm.column.type"));
 			}
 		}
 				
 		final ImportSanitizer sanitizer = new ImportSanitizer(fileName,manager.getErrors(), types, dataService);
 		final Map<String,Integer> positions = new HashMap<String,Integer>();
 		
+		//check for duplicate column in the file
+		Set<String> removeDuplicate = new HashSet<String>(new ArrayList<String>(Arrays.asList(headers)));
+		if(log.isWarnEnabled()) log.warn(" removeDuplicate "+removeDuplicate.size()+" headers length "+headers.length);
+		
 		boolean readEntirely = false;
-		
-		while (!readEntirely) {
-			readEntirely = (Boolean)getTransactionTemplate().execute(new TransactionCallback() {
-				@Override
-				public Object doInTransaction(TransactionStatus arg0) {
-					sessionFactory.getCurrentSession().refresh(rawDataElement);
-					sessionFactory.getCurrentSession().refresh(period);
-					
-					try {
-						return importData(fileName,csvMapReader,NUMBER_OF_LINES_TO_IMPORT, sanitizer,  headers, positions);
-					} catch (IOException e) {
-						return true;
+		if(!Arrays.asList(headers).contains(ImportExportConstant.DATA_LOCATION_CODE) || !(removeDuplicate.size() == headers.length)){
+			if(removeDuplicate.size() < headers.length)
+				manager.getErrors().add(new ImporterError(fileName,1,Arrays.asList(headers).toString(),"import.error.message.duplicate.column"));
+			if(!Arrays.asList(headers).contains(ImportExportConstant.DATA_LOCATION_CODE))
+				manager.getErrors().add(new ImporterError(fileName,1, Arrays.asList(headers).toString(),"import.error.message.unknowm.header"));
+		}else{
+			while (!readEntirely) {
+				readEntirely = (Boolean)getTransactionTemplate().execute(new TransactionCallback() {
+					@Override
+					public Object doInTransaction(TransactionStatus arg0) {
+						sessionFactory.getCurrentSession().refresh(rawDataElement);
+						sessionFactory.getCurrentSession().refresh(period);
+						
+						try {
+							return importData(fileName,csvMapReader,ImportExportConstant.NUMBER_OF_LINES_TO_IMPORT, sanitizer,  headers, positions);
+						} catch (IOException e) {
+							return true;
+						}
 					}
-				}
-			});
-			sessionFactory.getCurrentSession().clear();
+				});
+				sessionFactory.getCurrentSession().clear();
+			}
 		}
-		
 	}
 
 }
