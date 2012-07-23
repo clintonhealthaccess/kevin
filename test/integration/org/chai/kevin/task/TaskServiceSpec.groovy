@@ -31,15 +31,25 @@ class TaskServiceSpec extends IntegrationTests {
 		Task.list()[0].numberOfTries == 1
 	}
 	
-	def "send to queue sets senttoqueue to false when rabbit not running"() {
+	def "send to queue sets senttoqueue"() {
 		setup:
 		def user = newUser('user', 'uuid')
 		def task = new CalculateTask(user: user, status: TaskStatus.NEW, dataId: '1').save(failOnError:true)
 		
 		when:
+		taskService.metaClass.rabbitSend = { Object[] args ->  }
 		taskService.sendToQueue(task)
 		
 		then:
-		Task.list()[0].sentToQueue == false
-	}
+		Task.list()[0].sentToQueue == true
+		
+		// TODO somehow it does not work to override a metaClass method twice inside the same test
+//		when:
+//		taskService.metaClass.rabbitSend = { Object[] args -> throw new RuntimeException() }
+//		taskService.sendToQueue(task)
+//		
+//		then:
+//		Task.list()[0].sentToQueue == false
+	}	
+	
 }

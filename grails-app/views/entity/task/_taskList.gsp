@@ -1,3 +1,5 @@
+<%@ page import="org.chai.kevin.task.Task.TaskStatus" %>
+
 <div class="main">
   <table class="listing">
   	<thead>
@@ -9,11 +11,12 @@
   			<th><g:message code="task.numberoftries.label"/></th>
   			<g:sortableColumn property="status" params="[q:q]" title="${message(code: 'task.status.label')}" />
   			<g:sortableColumn property="added" params="[q:q]" title="${message(code: 'task.added.label')}" defaultOrder="desc" />
+  			<th>Progress</th>
   		</tr>
   	</thead>
   	<tbody>
   		<g:each in="${entities}" status="i" var="task"> 
-  			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+  			<tr id="js_task-${task.id}" class="js_task-entry ${(i % 2) == 0 ? 'odd' : 'even'}" data-id="${task.id}">
   				<td>
   					<ul class="horizontal">
   						<li>
@@ -24,11 +27,12 @@
   					</ul>
   				</td>
   				<td>${task.user.username}</td>  				
-  				<td>${task.class.simpleName.toLowerCase()}</td>
+  				<td>${task.class.simpleName}</td>
   				<td>${task.sentToQueue}</td>
   				<td>${task.numberOfTries}</td>
-  				<td>${task.status}</td>
+  				<td class="js_task-status">${task.status}</td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${task.added}"/></td>
+  				<td><span class="js_progress-bar ${task.status != TaskStatus.IN_PROGRESS?'hidden':''}">${task.retrievePercentage()}</span></td>
   			</tr>
   		</g:each>
   	</tbody>
