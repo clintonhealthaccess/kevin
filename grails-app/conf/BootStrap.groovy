@@ -68,8 +68,8 @@ class BootStrap {
 		try {
 			rabbitTemplate.execute(new ChannelCallback() {
 				public Object doInRabbit(com.rabbitmq.client.Channel channel) throws Exception {
-					if (log.isDebugEnabled()) log.debug("deleting adminQueues queue")
-					channel.queueDelete('adminQueues')
+					if (log.isDebugEnabled()) log.debug("purging adminQueue queue")
+					channel.queuePurge('adminQueue')
 					return null;
 				}
 			})
@@ -78,7 +78,7 @@ class BootStrap {
 		}
 		
 		// we send all the tasks to the queue, except those who are already COMPLETED
-		def tasks = Task.findByStatusNotEqual(TaskStatus.COMPLETED)
+		def tasks = Task.findAllByStatusNotEqual(TaskStatus.COMPLETED)
 		tasks.each { task ->
 			task.status = TaskStatus.NEW
 			task.save(failOnError: true) 

@@ -19,8 +19,8 @@ class CalculateTask extends Task {
 	def executeTask() {
 		def data = dataService.getData(dataId, Data.class)
 		if (data != null) {
-			if (data instanceof NormalizedDataElement) refreshValueService.refreshNormalizedDataElement(data, progress)
-			else if (data instanceof Calculation<CalculationPartialValue>) refreshValueService.refreshCalculation(data, progress)
+			if (data instanceof NormalizedDataElement) refreshValueService.refreshNormalizedDataElement(data, this)
+			else if (data instanceof Calculation<CalculationPartialValue>) refreshValueService.refreshCalculation(data, this)
 			refreshValueService.flushCaches()
 		}
 	}

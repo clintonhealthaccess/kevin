@@ -382,16 +382,16 @@ abstract class IntegrationTests extends IntegrationSpec {
 	
 	def refreshNormalizedDataElement() {
 		NormalizedDataElement.list().each {
-			refreshValueService.refreshNormalizedDataElement(it, new Progress())
+			refreshValueService.refreshNormalizedDataElement(it, new TestProgress())
 		}
 	}
 	
 	def refreshCalculation() {
 		Sum.list().each {
-			refreshValueService.refreshCalculation(it, new Progress())
+			refreshValueService.refreshCalculation(it, new TestProgress())
 		}
 		Aggregation.list().each {
-			refreshValueService.refreshCalculation(it, new Progress())
+			refreshValueService.refreshCalculation(it, new TestProgress())
 		}
 	}
 	
@@ -473,4 +473,20 @@ abstract class IntegrationTests extends IntegrationSpec {
 
 		return calendar.getTime();
 	}
+}
+
+class TestProgress implements Progress {
+	
+	void incrementProgress() {
+		
+	}
+	
+	Double retrievePercentage() {
+		return null;
+	}
+	
+	void setMaximum(Integer max) {
+		
+	}
+	
 }

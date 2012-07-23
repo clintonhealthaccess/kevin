@@ -3,20 +3,45 @@ package org.chai.kevin.task
 import org.chai.kevin.security.User
 
 
-abstract class Task {
+abstract class Task implements Progress {
 
 	enum TaskStatus{NEW, COMPLETED, IN_PROGRESS}
 	
 	User user
 	TaskStatus status
-	Date added
+	Date added = new Date()
 	Integer numberOfTries = 0
-	Progress progress
 	Boolean sentToQueue = false
+	
+	// progress
+	Integer max = 0;
+	Integer current = null;
 	
 	def abstract executeTask()
 	
 	abstract boolean isUnique()
+	
+	void incrementProgress() {
+		if (current != null) {
+			Task.withTransaction {
+				current++
+				this.save(flush: true)
+			}
+		}
+	}
+	
+	void setMaximum(Integer max) {
+		Task.withTransaction {
+			this.max = max;
+			this.current = 0;
+			this.save(flush: true)
+		}
+	}
+	
+	Double retrievePercentage() {
+		if (current == null || max == 0) return null
+		return current.doubleValue()/max.doubleValue()
+	}
 	
 	static mapping = {
 		version false
@@ -25,32 +50,9 @@ abstract class Task {
 	static constraints = {
 		user(nullable: false)
 		status(nullable: false)
-		progress(nullable: true)
+		max(nullable: false)
+		current(nullable: true)
 	}
 	
-	static embedded = ['progress']
 }
 
-class Progress {
-	
-	Integer max;
-	Integer current;
-
-	private boolean aborted = false;
-	
-	Double retrievePercentage() {
-		return current.doubleValue()/max.doubleValue();
-	}
-	
-	void abort() {
-		this.aborted = true;
-	}
-	
-	boolean aborted() {
-		return aborted;
-	}
-	
-	void save() {
-		this.save()
-	}
-}

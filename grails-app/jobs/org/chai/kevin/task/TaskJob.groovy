@@ -21,7 +21,7 @@ class TaskJob implements InterruptableJob {
 	void execute(JobExecutionContext context) {
 		if (log.isInfoEnabled()) log.info('executing TaskJob');
 	
-		def tasks = Task.findBySentToQueue(false)
+		def tasks = Task.findAllBySentToQueue(false)
 		tasks.each { task -> taskService.sendToQueue(task) }
 	}
 	

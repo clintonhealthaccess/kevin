@@ -15,7 +15,7 @@ class TaskController extends AbstractController {
 		
 		def tasks = Task.list(params)
 		
-		render (view: '/entity/list', model:[
+		render (view: '/entity/task/list', model:[
 			entities: tasks,
 			template: "task/taskList",
 			code: 'task.label',
@@ -29,7 +29,23 @@ class TaskController extends AbstractController {
 	 * Ajax call that gets the progress of an individual task
 	 */
 	def progress = {
+		if (log.isDebugEnabled()) log.debug("task.progress, params:"+params)
 		
+		def taskIds = params.list('ids')
+		def taskList = taskIds.collect {Task.get(it)}
+		taskList = taskList - null
+		
+		render(contentType:"text/json") {
+			tasks = array {
+				taskList.each { task ->
+					t (
+						id: task.id,
+						status: task.status.name(),
+						progress: task.retrievePercentage()
+					)
+				}
+			}
+		}
 	}
 	
 	/**
@@ -80,6 +96,13 @@ class TaskController extends AbstractController {
 		else {
 			response.sendError(404)
 		}
+	}
+	
+	def purge = {
+		def tasks = Task.findAllByStatus(TaskStatus.COMPLETED)
+		
+		tasks.each { task -> task.delete() }
+		redirect(action: 'list');
 	}
 	
 	def delete = {
