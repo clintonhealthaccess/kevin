@@ -28,10 +28,9 @@
 package org.chai.kevin.imports;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LocationService;
@@ -47,10 +46,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.supercsv.io.CsvMapReader;
 import org.supercsv.io.ICsvMapReader;
-import org.supercsv.prefs.CsvPreference;
 
 /**
  * @author Jean Kahigiso M.

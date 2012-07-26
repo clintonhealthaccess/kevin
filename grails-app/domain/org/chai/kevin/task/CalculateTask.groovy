@@ -30,6 +30,22 @@ class CalculateTask extends Task {
 		return task == null || task.status == TaskStatus.COMPLETED
 	}
 	
+	def cleanTask() {
+		// nothing to do here
+	}
+	
+	String getOutputFilename() {
+		return null
+	}
+	
+	String getFormView() {
+		return null
+	}
+	
+	Map getFormModel() {
+		return null
+	}
+	
 	static constraints = {
 		dataId(nullable: false)	
 	}

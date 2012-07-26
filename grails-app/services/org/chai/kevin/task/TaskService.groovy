@@ -8,11 +8,27 @@ class TaskService {
 	static rabbitQueue = 'adminQueue'
 	static transactional = false
 	
-	def handleMessage(def taskId) {
-		if (log.isDebugEnabled()) log.debug('handleMessage(taskId='+taskId+')')
+	def handleMessage(Long taskId) {
+		if (log.isDebugEnabled()) log.debug('handleMessage(Long taskId='+taskId+')')
 		
+		executeTask(taskId)
+	}
+	
+	def handleMessage(Object taskId) {
+		if (log.isDebugEnabled()) log.debug('handleMessage(Object taskId='+taskId+')')
+		
+		executeTask(taskId)
+	}
+	
+	def handleMessage(String taskId) {
+		if (log.isDebugEnabled()) log.debug('handleMessage(String taskId='+taskId+')')
+		
+		executeTask(taskId)
+	}
+	
+	def executeTask(Long taskId) {
 		// handle Long message…
-		def task 
+		def task
 		Task.withTransaction {
 			task = Task.get(taskId)
 		}
@@ -51,6 +67,7 @@ class TaskService {
 			} catch (Exception e) {
 				if (log.isWarnEnabled()) log.warn("exception trying to send the task to the queue for processing", e);
 			}
+		
 			task.save(failOnError: true)
 		}
 	}

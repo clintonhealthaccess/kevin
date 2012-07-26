@@ -18,7 +18,7 @@
 	  				</a>
 	  				&nbsp;
 	  				<g:if test="${entityClass != null}">
-		  				<a href="${createLinkWithTargetURI(controller: 'entityImporter', action:'importer', params:[entityClass: entityClass.name])+(request.queryString==null?'':'&'+request.queryString)}">
+		  				<a href="${createLinkWithTargetURI(controller: 'task', action:'taskForm', params:[class: 'EntityImportTask', entityClass: entityClass.name])+(request.queryString==null?'':'&'+request.queryString)}">
 		  					<g:message code="default.import.label" />
 		  				</a>
 	  				</g:if>

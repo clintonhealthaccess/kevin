@@ -12,6 +12,7 @@
   			<g:sortableColumn property="status" params="[q:q]" title="${message(code: 'task.status.label')}" />
   			<g:sortableColumn property="added" params="[q:q]" title="${message(code: 'task.added.label')}" defaultOrder="desc" />
   			<th>Progress</th>
+  			<th><g:message code="entity.list.manage.label"/></th>
   		</tr>
   	</thead>
   	<tbody>
@@ -33,6 +34,14 @@
   				<td class="js_task-status">${task.status}</td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${task.added}"/></td>
   				<td><span class="js_progress-bar ${task.status != TaskStatus.IN_PROGRESS?'hidden':''}">${task.retrievePercentage()}</span></td>
+  				<td>
+  					<g:if test="${task.status == TaskStatus.COMPLETED && task.outputFilename != null}">
+	  					<a href="${createLink(controller:'task', action:'downloadOutput', params:[id: task.id])}"><g:message code="task.output.download.label"/></a>
+					</g:if>
+					<g:else>
+						-
+					</g:else>
+  				</td>
   			</tr>
   		</g:each>
   	</tbody>

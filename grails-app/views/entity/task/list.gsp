@@ -22,30 +22,34 @@
 		${render(template:'/templates/progressImages')}
 	
 		$(document).ready(function() {
-			var data = '';
-			$('.js_task-entry').each(function(i, element) {
-				data += '&ids='+$(element).data('id');
-			});
 			
 			window.setInterval(function(){
-  				$.ajax('${createLink(controller: 'task', action: 'progress')}', {
-					data: data,
-					success: function(data, textStatus, jqXHR) {
-						$(data.tasks).each(function(i, element) {
-							var entry = $('#js_task-'+element.id);
-							$(entry).find('.js_progress-bar').progressBar(element.progress * 100,{
-								steps: 0,
-								boxImage: progress['boxImage'],
-								barImage: {
-									0:  progress['barImage_0'],
-									30:  progress['barImage_30'],
-									70:  progress['barImage_70'],
-								}
-							});
-							$(entry).find('.js_task-status').html(element.status);
-						});
-					}
+				var data = '';
+				$('.js_task-entry').each(function(i, element) {
+					if ($(element).find('.js_task-status').html() != 'COMPLETED') data += '&ids='+$(element).data('id');
 				});
+				
+				if (data != '') {
+	  				$.ajax('${createLink(controller: 'task', action: 'progress')}', {
+						data: data,
+						success: function(data, textStatus, jqXHR) {
+							$(data.tasks).each(function(i, element) {
+								var entry = $('#js_task-'+element.id);
+								$(entry).find('.js_progress-bar').progressBar(element.progress * 100,{
+									steps: 0,
+									boxImage: progress['boxImage'],
+									barImage: {
+										0:  progress['barImage_0'],
+										30:  progress['barImage_30'],
+										70:  progress['barImage_70'],
+									}
+								});
+								$(entry).find('.js_task-status').html(element.status);
+								if (element.status == 'IN_PROGRESS') $(entry).find('.js_progress-bar').show();
+							});
+						}
+					});
+				}
 			}, 5000);
 		});
 	</r:script>

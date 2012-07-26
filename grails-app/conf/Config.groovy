@@ -228,8 +228,9 @@ site.entity.list.max=40
 site.period=0
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
-
 site.datalocationtype.checked=["District Hospital","Health Center"]
+
+task.temp.folder='files/'
 
 report.skip.levels=["Sector"]
 dashboard.skip.levels=[]
