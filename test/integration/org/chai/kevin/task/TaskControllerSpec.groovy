@@ -112,7 +112,7 @@ class TaskControllerSpec extends IntegrationTests {
 		setup:
 		def user = newUser('user', 'uuid')
 		setupSecurityManager(user)
-		def task = new CalculateTask(dataId: 1, user: user, status: TaskStatus.NEW).save(failOnError: true)
+		def task = new CalculateTask(dataId: 1, user: user, status: TaskStatus.NEW, sentToQueue: false).save(failOnError: true)
 		taskController = new TaskController()
 		
 		when:
@@ -121,6 +121,38 @@ class TaskControllerSpec extends IntegrationTests {
 		
 		then:
 		Task.count() == 0
+		taskController.response.redirectedUrl == '/'
+	}
+	
+	def "delete complete task"() {
+		setup:
+		def user = newUser('user', 'uuid')
+		setupSecurityManager(user)
+		def task = new CalculateTask(dataId: 1, user: user, status: TaskStatus.COMPLETED, sentToQueue: true).save(failOnError: true)
+		taskController = new TaskController()
+		
+		when:
+		taskController.params.id = task.id
+		taskController.delete()
+		
+		then:
+		Task.count() == 0
+		taskController.response.redirectedUrl == '/'
+	}
+	
+	def "delete task already sent"() {
+		setup:
+		def user = newUser('user', 'uuid')
+		setupSecurityManager(user)
+		def task = new CalculateTask(dataId: 1, user: user, status: TaskStatus.NEW, sentToQueue: true).save(failOnError: true)
+		taskController = new TaskController()
+		
+		when:
+		taskController.params.id = task.id
+		taskController.delete()
+		
+		then:
+		Task.count() == 1
 		taskController.response.redirectedUrl == '/'
 	}
 	

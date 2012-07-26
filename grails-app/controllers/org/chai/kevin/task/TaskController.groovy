@@ -220,15 +220,21 @@ class TaskController extends AbstractController {
 		
 		def entity = Task.get(params.int('id'))
 		if (entity != null) {
-			try {
-				entity.cleanTask()
-				entity.delete()
-				
-				if (!flash.message) flash.message = message(code: 'default.deleted.message', args: [message(code: 'task.label', default: 'entity'), params.id])
-				redirect(uri: targetURI)
+			if (entity.status == TaskStatus.COMPLETED || !entity.sentToQueue) {
+				try {
+					entity.cleanTask()
+					entity.delete()
+					
+					if (!flash.message) flash.message = message(code: 'default.deleted.message', args: [message(code: 'task.label', default: 'entity'), params.id])
+					redirect(uri: targetURI)
+				}
+				catch (org.springframework.dao.DataIntegrityViolationException e) {
+					flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'task.label', default: 'entity'), params.id])
+					redirect(uri: targetURI)
+				}
 			}
-			catch (org.springframework.dao.DataIntegrityViolationException e) {
-				flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'task.label', default: 'entity'), params.id])
+			else {
+				flash.message = message(code: 'task.delete.already.sent')
 				redirect(uri: targetURI)
 			}
 		}
