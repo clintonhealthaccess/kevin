@@ -199,6 +199,12 @@ log4j = {
 		   				   
 	debug  'grails.app',
 		   'org.chai.kevin'
+		   
+	trace 'org.chai.kevin.service.imports.GeneralDataImporter',
+		   'org.chai.kevin.service.imports.NominativeDataImporter',
+		   'org.chai.kevin.service.imports.DataImporter',
+		   'org.chai.kevin.service.imports.DataImporterSpec'
+		   
 }
 
 environments {

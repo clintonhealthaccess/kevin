@@ -6,6 +6,8 @@ import java.text.DecimalFormat;
 
 import org.chai.kevin.dsr.DsrTarget;
 
+import org.chai.kevin.UtilTagLib;
+
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type.ValueType;
@@ -19,8 +21,8 @@ class ValueTagLib {
 	def languageService
 	
 	def reportValue = { attrs, body ->
-		def type = attrs['type']
 		def value = attrs['value']
+		def type = attrs['type']
 		def format = attrs['format']
 		
 		if (value == null || value.isNull()) {
@@ -41,13 +43,11 @@ class ValueTagLib {
 	def reportTooltip = { attrs, body ->
 		def average = attrs['average']
 		def value = attrs['value']
-		def type = attrs['type']
-		def format = attrs['format']
-		def totalDataLocations = attrs['totalDataLocations']
+		def totalLocations = attrs['totalLocations']
 		
-		def formattedValue = languageService.getStringValue(value, type, null, format)
-		
-		out << "Percentage: " + average + '%<br />Number: ' + formattedValue + '<br />Facilities: ' +  totalDataLocations
+		out << message(code: 'fct.report.chart.tooltip.percentage')+': '+average+'<br />'+
+				message(code: 'fct.report.chart.tooltip.value')+': '+value+'<br />'+
+				message(code: 'fct.report.chart.tooltip.datalocations')+': '+totalLocations
 	}
 	
 	def adminValue = {attrs, body ->

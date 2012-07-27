@@ -143,7 +143,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 		def burera = newLocation(j(["en":BURERA]), BURERA, north, district)
 		
 		newDataLocation(j(["en":BUTARO]), BUTARO, burera, dh)
-		newDataLocation(j(["en":KIVUYE]), KIVUYE, burera, hc)
+		newDataLocation(j(["en":KIVUYE]), KIVUYE, burera, hc)				
 	}
 
 	static def setupProgramTree() {

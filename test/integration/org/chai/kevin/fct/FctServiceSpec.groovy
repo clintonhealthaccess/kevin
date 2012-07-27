@@ -1,12 +1,11 @@
 package org.chai.kevin.fct
 
-import org.chai.kevin.Period;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.value.SumValue;
+import org.chai.kevin.data.Type
+import org.chai.kevin.location.DataLocation
+import org.chai.kevin.location.DataLocationType
+import org.chai.kevin.location.Location
+import org.chai.kevin.location.LocationLevel
+import org.chai.kevin.util.Utils
 
 class FctServiceSpec extends FctIntegrationTests { 
 
@@ -20,16 +19,15 @@ class FctServiceSpec extends FctIntegrationTests {
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("\$"+normalizedDataElement.id, CODE(2))
-		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(3), 1, program)
 		def targetOption = newFctTargetOption(CODE(4), 1, target, sum)
 		def location = Location.findByCode(RWANDA)
-		def level = locationService.getLevelAfter(location.getLevel(), new HashSet([LocationLevel.findByCode(SECTOR)]))
 		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
 		def fctTable = null
 		refresh()
 		
 		when:
-		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
+		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes)
 		
 		then:
 		fctTable.getReportValue(Location.findByCode(NORTH), targetOption).getValue().numberValue == 2d
@@ -37,7 +35,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		
 		when:
 		dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)])
-		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
+		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes)
 		
 		then:
 		fctTable.getReportValue(Location.findByCode(NORTH), targetOption).getValue().numberValue == 1d
@@ -51,7 +49,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("\$"+normalizedDataElement.id, CODE(2))
-		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(3), 1, program)
 		def targetOption = newFctTargetOption(CODE(4), 1, target, sum)
 		def location = Location.findByCode(RWANDA)
 		def level = locationService.getLevelAfter(location.getLevel(), new HashSet([LocationLevel.findByCode(SECTOR)]))
@@ -61,7 +59,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		when:
 		def dummy = newLocation("dummy", location, level)
 		refresh()
-		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
+		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes)
 		
 		then:
 		fctTable.getReportValue(Location.findByCode("dummy"), targetOption) == null
@@ -70,7 +68,7 @@ class FctServiceSpec extends FctIntegrationTests {
 				
 	}
 	
-	//TODO fix tests
+//	TODO fix tests
 //	def "get fct with sorted target options"(){
 //		setup:
 //		setupLocationTree()
@@ -145,26 +143,56 @@ class FctServiceSpec extends FctIntegrationTests {
 		def location = Location.findByCode(RWANDA)
 		def lessThan100 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
 		def sum = newSum("\$"+lessThan100.id, CODE(3))
-		def target = newFctTarget(CODE(4), [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(4), 1, program)
 		def targetOption = newFctTargetOption(CODE(5), 1, target, sum)
-		def level = locationService.getLevelAfter(location.getLevel(), new HashSet([LocationLevel.findByCode(SECTOR)]))
 		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
 		def fctTable = null
 		refresh()
 		
 		when:
-		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
+		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes)
 		
 		then:
 		fctTable.topLevelLocations.equals([Location.findByCode(NORTH)])
 		
 		when:
 		location = Location.findByCode(BURERA)
-		level = locationService.getLevelAfter(location.getLevel(), new HashSet([LocationLevel.findByCode(SECTOR)]))
-		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
+		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes)
 		
 		then:
 		fctTable.topLevelLocations.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
+	}
+	
+	def "get fct total report average"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def program = newReportProgram(CODE(1))
+		def location = Location.findByCode(RWANDA)
+		def nde1 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))		
+		def sum1 = newSum("\$"+nde1.id, CODE(3))		
+		def target = newFctTarget(CODE(4), 1, program)
+		def targetOption = newFctTargetOption(CODE(5), 1, target, sum1)
+		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		refresh()
+		
+		when: "total report average = 1"
+		def fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes)
+		
+		then:
+		Utils.formatNumber("#.##", fctTable.getTotalAverage(location)) == "1"
+		
+		when: "add another data location such that total report average < 1"
+		def dummy = newDataLocation(j(["en":"dummy"]), "dummy", Location.findByCode(BURERA), DataLocationType.findByCode(HEALTH_CENTER_GROUP))
+		def ndeHC = newNormalizedDataElement(CODE(6), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"0", (HEALTH_CENTER_GROUP):"1"]]))
+		def sumHC = newSum("\$"+ndeHC.id, CODE(7))
+		def targetHC = newFctTarget(CODE(8), 1, program)
+		def targetOptionHC = newFctTargetOption(CODE(9), 1, targetHC, sumHC)
+		refresh()
+		fctTable = fctService.getFctTable(location, program, targetHC, period, dataLocationTypes)
+		
+		then:
+		Utils.formatNumber("#.##", fctTable.getTotalAverage(location)) == "0.67"
 	}
 
 	def "get fct skip levels"(){

@@ -43,6 +43,7 @@ import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.value.DataValue;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.io.ICsvListWriter;
@@ -73,7 +74,7 @@ public class DataElementExportService extends ExportService{
 		
 	public File exportDataElements(String fileName,List<DataLocation> dataLocations,Set<Period> periods,Set<DataElement<DataValue>> dataElements) throws IOException{
 		if (log.isDebugEnabled()) log.debug(" exportDataElement(String "+fileName+" List<DataLocation>: " + dataLocations + " List<Period>: "+ periods + " Set<DataElement<DataValue>>: " + dataElements + ")");
-		File csvFile = File.createTempFile(fileName, CSV_FILE_EXTENSION);
+		File csvFile = File.createTempFile(fileName, ImportExportConstant.CSV_FILE_EXTENSION);
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
 		this.writeDataElements(writer, dataLocations, periods, dataElements);
@@ -142,16 +143,16 @@ public class DataElementExportService extends ExportService{
 		List<String> headers = new ArrayList<String>();
 		for (LocationLevel level : locationService.listLevels())
 			headers.add(languageService.getText(level.getNames()));
-		headers.add(DATA_LOCATION_CODE);
-		headers.add(DATA_LOCATION_NAME);
-		headers.add(LOCATION_TYPE);
-		headers.add(PERIOD_CODE);
-		headers.add(PERIOD);
-		headers.add(DATA_CLASS);
-		headers.add(DATA_CODE);
-		headers.add(DATA_NAME);
-		headers.add(DATA_VALUE);
-		headers.add(DATA_VALUE_ADDRESS);
+		headers.add(ImportExportConstant.DATA_LOCATION_CODE);
+		headers.add(ImportExportConstant.DATA_LOCATION_NAME);
+		headers.add(ImportExportConstant.LOCATION_TYPE);
+		headers.add(ImportExportConstant.PERIOD_CODE);
+		headers.add(ImportExportConstant.PERIOD);
+		headers.add(ImportExportConstant.DATA_CLASS);
+		headers.add(ImportExportConstant.DATA_CODE);
+		headers.add(ImportExportConstant.DATA_NAME);
+		headers.add(ImportExportConstant.DATA_VALUE);
+		headers.add(ImportExportConstant.DATA_VALUE_ADDRESS);
 		return headers;
 	}
 }

@@ -41,6 +41,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -51,6 +53,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.Value;
 
 /**
@@ -93,7 +96,7 @@ public class Utils {
 		if (value == null) return false;
 		return value.matches("(?i).*"+text+".*");
 	}
-
+	
 	public static String formatNumber(String format, Number value) {
 		if (format == null) format = "#";
 		

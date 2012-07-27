@@ -34,30 +34,26 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.Sanitizer;
+import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValueService;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+
 /**
  * @author Jean Kahigiso M.
  *
  */
 public abstract class DataImporter extends FileImporter {
-
-	private static final Log log = LogFactory.getLog(DataImporter.class);
-	static final String LOCATION_CODE_HEADER = "code";
-	static final String DATA_CODE_HEADER = "data";
-	static final String VALUE_HEADER = "data_value";
 	
 	protected ValueService valueService;
 	protected PlatformTransactionManager transactionManager;
@@ -93,22 +89,17 @@ public abstract class DataImporter extends FileImporter {
 			this.dataService = dataService;
 		}
 		
-		private Integer lineNumber;
+		private Map<Integer,List<String>> lineNumberAddress = new HashMap<Integer, List<String>>();
 		private Integer numberOfErrorInRows;
 		
 		private Enum getAndStoreEnum(String code) {
-			if (log.isDebugEnabled()) log.debug("++enumMap :"+enumMap);
 			if (!enumMap.containsKey(code)) {
 				Enum enume = dataService.findEnumByCode(code);
 				enumMap.put(code, enume);
 			}
 			return enumMap.get(code);
 		}
-		
-		public void setLineNumber(Integer lineNumber) {
-			this.lineNumber = lineNumber;
-		}
-		
+				
 		public Integer getNumberOfErrorInRows() {
 			return numberOfErrorInRows;
 		}
@@ -117,90 +108,138 @@ public abstract class DataImporter extends FileImporter {
 			this.numberOfErrorInRows = numberOfErrorInRows;
 		}
 		
-		public void setType(String header,Type type){
-			types.clear();
+		public void addType(String header,Type type){
 			types.put(header, type);
 		}
-	
+		public void clearType(){
+			types.clear();
+		}
+		
+		public void addLineNumberMap(Integer lineNumber,String address){
+			if(lineNumberAddress.get(lineNumber)!=null)
+				lineNumberAddress.get(lineNumber).add(address);
+			else{
+				List<String> addresses = new ArrayList<String>();
+				addresses.add(address);
+				lineNumberAddress.put(lineNumber,addresses);
+			}	
+		}
+		public void clearLineNumberMap(){
+			lineNumberAddress.clear();
+		}
+
+		public Map<Integer,List<String>> getLineNumberAddress() {
+			return lineNumberAddress;
+		}
+
+		public void setLineNumberAddress(Map<Integer,List<String>> lineNumberAddress) {
+			this.lineNumberAddress = lineNumberAddress;
+		}
+		
 		@Override
-		public Object sanitizeValue(Object value, Type type, String prefix,String genericPrefix) {
+		public Object sanitizeValue(Object value, Type type, String prefix, String genericPrefix) {
 			switch (type.getType()) {
 			case ENUM:
-				return validateImportEnum(fileName,genericPrefix, value);
+				return validateImportEnum(fileName,prefix,genericPrefix, value);
 			case BOOL:
-				return validateImportBool(fileName,genericPrefix, value);
+				return validateImportBool(fileName,prefix,genericPrefix, value);
 			case NUMBER:
-				return validateImportNumber(fileName,genericPrefix, value);
+				return validateImportNumber(fileName,prefix,genericPrefix, value);
 			case TEXT:
-				return validateImportString(fileName,genericPrefix, value);
+				return validateImportString(fileName,prefix,genericPrefix, value);
 			case STRING:
-				return validateImportString(fileName,genericPrefix, value);
+				return validateImportString(fileName,prefix,genericPrefix, value);
 			case DATE:
-				return validateImportDate(fileName,genericPrefix, value);
+				return validateImportDate(fileName,prefix,genericPrefix, value);
 			default:
-				errors.add(new ImporterError(fileName,lineNumber, prefix, "import.error.message.unknown.type")); 
+				errors.add(new ImporterError(fileName,getLineNumberFromMap(lineNumberAddress, prefix), genericPrefix, "import.error.message.unknown.type")); 
 				return null;
 			}
 		}
 		
 	
-		private String validateImportEnum(String fileName, String header, Object value) {
-			Enum enume = getAndStoreEnum(types.get(header).getEnumCode());
+		private String validateImportEnum(String fileName, String prefixHeader, String genericPrefixHeader, Object value) {
+			if (log.isTraceEnabled()) log.trace("looking for map content: " + types + " prefixHeader" + prefixHeader + " genericPrefixHeader" + genericPrefixHeader);
+			Type type;
+			if (types.get(prefixHeader) != null)
+				type = types.get(prefixHeader);
+			else
+				type = types.get(genericPrefixHeader);
+
+			Enum enume = getAndStoreEnum(type.getEnumCode());
 			if (enume != null) {
 				EnumOption option = enume.getOptionForValue(value.toString());
-				if (option != null) return option.getValue();
+				if (option != null)
+					return option.getValue();
 			}
-			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(fileName,lineNumber, header,"import.error.message.enume"));
+			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows() + 1);
+			errors.add(new ImporterError(fileName, getLineNumberFromMap(lineNumberAddress, prefixHeader), prefixHeader,
+					"import.error.message.enume"));
 			return value.toString();
 		}
 
-		private Boolean validateImportBool(String fileName,String header, Object value){
-			if (((String) value).equals("0") || ((String) value).equals("1"))
-				if (((String) value).equals("1"))
+		private Boolean validateImportBool(String fileName,String prefixHeader,String header, Object value){
+			if(log.isTraceEnabled()) log.trace("imported bool value :"+value);
+			if (((String) value).equals(ImportExportConstant.TRUE) || ((String) value).equals(ImportExportConstant.FALSE))
+				if (((String) value).equals(ImportExportConstant.TRUE))
 					return true;
 				else
 					return false;
+			
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows() + 1);
-			errors.add(new ImporterError(fileName,lineNumber, header,"error.message.boolean"));
+			errors.add(new ImporterError(fileName,getLineNumberFromMap(lineNumberAddress, prefixHeader), header,"import.error.message.boolean"));
 			return null;
 		}
 		
-		private Number validateImportNumber(String fileName,String header, Object value) {
+		private Number validateImportNumber(String fileName,String prefixHeader,String header, Object value) {
 			try {
 				return Double.parseDouble((String) value);
 			} catch (NumberFormatException e) {
-				if (log.isDebugEnabled()) log.debug("value in this cell [Line: " + lineNumber+ ",Column: " + header + "] has to be a Number"+ value, e);
+				if (log.isDebugEnabled()) log.debug("value in lineNumberAddress map:"+lineNumberAddress+" in this cell [Line: " + getLineNumberFromMap(lineNumberAddress, prefixHeader)+ ",Column: prefixHeader:"+prefixHeader+ "genericHeader :" + header + "] has to be a Number"+ value, e);
 			}
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(fileName,lineNumber, header,"import.error.message.number"));
+			errors.add(new ImporterError(fileName,getLineNumberFromMap(lineNumberAddress, prefixHeader), header,"import.error.message.number"));
 			return null;
 		}
 		
-		private String validateImportString(String fileName,String header, Object value){
+		private String validateImportString(String fileName,String prefixHeader,String header, Object value){
 			if(value instanceof String || value.equals(""))
 				return (String) value;
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(fileName,lineNumber, header, "import.error.message.string.text")); 
+			errors.add(new ImporterError(fileName,getLineNumberFromMap(lineNumberAddress, prefixHeader), header, "import.error.message.string.text")); 
 			return null;
 		}
 		
-		private Date validateImportDate(String fileName,String header, Object value){
+		private Date validateImportDate(String fileName,String prefixHeader,String header, Object value){
 			if(value instanceof String)
 				try {
 					return Utils.parseDate((String)value);
 				} catch (ParseException e) {
-					if (log.isDebugEnabled()) log.debug("value in this cell [Line: " + lineNumber+ ",Column: " + header + "] has to be a Date (dd-MM-yyyy)"+ value, e);
+					if (log.isDebugEnabled()) log.debug("value in lineNumberAddress map:"+lineNumberAddress+" in this cell [Line: " + getLineNumberFromMap(lineNumberAddress, prefixHeader)+ ",Column: prefixHeader:"+prefixHeader+ "genericHeader :" + header + "] has to be a Date (dd-MM-yyyy)"+ value, e);
 				}
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(fileName,lineNumber, header, "import.error.message.date")); 
+			errors.add(new ImporterError(fileName,getLineNumberFromMap(lineNumberAddress, prefixHeader), header, "import.error.message.date")); 
 			return null;
 		}
+
+		@Override
+		public String toString() {	
+			return "ImportSanitizer [types=" + types + ", lineNumberAddress="
+					+ lineNumberAddress + "]";
+		}
 		
+	}
+	public Integer getLineNumberFromMap(Map<Integer,List<String>> map, String address){
+		for(Entry<Integer, List<String>> element : map.entrySet()){
+			if(element.getValue().contains(address))
+				return element.getKey();
+		}
+		return null;
 	}
 	
 	protected void saveAndMergeIfNotNull(RawDataElementValue rawDataElementValue, Map<String,Object> positionsValueMap, ImportSanitizer sanitizer) {
 		if (rawDataElementValue != null) {
+			if (log.isTraceEnabled()) log.trace("sanitizer line: "+sanitizer);
 			if (log.isDebugEnabled()) log.debug("merging with data from map of header and data "+ positionsValueMap);
 			if (log.isTraceEnabled()) log.trace("value before merge" + rawDataElementValue.getValue());
 			rawDataElementValue.setValue(
@@ -210,7 +249,9 @@ public abstract class DataImporter extends FileImporter {
 			
 			valueService.save(rawDataElementValue);
 			if (log.isTraceEnabled()) log.trace("saved rawDataElement: "+ rawDataElementValue.getValue());
+			sanitizer.clearLineNumberMap();
 		}
 	}
+	
 	
 }

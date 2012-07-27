@@ -24,7 +24,7 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 	def "fct target list"() {
 		setup:
 		def program = newReportProgram(CODE(1))
-		def target = newFctTarget(CODE(1), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(1), 1, program)
 		fctTargetController = new FctTargetController()
 		
 		when:
@@ -41,7 +41,7 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def program = newReportProgram(CODE(1))
-		def target = newFctTarget(CODE(1), [], program)
+		def target = newFctTarget(CODE(1), 1, program)
 		fctTargetController = new FctTargetController()
 		
 		when:

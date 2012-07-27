@@ -49,11 +49,7 @@ public class EntityImporter extends FileImporter {
 
 	public void importData(String filename, ICsvMapReader csvMapReader) throws IOException {
 		if (log.isDebugEnabled()) log.debug("importData(filename: " + filename + ", reader: "+csvMapReader+")");
-			
-		manager.setNumberOfSavedRows(0);
-		manager.setNumberOfUnsavedRows(0);
-		manager.setNumberOfRowsSavedWithError(0);
-		
+				
 		try {						
 			//headers
 			final String[] headers = csvMapReader.getCSVHeader(true);

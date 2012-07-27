@@ -35,9 +35,9 @@ public class FctService {
 	
 	@Cacheable("fctCache")
 	@Transactional(readOnly = true)
-	public FctTable getFctTable(Location location, ReportProgram program, FctTarget target, Period period, LocationLevel level, Set<DataLocationType> types) {		
+	public FctTable getFctTable(Location location, ReportProgram program, FctTarget target, Period period, Set<DataLocationType> types) {		
 		if (log.isDebugEnabled()) 
-			log.debug("getFctTable(period="+period+",location="+location+",level="+level+",program="+program+",target="+target+")");				
+			log.debug("getFctTable(period="+period+",location="+location+",program="+program+",target="+target+")");				
 				
 		Map<CalculationLocation, Map<FctTargetOption, SumValue>> valueMap = new HashMap<CalculationLocation, Map<FctTargetOption, SumValue>>();
 		List<FctTargetOption> targetOptions = new ArrayList<FctTargetOption>();
