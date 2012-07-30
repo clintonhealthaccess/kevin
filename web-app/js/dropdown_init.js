@@ -15,7 +15,7 @@ $(document).delegate(".js_dropdown a.js_dropdown-link", 'click', function(e) {
 	if ($(e.target).attr('href') == '#') return false;
 });
 $(document).bind('click', function(e) {
-	if (!$(e.target).hasClass('js_dropdown-selected')) {
+	if (!$(e.target).hasClass('js_dropdown-selected') && !$(e.target).hasClass('js_dropdown-ignore')) {
 		reset(e.target)
 	}	
 });

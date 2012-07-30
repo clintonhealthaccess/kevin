@@ -54,7 +54,7 @@ class UrlMappings {
 		
 		"/editSurvey/$action/$location?"(controller:"editSurvey")
 		
-		"/summary/$action/$location?"(controller:"summary")
+		"/surveySummary/$action/$location?/$survey?"(controller:"surveySummary")
 		
 		"/editPlanning/$action/$location?"(controller:"editPlanning")
 		
