@@ -1,9 +1,16 @@
 <table class="nested push-top-10 ${dsrTable.targets.size() > 3 ? 'col4' : ''}">
 	<thead>
 		<tr>
-			<th><g:message code="dsr.report.table.location"/>
+			<th>
 				<a class="expand-all" href="#"><g:message code="report.program.table.tree.expandall"/></a> 
 				<a class="collapse-all" href="#"><g:message code="report.program.table.tree.collapseall"/></a>
+				&nbsp;
+				<g:if test="${currentLocation.parent != null}">
+	               	<% def parentLocationLinkParams = new HashMap(params) %>
+					<% parentLocationLinkParams['location'] = currentLocation.parent?.id+"" %>					
+					<a class="level-up" href="${createLink(controller:'dsr', action:'view', params:parentLocationLinkParams)}">
+					<g:message code="report.view.label" args="${[i18n(field: currentLocation.parent.names)]}"/></a>							  
+				</g:if>				
 			</th>
 			<g:if test="${dsrTable.targets != null && !dsrTable.targets.empty}">
 				<g:each in="${dsrTable.targets}" var="target">

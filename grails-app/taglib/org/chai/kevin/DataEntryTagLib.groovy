@@ -16,11 +16,11 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.LanguageService;
 
 class DataEntryTagLib {
 
-	def languageService
-	
+	def languageService	
 	
 	def eachOption = { attrs, body ->
 		if (log.isDebugEnabled()) log.debug('eachOption(attrs='+attrs+',body='+body+')')

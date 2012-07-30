@@ -90,7 +90,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		value = new SumValue([partialValue1, partialValue2, partialValue3], percentage, null, new Location())
 		
 		then:
-		value.getAverage().equals(v("0.4375"))
+		value.getAverage().equals(v("0.44"))
 		value.getValue().equals(v("3.5"))
 		value.getNumberOfDataLocations() == 8
 		

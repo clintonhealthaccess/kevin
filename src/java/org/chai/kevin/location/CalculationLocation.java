@@ -75,20 +75,20 @@ public abstract class CalculationLocation {
 	
 	@Transient
 	public abstract Location getParent();		
-	
-	@Transient
-	public abstract List<DataLocation> getDataLocations();
-	
-	@Transient
-	public abstract List<DataLocation> getDataLocations(Set<LocationLevel> skipLevels, Set<DataLocationType> types);		
-	
+
 	@Transient
 	public abstract List<Location> getChildren();
 	
 	@Transient
+	public abstract List<DataLocation> getDataLocations();
+			
+	@Transient
 	public abstract List<Location> getChildren(Set<LocationLevel> skipLevels);
 
-	public boolean collectLocations(List<Location> locations, List<DataLocation> dataLocations, Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
+	@Transient
+	public abstract List<DataLocation> getDataLocations(Set<LocationLevel> skipLevels, Set<DataLocationType> types);		
+	
+	public boolean collectLocations(List<CalculationLocation> locations, List<DataLocation> dataLocations, Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
 		boolean result = false;
 		for (Location child : getChildren(skipLevels)) {
 			result = result | child.collectLocations(locations, dataLocations, skipLevels, types);
@@ -106,6 +106,7 @@ public abstract class CalculationLocation {
 		return result;
 	}
 	
+	//gets only data location tree
 	public List<DataLocation> collectDataLocations(Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
 		List<DataLocation> dataLocations = new ArrayList<DataLocation>();
 		collectLocations(null, dataLocations, skipLevels, types);

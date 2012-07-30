@@ -47,7 +47,8 @@ import org.chai.kevin.survey.SurveyProgram
 import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.SurveySection
 import org.chai.kevin.survey.summary.SurveySummaryPage;
-import org.chai.kevin.util.Utils
+import org.chai.kevin.util.Utils;
+import org.chai.kevin.util.Utils.ReportType
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 public abstract class AbstractController {
@@ -116,11 +117,23 @@ public abstract class AbstractController {
 		
 	}
 	
-	def getLevel(){
-		LocationLevel level = null
-		level = LocationLevel.get(params.int('level'));
-		return level
-	}	
+	public ReportType getReportType(){
+		def reportType = null
+		if(params['reportType'] != null && !params['reportType'].empty){
+			reportType = params['reportType']
+			try{
+				reportType = ReportType.valueOf(ReportType.class, reportType.toUpperCase())
+			}
+			catch(IllegalArgumentException ex){
+				reportType = ReportType.TABLE
+			}			
+		}
+		else{
+			//TODO config.site.blah
+			reportType = ReportType.TABLE
+		}
+		return reportType;
+	}
 	
 	def adaptParamsForList() {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
@@ -144,7 +157,7 @@ public abstract class AbstractController {
 			if(key == 'dataLocationTypes') 
 				urlValue = params.list(key).toString()
 			else 
-				urlValue = params[key].toString()		
+				urlValue = params[key].toString()
 			
 			if(redirectValue != null && urlValue != redirectValue)
 				redirect = true
@@ -161,7 +174,7 @@ public abstract class AbstractController {
 					", location: "+newParams['location']+
 					", dataLocationTypes: "+newParams['dataLocationTypes']);
 			}
-			return newParams;									
+			return newParams;
 		}
 	}
 }

@@ -47,7 +47,7 @@ class FilterTagLibSpec extends IntegrationTests {
 			controller:'controller',
 			action:'action',
 			params: [location:Location.findByCode(RWANDA).id+'', level:LocationLevel.findByCode(NATIONAL).id+'', filter: 'location'],
-			skipLevels: new HashSet([LocationLevel.findByCode(PROVINCE)])], null) == 
+			locationSkipLevels: new HashSet([LocationLevel.findByCode(PROVINCE)])], null) == 
 		"/controller/action?level="+LocationLevel.findByCode(DISTRICT).id+"&location="+Location.findByCode(RWANDA).id+"&filter=location"
 	}
 	
@@ -89,7 +89,7 @@ class FilterTagLibSpec extends IntegrationTests {
 			controller:'controller',
 			action:'action',
 			params: [location:Location.findByCode(BURERA).id+'', level:LocationLevel.findByCode(DISTRICT).id+'', filter:'level'],
-			skipLevels: new HashSet([LocationLevel.findByCode(PROVINCE)])], null) == 
+			locationSkipLevels: new HashSet([LocationLevel.findByCode(PROVINCE)])], null) == 
 		"/controller/action?level="+LocationLevel.findByCode(DISTRICT).id+"&location="+Location.findByCode(RWANDA).id+"&filter=level"
 	}
 }

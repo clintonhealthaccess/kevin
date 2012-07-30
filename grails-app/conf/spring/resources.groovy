@@ -30,14 +30,14 @@ import org.chai.kevin.ExpressionService
 import org.chai.kevin.InfoService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.RefreshValueService
-import org.chai.kevin.chart.ChartService
+//import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationService;
-import org.chai.kevin.chart.ChartService
+//import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardValueService
 import org.chai.kevin.dashboard.DashboardService
@@ -69,6 +69,7 @@ def config = CH.config
 Set<String> reportSkipLevels = config.report.skip.levels
 Set<String> dashboardSkipLevels = config.dashboard.skip.levels
 Set<String> dsrSkipLevels = config.dsr.skip.levels
+Set<String> dsrViewMapSkipLevels = config.dsr.view.map.skip.levels
 Set<String> fctSkipLevels = config.fct.skip.levels
 Set<String> costSkipLevels = config.cost.skip.levels
 Set<String> surveySkipLevels = config.survey.skip.levels
@@ -135,10 +136,10 @@ beans = {
 		sessionFactory = ref("sessionFactory")
 	}
 	
-	chartService(ChartService){
-		valueService = ref("valueService")
-		periodService = ref("periodService")
-	}
+//	chartService(ChartService){
+//		valueService = ref("valueService")
+//		periodService = ref("periodService")
+//	}
 
 	reportService(ReportService){
 		dataService = ref("dataService")
@@ -154,20 +155,21 @@ beans = {
 		languageService = ref("languageService")
 		sessionFactory = ref("sessionFactory")
 		dashboardPercentageService = ref("dashboardPercentageService")
-		skipLevels = dashboardSkipLevels
+		locationSkipLevels = dashboardSkipLevels
 	}
 	
 	dsrService(DsrService){		
 		reportService = ref("reportService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
-		skipLevels = dsrSkipLevels
+		locationSkipLevels = dsrSkipLevels
+		viewMapSkipLevels = dsrViewMapSkipLevels
 	}
 	
 	fctService(FctService){
 		reportService = ref("reportService")
 		valueService = ref("valueService")
-		skipLevels = fctSkipLevels
+		locationSkipLevels = fctSkipLevels
 	}
 	
 	mapsService(MapsService) {

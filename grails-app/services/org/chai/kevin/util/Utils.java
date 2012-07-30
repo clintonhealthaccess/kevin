@@ -62,6 +62,18 @@ import org.chai.kevin.value.Value;
  */
 public class Utils {
 	
+	public enum ReportType {
+		MAP, TABLE		
+//		TODO
+//		@Override
+//		public String toString() {
+//			return this.toString().toLowerCase();
+//		}
+//		public ReportType fromString(String reportType){
+//			return ReportType.valueOf(ReportType.class, reportType.toUpperCase());
+//		}
+	};
+	
 	private final static String DATE_FORMAT = "dd-MM-yyyy";
 	private final static String DATE_FORMAT_TIME = "dd-MM-yyyy hh:mm:ss";
 	private final static String ZIP_FILE_EXTENSION = ".zip";
@@ -159,7 +171,7 @@ public class Utils {
 		return "";
 	}
 	
-	//TODO get ride of this
+	//TODO get rid of this
 	public static File getZipFile(File file, String filename) throws IOException {		
 		List<File> files = new ArrayList<File>();
 		files.add(file);

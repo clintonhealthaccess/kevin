@@ -55,7 +55,7 @@ public class DashboardService {
 	private ReportService reportService;
 	private LanguageService languageService;
 	private SessionFactory sessionFactory;
-	private Set<String> skipLevels;
+	private Set<String> locationSkipLevels;
 	private DashboardValueService dashboardPercentageService;	
 	
 	@Transactional(readOnly = true)
@@ -84,12 +84,12 @@ public class DashboardService {
 	@Transactional(readOnly = true)
 	public Dashboard getLocationDashboard(Location location, ReportProgram program, Period period, Set<DataLocationType> types, boolean compare) {
 		
-		List<CalculationLocation> locationEntities = new ArrayList<CalculationLocation>();
+		List<CalculationLocation> calculationLocations = new ArrayList<CalculationLocation>();
 		if(compare) 
-			locationEntities.add(location);
+			calculationLocations.add(location);
 		else {
 			Set<LocationLevel> skipLevels = getSkipLocationLevels();
-			locationEntities.addAll(location.getChildrenEntitiesWithDataLocations(skipLevels, types));			
+			calculationLocations.addAll(location.getChildrenWithData(skipLevels, types, true));			
 		}
 		
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		
@@ -99,13 +99,13 @@ public class DashboardService {
 		Map<CalculationLocation, Map<DashboardEntity, Value>> valueMap = 
 				new HashMap<CalculationLocation, Map<DashboardEntity, Value>>();
 		
-		if(locationEntities.isEmpty())
-			return new Dashboard(locationEntities, dashboardEntities, locationPath, valueMap);
+		if(calculationLocations.isEmpty())
+			return new Dashboard(calculationLocations, dashboardEntities, locationPath, valueMap);
 		
 		locationPath = calculateLocationPath(location);
-		valueMap = getValues(locationEntities, dashboardEntities, period, types);
+		valueMap = getValues(calculationLocations, dashboardEntities, period, types);
 		
-		return new Dashboard(locationEntities, dashboardEntities, locationPath, valueMap);
+		return new Dashboard(calculationLocations, dashboardEntities, locationPath, valueMap);
 	}
 	
 	private Map<CalculationLocation, Map<DashboardEntity, Value>> getValues(List<CalculationLocation> locations, List<DashboardEntity> dashboardEntities, Period period, Set<DataLocationType> types) {
@@ -188,15 +188,15 @@ public class DashboardService {
 	}
 	
 	public Set<LocationLevel> getSkipLocationLevels(){
-		return reportService.getSkipLocationLevels(skipLevels);
+		return reportService.getSkipReportLevels(locationSkipLevels);
 	}
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	
-	public void setSkipLevels(Set<String> skipLevels) {
-		this.skipLevels = skipLevels;
+	public void setLocationSkipLevels(Set<String> locationSkipLevels) {
+		this.locationSkipLevels = locationSkipLevels;
 	}
 	
 	public void setDashboardPercentageService(DashboardValueService dashboardPercentageService) {

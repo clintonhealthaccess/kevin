@@ -19,15 +19,16 @@
 				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params]"/>
 			</div>
 			<div class="main">
-				<g:topLevelReportTabs linkParams="${params}" exclude="${['dashboardEntity']}" />
+				<g:topLevelReportTabs linkParams="${params}" exclude="${['dashboardEntity', 'reportType']}" />
 								
 				<ul class="clearfix">
   					<li class="push-20">
-						<g:render template="/templates/reportTitle" model="[program: currentProgram, title: i18n(field: currentProgram.names), descriptions: i18n(field: currentProgram.names), file: 'star_small.png']"/>								
-						<% def levelUpLinkParamsProgram = new HashMap(params) %>
+						<g:render template="/templates/reportTitle" model="[program: currentProgram, title: i18n(field: currentProgram.names), descriptions: i18n(field: currentProgram.names), file: 'star_small.png']"/>														
 						<g:if test="${currentProgram.parent != null}">
-							<% levelUpLinkParamsProgram['program'] = currentProgram.parent.id+"" %>
-							<a class="level-up" href="${createLink(controller:'dashboard', action:actionName, params:levelUpLinkParamsProgram)}">Level Up</a>	  
+							<% def parentProgramLinkParams = new HashMap(params) %>
+							<% parentProgramLinkParams['program'] = currentProgram.parent.id+"" %>
+							<a class="level-up" href="${createLink(controller:'dashboard', action:'view', params:parentProgramLinkParams)}">
+								<g:message code="report.view.label" args="${[i18n(field: currentProgram.parent.names)]}"/></a>	  
 					  	</g:if>
 												
 						<g:if test="${programDashboard != null && programDashboard.hasData()}">
@@ -44,11 +45,11 @@
 	                </li>
 	                <li class="push-10">
 	                	<g:render template="/templates/reportTitle" model="[title: i18n(field: currentLocation.names), file: 'marker_small.png']"/>
-		                
-						<% def levelUpLinkParamsLocation = new HashMap(params) %>
 		                <g:if test="${currentLocation.parent != null}">
-							<% levelUpLinkParamsLocation['location'] = currentLocation.parent?.id+"" %>
-							<a class="level-up" href="${createLink(controller:'dashboard', action:actionName, linkParams:levelUpLinkParamsLocation)}">Level Up</a>		  
+		                	<% def parentLocationLinkParams = new HashMap(params) %>
+							<% parentLocationLinkParams['location'] = currentLocation.parent?.id+"" %>
+							<a class="level-up" href="${createLink(controller:'dashboard', action:'view', linkParams:parentLocationLinkParams)}">
+							<g:message code="report.view.label" args="${[i18n(field: currentLocation.parent.names)]}"/></a>		  
 						</g:if>
 		                						
 		                <g:if test="${locationDashboard != null && locationDashboard.hasData()}">
