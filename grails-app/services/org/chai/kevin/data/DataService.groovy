@@ -93,12 +93,6 @@ class DataService {
 		data.save(validate: false, flush: true)
 	}
 	
-	public <T extends Data<?>> T merge(T data) {
-		// we bypass validation in case there's something
-		// it should be saved anyway
-		data.merge(validate: false, flush: true)
-	}
-	
 	/**
 	 * 
 	 * @throws IllegalArgumentException if the data element has values associated to it

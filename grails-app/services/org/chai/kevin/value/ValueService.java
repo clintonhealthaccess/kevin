@@ -73,6 +73,7 @@ public class ValueService {
 		
 		value.setTimestamp(new Date());
 		sessionFactory.getCurrentSession().saveOrUpdate(value);
+		sessionFactory.getCurrentSession().flush();
 		
 		return value;
 	}

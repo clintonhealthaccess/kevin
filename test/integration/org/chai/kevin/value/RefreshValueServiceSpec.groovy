@@ -391,7 +391,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		then:
 		SumPartialValue.count() == 8
 		SumPartialValue.list()[0].timestamp != null
-		ratio.refreshed != null
+		Sum.list()[0].refreshed != null
 	}
 	
 	def "test refresh calculations refreshes dependencies first - with data element"() {
@@ -413,7 +413,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		RawDataElementValue.count() == 0
 		SumPartialValue.count() == 8
 		SumPartialValue.list()[0].timestamp != null
-		ratio.refreshed != null
+		Sum.list()[0].refreshed != null
 	}
 	
 	def "test refresh calculations progress"() {
@@ -452,8 +452,8 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		NormalizedDataElementValue.count() == 2
 		SumPartialValue.count() == 8
 		SumPartialValue.list()[0].timestamp != null
-		dataElement.refreshed != null
-		ratio.refreshed != null
+		NormalizedDataElement.list()[0].refreshed != null
+		Sum.list()[0].refreshed != null
 	}
 	
 	def "test refresh calculation updates when last value changed is set after refresh"() {
@@ -494,7 +494,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		then:
 		SumPartialValue.count() == 8
 		!SumPartialValue.list()[0].timestamp.equals(timestamp)	
-		!ratio.refreshed.equals(refreshed)
+		!Sum.list()[0].refreshed.equals(refreshed)
 	}
 	
 	def "test refresh normalized data elements refreshes dependencies first"() {

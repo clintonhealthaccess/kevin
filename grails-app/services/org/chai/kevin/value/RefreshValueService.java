@@ -215,18 +215,20 @@ public class RefreshValueService {
 		getTransactionTemplate().execute(new TransactionCallbackWithoutResult() {
 			@Override
 			protected void doInTransactionWithoutResult(TransactionStatus arg0) {
+				NormalizedDataElement newNormalizedDataElement = dataService.getData(normalizedDataElement.getId(), NormalizedDataElement.class);
+				
 				for (Iterator<Object[]> iterator = getCombinations(DataLocation.class); iterator.hasNext();) {
 					Object[] row = (Object[]) iterator.next();
 					DataLocation dataLocation = (DataLocation)row[0];
 					Period period = (Period)row[1];
 					
 					// TODO improve performance by getting all values at the same time
-					updateNormalizedDataElementValue(normalizedDataElement, dataLocation, period);
+					updateNormalizedDataElementValue(newNormalizedDataElement, dataLocation, period);
 					progress.incrementProgress();
 				}
 				
-				normalizedDataElement.setRefreshed(new Date());
-				dataService.merge(normalizedDataElement);
+				newNormalizedDataElement.setRefreshed(new Date());
+				dataService.save(newNormalizedDataElement);
 			}
 		});
 		
@@ -325,18 +327,20 @@ public class RefreshValueService {
 		getTransactionTemplate().execute(new TransactionCallbackWithoutResult() {
 			@Override
 			protected void doInTransactionWithoutResult(TransactionStatus arg0) {
+				Calculation<?> newCalculation = dataService.getData(calculation.getId(), Calculation.class);
+				
 				for (Iterator<Object[]> iterator = getCombinations(CalculationLocation.class); iterator.hasNext();) {
 					Object[] row = (Object[]) iterator.next();
 					CalculationLocation location = (CalculationLocation)row[0];
 					Period period = (Period)row[1];
 					
 					// TODO improve performance by getting all values at the same time
-					updateCalculationPartialValues(calculation, location, period);
+					updateCalculationPartialValues(newCalculation, location, period);
 					progress.incrementProgress();
 				}
 				
-				calculation.setRefreshed(new Date());
-				dataService.merge(calculation);
+				newCalculation.setRefreshed(new Date());
+				dataService.save(newCalculation);
 			}
 		});
 		
