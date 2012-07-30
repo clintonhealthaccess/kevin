@@ -51,7 +51,7 @@ class QuestionController extends AbstractController {
 		List<SurveyQuestion> questions = surveyService.searchSurveyQuestions(params['q'], survey, params);
 		
 		render (view: '/entity/list', model:[
-			template:"questionList",
+			template:"survey/questionList",
 			survey: survey,
 			entities: questions,
 			entityCount: surveyService.countSurveyQuestions(params['q'], survey),
