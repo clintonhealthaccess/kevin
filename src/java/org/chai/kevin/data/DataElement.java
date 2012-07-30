@@ -21,7 +21,6 @@ import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.value.DataValue;
 
 
-
 @Entity(name="DataElement")
 @Table(name="dhsst_data_element")
 @Inheritance(strategy=InheritanceType.JOINED)
