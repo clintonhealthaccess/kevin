@@ -125,12 +125,10 @@ public class Location extends CalculationLocation implements Exportable {
 	}
 	
 	//gets only location tree with data locations
-	public List<CalculationLocation> collectLocationTreeWithData(Set<LocationLevel> skipLevels, Set<DataLocationType> types, boolean dataLocations) {
-		List<CalculationLocation> locations = new ArrayList<CalculationLocation>();
-		collectLocations(locations, null, skipLevels, types);
-		if(dataLocations){
-			locations.addAll(getDataLocations(skipLevels, types));
-		}
+	public List<CalculationLocation> collectLocationTreeWithData(Set<LocationLevel> skipLevels, Set<DataLocationType> types, boolean collectDataLocations) {
+		List<CalculationLocation> locations = new ArrayList<CalculationLocation>();	
+		collectLocations(locations, null, skipLevels, types);	
+		if(collectDataLocations) locations.addAll(collectDataLocations(skipLevels, types));
 		return locations;
 	}
 	

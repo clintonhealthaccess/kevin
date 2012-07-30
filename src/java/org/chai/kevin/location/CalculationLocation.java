@@ -94,14 +94,17 @@ public abstract class CalculationLocation {
 			result = result | child.collectLocations(locations, dataLocations, skipLevels, types);
 		}
 	
+		//data location tree list
 		List<DataLocation> dataLocationsChildren = getDataLocations(skipLevels, types);
 		if (!dataLocationsChildren.isEmpty()) {
 			result = true;
 			if (dataLocations != null) dataLocations.addAll(dataLocationsChildren);
 		}
 		
+		//location tree list
 		if (result) {
-			if (locations != null && !this.collectsData()) locations.add((Location) this);
+			if (locations != null && !this.collectsData()) 
+				locations.add(this);
 		}
 		return result;
 	}

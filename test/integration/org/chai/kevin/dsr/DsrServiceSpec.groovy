@@ -285,11 +285,9 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def program = newReportProgram(ROOT)
 		def location = Location.findByCode(NORTH)
 		def category1 = newDsrTargetCategory(CODE(2), 1)
-		def dataElement1 = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target1 = newDsrTarget(CODE(4), 1, dataElement1, program, category1)
-		def category2 = newDsrTargetCategory(CODE(5), 2)
-		def dataElement2 = newRawDataElement(CODE(6), Type.TYPE_NUMBER())
-		def target2 = newDsrTarget(CODE(7), 2, dataElement2, program, category2)
+		def average = newSum("1", CODE(3))
+		def isAverage = true
+		def target1 = newDsrTarget(CODE(4), 1, average, program, category1)		
 		def types = new HashSet([
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
@@ -300,8 +298,8 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def dsrTable = dsrService.getDsrTable(location, program, period, types, category1, Utils.ReportType.TABLE)
 
 		then:
-		dsrTable.locations.size() == 3
-		dsrTable.locations.equals(s([Location.findByCode(BURERA), DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)]))
+		dsrTable.locations.size() == 4
+		dsrTable.locations.equals(s([Location.findByCode(NORTH), Location.findByCode(BURERA), DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)]))
 		
 		when: //report type is map
 		dsrTable = dsrService.getDsrTable(location, program, period, types, category1, Utils.ReportType.MAP)

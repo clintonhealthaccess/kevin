@@ -125,12 +125,12 @@ class LocationSpec extends IntegrationTests {
 		def children = Location.findByCode(NORTH).collectLocationTreeWithData(skipLevels, types, true)
 		
 		then:
-		children.equals([Location.findByCode(NORTH), Location.findByCode(BURERA), DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
+		children.equals([Location.findByCode(BURERA), Location.findByCode(NORTH), DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
 		
 		when: //without data locations
 		children = Location.findByCode(NORTH).collectLocationTreeWithData(skipLevels, types, false)
 		
 		then:
-		children.equals([Location.findByCode(NORTH), Location.findByCode(BURERA)])
+		children.equals([Location.findByCode(BURERA), Location.findByCode(NORTH)])
 	}
 }

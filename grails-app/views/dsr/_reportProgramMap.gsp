@@ -45,6 +45,9 @@
 						</td>
 					</g:each>
 				</g:if>
+				<g:else>
+					<td></td>
+				</g:else>
 			</tr>
 			<g:each in="${dsrTable.locations}" var="location">
 				<tr>					
@@ -76,6 +79,9 @@
 							</g:else>
 						</g:each>
 					</g:if>
+					<g:else>
+						<td></td>
+					</g:else>
 				</tr>
 			</g:each>
 		</tbody>

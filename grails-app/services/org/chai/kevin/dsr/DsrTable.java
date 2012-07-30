@@ -39,12 +39,12 @@ import org.chai.kevin.value.Value;
 
 public class DsrTable extends ReportTable<DsrTarget, CalculationLocation, Value> {
 	
-	private List<CalculationLocation> locations;
+	private Set<CalculationLocation> locations;
 	private List<DsrTarget> targets;
 	private List<DsrTargetCategory> targetCategories;		
 	
 	public DsrTable(Map<CalculationLocation, Map<DsrTarget, Value>> valueMap, 
-			List<CalculationLocation> locations, List<DsrTarget> targets, List<DsrTargetCategory> targetCategories) {
+			Set<CalculationLocation> locations, List<DsrTarget> targets, List<DsrTargetCategory> targetCategories) {
 		super(valueMap);
 		this.locations = locations;
 		this.targets = targets;
@@ -52,8 +52,8 @@ public class DsrTable extends ReportTable<DsrTarget, CalculationLocation, Value>
 	}
 	
 	@Override
-	public List<CalculationLocation> getLocations(){
-		List<CalculationLocation> locations = new ArrayList<CalculationLocation>(super.getLocations());		
+	public Set<CalculationLocation> getLocations(){
+		Set<CalculationLocation> locations = super.getLocations();		
 		if(locations != null && !locations.isEmpty())
 			return locations;
 		else

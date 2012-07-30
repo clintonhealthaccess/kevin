@@ -15,8 +15,8 @@ public abstract class ReportTable<T, S extends CalculationLocation, U> {
 		this.valueMap = valueMap;
 	}
 	
-	public List<S> getLocations(){
-		return new ArrayList<S>(valueMap.keySet());
+	public Set<S> getLocations(){
+		return valueMap.keySet();
 	}
 	
 	public boolean hasData(){

@@ -68,14 +68,14 @@ class CalculationLocationUnitSpec extends UnitSpec {
 		north.dataLocations = [data1]
 		
 		then:
-		rwanda.collectLocationTreeWithData(null, null, true).equals([north, rwanda])
+		rwanda.collectLocationTreeWithData(null, null, true).equals([north, rwanda, data1])
 		rwanda.collectDataLocations(null, null).equals([data1])
-		rwanda.collectLocationTreeWithData(null, new HashSet([type1]), true).equals([north, rwanda])
+		rwanda.collectLocationTreeWithData(null, new HashSet([type1]), true).equals([north, rwanda, data1])
 		rwanda.collectDataLocations(null, new HashSet([type1])).equals([data1])
 		
 		when:
 		def type2 = new DataLocationType(code: 'type2')
-		
+
 		then:
 		rwanda.collectLocationTreeWithData(null, new HashSet([type2]), true).empty
 		rwanda.collectDataLocations(null, new HashSet([type2])).empty
