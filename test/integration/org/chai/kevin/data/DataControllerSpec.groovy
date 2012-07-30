@@ -153,4 +153,22 @@ class DataControllerSpec extends IntegrationTests {
 		NormalizedDataElementValue.count() == 0
 	}
 	
+	def "delete values set last value changed"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def date = dataElement.lastValueChanged
+		newNormalizedDataElementValue(dataElement, DataLocation.findByCode(BUTARO), period1, Status.VALID, v("1"))
+		dataController = new DataController()
+		
+		when:
+		dataController.params.data = dataElement.id
+		Thread.sleep(1100)
+		dataController.deleteValues()
+		
+		then:
+		NormalizedDataElement.list()[0].lastValueChanged.after(date)
+	}
+	
 }

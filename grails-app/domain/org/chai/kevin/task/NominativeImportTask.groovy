@@ -18,6 +18,13 @@ class NominativeImportTask extends ImportTask {
 	Long rawDataElementId
 	Long periodId
 	
+	String getInformation() {
+		def period = Period.get(periodId)
+		def rawDataElement = RawDataElement.get(rawDataElementId)
+		
+		return message(code: 'period.label') + ': '+period.code + ', '+message(code: 'rawdataelement.label')+': '+rawDataElement.code+'<br/>'+message(code:'import.file.label')+': '+getInputFilename()
+	}
+	
 	FileImporter getImporter(ImporterErrorManager errorManager) {
 		def period = Period.get(periodId)
 		def rawDataElement = RawDataElement.get(rawDataElementId)

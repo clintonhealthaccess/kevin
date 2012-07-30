@@ -66,6 +66,10 @@ class DataController extends AbstractController {
 		}
 		else {
 			valueService.deleteValues(data, null, null)
+			
+			data.setLastValueChanged(new Date())
+			dataService.save(data)
+			
 			refreshValueService.flushCaches()
 			
 			flash.message = message(code: 'data.values.deleted')

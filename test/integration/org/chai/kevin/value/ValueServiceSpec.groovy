@@ -413,7 +413,7 @@ class ValueServiceSpec extends IntegrationTests {
 		RawDataElementValue.count() == 1
 	}
 	
-	def "test delete data element sets last value changed date"() {
+	def "test delete data element does not set last value changed date"() {
 		setup:
 		setupLocationTree()
 		def period1 = newPeriod()
@@ -424,10 +424,10 @@ class ValueServiceSpec extends IntegrationTests {
 		valueService.deleteValues(rawDataElement, null, period1)
 		
 		then:
-		RawDataElement.list()[0].lastValueChanged.after(date)
+		RawDataElement.list()[0].lastValueChanged.equals(date)
 	}
 	
-	def "save raw data element value sets last value changed date"() {
+	def "save raw data element value does not set last value changed date"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -440,7 +440,7 @@ class ValueServiceSpec extends IntegrationTests {
 		valueService.save(rawDataElementValue);
 		
 		then:
-		RawDataElement.list()[0].lastValueChanged.after(date)
+		RawDataElement.list()[0].lastValueChanged.equals(date)
 	}
 	
 	def "test delete calculation values"() {

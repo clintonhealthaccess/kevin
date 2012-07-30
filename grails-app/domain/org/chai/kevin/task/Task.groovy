@@ -18,15 +18,16 @@ abstract class Task implements Progress {
 	Boolean sentToQueue = false
 	
 	// progress
-	Integer max = 0;
-	Integer current = null;
+	Long max = 0;
+	Long current = null;
 	
 	abstract def executeTask()
 	abstract def cleanTask()
 	abstract boolean isUnique()
 	abstract String getFormView()
 	abstract Map getFormModel()
-	abstract String getOutputFilename()  
+	abstract String getOutputFilename()
+	abstract String getInformation()
 	
 	File getFolder() {
 		def folder = new File(grailsApplication.config.task.temp.folder + File.separator + this.getId())
@@ -34,19 +35,21 @@ abstract class Task implements Progress {
 		return folder
 	}
 	
-	void incrementProgress() {
+	void incrementProgress(Long increment = null) {
+		if (log.isDebugEnabled()) log.debug('incrementProgress, max: '+ max +', current: '+current)
 		if (current != null) {
-			Task.withTransaction {
-				current++
+			Task.withNewTransaction {
+				if (increment == null) current++
+				else current += increment
 				this.save(flush: true)
 			}
 		}
 	}
 	
-	void setMaximum(Integer max) {
-		Task.withTransaction {
+	void setMaximum(Long max) {
+		Task.withNewTransaction {
 			this.max = max;
-			this.current = 0;
+			this.current = 1;
 			this.save(flush: true)
 		}
 	}

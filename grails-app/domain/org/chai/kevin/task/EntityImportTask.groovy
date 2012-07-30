@@ -14,6 +14,10 @@ class EntityImportTask extends ImportTask {
 	String entityClass;
 	def sessionFactory;
 	
+	String getInformation() {
+		return 'entityClass: '+entityClass+', '+message(code:'import.file.label')+': '+getInputFilename()
+	}
+	
 	FileImporter getImporter(ImporterErrorManager errorManager) {
 		def clazz = Class.forName(entityClass, true, this.getClass().getClassLoader());
 		

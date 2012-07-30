@@ -28,6 +28,7 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import org.chai.kevin.task.Progress;
 import org.quartz.InterruptableJob
 import org.quartz.JobExecutionContext
 
@@ -47,11 +48,20 @@ class RefreshJob implements InterruptableJob {
 	void execute(JobExecutionContext context) {
 		if (log.isInfoEnabled()) log.info('executing RefreshJob');
 	
-		refreshValueService.refreshNormalizedDataElements()
-		refreshValueService.refreshCalculations()
+		refreshValueService.refreshNormalizedDataElements(new DummyProgress())
+		refreshValueService.refreshCalculations(new DummyProgress())
 		
 		refreshValueService.flushCaches()
 	}
 	
 	void interrupt() {}
+}
+
+class DummyProgress implements Progress {
+	
+	public void incrementProgress(){}
+	public void incrementProgress(Long increment){}
+	public Double retrievePercentage(){return null;}
+	public void setMaximum(Long max){}
+	
 }

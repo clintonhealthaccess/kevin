@@ -485,9 +485,9 @@ class DataImporterSpec extends IntegrationTests {
 							
 		then:
 		importerErrorManager.errors.size() == 1
-		EnumOption.findByValue(type.getValue(RawDataElementValue.list()[0].value, "").getEnumValue())!=null
-		EnumOption.findByValue(type.getValue(RawDataElementValue.list()[1].value, "").getEnumValue())==null
-		Enum.findByCode("gender").enumOptions.contains(EnumOption.findByValue(type.getValue(RawDataElementValue.list()[0].value, "").getEnumValue()))
+		EnumOption.findByValue(type.getValue(RawDataElementValue.findByData(dataElementOne).value, "").getEnumValue())!=null
+		EnumOption.findByValue(type.getValue(RawDataElementValue.findByData(dataElementTwo).value, "").getEnumValue())==null
+		Enum.findByCode("gender").enumOptions.contains(EnumOption.findByValue(type.getValue(RawDataElementValue.findByData(dataElementOne).value, "").getEnumValue()))
 	}
 	
 	def "get general import number data from csv"(){
@@ -514,8 +514,8 @@ class DataImporterSpec extends IntegrationTests {
 		then:
 		importerErrorManager.errors.size() == 1
 		RawDataElementValue.list().size()==2
-		type.getValue(RawDataElementValue.list()[0].value, "").getNumberValue()==null
-		type.getValue(RawDataElementValue.list()[1].value, "").getNumberValue()==44;
+		type.getValue(RawDataElementValue.findByData(dataElementOne).value, "").getNumberValue()==null
+		type.getValue(RawDataElementValue.findByData(dataElementTwo).value, "").getNumberValue()==44;
 	}
 	
 	def "get general import date data from csv"(){
@@ -541,8 +541,8 @@ class DataImporterSpec extends IntegrationTests {
 			
 		then:
 		importerErrorManager.errors.size() == 1
-		type.getValue(RawDataElementValue.list()[0].value, "").getDateValue().equals(new SimpleDateFormat("dd-MM-yyyy").parse("15-08-1971"));
-		type.getValue(RawDataElementValue.list()[1].value, "").getDateValue()==null
+		type.getValue(RawDataElementValue.findByData(dataElementOne).value, "").getDateValue().equals(new SimpleDateFormat("dd-MM-yyyy").parse("15-08-1971"));
+		type.getValue(RawDataElementValue.findByData(dataElementTwo).value, "").getDateValue()==null
 	}
 	
 	def "get general import wrong code, period and data_element from csv"(){

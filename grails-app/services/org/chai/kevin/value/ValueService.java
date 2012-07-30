@@ -30,7 +30,6 @@ package org.chai.kevin.value;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,7 +74,6 @@ public class ValueService {
 		value.setTimestamp(new Date());
 		sessionFactory.getCurrentSession().saveOrUpdate(value);
 		
-		setLastValueChanged(value.getData());
 		return value;
 	}
 	
@@ -244,13 +242,6 @@ public class ValueService {
 		if (location != null) query.setParameter("location", location);
 		if (period != null) query.setParameter("period", period);
 		query.executeUpdate();
-		
-		setLastValueChanged(data);
-	}
-	
-	private void setLastValueChanged(Data<?> data) {
-		data.setLastValueChanged(new Date());
-		sessionFactory.getCurrentSession().save(data);
 	}
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {

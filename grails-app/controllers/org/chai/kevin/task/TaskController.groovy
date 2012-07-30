@@ -83,6 +83,8 @@ class TaskController extends AbstractController {
 			def hasErrors = false
 			if (!cmd.hasErrors()) {
 				task.inputFilename = cmd.file.originalFilename
+				
+				task.properties = params
 				if (create(task)) {
 					// create input file and copy content to file on disk
 					def file = new File(task.folder, task.inputFilename)
@@ -94,6 +96,8 @@ class TaskController extends AbstractController {
 			}
 			else {
 				hasErrors = true
+				
+				task.properties = params
 				fillFields(task)
 				task.validate()
 			}
@@ -150,6 +154,7 @@ class TaskController extends AbstractController {
 		if (taskClass != null) {
 			def task = taskClass.newInstance()
 			
+			task.properties = params
 			def valid = create(task)
 			if (!valid && !flash.message) flash.message = message(code: 'task.creation.validation.error')
 			
@@ -169,9 +174,7 @@ class TaskController extends AbstractController {
 	}
 	
 	private def fillFields(def task) {
-		// we create the class
-		task.properties = params
-		
+		// we fill the default fields
 		task.status = TaskStatus.NEW
 		task.user = currentUser
 		task.added = new Date()

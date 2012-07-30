@@ -25,6 +25,11 @@ class CalculateTask extends Task {
 		}
 	}
 	
+	String getInformation() {
+		def data = dataService.getData(dataId, Data.class)
+		return data?.code
+	}
+	
 	boolean isUnique() {
 		def task = CalculateTask.findByDataId(dataId)
 		return task == null || task.status == TaskStatus.COMPLETED

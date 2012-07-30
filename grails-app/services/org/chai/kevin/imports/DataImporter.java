@@ -40,6 +40,7 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.Sanitizer;
 import org.chai.kevin.util.Utils;
@@ -60,6 +61,7 @@ public abstract class DataImporter extends FileImporter {
 	static final String VALUE_HEADER = "data_value";
 	
 	protected ValueService valueService;
+	protected DataService dataService;
 	protected PlatformTransactionManager transactionManager;
 	protected TransactionTemplate transactionTemplate;
 	
@@ -71,9 +73,10 @@ public abstract class DataImporter extends FileImporter {
 		return transactionTemplate;
 	}
 	
-	public DataImporter(ValueService valueService,PlatformTransactionManager transactionManager) {
+	public DataImporter(ValueService valueService, DataService dataService, PlatformTransactionManager transactionManager) {
 		super();
 		this.valueService = valueService;
+		this.dataService = dataService;
 		this.transactionManager = transactionManager;
 	}
 
@@ -199,7 +202,7 @@ public abstract class DataImporter extends FileImporter {
 		
 	}
 	
-	protected void saveAndMergeIfNotNull(RawDataElementValue rawDataElementValue, Map<String,Object> positionsValueMap, ImportSanitizer sanitizer) {
+	protected void saveAndMergeIfNotNull(RawDataElement dataElement, RawDataElementValue rawDataElementValue, Map<String,Object> positionsValueMap, ImportSanitizer sanitizer) {
 		if (rawDataElementValue != null) {
 			if (log.isDebugEnabled()) log.debug("merging with data from map of header and data "+ positionsValueMap);
 			if (log.isTraceEnabled()) log.trace("value before merge" + rawDataElementValue.getValue());
@@ -207,6 +210,9 @@ public abstract class DataImporter extends FileImporter {
 				rawDataElementValue.getData().getType().mergeValueFromMap(rawDataElementValue.getValue(), positionsValueMap, "", new HashSet<String>(), sanitizer)
 			);
 			if (log.isTraceEnabled()) log.trace("value after merge " + rawDataElementValue.getValue());
+			
+			dataElement.setLastValueChanged(new Date());
+			dataService.save(dataElement);
 			
 			valueService.save(rawDataElementValue);
 			if (log.isTraceEnabled()) log.trace("saved rawDataElement: "+ rawDataElementValue.getValue());

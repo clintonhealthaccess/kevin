@@ -1,6 +1,5 @@
 package org.chai.kevin
 
-
 class PeriodService {
 
 	static transactional = true
