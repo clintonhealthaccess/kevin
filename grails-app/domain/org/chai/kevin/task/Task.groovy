@@ -49,7 +49,7 @@ abstract class Task implements Progress {
 	void setMaximum(Long max) {
 		Task.withNewTransaction {
 			this.max = max;
-			this.current = 1;
+			this.current = 0;
 			this.save(flush: true)
 		}
 	}

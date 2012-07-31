@@ -3,12 +3,15 @@ package org.chai.kevin.data
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.Period;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.task.CalculateTask;
+import org.chai.kevin.task.Task.TaskStatus;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
 import org.codehaus.groovy.grails.commons.ApplicationHolder;
 
 class DataController extends AbstractController {
 	
+	def taskService
 	def dataService
 	def valueService
 	def refreshValueService
@@ -77,6 +80,51 @@ class DataController extends AbstractController {
 		}
 	}
 	
+	def addReferencingDataTasks() {
+		def data = dataService.getData(params.int('data'), Data.class)
+		if (data == null) {
+			response.sendError(404)
+		}
+		else {
+			List<Data> referencesFor = [data]
+			Set<Data> referencingData = new HashSet<Data>()
+			
+			while (!referencesFor.empty) {
+				referencingData.addAll(referencesFor)
+				
+				def oldReferences = new ArrayList(referencesFor)
+				referencesFor.clear()
+				oldReferences.each { reference ->
+					referencesFor.addAll(dataService.getReferencingData(reference))
+				}
+			}
+			
+			referencingData.each { reference ->
+				if (!(reference instanceof RawDataElement)) {
+					if (log.isDebugEnabled()) log.debug('adding task for data: '+reference)
+					
+					def task = new CalculateTask()
+					task.dataId = reference.id
+					
+					task.status = TaskStatus.NEW
+					task.user = currentUser
+					task.added = new Date()
+					
+					// we check if the task is unique
+					if (task.isUnique()) {
+						// we save it
+						task.save(failOnError: true)
+						
+						// we send it for processing
+						taskService.sendToQueue(task)
+					}
+				}
+			}
+			
+			flash.message = message(code: 'task.creation.success', args: [createLink(controller: 'task', action: 'list')])
+			redirect(uri: getTargetURI())
+		}
+	}
 	
 	// TODO move to DataElementController
 	def search = {
