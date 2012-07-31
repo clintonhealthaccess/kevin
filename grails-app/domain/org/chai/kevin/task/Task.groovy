@@ -2,6 +2,7 @@ package org.chai.kevin.task
 
 import java.io.File;
 
+import org.apache.commons.io.FileUtils;
 import org.chai.kevin.security.User
 
 
@@ -22,7 +23,7 @@ abstract class Task implements Progress {
 	Long current = null;
 	
 	abstract def executeTask()
-	abstract def cleanTask()
+	
 	abstract boolean isUnique()
 	abstract String getFormView()
 	abstract Map getFormModel()
@@ -33,6 +34,11 @@ abstract class Task implements Progress {
 		def folder = new File(grailsApplication.config.task.temp.folder + File.separator + this.getId())
 		if (!folder.exists()) folder.mkdirs()
 		return folder
+	}
+	
+	def cleanTask() {
+		File folder = getFolder()
+		if (folder != null && folder.exists()) FileUtils.deleteDirectory(folder)
 	}
 	
 	void incrementProgress(Long increment = null) {

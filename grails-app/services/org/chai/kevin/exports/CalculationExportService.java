@@ -63,7 +63,7 @@ public class CalculationExportService extends ExportService {
 	private ReportService reportService;
 
     @Override
-	public File exportData(DataExport export) throws IOException{
+	public File exportData(DataExport export, String language) throws IOException{
 		if (log.isDebugEnabled()) log.debug("exportData("+export+")");
 		
 		Set<DataLocationType> types = new HashSet<DataLocationType>();
@@ -84,31 +84,30 @@ public class CalculationExportService extends ExportService {
 		calculationLocations.addAll(Utils.removeDuplicates(dataLocations));
 			
 		if (log.isDebugEnabled()) log.debug(" Exporter calculationLocations "+calculationLocations+")");
-		return this.exportCalculations(languageService.getText(export.getDescriptions()),calculationLocations,export.getPeriods(),((CalculationExport) export).getCalculations(),types);
+		return this.exportCalculations(languageService.getText(export.getDescriptions(), language),calculationLocations,export.getPeriods(),((CalculationExport) export).getCalculations(),types,language);
 	}
 		
-	public File exportCalculations(String fileName,List<CalculationLocation> calculationLocations,Set<Period> periods,Set<Calculation<CalculationPartialValue>> calculations,Set<DataLocationType> types) throws IOException{
+	public File exportCalculations(String fileName,List<CalculationLocation> calculationLocations,Set<Period> periods,Set<Calculation<CalculationPartialValue>> calculations,Set<DataLocationType> types, String language) throws IOException{
 		if (log.isDebugEnabled()) log.debug(" exportDataElement(String "+fileName+" List<CalculationLocation>: " + calculationLocations + " List<Period>: "+ periods + " Set<Calculation<CalculationPartialValue>>: " + calculations + ")");
 		File csvFile = File.createTempFile(fileName, ImportExportConstant.CSV_FILE_EXTENSION);
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
-		this.writeCalculation(writer, calculationLocations, periods, calculations,types);
+		this.writeCalculation(writer, calculationLocations, periods, calculations,types, language);
 		return csvFile;
-
 	}
 
-	private void writeCalculation(ICsvListWriter writer, List<CalculationLocation> calculationLocations, Set<Period> periods,Set<Calculation<CalculationPartialValue>> calculations,Set<DataLocationType> types) throws IOException {
+	private void writeCalculation(ICsvListWriter writer, List<CalculationLocation> calculationLocations, Set<Period> periods,Set<Calculation<CalculationPartialValue>> calculations,Set<DataLocationType> types, String language) throws IOException {
 		try{
 			String[] csvHeaders = null;
 			// headers
 			if(csvHeaders == null){
-				csvHeaders = this.getExportDataHeaders().toArray(new String[getExportDataHeaders().size()]);
+				csvHeaders = this.getExportDataHeaders(language).toArray(new String[getExportDataHeaders(language).size()]);
 				writer.writeHeader(csvHeaders);
 			}
 			for(CalculationLocation location: calculationLocations)
 				for(Period period: periods)
 					for(Calculation<CalculationPartialValue> calculation: calculations){
-						List<List<String>> lines=this.getExportLineForValue(location,period,calculation,types);
+						List<List<String>> lines=this.getExportLineForValue(location,period,calculation,types,language);
 						for(List<String> line: lines)
 							writer.write(line);
 					}
@@ -120,12 +119,12 @@ public class CalculationExportService extends ExportService {
 		}
 	}
 	
-	public List<List<String>> getExportLineForValue(CalculationLocation location,Period period, Calculation<CalculationPartialValue> calculation,Set<DataLocationType> types){
+	public List<List<String>> getExportLineForValue(CalculationLocation location,Period period, Calculation<CalculationPartialValue> calculation,Set<DataLocationType> types, String language){
 		DataPointVisitor dataPointVisitor = new DataPointVisitor();
 		if(calculation!=null){
 			CalculationValue<CalculationPartialValue> calculationPartialValue = valueService.getCalculationValue(calculation, location, period,types);
 			if(calculationPartialValue!=null){
-				List<String> basicInfo = this.getBasicInfo(location,period,calculation);
+				List<String> basicInfo = this.getBasicInfo(location,period,calculation, language);
 				dataPointVisitor.setBasicInfo(basicInfo);
 				calculation.getType().visit(calculationPartialValue.getValue(), dataPointVisitor);
 			}
@@ -135,17 +134,17 @@ public class CalculationExportService extends ExportService {
 		return dataPointVisitor.getLines();
 	}
 	
-	public List<String> getBasicInfo(CalculationLocation location,Period period, Calculation<CalculationPartialValue> calculation){
+	public List<String> getBasicInfo(CalculationLocation location,Period period, Calculation<CalculationPartialValue> calculation, String language){
 		List<String> basicInfo = new ArrayList<String>();
 		basicInfo.add(location.getCode());
-		basicInfo.add(languageService.getText(location.getNames()));
+		basicInfo.add(languageService.getText(location.getNames(), language));
 		
 		if(location instanceof Location)
-			basicInfo.add(languageService.getText(((Location) location).getLevel().getNames()));
+			basicInfo.add(languageService.getText(((Location) location).getLevel().getNames(), language));
 		else basicInfo.add("");
 		
 		if(location instanceof DataLocation)
-			basicInfo.add(languageService.getText(((DataLocation) location).getType().getNames()));
+			basicInfo.add(languageService.getText(((DataLocation) location).getType().getNames(), language));
 		else basicInfo.add("");
 		
 		basicInfo.add(period.getCode()+"");
@@ -156,7 +155,7 @@ public class CalculationExportService extends ExportService {
 	}
 	
 	@Override
-	public List<String> getExportDataHeaders() {
+	public List<String> getExportDataHeaders(String language) {
 		List<String> headers = new ArrayList<String>();
 		headers.add(ImportExportConstant.DATA_LOCATION_CODE);
 		headers.add(ImportExportConstant.DATA_LOCATION_NAME);

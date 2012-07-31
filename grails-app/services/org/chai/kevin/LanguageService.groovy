@@ -65,8 +65,8 @@ class LanguageService {
 		return ConfigurationHolder.config.site.fallback.language;
 	}
 	
-	String getText(def translation) {
-		def text = translation?.get(getCurrentLanguage())
+	String getText(def translation, def language = null) {
+		def text = translation?.get(language == null ? getCurrentLanguage() : language)
 		if (text != null) text = text.toString()
 		if (text == null || text.trim().equals("") || Utils.stripHtml(text).trim().equals("")) text = translation?.get(getFallbackLanguage())
 		if (text != null) text = text.toString()
