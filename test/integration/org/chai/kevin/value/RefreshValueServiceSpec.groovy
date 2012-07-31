@@ -31,14 +31,17 @@ package org.chai.kevin.value
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.Period;
 import org.chai.kevin.TestProgress;
+import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.task.Progress;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.CalculationPartialValue;
@@ -49,7 +52,27 @@ import org.chai.kevin.value.Value;
 
 class RefreshValueServiceSpec extends IntegrationTests {
 
+	static transactional = false
+	
 	def refreshValueService;
+	def sessionFactory
+	
+	def cleanup() {
+		RawDataElementValue.executeUpdate("delete RawDataElementValue")
+		RawDataElement.executeUpdate("delete RawDataElement")
+		NormalizedDataElementValue.executeUpdate("delete NormalizedDataElementValue")
+		NormalizedDataElement.executeUpdate("delete NormalizedDataElement")
+		SumPartialValue.executeUpdate("delete SumPartialValue")
+		AggregationPartialValue.executeUpdate("delete AggregationPartialValue")
+		Sum.executeUpdate("delete Summ")
+		Aggregation.executeUpdate("delete Aggregation")
+		DataLocation.executeUpdate("delete DataLocation")
+		Location.executeUpdate("delete Location")
+		LocationLevel.executeUpdate("delete LocationLevel")
+		DataLocationType.executeUpdate("delete DataLocationType")
+		Period.executeUpdate("delete Period")
+		sessionFactory.currentSession.flush()
+	} 
 	
 	def "test refresh normalized elements"() {
 		when:
@@ -62,6 +85,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		NormalizedDataElementValue.count() == 0
 		
 		when:
+		Thread.sleep(1100)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new TestProgress());
 		
 		then:
@@ -77,7 +101,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
 		def date = normalizedDataElement.lastValueChanged
 		normalizedDataElement.refreshed = date
-		normalizedDataElement.save(failOnError: true)
+		normalizedDataElement.save(failOnError: true, flush: true)
 		
 		when:
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
@@ -122,7 +146,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
 		def date = normalizedDataElement.lastValueChanged
 		normalizedDataElement.refreshed = date
-		normalizedDataElement.save(failOnError: true)
+		normalizedDataElement.save(failOnError: true, flush: true)
 		
 		when:
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
@@ -130,7 +154,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
 		def date2 = value2.timestamp
 		normalizedDataElement.timestamp = new Date()
-		normalizedDataElement.save(failOnError: true)
+		normalizedDataElement.save(failOnError: true, flush: true)
 		Thread.sleep(1100)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new TestProgress());
 		
@@ -153,7 +177,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
 		def date1 = value1.timestamp
 		normalizedDataElement.timestamp = new Date()
-		normalizedDataElement.save(failOnError: true)
+		normalizedDataElement.save(failOnError: true, flush: true)
 		Thread.sleep(2000)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
 		
@@ -193,7 +217,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		def rawDataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		rawDataElement1.lastValueChanged = null
-		rawDataElement1.save(failOnError: true)
+		rawDataElement1.save(failOnError: true, flush: true)
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement1.id+" + \$"+rawDataElement2.id]]))
 		def date = normalizedDataElement.lastValueChanged
@@ -224,6 +248,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		normalizedDataElement.refreshed = date
 		normalizedDataElement.lastValueChanged = new Date();
+		Thread.sleep(1100)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new TestProgress());
 		
 		then:
@@ -302,7 +327,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
 		def date = normalizedDataElement.lastValueChanged
 		normalizedDataElement.refreshed = date
-		normalizedDataElement.save(failOnError: true)
+		normalizedDataElement.save(failOnError: true, flush: true)
 		
 		when:
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
@@ -366,7 +391,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		then:
 		SumPartialValue.count() == 8
 		SumPartialValue.list()[0].timestamp != null
-		ratio.refreshed != null
+		Sum.list()[0].refreshed != null
 	}
 	
 	def "test refresh calculations refreshes dependencies first - with data element"() {
@@ -388,11 +413,27 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		RawDataElementValue.count() == 0
 		SumPartialValue.count() == 8
 		SumPartialValue.list()[0].timestamp != null
-		ratio.refreshed != null
+		Sum.list()[0].refreshed != null
+	}
+	
+	def "test refresh calculations progress"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def ratio = newSum("\$"+dataElement.id, CODE(2))
+		
+		when:
+		def progress = new TestProgress()
+		refreshValueService.refreshCalculation(ratio, progress);
+	
+		then:
+		progress.max == progress.progress
+		progress.max == 7
 	}
 	
 	def "test refresh calculations refreshes dependencies first - with normalized data element"() {
-			when:
+		when:
 		setupLocationTree()
 		def period = newPeriod()
 		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
@@ -411,8 +452,8 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		NormalizedDataElementValue.count() == 2
 		SumPartialValue.count() == 8
 		SumPartialValue.list()[0].timestamp != null
-		dataElement.refreshed != null
-		ratio.refreshed != null
+		NormalizedDataElement.list()[0].refreshed != null
+		Sum.list()[0].refreshed != null
 	}
 	
 	def "test refresh calculation updates when last value changed is set after refresh"() {
@@ -425,6 +466,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		sum.refreshed = date
 		sum.lastValueChanged = new Date();
+		Thread.sleep(1100)
 		refreshValueService.refreshCalculation(sum, new TestProgress());
 		
 		then:
@@ -439,7 +481,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		def ratio = newSum("1", CODE(2))
 		ratio.refreshed = refreshed
-		ratio.save(failOnError: true)
+		ratio.save(failOnError: true, flush: true)
 		def partialValue = newSumPartialValue(ratio, period, Location.findByCode(BURERA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
 		def timestamp = partialValue.timestamp
 		
@@ -452,7 +494,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		then:
 		SumPartialValue.count() == 8
 		!SumPartialValue.list()[0].timestamp.equals(timestamp)	
-		!ratio.refreshed.equals(refreshed)
+		!Sum.list()[0].refreshed.equals(refreshed)
 	}
 	
 	def "test refresh normalized data elements refreshes dependencies first"() {
@@ -471,6 +513,22 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		NormalizedDataElementValue.list()[1].value.numberValue == 1
 		NormalizedDataElementValue.list()[2].value.numberValue == 1
 		NormalizedDataElementValue.list()[3].value.numberValue == 1
+	}
+	
+	def "test refresh normalized data elements increments progress"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
+		
+		when:
+		def progress = new TestProgress()
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement2, progress);
+		
+		then:
+		progress.max == progress.progress
+		progress.max == 4
 	}
 	
 	def "test refresh normalized data element for period and location refreshes dependencies first"() {

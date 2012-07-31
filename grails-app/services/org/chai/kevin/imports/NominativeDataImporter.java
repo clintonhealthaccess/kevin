@@ -63,7 +63,6 @@ public class NominativeDataImporter extends DataImporter {
 	private static final Log log = LogFactory.getLog(NominativeDataImporter.class);
 	
 	private LocationService locationService;
-	private DataService dataService;
 	private SessionFactory sessionFactory;
 	
 	private ImporterErrorManager manager;
@@ -76,9 +75,8 @@ public class NominativeDataImporter extends DataImporter {
 			SessionFactory sessionFactory, PlatformTransactionManager transactionManager,
 			ImporterErrorManager manager, RawDataElement rawDataElement,
 			Period period) {
-		super(valueService,transactionManager);
+		super(valueService, dataService, transactionManager);
 		this.locationService = locationService;
-		this.dataService = dataService;
 		this.sessionFactory = sessionFactory;
 		this.manager = manager;
 		this.rawDataElement = rawDataElement;
@@ -123,7 +121,7 @@ public class NominativeDataImporter extends DataImporter {
 				// first we save the data of the preceding lines
 				if (rawDataElementValue != null) {
 					// we merge and save the current data
-					saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, sanitizer);
+					saveAndMergeIfNotNull(rawDataElement, rawDataElementValue, positionsValueMap, sanitizer);
 					
 					// clear the value map since we are reading a line for a new location
 					positionsValueMap.clear();
@@ -177,7 +175,7 @@ public class NominativeDataImporter extends DataImporter {
 			if (importedLines < numberOfLinesToImport) values = readFileAsMap.read(headers);
 		}
 		
-		saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, sanitizer);
+		saveAndMergeIfNotNull(rawDataElement, rawDataElementValue, positionsValueMap, sanitizer);
 		return values == null;
 	}
 	

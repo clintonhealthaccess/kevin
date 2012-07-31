@@ -17,6 +17,10 @@ class GeneralImportTask extends ImportTask {
 	def sessionFactory;
 	def transactionManager;
 	
+	String getInformation() {
+		return message(code:'import.file.label')+': '+getInputFilename()
+	}
+	
 	FileImporter getImporter(ImporterErrorManager errorManager) {
 		return new GeneralDataImporter(
 			locationService, valueService, dataService,

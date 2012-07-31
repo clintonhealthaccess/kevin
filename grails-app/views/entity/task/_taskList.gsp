@@ -7,6 +7,7 @@
   			<th/>
   		    <th><g:message code="task.user.label"/></th>
   			<th><g:message code="task.class.label"/></th>
+  			<th><g:message code="task.information.label"/></th>
   			<th><g:message code="task.senttoqueue.label"/></th>
   			<th><g:message code="task.numberoftries.label"/></th>
   			<g:sortableColumn property="status" params="[q:q]" title="${message(code: 'task.status.label')}" />
@@ -29,6 +30,7 @@
   				</td>
   				<td>${task.user.username}</td>  				
   				<td>${task.class.simpleName}</td>
+  				<td>${task.information}</td>
   				<td>${task.sentToQueue}</td>
   				<td>${task.numberOfTries}</td>
   				<td class="js_task-status">${task.status}</td>
