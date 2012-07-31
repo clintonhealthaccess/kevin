@@ -43,7 +43,7 @@
 						<div class="dropdown-list js_dropdown-list">
 							<ul>
   								<li>
-  									<a href="${createLinkWithTargetURI(controller:'data', action:'calculateValues', params:[data:calculation.id])}">
+  									<a href="${createLinkWithTargetURI(controller:'task', action:'create', params:[class:'CalculateTask', dataId:calculation.id])}">
   										<g:message code="dataelement.calculatevalues.label"/>
   									</a>
   								</li>

@@ -119,7 +119,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		RawDataElementValue.count() == 2
 		RawDataElementValue.list()[0].value.numberValue == 1
 		RawDataElementValue.list()[1].value.numberValue == 1
-		RawDataElementValue.list().collect { it.location }.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
+		s(RawDataElementValue.list().collect { it.location }).equals(s([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)]))
 	}
 	
 	def "test submit all program"(){
@@ -163,7 +163,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		RawDataElementValue.count() == 2
 		RawDataElementValue.list()[0].value.numberValue == 1
 		RawDataElementValue.list()[1].value.numberValue == 1
-		RawDataElementValue.list().collect { it.location }.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
+		s(RawDataElementValue.list().collect { it.location }).equals(s([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)]))
 	}
 	
 	def "test submit all survey with warning and invalid values"() {

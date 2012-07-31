@@ -219,14 +219,6 @@ abstract class AbstractEntityController extends AbstractController {
 		}
 	}
 	
-	def importer = {
-		def clazz = getEntityClass();
-		
-		if(clazz instanceof Class){
-			redirect (controller: 'entityImporter', action: 'importer', params: [entityClass: clazz.name]);
-		}
-	}
-	
 	protected abstract def getEntityClass();
 	
 }

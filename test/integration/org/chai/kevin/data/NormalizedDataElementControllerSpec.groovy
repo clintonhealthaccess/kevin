@@ -75,6 +75,24 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		then:
 		NormalizedDataElement.count() == 1
 		!NormalizedDataElement.list()[0].timestamp.equals(time1)
+	}
+	
+	def "saving normalized data element sets last value changed"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		normalizedDataElementController = new NormalizedDataElementController()
+		def time1 = normalizedDataElement.lastValueChanged
+		
+		when:
+		normalizedDataElementController.params.id = normalizedDataElement.id
+		Thread.sleep(1100)
+		normalizedDataElementController.save()
+		
+		then:
+		NormalizedDataElement.count() == 1
+		NormalizedDataElement.list()[0].lastValueChanged.after(time1)
 		
 	}
 	

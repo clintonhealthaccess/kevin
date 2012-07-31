@@ -1,7 +1,7 @@
 <g:set var="type" value="${surveyPage.dataLocation.type}"/>
 
-<div id="question-${question.id}" class="question question-checkbox ${surveyPage.enteredQuestions[question].skipped?'hidden':''} ${!surveyPage.enteredQuestions[question].complete?'incomplete':''} ${surveyPage.enteredQuestions[question].invalid?'invalid':''}" data-question="${question.id}">
-	<h4 class="nice-question">
+<div id="question-${question.id}" class="question question-checkbox ${surveyPage.enteredQuestions[question]?.skipped?'hidden':''} ${!surveyPage.enteredQuestions[question]?.complete?'incomplete':''} ${surveyPage.enteredQuestions[question]?.invalid?'invalid':''}" data-question="${question.id}">
+	<h4 class="nice-title">
 		<span class="nice-title-image">${surveyPage.getQuestionNumber(question)}</span><g:i18n field="${question.names}" />
 	</h4>
 	

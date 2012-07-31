@@ -98,6 +98,7 @@ beans = {
 		valueService = ref("valueService")
 		sessionFactory = ref("sessionFactory")
 		dataService = ref("dataService")
+		periodService = ref("periodService")
 		transactionManager = ref("transactionManager")
 	}
 	

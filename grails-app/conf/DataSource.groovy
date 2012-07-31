@@ -53,7 +53,7 @@ hibernate {
 	// performance improvement, but keep in mind that it might 
 	// affect data consistency
 	flush.mode = 'commit'
-    show_sql = false
+//    show_sql = true
 }
 naming_strategy = org.hibernate.cfg.DefaultNamingStrategy
 
@@ -63,7 +63,7 @@ environments {
 		dataSource {
 			dbCreate = "update" // one of 'create', 'create-drop','update'
 			driverClassName = "org.h2.Driver"
-			url = "jdbc:h2:mem:devDB"
+			url = "jdbc:h2:mem:devDB;mvcc=true"
 			username = "sa";
 			password = "";
 		}
@@ -75,7 +75,7 @@ environments {
 		dataSource {
 			dbCreate = "create-drop"
 			driverClassName = "org.h2.Driver"
-			url = "jdbc:h2:mem:testDb"
+			url = "jdbc:h2:mem:testDb;mvcc=true"
 			username = "sa";
 			password = "";
 

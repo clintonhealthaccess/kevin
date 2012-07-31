@@ -58,6 +58,7 @@ import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
+import org.chai.kevin.task.Progress;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.AggregationPartialValue;
@@ -66,6 +67,7 @@ import org.chai.kevin.value.RawDataElementValue
 import org.chai.kevin.value.NormalizedDataElementValue
 import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
@@ -154,7 +156,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 		
 	static def newPeriod() {
 		def period = new Period(code: "2005", startDate: mar01, endDate: mar31)
-		return period.save(failOnError: true)
+		return period.save(failOnError: true, flush: true)
 	} 
 	
 	static def newDataLocationType(def code) {
@@ -178,10 +180,10 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newDataLocation(def names, def code, def location, def type) {
-		def dataLocation = new DataLocation(names: names, code: code, location: location, type: type).save(failOnError: true)
+		def dataLocation = new DataLocation(names: names, code: code, location: location, type: type).save(failOnError: true, flush: true)
 		if (location != null) {
 			 location.dataLocations << dataLocation
-			 location.save(failOnError: true)
+			 location.save(failOnError: true, flush: true)
 		}
 		return dataLocation
 	}
@@ -380,17 +382,29 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def refreshNormalizedDataElement() {
-		NormalizedDataElement.list().each {
-			refreshValueService.refreshNormalizedDataElement(it)
+		sessionFactory.currentSession.flush()
+		
+		NormalizedDataElement.list().each { nde ->
+			Period.list().each { period ->
+				DataLocation.list().each { location ->
+					refreshValueService.updateNormalizedDataElementValue(nde, location, period)
+				}
+			}
 		}
 	}
 	
 	def refreshCalculation() {
-		Sum.list().each {
-			refreshValueService.refreshCalculation(it)
-		}
-		Aggregation.list().each {
-			refreshValueService.refreshCalculation(it)
+		sessionFactory.currentSession.flush()
+		
+		Period.list().each { period ->
+			sessionFactory.currentSession.createCriteria(CalculationLocation.class).list().each { location ->
+				Sum.list().each { sum ->
+					refreshValueService.updateCalculationPartialValues(sum, location, period)
+				}
+				Aggregation.list().each { aggregation ->
+					refreshValueService.updateCalculationPartialValues(aggregation, location, period)
+				}
+			}
 		}
 	}
 	
@@ -472,4 +486,27 @@ abstract class IntegrationTests extends IntegrationSpec {
 
 		return calendar.getTime();
 	}
+}
+
+class TestProgress implements Progress {
+	
+	def progress = 0
+	def max = 0
+	
+	void incrementProgress() {
+		progress++
+	}
+	
+	void incrementProgress(Long increment) {
+		progress += increment
+	}
+	
+	Double retrievePercentage() {
+		return null;
+	}
+	
+	void setMaximum(Long max) {
+		this.max = max
+	}
+	
 }

@@ -29,12 +29,10 @@ package org.chai.kevin.data
 */
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.planning.PlanningCost;
-import org.chai.kevin.Period;
-import org.chai.kevin.value.Status;
-import org.chai.kevin.value.ValueService;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.chai.kevin.Period
+import org.chai.kevin.location.DataLocationType
+import org.chai.kevin.planning.PlanningCost
+import org.chai.kevin.value.Status
 
 class NormalizedDataElementController extends AbstractEntityController {
 
@@ -75,7 +73,8 @@ class NormalizedDataElementController extends AbstractEntityController {
 	def saveEntity(def entity) {
 		if (entity.id != null) valueService.deleteValues(entity, null, null)
 		
-		entity.timestamp = new Date();
+		entity.lastValueChanged = new Date()
+		entity.timestamp = new Date()
 		entity.save(flush: true)
 	}
 	

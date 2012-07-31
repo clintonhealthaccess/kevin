@@ -23,6 +23,18 @@ class PlanningOutputTableUnitSpec extends UnitSpec  {
 		outputTable.headerType.equals(Type.TYPE_STRING())
 	}
 	
+	def "get header type with non-matching header returns null"() {
+		
+		when:
+		def type = Type.TYPE_LIST(Type.TYPE_MAP(["header": Type.TYPE_STRING()]))
+		def dataElement = new RawDataElement(type: type)
+		def output = new PlanningOutput(dataElement: dataElement, fixedHeader: "[_].non_existant")
+		def outputTable = new PlanningOutputTable(output, null)
+		
+		then:
+		outputTable.headerType == null
+	}
+	
 	def "get header values when data element value is null"() {
 		
 		when:
