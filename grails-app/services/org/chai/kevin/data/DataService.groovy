@@ -104,7 +104,7 @@ class DataService {
 		else data.delete();
 	}
 	
-	public List<Data<?>> getReferencingData(Data<?> data) {
+	public Set<Data<?>> getReferencingData(Data<?> data) {
 		def result = []
 		result.addAll(getReferencingNormalizedDataElements(data))
 		result.addAll(getReferencingCalculations(data))

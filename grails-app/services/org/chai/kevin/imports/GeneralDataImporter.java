@@ -64,7 +64,6 @@ public class GeneralDataImporter extends DataImporter{
 	
 	private static final Log log = LogFactory.getLog(GeneralDataImporter.class);
 	private LocationService locationService;
-	private DataService dataService;
 	private SessionFactory sessionFactory;
 	private ImporterErrorManager manager;
 	private PeriodService periodService;
@@ -76,9 +75,8 @@ public class GeneralDataImporter extends DataImporter{
 			PlatformTransactionManager transactionManager,
 			ImporterErrorManager manager,
 			PeriodService periodService) {
-		super(valueService,transactionManager);
+		super(valueService,dataService,transactionManager);
 		this.locationService = locationService;
-		this.dataService = dataService;
 		this.sessionFactory = sessionFactory;
 		this.manager = manager;
 		this.periodService=periodService;
@@ -123,7 +121,7 @@ public class GeneralDataImporter extends DataImporter{
 				// first we save the current value
 				if (rawDataElementValue != null) {
 					// we merge and save the current data
-					saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, sanitizer);
+					saveAndMergeIfNotNull(dataElement, rawDataElementValue, positionsValueMap, sanitizer);
 					
 					// clear the value map since we are reading a line for a new location
 					positionsValueMap.clear();
@@ -192,7 +190,7 @@ public class GeneralDataImporter extends DataImporter{
 			if (importedLines < numberOfLinesToImport) rowValues = reader.read(headers);
 		}
 		
-		saveAndMergeIfNotNull(rawDataElementValue, positionsValueMap, sanitizer);
+		saveAndMergeIfNotNull(dataElement, rawDataElementValue, positionsValueMap, sanitizer);
 		sanitizer.clearType();
 		return rowValues == null;
 	}

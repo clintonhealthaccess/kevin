@@ -15,7 +15,7 @@ import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.hibernate.annotations.NaturalId;
 
-@Entity(name="SumValue")
+@Entity(name="SumPartialValue")
 @Table(name="dhsst_value_partial_sum",
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames={"data", "location", "period", "type"})

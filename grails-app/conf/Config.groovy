@@ -146,6 +146,21 @@ environments {
 
 security.shiro.authc.required = false
 
+// rabbitmq
+rabbitmq {
+	connectionfactory {
+		username = 'guest'
+		password = 'guest'
+		hostname = '127.0.0.1'
+		consumers = 5
+	}
+	queues = {
+		adminQueue durable: true, autoDelete: false
+	}
+}
+rabbitmq.concurrentConsumers = 1
+rabbitmq.retryPolicy.maxAttempts = 1
+
 // log4j configuration
 log4j = {
 	// Example of changing the log pattern for the default console
@@ -219,8 +234,9 @@ site.entity.list.max=40
 site.period=0
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
-
 site.datalocationtype.checked=["District Hospital","Health Center"]
+
+task.temp.folder='files/'
 
 report.skip.levels=["Sector"]
 dashboard.skip.levels=[]

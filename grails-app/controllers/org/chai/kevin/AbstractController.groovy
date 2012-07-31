@@ -28,27 +28,15 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.shiro.SecurityUtils;
-import org.chai.kevin.dsr.DsrTargetCategory
-import org.chai.kevin.location.DataLocationType;
+import org.apache.commons.lang.math.NumberUtils
+import org.apache.shiro.SecurityUtils
+import org.chai.kevin.location.DataLocationType
 import org.chai.kevin.location.Location
 import org.chai.kevin.location.LocationLevel
-import org.chai.kevin.LocationService
-
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.chai.kevin.reports.ReportEntity
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
-import org.chai.kevin.security.User;
-import org.chai.kevin.survey.Survey
-import org.chai.kevin.survey.SurveyProgram
-import org.chai.kevin.survey.SurveyPageService
-import org.chai.kevin.survey.SurveySection
-import org.chai.kevin.survey.summary.SurveySummaryPage;
-import org.chai.kevin.util.Utils
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.chai.kevin.security.User
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 public abstract class AbstractController {
 
@@ -60,7 +48,8 @@ public abstract class AbstractController {
 		return params.targetURI?: "/"
 	}
 	
-	def getUser() {
+	def getCurrentUser() {
+		if (log.isDebugEnabled()) log.debug('getCurrentUser()')
 		return User.findByUuid(SecurityUtils.subject.principal, [cache: true])
 	}
 

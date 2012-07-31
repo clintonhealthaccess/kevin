@@ -61,7 +61,9 @@ public class LocationService {
     }
 
 	public List<LocationLevel> listLevels() {
-		return LocationLevel.list([cache: true])
+		def levels = LocationLevel.list([cache: true])
+		Collections.sort(levels)
+		return levels
 	}
 	
 	public List<DataLocationType> listTypes() {
