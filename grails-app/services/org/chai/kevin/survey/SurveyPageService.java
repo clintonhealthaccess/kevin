@@ -228,11 +228,14 @@ public class SurveyPageService {
 		DataLocationType dataLocationType = dataLocation.getType();
 		
 		Map<SurveyElement, FormEnteredValue> elements = new LinkedHashMap<SurveyElement, FormEnteredValue>();
+		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
 		Map<String, Enum> enums = new HashMap<String, Enum>();
 		
 		for (SurveyProgram program : survey.getPrograms(dataLocationType)) {
 			for (SurveySection section : program.getSections(dataLocationType)) {
 				for (SurveyQuestion question : section.getQuestions(dataLocationType)) {
+					SurveyEnteredQuestion enteredQuestion = surveyValueService.getOrCreateSurveyEnteredQuestion(dataLocation, question);
+					questions.put(question, enteredQuestion);
 					for (SurveyElement element : question.getSurveyElements(dataLocationType)) {
 						FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(dataLocation, element);
 						elements.put(element, enteredValue);
@@ -242,7 +245,7 @@ public class SurveyPageService {
 			}
 
 		}
-		return new SurveyPage(dataLocation, survey, null, null, null, null,null, elements, enums);
+		return new SurveyPage(dataLocation, survey, null, null, null, null, questions, elements, enums);
 	}
 	
 
