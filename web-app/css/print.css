@@ -42,33 +42,33 @@ label { display: block; font-weight: bold; }
 /* line 81, ../../src/stylesheets/print.sass */
 #print-questions .question-container h4 { font-weight: normal; margin-top: 14px; margin-bottom: 4px; }
 /* line 85, ../../src/stylesheets/print.sass */
-#print-questions .question-container h4 .nice-title-number { padding-right: 5px; font-weight: bold; }
-/* line 89, ../../src/stylesheets/print.sass */
+#print-questions .question-container h4 .nice-title-image { margin-left: -20px; padding-right: 14px; font-weight: bold; }
+/* line 90, ../../src/stylesheets/print.sass */
 #print-questions .block-with-height { height: 30px; }
-/* line 92, ../../src/stylesheets/print.sass */
+/* line 93, ../../src/stylesheets/print.sass */
 #print-questions div, #print-questions .element { display: inline; }
-/* line 95, ../../src/stylesheets/print.sass */
+/* line 96, ../../src/stylesheets/print.sass */
 #print-questions div.admin-hint { display: none; }
-/* line 98, ../../src/stylesheets/print.sass */
+/* line 99, ../../src/stylesheets/print.sass */
 #print-questions li.survey-element { display: block; }
-/* line 101, ../../src/stylesheets/print.sass */
+/* line 102, ../../src/stylesheets/print.sass */
 #print-questions .question-tab-title, #print-questions .element-map .element-map-header { font-weight: 500; background-color: #9f9f9f; padding: 2px; text-align: center; border: 1px solid #c7c5c5; border-left: 1px solid white; }
-/* line 109, ../../src/stylesheets/print.sass */
+/* line 110, ../../src/stylesheets/print.sass */
 #print-questions .question-tab-title-name { border: 1px solid #cccccc; }
-/* line 112, ../../src/stylesheets/print.sass */
+/* line 113, ../../src/stylesheets/print.sass */
 #print-questions .question-checkbox ul { padding-left: 0px; }
-/* line 115, ../../src/stylesheets/print.sass */
+/* line 116, ../../src/stylesheets/print.sass */
 #print-questions .show-help, #print-questions .hide-help { display: none; }
-/* line 118, ../../src/stylesheets/print.sass */
+/* line 119, ../../src/stylesheets/print.sass */
 #print-questions .help-container { border: 0.5px dotted grey; padding: 4px; display: block; margin-top: 0px; margin-bottom: 4px; }
-/* line 126, ../../src/stylesheets/print.sass */
+/* line 127, ../../src/stylesheets/print.sass */
 #print-questions .question-simple textarea { display: block; width: 600px; }
-/* line 130, ../../src/stylesheets/print.sass */
+/* line 131, ../../src/stylesheets/print.sass */
 #print-questions .oddrow { background-color: #eeeeee; }
-/* line 134, ../../src/stylesheets/print.sass */
+/* line 135, ../../src/stylesheets/print.sass */
 #print-questions .element-number input, #print-questions .element-date input { border: none; background: transparent; border-bottom: 2px solid black; }
-/* line 139, ../../src/stylesheets/print.sass */
+/* line 140, ../../src/stylesheets/print.sass */
 #print-questions .element-enum > div { display: block; }
 
-/* line 142, ../../src/stylesheets/print.sass */
+/* line 143, ../../src/stylesheets/print.sass */
 .appendix-content h3, .appendix-content ol { display: none; }
