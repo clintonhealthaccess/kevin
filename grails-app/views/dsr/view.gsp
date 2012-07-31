@@ -37,6 +37,7 @@
 						
 						<g:if test="${currentView == Utils.ReportType.MAP}">
 							<g:render template="/dsr/reportProgramMap" model="[linkParams:params]"/>
+							<g:render template="/dsr/reportProgramMapTable" model="[linkParams:params]"/>
 						</g:if>
 						<g:elseif test="${currentView == Utils.ReportType.TABLE && dsrTable.hasData()}">
 							<g:render template="/dsr/reportProgramTable"/>

@@ -59,12 +59,7 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 		average = sum / num;		
 		
 		if (average.isInfinite()) average = null;
-		else if (average.isNaN()) average = null;
-		
-		if(average != null){
-			DecimalFormat frmt = new DecimalFormat("#.##");
-			average = Double.parseDouble(frmt.format(average));	
-		}		
+		else if (average.isNaN()) average = null;		
 		
 		return getData().getType().getValue(average);
 	}

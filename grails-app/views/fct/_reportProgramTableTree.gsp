@@ -27,13 +27,18 @@
 			</td>
 			<g:each in="${fctTable.targetOptions}" var="targetOption">
 				<td>
-					<g:if test="${fctTable.getReportValue(location, targetOption) != null && !fctTable.getReportValue(location, targetOption).getValue().isNull()}">
-						<div class="report-location-value">
-							<g:reportValue value="${fctTable.getReportValue(location, targetOption).getValue()}" type="${targetOption.sum.type}"/>
-						</div>
-						<div class="report-location-percentage hidden">
-							<g:reportValue value="${fctTable.getReportValue(location, targetOption).getAverage()}" type="${targetOption.sum.type}" format="##.#%"/>
-						</div>
+					<g:set var="reportValue" value="${fctTable.getReportValue(location, targetOption)}"/>
+					<g:if test="${reportValue != null}">
+						<g:if test="${reportValue.getValue() != null && !reportValue.getValue().isNull()}">
+							<div class="report-location-value">
+								<g:reportValue value="${reportValue.getValue()}" type="${targetOption.sum.type}"/>
+							</div>
+						</g:if>
+						<g:if test="${reportValue.getAverage() != null && !reportValue.getAverage().isNull()}">
+							<div class="report-location-percentage hidden">
+								<g:reportPercentage value="${reportValue.getAverage()}"/>
+							</div>
+						</g:if>
 					</g:if>
 					<g:else>
 						<div class="report-value-na"><g:message code="report.value.na"/></div>
