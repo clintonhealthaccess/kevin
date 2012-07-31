@@ -49,6 +49,11 @@
   									</a>
   								</li>
   								<li>
+  									<a href="${createLinkWithTargetURI(controller:'data', action:'addReferencingDataTasks', params:[data:normalizedDataElement.id])}">
+  										<g:message code="dataelement.addreferencingdatatasks.label"/>
+  									</a>
+  								</li>
+  								<li>
   									<a href="${createLinkWithTargetURI(controller:'data', action:'deleteValues', params:[data:normalizedDataElement.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
   										<g:message code="data.deletevalues.label"/>
   									</a>

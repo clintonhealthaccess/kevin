@@ -2,6 +2,9 @@ package org.chai.kevin.data;
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.task.CalculateTask;
+import org.chai.kevin.task.Task;
+import org.chai.kevin.task.Task.TaskStatus;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.Status;
 import org.chai.kevin.value.Value;
@@ -171,4 +174,85 @@ class DataControllerSpec extends IntegrationTests {
 		NormalizedDataElement.list()[0].lastValueChanged.after(date)
 	}
 	
+	def "add referencing data element does not add raw data element"() {
+		setup:
+		def user = newUser("user", "uuid")
+		setupSecurityManager(user)
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		dataController = new DataController()
+		
+		when:
+		dataController.params.data = dataElement.id
+		dataController.addReferencingDataTasks()
+		
+		then:
+		dataController.response.redirectedUrl == '/'
+		Task.count() == 0 
+	} 
+	
+	def "add referencing data element adds calculation and normalized data elements"() {
+		setup:
+		def user = newUser("user", "uuid")
+		setupSecurityManager(user)
+		def period = newPeriod()
+		setupLocationTree()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '\$'+dataElement.id]]))
+		def calculation = newSum("\$"+dataElement.id, CODE(3))
+		dataController = new DataController()
+		
+		when:
+		dataController.params.data = dataElement.id
+		dataController.addReferencingDataTasks()
+		
+		then:
+		dataController.response.redirectedUrl == '/'
+		Task.count() == 2
+		Task.list()[0].dataId == normalizedDataElement.id
+		Task.list()[1].dataId == calculation.id
+	}
+	
+	def "add referencing data element adds all references"() {
+		setup:
+		def user = newUser("user", "uuid")
+		setupSecurityManager(user)
+		def period = newPeriod()
+		setupLocationTree()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '\$'+dataElement.id]]))
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '\$'+normalizedDataElement1.id]]))
+		dataController = new DataController()
+		
+		when:
+		dataController.params.data = dataElement.id
+		dataController.addReferencingDataTasks()
+		
+		then:
+		dataController.response.redirectedUrl == '/'
+		Task.count() == 2
+		Task.list()[0].dataId == normalizedDataElement1.id
+		Task.list()[1].dataId == normalizedDataElement2.id
+	}
+	
+	def "add referencing data element does not add anything when task already there"() {
+		setup:
+		def user = newUser("user", "uuid")
+		setupSecurityManager(user)
+		def period = newPeriod()
+		setupLocationTree()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '\$'+dataElement.id]]))
+		def task = new CalculateTask(user: user, status: TaskStatus.NEW, dataId: normalizedDataElement.id).save(failOnError:true)
+		dataController = new DataController()
+		
+		when:
+		dataController.params.data = dataElement.id
+		dataController.addReferencingDataTasks()
+		
+		then:
+		dataController.response.redirectedUrl == '/'
+		Task.count() == 1
+		Task.list()[0].dataId == normalizedDataElement.id
+	}
+
 }

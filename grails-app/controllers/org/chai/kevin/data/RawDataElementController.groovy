@@ -189,7 +189,7 @@ class RawDataElementController extends AbstractEntityController {
 				surveyElementMap.put(surveyElement, surveyService.getNumberOfApplicableDataLocationTypes(surveyElement));
 			}
 			
-			List<Data<?>> referencingData = dataService.getReferencingData(rawDataElement)
+			Set<Data<?>> referencingData = dataService.getReferencingData(rawDataElement)
 
 			render (view: '/entity/data/explainRawDataElement',  model: [
 				rawDataElement: rawDataElement, surveyElements: surveyElementMap, periodValues: periodValues, referencingData: referencingData
