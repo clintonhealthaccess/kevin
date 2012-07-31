@@ -30,14 +30,12 @@ import org.chai.kevin.ExpressionService
 import org.chai.kevin.InfoService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.RefreshValueService
-//import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationService;
-//import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardValueService
 import org.chai.kevin.dashboard.DashboardService
@@ -136,11 +134,6 @@ beans = {
 	entityExportService(EntityExportService){
 		sessionFactory = ref("sessionFactory")
 	}
-	
-//	chartService(ChartService){
-//		valueService = ref("valueService")
-//		periodService = ref("periodService")
-//	}
 
 	reportService(ReportService){
 		dataService = ref("dataService")
