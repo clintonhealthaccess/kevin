@@ -30,6 +30,7 @@ package org.chai.kevin.exports;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -55,7 +56,7 @@ public class CalculationExport extends DataExport {
 	
 	private Set<Calculation<CalculationPartialValue>> calculations = new HashSet<Calculation<CalculationPartialValue>>();
 
-	@ManyToMany(targetEntity=Calculation.class, fetch=FetchType.LAZY)
+	@ManyToMany(targetEntity=Calculation.class, fetch=FetchType.LAZY, cascade={CascadeType.ALL})
 	@JoinTable(name="dhsst_export_calculation_data",
 		joinColumns=@JoinColumn(name="exporter"),
 		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","calculations"})

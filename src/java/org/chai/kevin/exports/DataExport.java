@@ -34,6 +34,7 @@ import java.util.Set;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -118,7 +119,7 @@ public abstract class DataExport {
 		this.typeCodeString = typeCodeString;
 	}
 	
-	@ManyToMany(targetEntity=CalculationLocation.class, fetch=FetchType.LAZY)
+	@ManyToMany(targetEntity=CalculationLocation.class, fetch=FetchType.LAZY, cascade={CascadeType.ALL})
 	@JoinTable(name="dhsst_export_locations",
 		joinColumns=@JoinColumn(name="exporter"),
 		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","locations"})
@@ -140,7 +141,7 @@ public abstract class DataExport {
 		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	
-	@ManyToMany(targetEntity=Period.class, fetch=FetchType.LAZY)
+	@ManyToMany(targetEntity=Period.class, fetch=FetchType.LAZY, cascade={CascadeType.ALL})
 	@JoinTable(name="dhsst_export_periods",
 		joinColumns=@JoinColumn(name="exporter"),
 		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","periods"})
