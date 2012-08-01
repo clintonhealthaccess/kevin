@@ -113,11 +113,11 @@ class BootStrap {
 				surveyAllReadonly.save()
 			}
 			
-			if (User.findByUsername('admin') == null) {
-				def user = new User(username: "admin", passwordHash: new Sha256Hash("123admin!").toHex())
-				user.addToPermissions("*")
-				user.save()
-			}
+//			if (User.findByUsername('admin') == null) {
+//				def user = new User(username: "admin", passwordHash: new Sha256Hash("123admin!").toHex())
+//				user.addToPermissions("*")
+//				user.save()
+//			}
 			
 //			if (User.findByUsername('dhsst') == null) {
 //				def user = new User(username: "dhsst", passwordHash: new Sha256Hash("123chai!").toHex())
