@@ -180,7 +180,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		def fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes)
 		
 		then:
-		Utils.formatNumber("#.##", fctTable.getTotalAverage(location)) == "1"
+		fctTable.getTotalAverage(location) == 1
 		
 		when: "add another data location such that total report average < 1"
 		def dummy = newDataLocation(j(["en":"dummy"]), "dummy", Location.findByCode(BURERA), DataLocationType.findByCode(HEALTH_CENTER_GROUP))
@@ -192,7 +192,25 @@ class FctServiceSpec extends FctIntegrationTests {
 		fctTable = fctService.getFctTable(location, program, targetHC, period, dataLocationTypes)
 		
 		then:
-		Utils.formatNumber("#.##", fctTable.getTotalAverage(location)) == "0.67"
+		fctTable.getTotalAverage(location) == 0.67
+		
+		when: "add data locations such that total report average < .06, min % to display the report value inside the stacked bar"
+		ndeHC = newNormalizedDataElement(CODE(10), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"0", (HEALTH_CENTER_GROUP):"1"]]))
+		sumHC = newSum("\$"+ndeHC.id, CODE(11))
+		targetHC = newFctTarget(CODE(12), 1, program)
+		targetOptionHC = newFctTargetOption(CODE(13), 1, targetHC, sumHC)
+		int i = 0
+		while(i != 30){
+			newDataLocation(j(["en":"dummy"+i]), "dummy"+i, Location.findByCode(BURERA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP))
+			i++
+		}
+		refresh()
+		fctTable = fctService.getFctTable(location, program, targetHC, period, dataLocationTypes)
+		
+		then:
+		fctTable.getReportValue(location, targetOptionHC).getNumberOfDataLocations() == 33
+		fctTable.getReportValue(location, targetOptionHC).getAverage().numberValue.round(2) == 0.06
+		Utils.formatNumber("#.##", fctTable.getReportValue(location, targetOptionHC).getAverage().numberValue) == "0.06"
 	}
 
 	def "get fct skip levels"(){

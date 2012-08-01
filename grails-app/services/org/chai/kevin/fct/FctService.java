@@ -31,7 +31,7 @@ public class FctService {
 	
 	private ReportService reportService;
 	private ValueService valueService;
-	private Set<String> skipLevels;
+	private Set<String> locationSkipLevels;
 	
 	@Cacheable("fctCache")
 	@Transactional(readOnly = true)
@@ -49,10 +49,10 @@ public class FctService {
 			return new FctTable(valueMap, targetOptions, targets, topLevelLocations);
 		Collections.sort(targetOptions);
 		
-		Set<LocationLevel> skips = reportService.getSkipLocationLevels(skipLevels);
+		Set<LocationLevel> skips = reportService.getSkipReportLevels(locationSkipLevels);
 		List<CalculationLocation> treeLocations = new ArrayList<CalculationLocation>();
-		treeLocations.addAll(location.collectTreeWithDataLocations(skips, types));
-		treeLocations.addAll(location.collectDataLocations(skips, types));
+		treeLocations.addAll(location.collectLocationTreeWithData(skips, types, true));
+//		treeLocations.addAll(location.collectDataLocations(skips, types));
 		
 		for (CalculationLocation treeLocation : treeLocations) {
 			Map<FctTargetOption, SumValue> targetMap = new HashMap<FctTargetOption, SumValue>();
@@ -63,7 +63,7 @@ public class FctService {
 			valueMap.put(treeLocation, targetMap);
 		}
 		
-		topLevelLocations.addAll(location.getChildrenEntitiesWithDataLocations(skips, types));
+		topLevelLocations.addAll(location.getChildrenWithData(skips, types, true));
 		
 		targets = getFctTargetsWithOptions(program);		
 		Collections.sort(targets);
@@ -96,11 +96,11 @@ public class FctService {
 		this.valueService = valueService;
 	}
 	
-	public void setSkipLevels(Set<String> skipLevels) {
-		this.skipLevels = skipLevels;
+	public void setLocationSkipLevels(Set<String> locationSkipLevels) {
+		this.locationSkipLevels = locationSkipLevels;
 	}
 	
 	public Set<LocationLevel> getSkipLocationLevels(){
-		return reportService.getSkipLocationLevels(skipLevels);
+		return reportService.getSkipReportLevels(locationSkipLevels);
 	}
 }

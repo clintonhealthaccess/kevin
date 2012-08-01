@@ -58,7 +58,7 @@ class DashboardController extends AbstractController {
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()		
 		def dashboardEntity = getDashboardEntity(program)
 		
-		def skipLevels = dashboardService.getSkipLocationLevels();
+		def locationSkipLevels = dashboardService.getSkipLocationLevels();
 		
 		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id, 'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort()]
 		
@@ -86,7 +86,7 @@ class DashboardController extends AbstractController {
 				selectedTargetClass: DashboardTarget.class,
 				currentLocation: location,			
 				currentLocationTypes: dataLocationTypes,
-				skipLevels: skipLevels			
+				locationSkipLevels: locationSkipLevels			
 			]
 		}
 	}

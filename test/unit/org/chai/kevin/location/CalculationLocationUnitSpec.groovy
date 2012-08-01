@@ -59,7 +59,7 @@ class CalculationLocationUnitSpec extends UnitSpec {
 		north.children = [burera]
 
 		then:
-		rwanda.collectTreeWithDataLocations(null, null).empty
+		rwanda.collectLocationTreeWithData(null, null, true).empty
 		rwanda.collectDataLocations(null, null).empty
 		
 		when:
@@ -68,16 +68,16 @@ class CalculationLocationUnitSpec extends UnitSpec {
 		north.dataLocations = [data1]
 		
 		then:
-		rwanda.collectTreeWithDataLocations(null, null).equals([north, rwanda])
+		rwanda.collectLocationTreeWithData(null, null, true).equals([north, rwanda, data1])
 		rwanda.collectDataLocations(null, null).equals([data1])
-		rwanda.collectTreeWithDataLocations(null, new HashSet([type1])).equals([north, rwanda])
+		rwanda.collectLocationTreeWithData(null, new HashSet([type1]), true).equals([north, rwanda, data1])
 		rwanda.collectDataLocations(null, new HashSet([type1])).equals([data1])
 		
 		when:
 		def type2 = new DataLocationType(code: 'type2')
-		
+
 		then:
-		rwanda.collectTreeWithDataLocations(null, new HashSet([type2])).empty
+		rwanda.collectLocationTreeWithData(null, new HashSet([type2]), true).empty
 		rwanda.collectDataLocations(null, new HashSet([type2])).empty
 		
 	}
@@ -217,8 +217,8 @@ class CalculationLocationUnitSpec extends UnitSpec {
 		burera.dataLocations = [data2]
 		
 		then:
-		rwanda.getChildrenLocations(new HashSet([province]), new HashSet([type1, type2])).equals([burera, data1])
-		rwanda.getChildrenLocations(new HashSet([province, district]), new HashSet([type1, type2])).equals([data1, data2])
+		rwanda.getChildren(new HashSet([province]), new HashSet([type1, type2])).equals([burera, data1])
+		rwanda.getChildren(new HashSet([province, district]), new HashSet([type1, type2])).equals([data1, data2])
 		
 	}
 	
@@ -246,9 +246,9 @@ class CalculationLocationUnitSpec extends UnitSpec {
 		burera.dataLocations = [data2]
 		
 		then:
-		rwanda.getChildrenEntitiesWithDataLocations(null, types).equals([north, data1])
-		rwanda.getChildrenEntitiesWithDataLocations(new HashSet([province]), types).equals([burera, data1])
-		rwanda.getChildrenEntitiesWithDataLocations(new HashSet([province, district]), types).equals([data1, data2])
+		rwanda.getChildrenWithData(null, types, true).equals([north, data1])
+		rwanda.getChildrenWithData(new HashSet([province]), types, true).equals([burera, data1])
+		rwanda.getChildrenWithData(new HashSet([province, district]), types, true).equals([data1, data2])
 	}
 	
 	def "test collect locations on DataLocation"() {

@@ -45,41 +45,27 @@ class FilterTagLib {
 
 	def locationService;
 	def reportService;
-
+	
 	def topLevelReportTabs = {attrs, body ->
-		def model = new HashMap(attrs)
-		if (model.linkParams == null) model << [linkParams: [:]]
-		else{
-			def linkParams = model.linkParams
-			def exclude = attrs['exclude']
-			if (exclude != null){
-				def filteredLinkParams = new HashMap(linkParams)
-				for(def param : linkParams){
-					if(exclude.contains(param.key))
-						filteredLinkParams.remove(param.key)
-				}
-				model << [linkParams: filteredLinkParams]
-			}
-		}		
+		def model = excludeLinkParams(attrs)	
 		out << render(template:'/templates/topLevelReportTabs', model:model)
 	}
-	
+			
 	def periodFilter = {attrs, body ->
 		Period.withTransaction {
-			def model = new HashMap(attrs)
+			def model = excludeLinkParams(attrs)
 			model << 
 				[
 					currentPeriod: attrs['selected'],
 					periods: Period.list([cache: true])
 				]
-			if (model.linkParams == null) model << [linkParams: [:]]
 			out << render(template:'/tags/filter/periodFilter', model:model)
 		}
 	}
 
 	def programFilter = {attrs, body ->
 		ReportProgram.withTransaction {
-			def model = new HashMap(attrs)			
+			def model = excludeLinkParams(attrs)
 			def program = attrs['selected']
 			def programRoot = reportService.getRootProgram()
 			def programTree = reportService.collectReportProgramTree(attrs['selectedTargetClass'], programRoot)
@@ -88,53 +74,54 @@ class FilterTagLib {
 					currentProgram: program,
 					programRoot: programRoot,
 					programTree: programTree			
-				]
-			
-			if (model.linkParams == null) model << [linkParams: [:]]
-			else{
-				def linkParams = model.linkParams
-				def exclude = attrs['exclude']
-				if (exclude != null){
-					def filteredLinkParams = new HashMap(linkParams)
-					for(def param : linkParams){
-						if(exclude.contains(param.key))
-							filteredLinkParams.remove(param.key)
-					}
-					model << [linkParams: filteredLinkParams]
-				}
-			}	
+				]				
 			out << render(template:'/tags/filter/programFilter', model:model)
 		}
 	}
 		
 	def locationFilter = {attrs, body ->
 		Location.withTransaction {
-			def model = new HashMap(attrs)
+			def model = excludeLinkParams(attrs)
 			def location = attrs['selected']
 			def locationFilterRoot = locationService.getRootLocation()	
-			def locationFilterTree = locationFilterRoot.collectTreeWithDataLocations(attrs['skipLevels'], attrs['selectedTypes'])
+			def locationFilterTree = locationFilterRoot.collectLocationTreeWithData(attrs['locationSkipLevels'], attrs['selectedTypes'], false)
 			model << 
 				[
 					currentLocation: location,
 					locationFilterRoot: locationFilterRoot, 
 					locationFilterTree: locationFilterTree
 				]
-			if (model.linkParams == null) model << [linkParams: [:]]
 			out << render(template:'/tags/filter/locationFilter', model:model)
 		}
 	}
 	
 	def dataLocationTypeFilter = {attrs, body ->
 		DataLocationType.withTransaction {
-			def model = new HashMap(attrs)
+			def model = excludeLinkParams(attrs)
 			model << 
 				[
 					currentLocationTypes: attrs['selected'],
 					dataLocationTypes: DataLocationType.list([cache: true])					
-				]
-			if (model.linkParams == null) model << [linkParams: [:]]
+				]			
 			out << render(template:'/tags/filter/dataLocationTypeFilter', model:model)
 		}
+	}	
+	
+	public excludeLinkParams(def attrs){
+		def model = new HashMap(attrs)
+		if (model.linkParams == null)
+			model << [linkParams: [:]]
+		else{
+			def includeParams = new HashMap(model.linkParams)
+			def excludeParams = model.exclude
+			if (excludeParams != null){
+				for(def excludeParam : excludeParams){
+					includeParams.remove(excludeParam)
+				}
+			}
+			model << [linkParams: includeParams]
+		}
+		return model
 	}
 	
 //	def levelFilter = {attrs, body ->
@@ -151,58 +138,58 @@ class FilterTagLib {
 //			out << render(template:'/tags/filter/levelFilter', model:model)
 //		}
 //	}
-	
-	// attrs['skipLevels'] is only needed for reports with both top-level locationFilter & levelFilter
-	def createLinkByFilter = {attrs, body ->
-		if (attrs['params'] == null) attrs['params'] = [:]
-		else{
-			Map params = new HashMap(attrs['params'])
-			def skipLevels = attrs['skipLevels']
-			if(skipLevels == null) skipLevels = new HashSet<LocationLevel>()
-			attrs['params'] = updateParamsByFilter(params, skipLevels);
-		}
-		out << createLink(attrs, body)
-	}		
-	
-	public Map updateParamsByFilter(Map params, Set<LocationLevel> skipLevels) {
-		if (!params.containsKey("filter")) return params;
-		String filter = (String) params.get("filter");
-		Location location = null;
-		if (params.get("location") != null) {
-			location = Location.get(Integer.parseInt(params.get("location")))
-		}
-		LocationLevel level = null;
-		if (params.get("level") != null) {
-			level = LocationLevel.get(Integer.parseInt(params.get("level")))
-		}
-
-		if (location != null) {
-			if (level != null) {
-				// TODO use isAfter()
-				if (location.getLevel().getOrder() >= level.getOrder()) {
-					// conflict
-					if (filter == "level") {
-						// adjust location to level
-						LocationLevel levelBefore = locationService.getLevelBefore(location.getLevel(), skipLevels)
-						if (levelBefore != null)
-							location = locationService.getParentOfLevel(location, levelBefore);
-					}
-					// conflict
-					else {
-						// adjust level to location
-						level = locationService.getLevelAfter(location.getLevel(), skipLevels)
-					}
-				}
-			}
-			// conflict
-			else {
-				// adjust level to location
-				level = locationService.getLevelAfter(location.getLevel(), skipLevels)
-			}
-		}
-		
-		if (location != null) params.put("location", location.id);
-		if (level != null) params.put("level", level.id);
-		return params;
-	}
+//	
+//	 attrs['locationSkipLevels'] is only needed for reports with both top-level locationFilter & levelFilter
+//	def createLinkByFilter = {attrs, body ->
+//		if (attrs['params'] == null) attrs['params'] = [:]
+//		else{
+//			Map params = new HashMap(attrs['params'])
+//			def skipLevels = attrs['locationSkipLevels']
+//			if(skipLevels == null) skipLevels = new HashSet<LocationLevel>()
+//			attrs['params'] = updateParamsByFilter(params, skipLevels);
+//		}
+//		out << createLink(attrs, body)
+//	}		
+//	
+//	public Map updateParamsByFilter(Map params, Set<LocationLevel> skipLevels) {
+//		if (!params.containsKey("filter")) return params;
+//		String filter = (String) params.get("filter");
+//		Location location = null;
+//		if (params.get("location") != null) {
+//			location = Location.get(Integer.parseInt(params.get("location")))
+//		}
+//		LocationLevel level = null;
+//		if (params.get("level") != null) {
+//			level = LocationLevel.get(Integer.parseInt(params.get("level")))
+//		}
+//
+//		if (location != null) {
+//			if (level != null) {
+//				// TODO use isAfter()
+//				if (location.getLevel().getOrder() >= level.getOrder()) {
+//					// conflict
+//					if (filter == "level") {
+//						// adjust location to level
+//						LocationLevel levelBefore = locationService.getLevelBefore(location.getLevel(), skipLevels)
+//						if (levelBefore != null)
+//							location = locationService.getParentOfLevel(location, levelBefore);
+//					}
+//					// conflict
+//					else {
+//						// adjust level to location
+//						level = locationService.getLevelAfter(location.getLevel(), skipLevels)
+//					}
+//				}
+//			}
+//			// conflict
+//			else {
+//				// adjust level to location
+//				level = locationService.getLevelAfter(location.getLevel(), skipLevels)
+//			}
+//		}
+//		
+//		if (location != null) params.put("location", location.id);
+//		if (level != null) params.put("level", level.id);
+//		return params;
+//	}
 }

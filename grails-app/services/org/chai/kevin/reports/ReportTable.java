@@ -1,10 +1,11 @@
 package org.chai.kevin.reports;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.value.Value;
 
 public abstract class ReportTable<T, S extends CalculationLocation, U> {
 
