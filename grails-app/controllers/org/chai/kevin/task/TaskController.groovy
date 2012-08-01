@@ -209,7 +209,7 @@ class TaskController extends AbstractController {
 	}
 	
 	def purge = {
-		def tasks = Task.findAllByStatus(TaskStatus.COMPLETED)
+		def tasks = Task.findAllByStatusInList([TaskStatus.COMPLETED, TaskStatus.ABORTED])
 		
 		tasks.each { task -> 
 			task.cleanTask()
@@ -223,7 +223,7 @@ class TaskController extends AbstractController {
 		
 		def entity = Task.get(params.int('id'))
 		if (entity != null) {
-			if (entity.status == TaskStatus.COMPLETED || !entity.sentToQueue) {
+			if (entity.status != TaskStatus.IN_PROGRESS || !entity.sentToQueue) {
 				try {
 					entity.cleanTask()
 					entity.delete()
@@ -237,7 +237,9 @@ class TaskController extends AbstractController {
 				}
 			}
 			else {
-				flash.message = message(code: 'task.delete.already.sent')
+				entity.abort()
+				
+				flash.message = message(code: 'task.aborting.message')
 				redirect(uri: targetURI)
 			}
 		}

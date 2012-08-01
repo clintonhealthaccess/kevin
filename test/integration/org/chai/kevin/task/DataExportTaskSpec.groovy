@@ -80,6 +80,13 @@ class DataExportTaskSpec extends IntegrationTests {
 		
 		then:
 		sameTask.isUnique()
+		
+		when:
+		task.status = TaskStatus.ABORTED
+		task.save(failOnError: true, flush: true)
+		
+		then:
+		sameTask.isUnique()
 	}
 	
 	def "execute task - DataExportTask with calculation"() {

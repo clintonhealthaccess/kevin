@@ -54,6 +54,8 @@ import org.chai.kevin.task.Task.TaskStatus;
 import org.chai.kevin.value.RawDataElementValue;
 import org.springframework.amqp.rabbit.core.ChannelCallback;
 
+import com.ibm.jaql.lang.expr.core.TimeoutExpr.TaskState;
+
 class BootStrap {
 	
 	def rabbitTemplate
@@ -77,8 +79,8 @@ class BootStrap {
 			if (log.isWarnEnabled()) log.warn("cannot connect to rabbitmq - did not delete queues", e);
 		}
 		
-		// we send all the tasks to the queue, except those who are already COMPLETED
-		def tasks = Task.findAllByStatusNotEqual(TaskStatus.COMPLETED)
+		// we reset the NEW and IN_PROGRESS tasks to the queue
+		def tasks = Task.findAllByStatusInList([TaskStatus.IN_PROGRESS, TaskStatus.NEW])
 		tasks.each { task ->
 			task.status = TaskStatus.NEW
 			task.save(failOnError: true) 

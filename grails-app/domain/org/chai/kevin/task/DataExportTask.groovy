@@ -42,7 +42,7 @@ class DataExportTask extends Task {
 	
 	boolean isUnique() {
 		def task = DataExportTask.findByExportId(exportId)
-		return task == null || task.status == TaskStatus.COMPLETED
+		return task == null || task.status == TaskStatus.COMPLETED || task.status == TaskStatus.ABORTED
 	}
 	
 	String getOutputFilename() {

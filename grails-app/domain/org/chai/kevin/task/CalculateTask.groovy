@@ -32,7 +32,7 @@ class CalculateTask extends Task {
 	
 	boolean isUnique() {
 		def task = CalculateTask.findByDataId(dataId)
-		return task == null || task.status == TaskStatus.COMPLETED
+		return task == null || task.status == TaskStatus.COMPLETED || task.status == TaskStatus.ABORTED
 	}
 	
 	def cleanTask() {

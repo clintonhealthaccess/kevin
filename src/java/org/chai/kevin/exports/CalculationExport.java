@@ -40,7 +40,6 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.DataElement;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
