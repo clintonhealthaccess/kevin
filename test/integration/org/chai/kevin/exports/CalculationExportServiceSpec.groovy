@@ -74,7 +74,7 @@ class CalculationExportServiceSpec extends IntegrationTests {
 		def exporter = newCalculationExport(j("en":"Testing Seach One"),periods, locationType, locations, calculations);
 		
 		when:
-		def exportedFile = calculationExportService.exportData(exporter);
+		def exportedFile = calculationExportService.exportData(exporter, 'en');
 		then:
 		//TODO Best way to check
 		exportedFile!=null
@@ -98,7 +98,7 @@ class CalculationExportServiceSpec extends IntegrationTests {
 		def exporterOne = newCalculationExport(j("en":"Testing Seach One"),periods, locationType, locations, calculations);
 		when:
 		def selectedLocations = locationService.getDataLocationsOfType(locations,locationTypes)
-		def exportedFileOne = calculationExportService.exportCalculations("Testing",selectedLocations,exporterOne.periods,exporterOne.calculations,locationTypes);
+		def exportedFileOne = calculationExportService.exportCalculations("Testing",selectedLocations,exporterOne.periods,exporterOne.calculations,locationTypes, 'en');
 		then:
 		exportedFileOne!=null
 	}
@@ -113,7 +113,7 @@ class CalculationExportServiceSpec extends IntegrationTests {
 		def calculation = newAggregation("1",CODE(1));
 			
 		when:
-		def lines = calculationExportService.getExportLineForValue(locations[0],period,calculation,locationTypes)	
+		def lines = calculationExportService.getExportLineForValue(locations[0],period,calculation,locationTypes, 'en')	
 		def periodString = "[ "+(period.startDate).toString()+" - "+(period.endDate).toString()+" ]";
 		
 		def listDataList=[];
@@ -144,7 +144,7 @@ class CalculationExportServiceSpec extends IntegrationTests {
 		def calculation = null;
 		
 		when:
-		def lines = calculationExportService.getExportLineForValue(locations[0],period,calculation,locationTypes)	
+		def lines = calculationExportService.getExportLineForValue(locations[0],period,calculation,locationTypes, 'en')	
 		then:
 		lines==[];
 	}

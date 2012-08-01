@@ -79,7 +79,7 @@ String dsrGroupLevel= config.dsr.group.level
 beans = {
 		
 	validationService(ValidationService){
-		jaqlService = ref("jaqlService")
+		jaqlService = ref("jaqlService")		
 	}
 	
 	surveyCopyService(SurveyCopyService) {
