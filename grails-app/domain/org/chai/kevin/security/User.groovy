@@ -3,10 +3,17 @@ package org.chai.kevin.security
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.security.PasswordToken;
+import org.chai.kevin.security.RegistrationToken;
 
 class User {
 
 	static String PERMISSION_DELIMITER = ";"
+	
+	//Needed to enable cascading deletes, these fields should not be collections since
+	//some code has been writen assuming its a one to many relationship
+	RegistrationToken registrationToken
+	PasswordToken passwordToken
 	
 	// TODO get rid of this, it is the uuid
 	String code
@@ -113,6 +120,8 @@ class User {
 		phoneNumber(phoneNumber: true, nullable: false, blank: false)
 		organisation(nullable: false, blank: false)
 		defaultLanguage(nullable: true)
+		registrationToken(nullable: true)
+		passwordToken(nullable: true)
 		
 		userType(nullable: false, blank: false)
 		locationId(nullable: true, 

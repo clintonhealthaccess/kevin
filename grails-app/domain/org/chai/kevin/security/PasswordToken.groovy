@@ -1,6 +1,10 @@
 package org.chai.kevin.security
 
 class PasswordToken {
-	User user
 	String token
+	
+	static belongsTo = [user:User]
+	
+	static constraints = {
+	}
 }

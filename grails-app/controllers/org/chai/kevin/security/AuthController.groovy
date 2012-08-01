@@ -42,11 +42,12 @@ class AuthController {
 			render(view:'register', model:[register: cmd, languages: languageService.availableLocales])
 		}
 		else {
-			def user = new User(userType: UserType.OTHER, code: cmd.email, username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'',
+			RegistrationToken token = new RegistrationToken(token: RandomStringUtils.randomAlphabetic(20), used: false)
+			
+			def user = new User(userType: UserType.OTHER, code: cmd.firstname,username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'',
 				firstname: cmd.firstname, lastname: cmd.lastname, organisation: cmd.organisation,
-				phoneNumber: cmd.phoneNumber, defaultLanguage: cmd.defaultLanguage, uuid: UUID.randomUUID().toString()).save(failOnError: true)
+				phoneNumber: cmd.phoneNumber, defaultLanguage: cmd.defaultLanguage, uuid: UUID.randomUUID().toString(),registrationToken:token).save(failOnError: true)
 				
-			RegistrationToken token = new RegistrationToken(token: RandomStringUtils.randomAlphabetic(20), user: user, used: false).save()
 			def url = createLink(absolute: true, controller:'auth', action:'confirmRegistration', params:[token:token.token])
 			
 			def contactEmail = ConfigurationHolder.config.site.contact.email;
@@ -120,8 +121,12 @@ class AuthController {
 				user.active = true
 				user.save()
 				
-				RegistrationToken token = RegistrationToken.findByUser(user)
-				if (token != null) token.delete()
+				if(user.registrationToken != null){
+					//This assumes that a user has only one regitration token
+					RegistrationToken registrationTokenToDelete = user.registrationToken
+					user.registrationToken = null
+					registrationTokenToDelete.delete()
+				}
 				
 				def url = createLink(absolute: true, controller:'auth', action:'login', params:[username:user.username])
 				
@@ -248,6 +253,14 @@ class AuthController {
 		else {
 			// create token
 			def user = User.findByEmail(cmd.email)
+			//if user has an already existing token, delete it
+			if(user.passwordToken != null){
+				//This assumes that a user has only one password token
+				PasswordToken passwordTokenToDelete = user.passwordToken
+				user.passwordToken = null
+				passwordTokenToDelete.delete()
+			}
+			
 			PasswordToken token = new PasswordToken(token: RandomStringUtils.randomAlphabetic(20), user: user).save()
 			
 			def url = createLink(absolute: true, controller:'auth', action:'newPassword', params:[token:token.token])
@@ -297,6 +310,8 @@ class AuthController {
 			if (token != null) {
 				// retrieve user from token
 				user = token.user
+				//Disassociate token from user
+				user.passwordToken = null
 				// delete the token
 				token.delete()
 			}
