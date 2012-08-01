@@ -72,11 +72,6 @@ abstract class ImportTask extends Task {
 		return true;
 	}
 	
-	def cleanTask() {
-		File folder = getFolder()
-		FileUtils.deleteDirectory(folder)
-	}
-	
 	abstract FileImporter getImporter(ImporterErrorManager errorManager);
 	
 	static constraints = {

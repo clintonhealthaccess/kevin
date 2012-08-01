@@ -30,6 +30,7 @@ package org.chai.kevin.exports;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -53,7 +54,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class DataElementExport extends DataExport {
 	private Set<DataElement<DataValue>> dataElements = new HashSet<DataElement<DataValue>>();
 
-	@ManyToMany(targetEntity=DataElement.class, fetch=FetchType.LAZY)
+	@ManyToMany(targetEntity=DataElement.class, fetch=FetchType.LAZY, cascade={CascadeType.ALL})
 	@JoinTable(name="dhsst_export_data_element_data",
 		joinColumns=@JoinColumn(name="exporter"),
 		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","dataElements"})

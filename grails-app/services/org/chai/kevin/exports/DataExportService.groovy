@@ -82,6 +82,7 @@ public class DataExportService {
 
 		return exporters;
 	}
+	
 	private Criteria getSearchCriteria(Class<DataExport> clazz, String text) {
 		def criteria = sessionFactory.getCurrentSession().createCriteria(clazz);
 		def textRestrictions = Restrictions.conjunction()
@@ -94,7 +95,4 @@ public class DataExportService {
 		return criteria
 	}
 	
-	
 }
-
-
