@@ -164,8 +164,7 @@ public class DashboardService {
 		entities.addAll(dashboardTargets);
 		return entities;
 	}
-	
-	
+		
 	//gets all dashboard program children
 	private List<DashboardProgram> getDashboardProgramChildren(ReportProgram program){
 		List<DashboardProgram> result = new ArrayList<DashboardProgram>();
