@@ -586,45 +586,62 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		
 	}
 	
-	// these are commented out because they don't work with the propagation=REQUIRES_NEW
-	// annotation in RefreshValueService
-//	def "test refresh normalized data elements respects dependency"() {
-//		setup:
-//		setupLocationTree()
-//		def period = newPeriod()
-//		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
-//		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
-//		
-//		when:
-//		refreshValueService.refreshNormalizedDataElements()
-//		
-//		then:
-//		NormalizedDataElementValue.count() == 4
-//		NormalizedDataElementValue.list()[0].value.numberValue == 1
-//		NormalizedDataElementValue.list()[1].value.numberValue == 1
-//		NormalizedDataElementValue.list()[2].value.numberValue == 1
-//		NormalizedDataElementValue.list()[3].value.numberValue == 1
-//	}
-//	
-//	def "test refresh normalized data elements with circular dependency still works"() {
-//		setup:
-//		setupLocationTree()
-//		def period = newPeriod()
-//		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[:]]))
-//		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
-//		normalizedDataElement1.expressionMap = e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement2.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement2.id]])
-//		normalizedDataElement1.save(failOnError: true)
-//		
-//		when:
-//		refreshValueService.refreshNormalizedDataElements()
-//		
-//		then:
-//		NormalizedDataElementValue.count() == 4
-//		NormalizedDataElementValue.list()[0].value.isNull()
-//		NormalizedDataElementValue.list()[1].value.isNull()
-//		NormalizedDataElementValue.list()[2].value.isNull()
-//		NormalizedDataElementValue.list()[3].value.isNull()
-//	}
+	def "test refresh normalized data elements respects dependency"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
+		
+		when:
+		def progress = new TestProgress()
+		refreshValueService.refreshAll(progress);
+		
+		then:
+		NormalizedDataElementValue.count() == 4
+		NormalizedDataElementValue.list()[0].value.numberValue == 1
+		NormalizedDataElementValue.list()[1].value.numberValue == 1
+		NormalizedDataElementValue.list()[2].value.numberValue == 1
+		NormalizedDataElementValue.list()[3].value.numberValue == 1
+		
+		progress.max == progress.progress
+		progress.max == 6
+	}
 	
+	def "test refresh all calculations progress"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
+		def sum = newSum("\$"+normalizedDataElement1.id, CODE(2))
+		
+		when:
+		def progress = new TestProgress()
+		refreshValueService.refreshAll(progress);
+		
+		then:
+		progress.max == progress.progress
+		progress.max == 9
+	}
+	
+	def "test refresh normalized data elements with circular dependency still works"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[:]]))
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
+		normalizedDataElement1.expressionMap = e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement2.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement2.id]])
+		normalizedDataElement1.save(failOnError: true, validate: false)
+		
+		when:
+		refreshValueService.refreshAll(new TestProgress())
+		
+		then:
+		NormalizedDataElementValue.count() == 4
+		NormalizedDataElementValue.list()[0].value.isNull()
+		NormalizedDataElementValue.list()[1].value.isNull()
+		NormalizedDataElementValue.list()[2].value.isNull()
+		NormalizedDataElementValue.list()[3].value.isNull()
+	}
 	
 }

@@ -88,7 +88,8 @@ abstract class Task implements Progress {
 	}
 	
 	static constraints = {
-		user(nullable: false)
+		user(nullable: true)
+		
 		status(nullable: false)
 		max(nullable: false)
 		current(nullable: true)

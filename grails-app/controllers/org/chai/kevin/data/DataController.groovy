@@ -80,7 +80,7 @@ class DataController extends AbstractController {
 		}
 	}
 	
-	def addReferencingDataTasks() {
+	def addReferencingDataTasks = {
 		def data = dataService.getData(params.int('data'), Data.class)
 		if (data == null) {
 			response.sendError(404)

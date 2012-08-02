@@ -28,7 +28,7 @@
   						</li>
   					</ul>
   				</td>
-  				<td>${task.user.username}</td>  				
+  				<td>${task.user==null?'-':task.user.username}</td>  				
   				<td>${task.class.simpleName}</td>
   				<td>${task.information}</td>
   				<td>${task.sentToQueue}</td>
