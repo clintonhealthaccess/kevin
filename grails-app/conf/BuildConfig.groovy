@@ -89,13 +89,12 @@ grails.project.dependency.resolution = {
 		
         runtime 'mysql:mysql-connector-java:5.1.13'
 		
-//		test"org.codehaus.geb:geb-spock:0.6.0"
-//		test("org.seleniumhq.selenium:selenium-firefox-driver:latest.release")
-//		test("org.seleniumhq.selenium:selenium-chrome-driver:2.0rc2")
-//		test("org.seleniumhq.selenium:selenium-htmlunit-driver:2.0rc2") {
-//			excludes "xml-apis", "xmlParserAPIs"
-//		}
-//		test 'org.gmock:gmock:0.8.1'
+		test "org.codehaus.geb:geb-spock:0.7.1"
+		test("org.seleniumhq.selenium:selenium-firefox-driver:latest.release")
+		test("org.seleniumhq.selenium:selenium-chrome-driver:latest.release")
+		test("org.seleniumhq.selenium:selenium-htmlunit-driver:latest.release") {
+			excludes "xml-apis"
+		}
 		
 		// those are for the migration script to work
 		compile 'org.supercsv:SuperCSV:1.52'
@@ -122,7 +121,8 @@ grails.project.dependency.resolution = {
 		compile ":yui-minify-resources:0.1.5"
 		compile ":rabbitmq:1.0.0.RC1"
 		
-		test (":spock:0.6") {changing = false}
+		test ":geb:0.7.1"
+		test ":spock:0.6"
 	}
 
 	
