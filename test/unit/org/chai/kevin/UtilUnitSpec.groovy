@@ -97,6 +97,7 @@ public class UtilUnitSpec extends UnitSpec {
 		thrown ParseException
 		
 	}
+	
 	def "test getStringValue"(){
 		setup:
 		boolean boolValue= true;
@@ -127,5 +128,17 @@ public class UtilUnitSpec extends UnitSpec {
 		enumValue.equals("Value Text")
 		date.equals(Utils.formatDate(nowDate));	
 			
+	}
+
+	def "test format export code"(){
+		when:
+		def normalString = Utils.formatExportCode("blah")
+		def emptyString = Utils.formatExportCode("")
+		def nullString = Utils.formatExportCode(null)
+		
+		then:
+		normalString == "~blah~"
+		emptyString == "~~"
+		nullString == "~null~"
 	}
 }

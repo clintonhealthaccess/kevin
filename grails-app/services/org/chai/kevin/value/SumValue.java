@@ -1,5 +1,6 @@
 package org.chai.kevin.value;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,7 +47,7 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 		}
 		//location
 		Double sum = 0d;
-		Integer num = 0;
+		Double num = 0d;
 		for (SumPartialValue sumPartialValue : getCalculationPartialValues()) {
 			if (!sumPartialValue.getValue().isNull()) {
 				// exclude null values from average
@@ -55,10 +56,10 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 			}
 		}
 		
-		average = (sum / num);
+		average = sum / num;		
 		
 		if (average.isInfinite()) average = null;
-		else if (average.isNaN()) average = null;
+		else if (average.isNaN()) average = null;		
 		
 		return getData().getType().getValue(average);
 	}

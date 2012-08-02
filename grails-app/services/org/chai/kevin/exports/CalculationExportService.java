@@ -68,9 +68,9 @@ public class CalculationExportService extends ExportService {
 		
 		Set<DataLocationType> types = new HashSet<DataLocationType>();
 		List<CalculationLocation> calculationLocations = new ArrayList<CalculationLocation>();
-		List<Location> locations = new ArrayList<Location>();
+		List<CalculationLocation> locations = new ArrayList<CalculationLocation>();
 		List<DataLocation> dataLocations = new ArrayList<DataLocation>();
-		Set<LocationLevel> skips = reportService.getSkipLocationLevels(skipLevels);		
+		Set<LocationLevel> skips = reportService.getSkipReportLevels(skipLevels);		
 
 		for(String code: export.getTypeCodes()){
 			DataLocationType type = locationService.findDataLocationTypeByCode(code);

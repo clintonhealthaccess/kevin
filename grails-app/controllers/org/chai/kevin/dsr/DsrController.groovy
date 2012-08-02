@@ -38,9 +38,11 @@ import org.chai.kevin.LanguageService
 import org.chai.kevin.LocationService
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService;
+import org.chai.kevin.util.Utils.ReportType;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class DsrController extends AbstractController {
@@ -73,17 +75,22 @@ class DsrController extends AbstractController {
 	def view = {
 		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)				
 		
-		Period period = getPeriod()		
-		ReportProgram program = getProgram(DsrTarget.class)				
+		Period period = getPeriod()
+		ReportProgram program = getProgram(DsrTarget.class)
 		Location location = getLocation()
-		Set<DataLocationType> dataLocationTypes = getLocationTypes()		
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 		DsrTargetCategory dsrCategory = getDsrTargetCategory(program)
-			
-		def skipLevels = dsrService.getSkipLocationLevels()
-		def locationTree = location.collectTreeWithDataLocations(skipLevels, dataLocationTypes).asList()
 		
-		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
-					'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 'dsrCategory':dsrCategory?.id]
+		ReportType reportView = getReportType()	
+		def viewSkipLevels = dsrService.getSkipViewLevels(reportView)
+		
+		def locationSkipLevels = dsrService.getSkipLocationLevels()
+		def locationTree = location.collectLocationTreeWithData(locationSkipLevels, dataLocationTypes, false).asList()
+		
+		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id, 
+							'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 							
+							'dsrCategory':dsrCategory?.id,
+							'reportType':reportView.toString().toLowerCase()]
 		def newParams = redirectIfDifferent(reportParams)
 		
 		if(newParams != null && !newParams.empty) { 
@@ -92,7 +99,7 @@ class DsrController extends AbstractController {
 		else {
 			def dsrTable = null
 			if (dsrCategory != null)
-				dsrTable = dsrService.getDsrTable(location, program, period, dataLocationTypes, dsrCategory);			
+				dsrTable = dsrService.getDsrTable(location, program, period, dataLocationTypes, dsrCategory, reportView);			
 			
 			if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+" root program: "+program+", root location: "+location)
 			
@@ -105,8 +112,10 @@ class DsrController extends AbstractController {
 				currentLocation: location,
 				locationTree: locationTree,
 				currentLocationTypes: dataLocationTypes,
-				skipLevels: skipLevels
+				locationSkipLevels: locationSkipLevels,
+				currentView: reportView,
+				viewSkipLevels: viewSkipLevels
 			]
 		}
-	}	
+	}
 }

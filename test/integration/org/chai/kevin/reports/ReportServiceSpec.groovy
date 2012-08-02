@@ -16,7 +16,7 @@ class ReportServiceSpec extends ReportIntegrationTests {
 		setupLocationTree()
 		
 		when:
-		def reportSkipLevels = reportService.getSkipLocationLevels(null)
+		def reportSkipLevels = reportService.getSkipReportLevels(null)
 		
 		then:
 		reportSkipLevels.equals(s([LocationLevel.findByCode(SECTOR)]))

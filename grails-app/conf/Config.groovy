@@ -241,9 +241,9 @@ task.temp.folder='files/'
 report.skip.levels=["Sector"]
 dashboard.skip.levels=[]
 dsr.skip.levels=[]
+dsr.view.map.skip.levels=["National", "Province"]
 fct.skip.levels=[]
 cost.skip.levels=[]
-survey.skip.levels=[]
 
 survey.skip.levels=["Sector"]
 survey.submit.skip.levels=["National", "Province"]

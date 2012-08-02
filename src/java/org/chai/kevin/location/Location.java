@@ -76,7 +76,7 @@ public class Location extends CalculationLocation implements Exportable {
 		return result;
 	}
 
-	//gets all data locations
+	//gets all data location children
 	@Override
 	public List<DataLocation> getDataLocations(Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
 		List<DataLocation> result = new ArrayList<DataLocation>();
@@ -96,35 +96,39 @@ public class Location extends CalculationLocation implements Exportable {
 		return result;				
 	}
 			
-	//gets all location children and data locations
+	//gets all location and data location children
 	@Transient
-	public List<CalculationLocation> getChildrenLocations(Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
+	public List<CalculationLocation> getChildren(Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
 		List<CalculationLocation> result = new ArrayList<CalculationLocation>();
 		result.addAll(getChildren(skipLevels));
 		result.addAll(getDataLocations(skipLevels, types));
 		return result;
 	}
 	
-	//gets all location children and data locations (that have data locations)
+	//gets only location and data location children with data locations
 	@Transient
-	public List<CalculationLocation> getChildrenEntitiesWithDataLocations(Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
+	public List<CalculationLocation> getChildrenWithData(Set<LocationLevel> skipLevels, Set<DataLocationType> types, boolean dataLocations) {
 		List<CalculationLocation> result = new ArrayList<CalculationLocation>();
 		
 		List<Location> locationChildren = getChildren(skipLevels);
-		List<Location> locationTree = collectTreeWithDataLocations(skipLevels, types);
+		List<CalculationLocation> locationTree = collectLocationTreeWithData(skipLevels, types, false);
 		for(Location locationChild : locationChildren){
 			if(locationTree.contains(locationChild))
 				result.add(locationChild);	
 		}
 		
-		result.addAll(getDataLocations(skipLevels, types));
+		if(dataLocations){
+			result.addAll(getDataLocations(skipLevels, types));
+		}
+		
 		return result;
 	}
 	
-	//gets all location children, grandchildren, etc (that have data locations)
-	public List<Location> collectTreeWithDataLocations(Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
-		List<Location> locations = new ArrayList<Location>();
-		collectLocations(locations, null, skipLevels, types);
+	//gets only location tree with data locations
+	public List<CalculationLocation> collectLocationTreeWithData(Set<LocationLevel> skipLevels, Set<DataLocationType> types, boolean collectDataLocations) {
+		List<CalculationLocation> locations = new ArrayList<CalculationLocation>();	
+		collectLocations(locations, null, skipLevels, types);	
+		if(collectDataLocations) locations.addAll(collectDataLocations(skipLevels, types));
 		return locations;
 	}
 	

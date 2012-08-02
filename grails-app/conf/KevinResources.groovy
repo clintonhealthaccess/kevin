@@ -162,6 +162,12 @@ modules = {
 		resource url: '/js/valuefilter_init.js', bundle: 'core'
 	}
 	
+	leaflet {
+		
+		resource url: 'http://cdn.leafletjs.com/leaflet-0.4/leaflet.js'
+		resource url: 'http://cdn.leafletjs.com/leaflet-0.4/leaflet.css'
+	}
+	
 	// Start resources for pages
 	list {
 		dependsOn 'core,spinner,form,fieldselection,cluetip,dropdown,explanation,chosen'
@@ -176,19 +182,15 @@ modules = {
 	}
 
 	dsr {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,leaflet'
 	}
 
 	fct {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,valuefilter'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,valuefilter,leaflet'
 	}
 	
 	dashboard {
-		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen,chartanimation,comparefilter'
-	}
-
-	maps {
-		dependsOn 'core,url,dropdown,explanation,spinner,chosen'
+		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen,chartanimation,comparefilter,leaflet'
 	}
 
 	cost {
