@@ -28,24 +28,29 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.apache.commons.lang.LocaleUtils;
-import org.chai.kevin.Translation;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.Value;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-import org.springframework.web.servlet.support.RequestContextUtils;
+import org.apache.commons.lang.LocaleUtils
+import org.chai.kevin.data.DataService;
+import org.chai.kevin.data.Type
+import org.chai.kevin.data.Type.ValueType
+import org.chai.kevin.util.Utils
+import org.chai.kevin.value.Value
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.servlet.support.RequestContextUtils
 
-class LanguageService {
+class LanguageService implements ApplicationContextAware {
 	
-	def dataService
+	ApplicationContext applicationContext
+	
+	def dataServiceBean
 	
 	static transactional = false
+	
+	DataService getDataService() {
+		return applicationContext.getBean("dataService")
+	}
 	
 	List<Locale> getAvailableLocales() {
 		return getAvailableLanguages().collect {LocaleUtils.toLocale(it)}
