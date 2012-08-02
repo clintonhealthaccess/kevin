@@ -62,18 +62,6 @@ public class RefreshValueService {
 	}
 	
 	@Transactional(readOnly = true)
-	public void refreshNormalizedDataElements(final Progress progress) {
-		final List<NormalizedDataElement> normalizedDataElements = sessionFactory.getCurrentSession().createCriteria(NormalizedDataElement.class).list();
-		while (!normalizedDataElements.isEmpty()) {
-			final NormalizedDataElement normalizedDataElement = normalizedDataElements.get(0);
-			
-			
-			List<NormalizedDataElement> uptodateElements = refreshNormalizedDataElement(normalizedDataElement, progress);
-			normalizedDataElements.removeAll(uptodateElements);
-		}
-	}
-	
-	@Transactional(readOnly = true)
 	public List<NormalizedDataElement> refreshNormalizedDataElement(NormalizedDataElement normalizedDataElement, Progress progress) {
 		// set progress maximum - we count the number of NormalizedDataElement dependencies
 		Set<Data> dependencySet = new HashSet<Data>();
@@ -81,10 +69,14 @@ public class RefreshValueService {
 		removeNulls(dependencySet);
 		progress.setMaximum(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class));
 		
+		List<NormalizedDataElement> uptodateElements = refreshNormalizedDataElementWithoutSettingProgress(normalizedDataElement, progress);
+		return uptodateElements;
+	}
+
+	private List<NormalizedDataElement> refreshNormalizedDataElementWithoutSettingProgress(NormalizedDataElement normalizedDataElement, Progress progress) {
 		// run the actual expression calculations
 		List<NormalizedDataElement> uptodateElements = new ArrayList<NormalizedDataElement>();
 		refreshDataElement(normalizedDataElement, uptodateElements, progress);
-		
 		return uptodateElements;
 	}
 	
@@ -99,12 +91,14 @@ public class RefreshValueService {
 	}
 	
 	private Date refreshDataElement(DataElement dataElement, List<NormalizedDataElement> uptodateElements, Progress progress) {
+		if (log.isDebugEnabled()) log.debug("refreshDataElement(dataElement="+dataElement+", uptodateElements="+uptodateElements+", progress)");
+		
 		if (dataElement instanceof RawDataElement) return dataElement.getLastValueChanged();
 		else {
 			NormalizedDataElement normalizedDataElement = (NormalizedDataElement)dataElement;
 			Date latestDependency = null;
 			
-			List<DataElement> dependencies = new ArrayList<DataElement>();
+			Set<DataElement> dependencies = new HashSet<DataElement>();
 			for (String expression : normalizedDataElement.getExpressions()) {
 				dependencies.addAll(expressionService.getDataInExpression(expression, DataElement.class).values());
 			}
@@ -159,7 +153,7 @@ public class RefreshValueService {
 			NormalizedDataElement normalizedDataElement = (NormalizedDataElement)dataElement;
 			Date latestDependency = null;
 			
-			List<DataElement> dependencies = new ArrayList<DataElement>();
+			Set<DataElement> dependencies = new HashSet<DataElement>();
 			for (String expression : normalizedDataElement.getExpressions()) {
 				dependencies.addAll(expressionService.getDataInExpression(expression, DataElement.class).values());
 			}
@@ -235,26 +229,77 @@ public class RefreshValueService {
 		sessionFactory.getCurrentSession().clear();
 	}
 	
-	private void collectOrderedDependencies(Data dataElement, Collection<Data> dependencies, Class<? extends Data> clazz) {
-		dependencies.add(dataElement);
-		if (dataElement instanceof NormalizedDataElement) {
-			NormalizedDataElement normalizedDataElement = (NormalizedDataElement)dataElement;
+	private void collectOrderedDependencies(Data data, Collection<Data> dependencies, Class<? extends Data> clazz) {
+		if (dependencies.contains(data)) return;
+		
+		dependencies.add(data);
+		if (data instanceof NormalizedDataElement) {
+			NormalizedDataElement normalizedDataElement = (NormalizedDataElement)data;
 			for (String expression : normalizedDataElement.getExpressions()) {
 				Map<String, ? extends Data> dependenciesMap = expressionService.getDataInExpression(expression, clazz);
 				for (Data dependency : dependenciesMap.values()) {
-					if (dependency != null && !dependencies.contains(dependency)) collectOrderedDependencies(dependency, dependencies, clazz);
+					if (dependency != null) collectOrderedDependencies(dependency, dependencies, clazz);
 				}
+			}
+		}
+		if (data instanceof Calculation) {
+			Calculation calculation = (Calculation)data;
+			Map<String, ? extends Data> dependenciesMap = expressionService.getDataInExpression(calculation.getExpression(), clazz);
+			for (Data dependency : dependenciesMap.values()) {
+				if (dependency != null) collectOrderedDependencies(dependency, dependencies, clazz);
 			}
 		}
 	}
 	
 	@Transactional(readOnly = true)
-	public void refreshCalculations(final Progress progress) {
-		// TODO get only those who need to be refreshed
-		List<Calculation<?>> calculations = sessionFactory.getCurrentSession().createCriteria(Calculation.class).list();
+	public void refreshAll(final Progress progress) {
+		if (log.isDebugEnabled()) log.debug("refreshAll(progress)");
 		
-		for (final Calculation<?> calculation : calculations) {
-			refreshCalculation(calculation, progress);
+		List<Calculation<?>> calculations = sessionFactory.getCurrentSession().createCriteria(Calculation.class).list();
+		if (log.isDebugEnabled()) log.debug("calculation size: " + calculations.size());
+		
+		List<Data> calculationDependencySet = new ArrayList<Data>();
+		for (Calculation<?> calculation : calculations) {
+			Set<Data> calculationDependencies = new HashSet<Data>();
+			collectOrderedDependencies(calculation, calculationDependencies, NormalizedDataElement.class);
+			calculationDependencySet.addAll(calculationDependencies);
+			calculationDependencySet.remove(calculation);
+		}
+		removeNulls(calculationDependencySet);
+		if (log.isDebugEnabled()) log.debug("dependencies of calculation size: "+calculationDependencySet.size());
+		
+		List<NormalizedDataElement> normalizedDataElements = sessionFactory.getCurrentSession().createCriteria(NormalizedDataElement.class).list();
+		if (log.isDebugEnabled()) log.debug("normalized data element size: " + normalizedDataElements.size());
+		
+		List<Data> dataElementDependencySet = new ArrayList<Data>();
+		for (NormalizedDataElement dataElement : normalizedDataElements) {
+			Set<Data> dataElementDependencies = new HashSet<Data>();
+			collectOrderedDependencies(dataElement, dataElementDependencies, NormalizedDataElement.class);
+			dataElementDependencySet.addAll(dataElementDependencies);
+		}
+		removeNulls(dataElementDependencySet);
+		if (log.isDebugEnabled()) log.debug("dependencies of normalized data elements size: " + dataElementDependencySet.size());
+	
+		progress.setMaximum(
+			// all dependencies of NDEs
+			(dataElementDependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
+			// all dependent NDEs of calculations
+			(calculationDependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
+			// all calculations
+			(periodService.listPeriods().size() * countLocations(CalculationLocation.class)) * calculations.size()
+		);
+		
+		// refresh normalized data elements
+		while (!normalizedDataElements.isEmpty()) {
+			final NormalizedDataElement normalizedDataElement = normalizedDataElements.get(0);
+			
+			List<NormalizedDataElement> uptodateElements = refreshNormalizedDataElementWithoutSettingProgress(normalizedDataElement, progress);
+			normalizedDataElements.remove(normalizedDataElement);
+		}
+		
+		// refresh all calculations
+		for (Calculation<?> calculation : calculations) {
+			refreshCalculationWithoutSettingProgress(calculation, progress);
 		}
 	}
 	
@@ -263,21 +308,30 @@ public class RefreshValueService {
 		// set progress maximum - we count the number of NormalizedDataElement dependencies
 		Set<Data> dependencySet = new HashSet<Data>();
 		collectOrderedDependencies(calculation, dependencySet, NormalizedDataElement.class);
+		dependencySet.remove(calculation);
 		removeNulls(dependencySet);
 		progress.setMaximum(
-				// all dependent NDEs
-				(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
-				// the calculation itself
-				(periodService.listPeriods().size() * countLocations(CalculationLocation.class))
+			// all dependent NDEs
+			(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
+			// the calculation itself
+			(periodService.listPeriods().size() * countLocations(CalculationLocation.class))
 		);
+		
+		refreshCalculationWithoutSettingProgress(calculation, progress);
+	}
+	
+	private void refreshCalculationWithoutSettingProgress(Calculation<?> calculation, Progress progress) {
 		
 		// refresh the calculation
 		Map<String, DataElement> dependenciesMap = expressionService.getDataInExpression(calculation.getExpression(), DataElement.class);
 		
 		Date latestDependency = null;
+		List<NormalizedDataElement> uptodateElements = new ArrayList<NormalizedDataElement>(); 
 		for (DataElement<?> dependency : dependenciesMap.values()) {
-			Date dependencyDate = refreshDataElement(dependency, new ArrayList<NormalizedDataElement>(), progress);
-			if (latestDependency == null || (dependencyDate != null && dependencyDate.after(latestDependency))) latestDependency = dependencyDate;
+			if (!uptodateElements.contains(dependency)) {
+				Date dependencyDate = refreshDataElement(dependency, uptodateElements, progress);
+				if (latestDependency == null || (dependencyDate != null && dependencyDate.after(latestDependency))) latestDependency = dependencyDate;
+			}
 		}
 		
 		// we refresh if the data element was changed after the last refresh
@@ -353,7 +407,7 @@ public class RefreshValueService {
 	// TODO move to location service ?
 	private <T extends CalculationLocation> Iterator<Object[]> getCombinations(Class<T> clazz) {
 		Query query = sessionFactory.getCurrentSession().createQuery(
-				"select location, period from "+clazz.getSimpleName()+" location, Period period"
+			"select location, period from "+clazz.getSimpleName()+" location, Period period"
 		).setCacheable(true).setReadOnly(true);
 		return query.iterate();
 	}

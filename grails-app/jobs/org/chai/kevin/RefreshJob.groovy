@@ -1,4 +1,4 @@
-package org.chai.kevin.dashboard
+package org.chai.kevin
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -29,6 +29,8 @@ package org.chai.kevin.dashboard
 */
 
 import org.chai.kevin.task.Progress;
+import org.chai.kevin.task.RefreshAllTask;
+import org.chai.kevin.task.Task.TaskStatus;
 import org.quartz.InterruptableJob
 import org.quartz.JobExecutionContext
 
@@ -43,27 +45,25 @@ class RefreshJob implements InterruptableJob {
 	def sessionRequired = true
 	def concurrent = false
 
-	def refreshValueService
+	def taskService
 	
 	void execute(JobExecutionContext context) {
 		if (log.isInfoEnabled()) log.info('executing RefreshJob');
 	
-		refreshValueService.refreshNormalizedDataElements(new DummyProgress())
-		refreshValueService.refreshCalculations(new DummyProgress())
+		def task = new RefreshAllTask()
 		
-		refreshValueService.flushCaches()
+		task.status = TaskStatus.NEW
+		task.added = new Date()
+		
+		// we check if the task is unique
+		if (task.isUnique()) {
+			// we save it
+			task.save(failOnError: true)
+			
+			// we send it for processing
+			taskService.sendToQueue(task)
+		}
 	}
 	
 	void interrupt() {}
-}
-
-class DummyProgress implements Progress {
-	
-	public void incrementProgress(){}
-	public void incrementProgress(Long increment){}
-	public Double retrievePercentage(){return null;}
-	public void setMaximum(Long max){}
-	public void abort() {}
-	public boolean isAborted() {return false;}
-	
 }
