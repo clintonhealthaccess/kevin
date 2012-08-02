@@ -447,7 +447,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		element.save(failOnError: true)
 		
 		when:
-		Thread.sleep(1100)
+		Thread.sleep(1500)
 		planningService.refreshBudgetIfNeeded(planning, DataLocation.findByCode(BUTARO))
 		
 		then:

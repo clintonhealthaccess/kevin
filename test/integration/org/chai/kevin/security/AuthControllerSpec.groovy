@@ -84,7 +84,7 @@ class AuthControllerSpec extends IntegrationTests {
 		
 		when:
 		authController.params.email = 'test@test.com'
-		authController.params.code = 'testCode'
+//		authController.params.code = 'testCode'
 		authController.params.firstname = 'first'
 		authController.params.lastname = 'last'
 		authController.params.organisation = 'org'
@@ -98,7 +98,7 @@ class AuthControllerSpec extends IntegrationTests {
 		authController.response.redirectedUrl == '/auth/login'
 		RegistrationToken.count() == 1
 		User.count() == 1
-		User.findByEmail('test@test.com').code == 'test@test.com'
+//		User.findByEmail('test@test.com').code == 'testCode'
 		User.findByEmail('test@test.com').firstname == 'first'
 		User.findByEmail('test@test.com').lastname == 'last'
 		User.findByEmail('test@test.com').organisation == 'org'
@@ -183,7 +183,7 @@ class AuthControllerSpec extends IntegrationTests {
 		
 		then:
 		User.count() == 1
-		User.findByEmail('test@test.com').code == 'test@test.com'
+		User.findByEmail('test@test.com').code == 'test'
 		User.findByEmail('test@test.com').firstname == 'test'
 		User.findByEmail('test@test.com').lastname == 'test'
 		User.findByEmail('test@test.com').organisation == 'test'
@@ -209,7 +209,6 @@ class AuthControllerSpec extends IntegrationTests {
 		
 		then:
 		User.count() == 1
-		User.findByEmail('test@test.com').code == 'test@test.com'
 		User.findByEmail('test@test.com').firstname == 'first'
 		User.findByEmail('test@test.com').lastname == 'last'
 		User.findByEmail('test@test.com').defaultLanguage == 'fr'
@@ -347,6 +346,36 @@ class AuthControllerSpec extends IntegrationTests {
 		authController.retrievePassword()
 		
 		then:
+		authController.response.redirectedUrl == '/auth/login'
+	}
+	
+	def "create password token with known user - valid email"() {
+		setup:
+		authController = new AuthController()
+		def user = newUser('test@test.com', false, false)
+		
+		when:
+		authController.params.email = 'test@test.com'
+		authController.retrievePassword()
+		
+		then:
+		PasswordToken.findByToken(user.passwordToken.token).count() == 1
+		authController.response.redirectedUrl == '/auth/login'
+	}
+	
+	
+	def "create password token with known user deletes old token - valid email"() {
+		setup:
+		authController = new AuthController()
+		def user = newUser('test@test.com', false, false)
+		new PasswordToken(token:"456", user:user).save()
+		when:
+		authController.params.email = 'test@test.com'
+		authController.retrievePassword()
+		
+		then:
+		PasswordToken.findByToken("456") == null
+		PasswordToken.findByToken(user.passwordToken.token).count() == 1
 		authController.response.redirectedUrl == '/auth/login'
 	}
 	

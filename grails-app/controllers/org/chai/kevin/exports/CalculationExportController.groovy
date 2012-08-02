@@ -137,25 +137,6 @@ class CalculationExportController extends AbstractEntityController {
 		]
 	}
 	
-	def export = {
-		CalculationExport export = CalculationExport.get(params.int('export.id'));
-		if(log.isDebugEnabled()) log.debug("export(export="+export+")")
-		
-		if (export) {
-			File csvFile = calculationExportService.exportData(export);
-			def zipFile = Utils.getZipFile(csvFile, export.descriptions[languageService.getCurrentLanguage()])
-			
-			if(zipFile.exists()){
-				response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());
-				response.setContentType("application/zip");
-				response.setHeader("Content-length", zipFile.length().toString());
-				response.outputStream << zipFile.newInputStream()
-			}
-		}	
-		if(params['method'].equals("search")) search()
-		else list()	
-	}
-		
 	def list = {
 		adaptParamsForList()
 		List<CalculationExport> exports = CalculationExport.list(params)

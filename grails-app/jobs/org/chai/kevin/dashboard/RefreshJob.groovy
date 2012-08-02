@@ -63,5 +63,7 @@ class DummyProgress implements Progress {
 	public void incrementProgress(Long increment){}
 	public Double retrievePercentage(){return null;}
 	public void setMaximum(Long max){}
+	public void abort() {}
+	public boolean isAborted() {return false;}
 	
 }

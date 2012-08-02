@@ -42,31 +42,6 @@ class CalculationExportControllerSpec extends IntegrationTests {
 	
 	def calculationExportController;
 	
-	def "get dataExport"(){
-		setup:
-		setupLocationTree();
-		def periods=new HashSet([newPeriod()]);
-		def locationType="Health Center,District Hospital";
-		
-		def sum = newSum("",CODE(1));
-		def aggregation = newAggregation("1",CODE(2));
-		
-		def locations=new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
-		
-		def calculations=new HashSet([sum,aggregation]);
-		def dataExport = newCalculationExport(j("en":"Testing Seach One"), periods, locationType, locations, calculations);
-		calculationExportController = new CalculationExportController();
-		
-		when:
-		calculationExportController.params.('export.id')=dataExport.id
-		calculationExportController.export()
-		then:
-		calculationExportController.response.getContentType() == "application/zip"
-		
-	}
-	
 	def "bind params with duplicate location"(){
 		setup:
 		setupLocationTree();
@@ -96,9 +71,7 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		dataExports[0].typeCodeString.equals('Health Center,District Hospital');
 		dataExports[0].locations==locations;
 		dataExports[0].calculations==calculations;
-		
 	}
-	
 	
 	def "bind params with duplicate data"(){
 		setup:
@@ -162,6 +135,7 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		dataExports[0].locations==locations;
 		dataExports[0].calculations==calculations;
 	}
+	
 	def "dataExport clone successfull"(){
 		setup:
 		setupLocationTree();
@@ -189,7 +163,6 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		CalculationExport.list()[0].typeCodeString.equals(CalculationExport.list()[1].typeCodeString)
 		CalculationExport.list()[0].locations.equals(CalculationExport.list()[1].locations)
 		CalculationExport.list()[0].calculations.equals(CalculationExport.list()[1].calculations)
-		
 	}
 
 }

@@ -140,7 +140,27 @@ class TaskControllerSpec extends IntegrationTests {
 		taskController.response.redirectedUrl == '/'
 	}
 	
-	def "delete task already sent"() {
+	// cannot test because of withNewTransaction call, and abort()
+	// seems to not be overridable using metaClass (task.metaClass.abort = {aborted = true})
+//	def "delete in progress task already sent aborts the task"() {
+//		setup:
+//		def user = newUser('user', 'uuid')
+//		setupSecurityManager(user)
+//		def task = new TestCalculateTask(dataId: 1, user: user, status: TaskStatus.IN_PROGRESS, sentToQueue: true).save(failOnError: true)
+//		taskController = new TaskController()
+//		
+//		when:
+//		taskController.params.id = task.id
+//		taskController.delete()
+//		
+//		then:
+//		Task.count() == 1
+//		Task.list()[].aborted == true
+//		taskController.response.redirectedUrl == '/'
+//	}
+	
+	
+	def "delete new task already sent aborts the task"() {
 		setup:
 		def user = newUser('user', 'uuid')
 		setupSecurityManager(user)
@@ -152,7 +172,7 @@ class TaskControllerSpec extends IntegrationTests {
 		taskController.delete()
 		
 		then:
-		Task.count() == 1
+		Task.count() == 0
 		taskController.response.redirectedUrl == '/'
 	}
 	
@@ -176,6 +196,7 @@ class TaskControllerSpec extends IntegrationTests {
 		def task2 = new CalculateTask(dataId: 2, user: user, status: TaskStatus.COMPLETED).save(failOnError: true)
 		def task3 = new CalculateTask(dataId: 3, user: user, status: TaskStatus.IN_PROGRESS).save(failOnError: true)
 		def task4 = new CalculateTask(dataId: 4, user: user, status: TaskStatus.COMPLETED).save(failOnError: true)
+		def task5 = new CalculateTask(dataId: 5, user: user, status: TaskStatus.ABORTED).save(failOnError: true)
 		taskController = new TaskController()
 		
 		when:

@@ -492,6 +492,7 @@ class TestProgress implements Progress {
 	
 	def progress = 0
 	def max = 0
+	def aborted = false
 	
 	void incrementProgress() {
 		progress++
@@ -507,6 +508,14 @@ class TestProgress implements Progress {
 	
 	void setMaximum(Long max) {
 		this.max = max
+	}
+	
+	void abort() {
+		this.aborted = true
+	}
+	
+	boolean isAborted() {
+		return aborted
 	}
 	
 }

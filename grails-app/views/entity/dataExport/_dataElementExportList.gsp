@@ -56,7 +56,7 @@
 						<div class="dropdown-list js_dropdown-list">
 							<ul>
 								<li>
-	  								<a href="${createLinkWithTargetURI(controller:'dataElementExport', action:'export', params:['export.id': export.id, method: method])}"><g:message code="exporter.download.label" /></a>
+	  								<a href="${createLinkWithTargetURI(controller:'task', action:'create', params:['class': 'DataExportTask', 'exportId': export.id])}"><g:message code="exporter.exporttask.label" /></a>
 	  							</li>
 	  							<li>
 	  								<a href="${createLinkWithTargetURI(controller:'dataElementExport', action:'clone', params:['export.id': export.id, method: method])}"><g:message code="exporter.clone.label" /></a>

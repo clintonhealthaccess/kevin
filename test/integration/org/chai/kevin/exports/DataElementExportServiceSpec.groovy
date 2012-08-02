@@ -77,7 +77,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		def exporter = newDataElementExport(j("en":"Testing Seach One"),periods, locationType, locations, dataElements);
 		
 		when:
-		def exportedFile = dataElementExportService.exportData(exporter);
+		def exportedFile = dataElementExportService.exportData(exporter, 'en');
 		then:
 		//TODO Best way to check
 		exportedFile!=null
@@ -102,7 +102,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		def exporterOne = newDataElementExport(j("en":"Testing Seach One"),periods, locationType, locations, dataElements);
 		when:
 		def dataLocations = locationService.getDataLocationsOfType(locations,locationTypes)
-		def exportedFileOne = dataElementExportService.exportDataElements("Testing",dataLocations,exporterOne.periods,exporterOne.dataElements);
+		def exportedFileOne = dataElementExportService.exportDataElements("Testing",dataLocations,exporterOne.periods,exporterOne.dataElements, 'en');
 		then:
 		exportedFileOne!=null
 	}
@@ -118,7 +118,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		RawDataElementValue valueMap = newRawDataElementValue(dataElementMap,period,locations[0],Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]));
 				
 		when:
-		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementMap)
+		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementMap, 'en')
 		def periodString = "[ "+(period.startDate).toString()+" - "+(period.endDate).toString()+" ]";
 		def listDataList=["Rwanda","North","Burera",""]
 		listDataList.add(locations[0].code);
@@ -152,7 +152,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		RawDataElementValue valueDate = newRawDataElementValue(dataElementDate,period,locations[0],Value.VALUE_DATE(date));
 		
 		when:
-		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementDate)
+		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementDate, 'en')
 		def periodString = "[ "+(period.startDate).toString()+" - "+(period.endDate).toString()+" ]";
 		def listDataList=["Rwanda","North","Burera",""]
 		listDataList.add(locations[0].code);
@@ -184,7 +184,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, locations[0], period, Status.VALID, v("1"))
 		
 		when:
-		def lines = dataElementExportService.getExportLineForValue(locations[0],period,normalizedDataElement)
+		def lines = dataElementExportService.getExportLineForValue(locations[0],period,normalizedDataElement, 'en')
 		def periodString = "[ "+(period.startDate).toString()+" - "+(period.endDate).toString()+" ]";
 		def listDataList=["Rwanda","North","Burera",""]
 		listDataList.add(locations[0].code);
@@ -215,7 +215,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		def dataElementString = null;
 		
 		when:
-		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementString)	
+		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementString, 'en')	
 		then:
 		lines==[];
 	}
@@ -231,7 +231,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		def dataElementNumber = newRawDataElement(CODE(1), typeNumber);
 			
 		when:
-		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementNumber)
+		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementNumber, 'en')
 		then:
 		lines==[]
 	}
