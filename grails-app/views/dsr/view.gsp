@@ -1,3 +1,4 @@
+<%@ page import="org.chai.kevin.util.Utils" %>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -14,19 +15,33 @@
 	<body>
 		<div id="report">
 			<div class="filter-bar">			
-				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params]"/>
+				<g:render template="/templates/topLevelReportFilters"/>
 			</div>
 			<div class="main">			
-				<g:topLevelReportTabs linkParams="${params}" exclude="${['dsrCategory']}" />							
-				<g:if test="${dsrTable != null && dsrTable.hasData()}">					
+				<g:topLevelReportTabs linkParams="${params}" exclude="${['dsrCategory', 'reportType']}" />					
+				<g:if test="${dsrTable != null}">
 					<ul>
-						<li>
-							<g:render template="/templates/reportTitle" model="[program: currentProgram, title: i18n(field:currentProgram.names)+' x '+i18n(field:currentLocation.names), file: 'star_small.png']"/>                
-							<g:render template="/dsr/reportCategoryFilter" model="[linkParams:params]"/>
-						</li>
-						<g:if test="${dsrTable.hasData()}">
-							<g:render template="/dsr/reportProgramTable" model="[linkParams:params]"/>
+						<g:if test="${currentView == Utils.ReportType.MAP || (currentView == Utils.ReportType.TABLE && dsrTable.hasData())}">
+							<li>
+								<g:render template="/templates/reportTitle" model="[program: currentProgram, title: i18n(field:currentProgram.names), file: 'star_small.png']"/>
+								<g:if test="${currentProgram.parent != null}">
+									<% def parentProgramLinkParams = new HashMap(params) %>
+									<% parentProgramLinkParams['program'] = currentProgram.parent.id+"" %>
+									<a class="level-up" href="${createLink(controller:'dsr', action:'view', params:parentProgramLinkParams)}">
+										<g:message code="report.view.label" args="${[i18n(field: currentProgram.parent.names)]}"/></a>	  
+							  	</g:if>
+								<g:render template="/templates/reportView" model="[linkParams:params]"/>
+								<g:render template="/dsr/reportCategoryFilter" model="[linkParams:params]"/>												
+							</li>
 						</g:if>
+						
+						<g:if test="${currentView == Utils.ReportType.MAP}">
+							<g:render template="/dsr/reportProgramMap" model="[linkParams:params]"/>
+							<g:render template="/dsr/reportProgramMapTable" model="[linkParams:params]"/>
+						</g:if>
+						<g:elseif test="${currentView == Utils.ReportType.TABLE && dsrTable.hasData()}">
+							<g:render template="/dsr/reportProgramTable"/>
+						</g:elseif>
 						<g:else>
 							<g:message code="dsr.report.table.noselection.label"/>	              	
 						</g:else>

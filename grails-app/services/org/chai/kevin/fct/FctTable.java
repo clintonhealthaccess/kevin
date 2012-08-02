@@ -57,9 +57,7 @@ public class FctTable extends ReportTable<FctTargetOption, CalculationLocation, 
 		for(FctTargetOption targetOption : targetOptions){
 			if(getReportValue(topLevelLocation, targetOption) != null && !getReportValue(topLevelLocation, targetOption).getAverage().isNull()){
 				Value average = getReportValue(topLevelLocation, targetOption).getAverage();
-				if(!average.isNull()){
 					totalAverage += average.getNumberValue().doubleValue();
-				}
 			}
 		}
 		DecimalFormat frmt = new DecimalFormat("#.##");

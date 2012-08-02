@@ -40,6 +40,19 @@ class ValueTagLib {
 		}
 	}
 	
+	def reportPercentage = { attrs, body ->
+		def value = attrs['value']
+		
+		if(value == null || value.isNull()){
+			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
+		}
+		else{
+			def average = value.numberValue.round(2)
+			DecimalFormat df = new DecimalFormat('#%')
+			out << df.format(average)
+		}
+	}
+	
 	def reportTooltip = { attrs, body ->
 		def average = attrs['average']
 		def value = attrs['value']

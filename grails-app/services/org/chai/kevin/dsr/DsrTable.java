@@ -1,7 +1,9 @@
 package org.chai.kevin.dsr;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportTable;
@@ -37,16 +39,27 @@ import org.chai.kevin.value.Value;
 
 public class DsrTable extends ReportTable<DsrTarget, CalculationLocation, Value> {
 	
+	private Set<CalculationLocation> locations;
 	private List<DsrTarget> targets;
 	private List<DsrTargetCategory> targetCategories;		
 	
 	public DsrTable(Map<CalculationLocation, Map<DsrTarget, Value>> valueMap, 
-			List<DsrTarget> targets, List<DsrTargetCategory> targetCategories) {
+			Set<CalculationLocation> locations, List<DsrTarget> targets, List<DsrTargetCategory> targetCategories) {
 		super(valueMap);
+		this.locations = locations;
 		this.targets = targets;
 		this.targetCategories = targetCategories;		
 	}
-		
+	
+	@Override
+	public Set<CalculationLocation> getLocations(){
+		Set<CalculationLocation> locations = super.getLocations();		
+		if(locations != null && !locations.isEmpty())
+			return locations;
+		else
+			return this.locations;
+	}
+	
 	public List<DsrTarget> getTargets(){
 		return targets;
 	}

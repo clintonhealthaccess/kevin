@@ -89,4 +89,48 @@ class LocationSpec extends IntegrationTests {
 		
 	}
 	
+	def "get children with data"(){
+		setup:
+		setupLocationTree()
+		def skipLevels = new HashSet([LocationLevel.findByCode(SECTOR)])
+		def types = new HashSet([
+			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
+			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
+		])
+		def newDataLocation = newDataLocation(j(["en":"BLAH"]), "BLAH", Location.findByCode(NORTH), DataLocationType.findByCode(HEALTH_CENTER_GROUP))
+		
+		when: //with data locations
+		def children = Location.findByCode(NORTH).getChildrenWithData(skipLevels, types, true)
+		
+		then:
+		children.equals([Location.findByCode(BURERA), DataLocation.findByCode("BLAH")])
+		
+		when: //without data locations
+		children = Location.findByCode(NORTH).getChildrenWithData(skipLevels, types, false)
+		
+		then:
+		children.equals([Location.findByCode(BURERA)])
+	}
+	
+	def "get location tree with data"(){
+		setup:
+		setupLocationTree()
+		def skipLevels = new HashSet([LocationLevel.findByCode(SECTOR)])
+		def types = new HashSet([
+			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
+			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
+		])
+		
+		when: //with data locations
+		def children = Location.findByCode(NORTH).collectLocationTreeWithData(skipLevels, types, true)
+		
+		then:
+		children.equals([Location.findByCode(BURERA), Location.findByCode(NORTH), DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
+		
+		when: //without data locations
+		children = Location.findByCode(NORTH).collectLocationTreeWithData(skipLevels, types, false)
+		
+		then:
+		children.equals([Location.findByCode(BURERA), Location.findByCode(NORTH)])
+	}
 }

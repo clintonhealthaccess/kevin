@@ -3,6 +3,6 @@
 	exclude="${['dashboardEntity', 'dsrCategory', 'fctTarget']}" />
 <g:locationFilter linkParams="${params}" selected="${currentLocation}" 
 	selectedTypes="${currentLocationTypes}"
-	skipLevels="${skipLevels}"/>
+	skipLevels="${locationSkipLevels}"/>
 <g:periodFilter linkParams="${params}" selected="${currentPeriod}"/>
 <g:dataLocationTypeFilter linkParams="${params}" selected="${currentLocationTypes}" />

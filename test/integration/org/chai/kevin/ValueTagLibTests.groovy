@@ -123,6 +123,37 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 		), '10%'
 	}
 	
+	def testReportValuePercentage() {
+		
+		assertEquals applyTemplate(
+			'<g:reportPercentage value="${value}"/>',
+			[
+				'value': Value.VALUE_NUMBER(0.67)
+			]
+		), '67%'
+		
+		assertEquals applyTemplate(
+			'<g:reportPercentage value="${value}"/>',
+			[
+				'value': Value.VALUE_NUMBER(0.673)
+			]
+		), '67%'
+
+		assertEquals applyTemplate(
+			'<g:reportPercentage value="${value}"/>',
+			[
+				'value': Value.VALUE_NUMBER(0.677)
+			]
+		), '68%'
+		
+		assertEquals applyTemplate(
+			'<g:reportPercentage value="${value}"/>',
+			[
+				'value': null
+			]
+		), '<div class="report-value-null">N/A</div>'
+	}
+	
 	def testValueNumber() {
 		
 		assertEquals applyTemplate(
