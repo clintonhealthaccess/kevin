@@ -27,7 +27,7 @@ class CalculateTask extends Task {
 	
 	String getInformation() {
 		def data = dataService.getData(dataId, Data.class)
-		return data?.code
+		return data.class.simpleName+': '+data?.code
 	}
 	
 	boolean isUnique() {

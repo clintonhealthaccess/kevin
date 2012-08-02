@@ -24,7 +24,7 @@ class TaskDomainSpec extends IntegrationTests {
 		new CalculateTask(status: TaskStatus.NEW, dataId: 1).save(failOnError: true)
 		
 		then:
-		thrown ValidationException
+		Task.count() == 2
 		
 		when:
 		new CalculateTask(user: user, dataId: 1).save(failOnError: true)

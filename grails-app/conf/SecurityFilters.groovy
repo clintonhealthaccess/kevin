@@ -14,7 +14,6 @@ class SecurityFilters {
 				if (!controllerName) return true
 				// Ignore refresh and export
 				if (controllerName == 'editSurvey' && actionName == 'export') return true;
-				if (controllerName == 'refresh') return true;
 				
 				// Ignore home controller, except when the user is logged in
 				if (controllerName == 'home' && ((actionName != 'index' && actionName != 'landingPage') || SecurityUtils.subject.principal != null)) return true
