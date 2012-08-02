@@ -193,10 +193,6 @@ modules = {
 		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen,chartanimation,comparefilter,leaflet'
 	}
 
-//	maps {
-//		dependsOn 'core,url,dropdown,explanation,spinner,chosen'
-//	}
-
 	cost {
 		dependsOn 'core,dropdown,nicetable,explanation,spinner,chosen'
 	}
