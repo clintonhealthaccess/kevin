@@ -14,7 +14,7 @@
 					<li>
 						<% def planningLinkParams = new HashMap(params) %>
 						<% planningLinkParams['planning'] = planning.id+"" %>
-						<a href="${createLinkByFilter(controller:controllerName, action:actionName, params:planningLinkParams)}">
+						<a href="${createLink(controller:controllerName, action:actionName, params:planningLinkParams)}">
 							<span>
 								<g:i18n field="${planning.names}"/>
 							</span> 

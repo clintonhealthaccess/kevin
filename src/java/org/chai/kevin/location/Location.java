@@ -62,23 +62,23 @@ public class Location extends CalculationLocation implements Exportable {
 	public void setDataLocations(List<DataLocation> dataLocations) {
 		this.dataLocations = dataLocations;
 	}			
-	
+
 	//gets all location children
 	@Override
-	public List<Location> getChildren(Set<LocationLevel> skipLevels) {		
-		List<Location> result = new ArrayList<Location>();
+	public List<CalculationLocation> getLocationChildren(Set<LocationLevel> skipLevels) {		
+		List<CalculationLocation> result = new ArrayList<CalculationLocation>();
 		for (Location child : children) {
 			if (skipLevels != null && skipLevels.contains(child.getLevel())) {
-				result.addAll(child.getChildren(skipLevels));
+				result.addAll(child.getLocationChildren(skipLevels));
 			}
 			else result.add(child);
 		}
 		return result;
 	}
-
+	
 	//gets all data location children
 	@Override
-	public List<DataLocation> getDataLocations(Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
+	public List<DataLocation> getDataLocationChildren(Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
 		List<DataLocation> result = new ArrayList<DataLocation>();
 		
 		List<DataLocation> dataLocations = getDataLocations();
@@ -89,7 +89,7 @@ public class Location extends CalculationLocation implements Exportable {
 		
 		for (Location child : children) {
 			if (skipLevels != null && skipLevels.contains(child.getLevel())) {
-				result.addAll(child.getDataLocations(skipLevels, types));
+				result.addAll(child.getDataLocationChildren(skipLevels, types));
 			}
 		}
 		
@@ -98,10 +98,10 @@ public class Location extends CalculationLocation implements Exportable {
 			
 	//gets all location and data location children
 	@Transient
-	public List<CalculationLocation> getChildren(Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
+	public List<CalculationLocation> getAllChildren(Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
 		List<CalculationLocation> result = new ArrayList<CalculationLocation>();
-		result.addAll(getChildren(skipLevels));
-		result.addAll(getDataLocations(skipLevels, types));
+		result.addAll(getLocationChildren(skipLevels));
+		result.addAll(getDataLocationChildren(skipLevels, types));
 		return result;
 	}
 	
@@ -110,15 +110,15 @@ public class Location extends CalculationLocation implements Exportable {
 	public List<CalculationLocation> getChildrenWithData(Set<LocationLevel> skipLevels, Set<DataLocationType> types, boolean dataLocations) {
 		List<CalculationLocation> result = new ArrayList<CalculationLocation>();
 		
-		List<Location> locationChildren = getChildren(skipLevels);
+		List<CalculationLocation> locationChildren = getLocationChildren(skipLevels);
 		List<CalculationLocation> locationTree = collectLocationTreeWithData(skipLevels, types, false);
-		for(Location locationChild : locationChildren){
+		for(CalculationLocation locationChild : locationChildren){
 			if(locationTree.contains(locationChild))
 				result.add(locationChild);	
 		}
 		
 		if(dataLocations){
-			result.addAll(getDataLocations(skipLevels, types));
+			result.addAll(getDataLocationChildren(skipLevels, types));
 		}
 		
 		return result;

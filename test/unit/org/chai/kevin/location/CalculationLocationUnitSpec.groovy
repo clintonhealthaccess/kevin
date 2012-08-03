@@ -18,12 +18,12 @@ class CalculationLocationUnitSpec extends UnitSpec {
 		burera.dataLocations = [data2]
 		
 		then:
-		rwanda.getDataLocations().empty
-		rwanda.getDataLocations(null, null).empty
-		north.getDataLocations().equals([data1])
-		north.getDataLocations(null, null).equals([data1])
-		burera.getDataLocations().equals([data2])
-		burera.getDataLocations(null, null).equals([data2])
+//		rwanda.getDataLocationChildren().empty
+		rwanda.getDataLocationChildren(null, null).empty
+//		north.getDataLocationChildren().equals([data1])
+		north.getDataLocationChildren(null, null).equals([data1])
+//		burera.getDataLocationChildren().equals([data2])
+		burera.getDataLocationChildren(null, null).equals([data2])
 	}
 
 	def "get data entities on location entity with skip"() {
@@ -45,9 +45,9 @@ class CalculationLocationUnitSpec extends UnitSpec {
 		burera.dataLocations = [data2]
 		
 		then:
-		rwanda.getDataLocations(new HashSet([province]), null).equals([data1])
-		rwanda.getDataLocations(new HashSet([province,district]), null).equals([data1, data2])
-		north.getDataLocations(new HashSet([district]), null).equals([data1, data2])
+		rwanda.getDataLocationChildren(new HashSet([province]), null).equals([data1])
+		rwanda.getDataLocationChildren(new HashSet([province,district]), null).equals([data1, data2])
+		north.getDataLocationChildren(new HashSet([district]), null).equals([data1, data2])
 	}
 		
 	def "collect data entities on location entity with specific type"() {
@@ -119,7 +119,7 @@ class CalculationLocationUnitSpec extends UnitSpec {
 		def data1 = new DataLocation(code: 'data1');
 		
 		then:
-		data1.getDataLocations(null, null).equals([data1])
+		data1.getDataLocationChildren(null, null).equals([data1])
 	}
 	
 	def "get data entities of type on data entity"() {
@@ -128,13 +128,13 @@ class CalculationLocationUnitSpec extends UnitSpec {
 		def data1 = new DataLocation(code: 'data1', type: type1);
 		
 		then:
-		data1.getDataLocations(null, new HashSet([type1])).equals([data1])
+		data1.getDataLocationChildren(null, new HashSet([type1])).equals([data1])
 		
 		when:
 		def type2 = new DataLocationType(code: 'type2');
 		
 		then:
-		data1.getDataLocations(null, new HashSet([type2])).empty
+		data1.getDataLocationChildren(null, new HashSet([type2])).empty
 	}
 	
 	def "test get children with skip on location entity"() {
@@ -151,8 +151,8 @@ class CalculationLocationUnitSpec extends UnitSpec {
 		north.children = [burera]
 		
 		then:
-		rwanda.getChildren(new HashSet([province])).equals([burera])
-		rwanda.getChildren(new HashSet([province, district])).empty
+		rwanda.getAllChildren(new HashSet([province]), null).equals([burera])
+		rwanda.getAllChildren(new HashSet([province, district]), null).empty
 	}
 	
 	def "test get data entities with skip on location entity"() {
@@ -172,27 +172,27 @@ class CalculationLocationUnitSpec extends UnitSpec {
 		burera.dataLocations = [dataDistrict]
 		
 		then:
-		rwanda.getDataLocations(new HashSet([province]), null).empty
-		rwanda.getDataLocations(new HashSet([province, district]), null).equals([dataDistrict])
-		north.getDataLocations(new HashSet([province]), null).empty
+		rwanda.getDataLocationChildren(new HashSet([province]), null).empty
+		rwanda.getDataLocationChildren(new HashSet([province, district]), null).equals([dataDistrict])
+		north.getDataLocationChildren(new HashSet([province]), null).empty
 		
 		when:
 		def dataProvince = new DataLocation(code: 'data2', location: north);
 		north.dataLocations = [dataProvince]
 		
 		then:
-		rwanda.getDataLocations(new HashSet([province]), null).equals([dataProvince])
-		rwanda.getDataLocations(new HashSet([province, district]), null).equals([dataProvince, dataDistrict])
-		north.getDataLocations(new HashSet([province]), null).equals([dataProvince])
+		rwanda.getDataLocationChildren(new HashSet([province]), null).equals([dataProvince])
+		rwanda.getDataLocationChildren(new HashSet([province, district]), null).equals([dataProvince, dataDistrict])
+		north.getDataLocationChildren(new HashSet([province]), null).equals([dataProvince])
 		
 		when:
 		def dataCountry = new DataLocation(code: 'data3', location: rwanda)
 		rwanda.dataLocations = [dataCountry]
 		
 		then:
-		rwanda.getDataLocations(new HashSet([province]), null).equals([dataCountry, dataProvince])
-		rwanda.getDataLocations(new HashSet([province, district]), null).equals([dataCountry, dataProvince, dataDistrict])
-		north.getDataLocations(new HashSet([province]), null).equals([dataProvince])
+		rwanda.getDataLocationChildren(new HashSet([province]), null).equals([dataCountry, dataProvince])
+		rwanda.getDataLocationChildren(new HashSet([province, district]), null).equals([dataCountry, dataProvince, dataDistrict])
+		north.getDataLocationChildren(new HashSet([province]), null).equals([dataProvince])
 	}
 	
 	def "test get children entity with skip"() {
@@ -217,8 +217,8 @@ class CalculationLocationUnitSpec extends UnitSpec {
 		burera.dataLocations = [data2]
 		
 		then:
-		rwanda.getChildren(new HashSet([province]), new HashSet([type1, type2])).equals([burera, data1])
-		rwanda.getChildren(new HashSet([province, district]), new HashSet([type1, type2])).equals([data1, data2])
+		rwanda.getAllChildren(new HashSet([province]), new HashSet([type1, type2])).equals([burera, data1])
+		rwanda.getAllChildren(new HashSet([province, district]), new HashSet([type1, type2])).equals([data1, data2])
 		
 	}
 	

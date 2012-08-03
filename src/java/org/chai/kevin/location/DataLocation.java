@@ -45,12 +45,10 @@ public class DataLocation extends CalculationLocation implements Exportable {
 
 	@Override
 	@Transient
-	public List<DataLocation> getDataLocations() {
-		List<DataLocation> result = new ArrayList<DataLocation>();
-		result.add(this);
-		return result;
+	public Location getParent() {
+		return location;
 	}
-
+	
 	@Override
 	@Transient
 	public List<Location> getChildren() {
@@ -58,21 +56,32 @@ public class DataLocation extends CalculationLocation implements Exportable {
 	}
 	
 	@Override
-	public List<DataLocation> getDataLocations(Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
+	@Transient
+	public List<DataLocation> getDataLocations() {
+		List<DataLocation> result = new ArrayList<DataLocation>();
+		result.add(this);
+		return result;
+	}
+
+	@Override
+	public List<CalculationLocation> getLocationChildren(Set<LocationLevel> skipLevels) {
+		return new ArrayList<CalculationLocation>();
+	}
+	
+	@Override
+	public List<DataLocation> getDataLocationChildren(Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
 		List<DataLocation> result = new ArrayList<DataLocation>();
 		if (types == null || types.contains(type)) result.add(this);
 		return result;
 	}
 
-	@Override
-	public List<Location> getChildren(Set<LocationLevel> skipLevels) {
-		return getChildren();
-	}
-
-	@Override
+	//gets all location and data location children
 	@Transient
-	public Location getParent() {
-		return location;
+	public List<CalculationLocation> getAllChildren(Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
+		List<CalculationLocation> result = new ArrayList<CalculationLocation>();
+		result.addAll(getLocationChildren(skipLevels));
+		result.addAll(getDataLocationChildren(skipLevels, types));
+		return result;
 	}
 
 	@Override
@@ -84,4 +93,6 @@ public class DataLocation extends CalculationLocation implements Exportable {
 	public String toExportString() {
 		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
+
+	
 }

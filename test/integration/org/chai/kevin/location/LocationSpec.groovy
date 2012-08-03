@@ -89,6 +89,29 @@ class LocationSpec extends IntegrationTests {
 		
 	}
 	
+	def "get all children"(){
+		setup:
+		setupLocationTree()
+		def skipLevels = new HashSet([LocationLevel.findByCode(SECTOR)])
+		def types = new HashSet([
+			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
+			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
+		])
+		def newDataLocation = newDataLocation(j(["en":"BLAH"]), "BLAH", Location.findByCode(NORTH), DataLocationType.findByCode(HEALTH_CENTER_GROUP))
+		
+		when: //with a mix of locations and data locations
+		def children = Location.findByCode(NORTH).getAllChildren(skipLevels, types)
+		
+		then:
+		children.equals([Location.findByCode(BURERA), DataLocation.findByCode("BLAH")])
+		
+		when: //with only data locations
+		children = Location.findByCode(BURERA).getAllChildren(skipLevels, types)
+		
+		then:
+		children.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
+	}
+	
 	def "get children with data"(){
 		setup:
 		setupLocationTree()
