@@ -104,12 +104,16 @@ class LocationSpec extends IntegrationTests {
 		
 		then:
 		children.equals([Location.findByCode(BURERA), DataLocation.findByCode("BLAH")])
+		children.findAll{ it -> !it.collectsData() }.size() == 1
+		children.findAll{ it -> it.collectsData() }.size() == 1
 		
 		when: //with only data locations
 		children = Location.findByCode(BURERA).getAllChildren(skipLevels, types)
 		
 		then:
 		children.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
+		children.findAll{ it -> !it.collectsData() }.size() == 0
+		children.findAll{ it -> it.collectsData() }.size() == 2
 	}
 	
 	def "get children with data"(){
@@ -127,12 +131,16 @@ class LocationSpec extends IntegrationTests {
 		
 		then:
 		children.equals([Location.findByCode(BURERA), DataLocation.findByCode("BLAH")])
+		children.findAll{ it -> !it.collectsData() }.size() == 1
+		children.findAll{ it -> it.collectsData() }.size() == 1
 		
 		when: //without data locations
 		children = Location.findByCode(NORTH).getChildrenWithData(skipLevels, types, false)
 		
 		then:
 		children.equals([Location.findByCode(BURERA)])
+		children.findAll{ it -> !it.collectsData() }.size() == 1
+		children.findAll{ it -> it.collectsData() }.size() == 0
 	}
 	
 	def "get location tree with data"(){
@@ -149,11 +157,15 @@ class LocationSpec extends IntegrationTests {
 		
 		then:
 		children.equals([Location.findByCode(BURERA), Location.findByCode(NORTH), DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
+		children.findAll{ it -> !it.collectsData() }.size() == 2
+		children.findAll{ it -> it.collectsData() }.size() == 2
 		
 		when: //without data locations
 		children = Location.findByCode(NORTH).collectLocationTreeWithData(skipLevels, types, false)
 		
 		then:
 		children.equals([Location.findByCode(BURERA), Location.findByCode(NORTH)])
+		children.findAll{ it -> !it.collectsData() }.size() == 2
+		children.findAll{ it -> it.collectsData() }.size() == 0
 	}
 }

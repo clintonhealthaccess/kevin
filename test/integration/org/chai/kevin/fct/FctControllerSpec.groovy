@@ -33,6 +33,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		model.currentProgram.equals(program)
 		model.currentLocation.equals(Location.findByCode(RWANDA))		
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		model.locationSkipLevels.equals(s([LocationLevel.findByCode(SECTOR)]))
 		model.currentTarget.equals(target)
 		model.fctTable != null
 		model.fctTable.hasData() == true

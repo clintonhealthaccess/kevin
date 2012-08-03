@@ -3,6 +3,7 @@ package org.chai.kevin.dsr
 import org.chai.kevin.data.Type
 import org.chai.kevin.location.DataLocationType
 import org.chai.kevin.location.Location
+import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.util.Utils
 
@@ -25,7 +26,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		dsrController.params.period = period.id
 		dsrController.params.program = program.id
 		dsrController.params.location = Location.findByCode(RWANDA).id
-		dsrController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		dsrController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]		
 		dsrController.params.dsrCategory = category.id
 		dsrController.params.reportType = reportType.toString().toLowerCase()
 		def model = dsrController.view()
@@ -35,6 +36,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		model.currentProgram.equals(program)
 		model.currentLocation.equals(Location.findByCode(RWANDA))
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		model.locationSkipLevels.equals(s([LocationLevel.findByCode(SECTOR)]))
 		model.currentCategory.equals(category)
 		model.currentView.equals(reportType)
 		model.dsrTable != null
@@ -67,6 +69,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		model.currentProgram.equals(program1)
 		model.currentLocation.equals(Location.findByCode(RWANDA))
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		model.locationSkipLevels.equals(s([LocationLevel.findByCode(SECTOR)]))
 		model.currentCategory.equals(category)
 		model.currentView.equals(reportType)
 		model.dsrTable != null
@@ -150,6 +153,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		model.currentProgram.id == program.id
 		model.currentLocation.id == Location.findByCode(BURERA).id
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		model.locationSkipLevels.equals(s([LocationLevel.findByCode(SECTOR)]))
 		model.currentCategory.id == category.id
 		model.currentView.equals(reportType)
 		model.dsrTable != null
@@ -259,6 +263,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		model.currentProgram.equals(program)
 		model.currentLocation.equals(Location.findByCode(RWANDA))
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		model.locationSkipLevels.equals(s([LocationLevel.findByCode(SECTOR)]))
 		model.currentCategory.equals(category)
 		model.currentView.equals(reportType)
 		model.dsrTable != null

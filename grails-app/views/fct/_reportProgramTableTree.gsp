@@ -51,7 +51,7 @@
 			<td class="bucket" colspan="${fctTable.targetOptions.size()+1}">				
 				<table>
 					<tbody>					
-						<g:each in="${location.getAllChildren(skipLevels, currentLocationTypes)}" var="child">	
+						<g:each in="${location.getAllChildren(locationSkipLevels, currentLocationTypes)}" var="child">	
 							<g:render template="/fct/reportProgramTableTree" model="[location:child, level:level+1]"/>
 						</g:each>
 					</tbody>
