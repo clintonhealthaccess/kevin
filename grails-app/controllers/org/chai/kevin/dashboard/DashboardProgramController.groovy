@@ -36,6 +36,7 @@ import org.chai.kevin.reports.ReportProgram
 
 class DashboardProgramController extends AbstractEntityController {
 
+	def dataService
 	def dashboardService
 	
 	def getEntity(def id) {
@@ -103,6 +104,20 @@ class DashboardProgramController extends AbstractEntityController {
 	@CacheFlush("dashboardCache")
 	def delete = {
 		super.delete()
+	}
+	
+	def search = {
+		adaptParamsForList()
+		
+		List<DashboardProgram> programs = dataService.searchData(DashboardProgram.class, params['q'], [], params);
+		
+		render (view: '/entity/list', model:[
+			entities: programs,
+			entityCount: dataService.countData(DashboardProgram.class, params['q'], []),
+			template: "dashboard/programList",
+			code: getLabel(),
+			search: true
+		])
 	}
 	
 	def list = {

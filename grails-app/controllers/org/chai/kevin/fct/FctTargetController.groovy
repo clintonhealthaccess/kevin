@@ -41,6 +41,7 @@ import org.chai.kevin.util.Utils
 
 class FctTargetController extends AbstractEntityController {
 
+	def dataService
 	def locationService
 
 	def getEntity(def id) {
@@ -111,6 +112,20 @@ class FctTargetController extends AbstractEntityController {
 	@CacheFlush("fctCache")
 	def edit = {
 		super.edit()
+	}
+	
+	def search = {
+		adaptParamsForList()
+		
+		List<FctTarget> targets = dataService.searchData(FctTarget.class, params['q'], [], params);
+		
+		render (view: '/entity/list', model:[
+			entities: targets,
+			entityCount: dataService.countData(FctTarget.class, params['q'], []),
+			template: "fct/targetList",
+			code: getLabel(),
+			search: true
+		])
 	}
 	
 	def list = {

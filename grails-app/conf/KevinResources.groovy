@@ -50,7 +50,6 @@ modules = {
 		resource url: '/js/jquery/cluetip/lib/jquery.hoverIntent.js', bundle: 'core'
 		resource url: '/js/jquery/cluetip/jquery.cluetip.css', bundle: 'core'
 		resource url: '/js/cluetip_init.js', bundle: 'core'
-		//resource url: '/css/cluetip.css'
 	}
 
 	form {

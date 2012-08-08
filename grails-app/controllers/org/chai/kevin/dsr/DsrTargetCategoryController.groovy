@@ -34,6 +34,7 @@ import org.chai.kevin.AbstractEntityController;
 
 class DsrTargetCategoryController extends AbstractEntityController {
 	
+	def dataService
 	def locationService
 	
 	def getEntity(def id) {
@@ -91,6 +92,20 @@ class DsrTargetCategoryController extends AbstractEntityController {
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
+	}
+	
+	def search = {
+		adaptParamsForList()
+		
+		List<DsrTargetCategory> categories = dataService.searchData(DsrTargetCategory.class, params['q'], [], params);
+		
+		render (view: '/entity/list', model:[
+			entities: categories,
+			entityCount: dataService.countData(DsrTargetCategory.class, params['q'], []),
+			template: "dsr/targetCategoryList",
+			code: getLabel(),
+			search: true
+		])
 	}
 	
 	def list = {

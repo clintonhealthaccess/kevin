@@ -31,7 +31,7 @@
 						<g:if test="${dsrTable.getReportValue(location, target) != null}">						
 							<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.data.type}" format="${target.format}"/>
 						</g:if>
-						<g:set var="reportValue" value="${fctTable.getReportValue(location, targetOption)}"/>
+						<g:set var="reportValue" value="${dsrTable.getReportValue(location, targetOption)}"/>
 						<g:if test="${reportValue != null}">
 							<g:if test="${reportValue.getValue() != null && !reportValue.getValue().isNull()}">
 								<div class="report-location-value">

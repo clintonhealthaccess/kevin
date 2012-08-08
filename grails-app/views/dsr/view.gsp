@@ -18,7 +18,7 @@
 				<g:render template="/templates/topLevelReportFilters"/>
 			</div>
 			<div class="main">			
-				<g:topLevelReportTabs linkParams="${params}" exclude="${['dsrCategory', 'reportType']}" />					
+				<g:topLevelReportTabs linkParams="${params}" exclude="${['dsrTarget', 'dsrCategory', 'reportType']}" />					
 				<g:if test="${dsrTable != null}">
 					<ul>
 						<g:if test="${currentView == Utils.ReportType.MAP || (currentView == Utils.ReportType.TABLE && dsrTable.hasData())}">
@@ -39,7 +39,7 @@
 							<g:render template="/dsr/reportProgramMap" model="[linkParams:params]"/>
 							<g:render template="/dsr/reportProgramMapTable" model="[linkParams:params]"/>
 						</g:if>
-						<g:elseif test="${currentView == Utils.ReportType.TABLE && dsrTable.hasData()}">
+						<g:elseif test="${currentView == Utils.ReportType.TABLE && dsrTable != null && dsrTable.hasData()}">
 							<g:render template="/dsr/reportProgramTable"/>
 						</g:elseif>
 						<g:else>
