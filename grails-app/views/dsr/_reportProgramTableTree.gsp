@@ -30,7 +30,23 @@
 					<td>
 						<g:if test="${dsrTable.getReportValue(location, target) != null}">						
 							<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.data.type}" format="${target.format}"/>
-						</g:if>					
+						</g:if>
+						<g:set var="reportValue" value="${fctTable.getReportValue(location, targetOption)}"/>
+						<g:if test="${reportValue != null}">
+							<g:if test="${reportValue.getValue() != null && !reportValue.getValue().isNull()}">
+								<div class="report-location-value">
+									<g:reportValue value="${reportValue.getValue()}" type="${targetOption.sum.type}"/>
+								</div>
+							</g:if>
+							<g:if test="${reportValue.getAverage() != null && !reportValue.getAverage().isNull()}">
+								<div class="report-location-percentage hidden">
+									<g:reportPercentage value="${reportValue.getAverage()}"/>
+								</div>
+							</g:if>
+						</g:if>
+						<g:else>
+							<div class="report-value-na"><g:message code="report.value.na"/></div>
+						</g:else>			
 					</td>
 				</g:each>
 			</g:if>

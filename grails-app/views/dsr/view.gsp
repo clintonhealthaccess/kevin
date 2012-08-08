@@ -30,7 +30,7 @@
 									<a class="level-up" href="${createLink(controller:'dsr', action:'view', params:parentProgramLinkParams)}">
 										<g:message code="report.view.label" args="${[i18n(field: currentProgram.parent.names)]}"/></a>	  
 							  	</g:if>
-								<g:render template="/templates/reportView" model="[linkParams:params]"/>
+								<g:reportView linkParams="${params}" exclude="${['dsrTarget']}"/>
 								<g:render template="/dsr/reportCategoryFilter" model="[linkParams:params]"/>												
 							</li>
 						</g:if>

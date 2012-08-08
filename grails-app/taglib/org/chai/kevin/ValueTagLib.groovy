@@ -26,16 +26,33 @@ class ValueTagLib {
 		def format = attrs['format']
 		
 		if (value == null || value.isNull()) {
-			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
+			out << '<div class="report-value report-value-null"'+
+				' data-report-value="'+message(code: 'report.value.null')+'"'+
+				' data-report-value-type="null">'+
+				message(code: 'report.value.null')+'</div>'
 		}
 		else {
 			switch (type.type) {
 				case ValueType.BOOL:
-					if (value.booleanValue) out << '<div class="report-value-true">&#10003;</div>'
-					else out << '<div class="report-value-false">&#10007;</div>'
+					if (value.booleanValue){
+						out << '<div class="report-value report-value-true"'+
+							' data-report-value="'+value.booleanValue+'"'+
+							' data-report-value-type="'+type.type+'">'+
+							'&#10003;</div>'
+					}					
+					else{
+						out << '<div class="report-value report-value-false"'+
+							' data-report-value="'+value.booleanValue+'"'+
+							' data-report-value-type="'+type.type+'">'+
+							'&#10007;</div>'
+					}
 					break;
 				default:
-					out << languageService.getStringValue(value, type, null, format)
+					def reportValue = languageService.getStringValue(value, type, null, format)
+					out << '<div class="report-value"'+
+						' data-report-value="'+reportValue+'"'+
+						' data-report-value-type="'+type.type+'">'+
+						reportValue+'</div>'
 			}
 		}
 	}
@@ -43,13 +60,20 @@ class ValueTagLib {
 	def reportPercentage = { attrs, body ->
 		def value = attrs['value']
 		
-		if(value == null || value.isNull()){
-			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
+		if(value == null || value.isNull()){			
+			out << '<div class="report-value report-value-null"'+
+			' data-report-value="'+message(code: 'report.value.null')+'"'+
+			' data-report-value-type="null">'+
+			message(code: 'report.value.null')+'</div>'
 		}
 		else{
 			def average = value.numberValue.round(2)
 			DecimalFormat df = new DecimalFormat('#%')
-			out << df.format(average)
+			def reportValue = df.format(average)
+			out << '<div class="report-value"'+
+				' data-report-value="'+reportValue+'"'+
+				' data-report-value-type="'+ValueType.NUMBER+'">'+
+				reportValue+'</div>'
 		}
 	}
 	

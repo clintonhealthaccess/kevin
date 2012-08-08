@@ -66,7 +66,26 @@ class DsrController extends AbstractController {
 		}
 		
 		return dsrTargetCategory
-	}	
+	}
+	
+	public DsrTarget getDsrTarget(def category, def program){
+		def dsrTarget = null
+			
+		if(params.int('dsrTarget') != null){
+			dsrTarget = DsrTarget.get(params.int('dsrTarget'))
+		}
+		
+		if(dsrTarget == null){
+			if(category == null) category = getDsrTargetCategory(program);
+			if(category != null){
+				def targets = category.getTargetsForProgram(program)
+				if(targets != null && !targets.empty)
+					dsrTarget = targets.first()
+			}			
+		}
+		
+		return dsrTarget
+	}
 	
 	def index = {
 		redirect (action: 'view', params: params)
@@ -80,6 +99,7 @@ class DsrController extends AbstractController {
 		Location location = getLocation()
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 		DsrTargetCategory dsrCategory = getDsrTargetCategory(program)
+		DsrTarget dsrTarget = getDsrTarget(dsrCategory, program)
 		
 		ReportType reportView = getReportType()	
 		def viewSkipLevels = dsrService.getSkipViewLevels(reportView)
@@ -90,6 +110,7 @@ class DsrController extends AbstractController {
 		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id, 
 							'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 							
 							'dsrCategory':dsrCategory?.id,
+							'dsrTarget':dsrTarget?.id,
 							'reportType':reportView.toString().toLowerCase()]
 		def newParams = redirectIfDifferent(reportParams)
 		
@@ -106,6 +127,7 @@ class DsrController extends AbstractController {
 			[
 				dsrTable: dsrTable,
 				currentCategory: dsrCategory,
+				currentTarget: dsrTarget,
 				currentPeriod: period,
 				currentProgram: program,
 				selectedTargetClass: DsrTarget.class,

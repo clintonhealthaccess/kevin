@@ -94,17 +94,17 @@ public class Initializer {
 		admin.addToPermissions("*")
 		admin.save(failOnError: true)
 
-		def butaro = new User(userType: UserType.SURVEY, code:"butaro",username: "butaro", firstname: "butaro", lastname: "butaro", locationId: DataLocation.findByCode("Butaro DH").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'butaro_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
+		def butaro = new User(userType: UserType.SURVEY, code:"butaro",username: "butaro", firstname: "butaro", lastname: "butaro", locationId: DataLocation.findByCode("322").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'butaro_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
 		butaro.addToPermissions("editSurvey:view")
-		butaro.addToPermissions("editSurvey:*:"+DataLocation.findByCode("Butaro DH").id)
+		butaro.addToPermissions("editSurvey:*:"+DataLocation.findByCode("322").id)
 		butaro.addToPermissions("menu:survey")
 		butaro.addToPermissions("menu:reports")
 		butaro.addToPermissions("home:*")
 		butaro.save(failOnError: true)
 		
-		def kivuye = new User(userType: UserType.PLANNING, code:"kivuye",username: "kivuye", firstname: "kivuye", lastname: "kivuye", locationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
+		def kivuye = new User(userType: UserType.PLANNING, code:"kivuye",username: "kivuye", firstname: "kivuye", lastname: "kivuye", locationId: DataLocation.findByCode("327").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
 		kivuye.addToPermissions("editPlanning:view")
-		kivuye.addToPermissions("editPlanning:*:"+DataLocation.findByCode("Kivuye HC").id)
+		kivuye.addToPermissions("editPlanning:*:"+DataLocation.findByCode("327").id)
 		kivuye.addToPermissions("menu:planning")
 		kivuye.addToPermissions("menu:reports")
 		kivuye.addToPermissions("home:*")
@@ -140,7 +140,7 @@ public class Initializer {
 			def east = new Location(names: j(["en":"East"]), code: "East", parent: rwanda, level: province).save(failOnError: true)
 			def west = new Location(names: j(["en":"West"]), code: "West", parent: rwanda, level: province).save(failOnError: true)
 
-			def burera = new Location(names: j(["en":"Burera"]), code: "Burera", parent: north, level: district).save(failOnError: true)
+			def burera = new Location(names: j(["en":"Burera"]), code: "0404", parent: north, level: district).save(failOnError: true)
 
 			rwanda.children = [
 				kigali,
@@ -166,10 +166,10 @@ public class Initializer {
 			province.save(failOnError: true)
 			district.save(failOnError: true)
 			
-			def butaro = new DataLocation(names: j(["en":"Butaro"]), code: "Butaro DH", location: burera, type: dh).save(failOnError: true)
-			def kivuye = new DataLocation(names: j(["en":"Kivuye"]), code: "Kivuye HC", location: burera, type: hc).save(failOnError: true)
-			def newDataLocationHc = new DataLocation(names: j(["en":"New Data Location"]), code: "New Data Location HC", location: burera, type: hc).save(failOnError: true)
-			burera.dataLocations = [butaro, kivuye, newDataLocationHc]
+			def butaro = new DataLocation(names: j(["en":"Butaro"]), code: "322", location: burera, type: dh).save(failOnError: true)
+			def kivuye = new DataLocation(names: j(["en":"Kivuye"]), code: "327", location: burera, type: hc).save(failOnError: true)
+			def rusasa = new DataLocation(names: j(["en":"Rusasa"]), code: "332", location: burera, type: hc).save(failOnError: true)
+			burera.dataLocations = [butaro, kivuye, rusasa]
 			burera.save(failOnError: true)
 		}
 
@@ -556,7 +556,7 @@ public class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE1"),
 					period: Period.list([cache: true])[0],
-					location: DataLocation.findByCode("Butaro DH"),
+					location: DataLocation.findByCode("322"),
 					value: v("30"),
 					timestamp: new Date(),
 					).save(failOnError: true)
@@ -564,7 +564,7 @@ public class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE1"),
 					period: Period.list([cache: true])[0],
-					location: DataLocation.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("327"),
 					value: v("40"),
 					timestamp: new Date(),
 					).save(failOnError: true)
@@ -572,77 +572,77 @@ public class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE3"),
 					period: Period.list([cache: true])[0],
-					location: DataLocation.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("327"),
 					value: v("\"value1\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE4"),
 					period: Period.list([cache: true])[0],
-					location: DataLocation.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("327"),
 					value: v("true"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE6"),
 					period: Period.list([cache: true])[0],
-					location: DataLocation.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("327"),
 					value: v("false"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE8"),
 					period: Period.list([cache: true])[0],
-					location: DataLocation.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("327"),
 					value: v("10"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE9"),
 					period: Period.list([cache: true])[0],
-					location: DataLocation.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("327"),
 					value: v("31"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE10"),
 					period: Period.list([cache: true])[0],
-					location: DataLocation.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("327"),
 					value: v("\"NGO or Partner\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE11"),
 					period: Period.list([cache: true])[0],
-					location: DataLocation.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("327"),
 					value: v("\"2011-06-29\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE81"),
 					period: Period.list([cache: true])[0],
-					location: DataLocation.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("327"),
 					value: v("44"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE91"),
 					period: Period.list([cache: true])[0],
-					location: DataLocation.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("327"),
 					value: v("33"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE101"),
 					period: Period.list([cache: true])[0],
-					location: DataLocation.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("327"),
 					value: v("\"Ministry of Health\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE111"),
 					period: Period.list([cache: true])[0],
-					location: DataLocation.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("327"),
 					value: v("\"2011-06-30\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
@@ -650,7 +650,7 @@ public class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE12"),
 					period: Period.list([cache: true])[0],
-					location: DataLocation.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("327"),
 					value: v("\"I can not get into the Settings menu at all, when the phone is unlocked there is a blank screen.\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
@@ -1286,7 +1286,7 @@ public class Initializer {
 		
 		new FormEnteredValue(
 			formElement: formElement,
-			dataLocation: DataLocation.findByCode("Kivuye HC"),
+			dataLocation: DataLocation.findByCode("327"),
 			value: Value.VALUE_LIST([
 				Value.VALUE_MAP([
 					"basic": Value.VALUE_MAP([
@@ -1316,9 +1316,9 @@ public class Initializer {
 			def dMap = RawDataElement.findByCode("LISTMAP1");
 			def nData = NormalizedDataElement.findByCode("Constant 10");
 			
-			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
-			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
-			def burera = Location.findByCode("Burera");
+			def dataLocationOne = DataLocation.findByCode("327");
+			def dataLocationTwo = DataLocation.findByCode("322");
+			def burera = Location.findByCode("0404");
 			def est = Location.findByCode("East");
 			def south = Location.findByCode("South");
 			
@@ -1376,9 +1376,9 @@ public class Initializer {
 			def dEfour = Sum.findByCode("Ratio 1");
 			def dEfive = Sum.findByCode("Maps sum 1");
 		
-			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
-			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
-			def burera = Location.findByCode("Burera");
+			def dataLocationOne = DataLocation.findByCode("327");
+			def dataLocationTwo = DataLocation.findByCode("322");
+			def burera = Location.findByCode("0404");
 			def est = Location.findByCode("East");
 			def south = Location.findByCode("South");
 			

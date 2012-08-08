@@ -166,7 +166,8 @@ modules = {
 		
 		resource url: 'http://cdn.leafletjs.com/leaflet-0.4/leaflet.js'
 		resource url: 'http://cdn.leafletjs.com/leaflet-0.4/leaflet.css'
-	}
+		resource url: '/js/maps/leaflet-html-icon.js'
+	}	
 	
 	// Start resources for pages
 	list {
@@ -186,11 +187,11 @@ modules = {
 	}
 
 	fct {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,valuefilter,leaflet'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,valuefilter'
 	}
 	
 	dashboard {
-		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen,chartanimation,comparefilter,leaflet'
+		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen,chartanimation,comparefilter'
 	}
 
 	cost {
