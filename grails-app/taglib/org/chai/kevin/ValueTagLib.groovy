@@ -20,7 +20,8 @@ class ValueTagLib {
 
 	def languageService
 	
-	def reportValue = { attrs, body ->
+	//TODO fix this
+	def mapReportValue = { attrs, body ->
 		def value = attrs['value']
 		def type = attrs['type']
 		def format = attrs['format']
@@ -40,7 +41,7 @@ class ValueTagLib {
 							' data-report-value-raw="'+value.booleanValue+'"'+
 							' data-report-value-type="'+type.type+'">'+
 							'&#10003;</div>'
-					}					
+					}
 					else{
 						out << '<div class="report-value report-value-false"'+
 							' data-report-value="&#10007;"'+
@@ -68,23 +69,36 @@ class ValueTagLib {
 		}
 	}
 	
+	def reportValue = { attrs, body ->
+		def value = attrs['value']
+		def type = attrs['type']
+		def format = attrs['format']
+
+		if (value == null || value.isNull()) {
+			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
+		}
+		else {
+			switch (type.type) {
+				case ValueType.BOOL:
+					if (value.booleanValue) out << '<div class="report-value-true">&#10003;</div>'
+					else out << '<div class="report-value-false">&#10007;</div>'
+					break;
+				default:
+					out << languageService.getStringValue(value, type, null, format)
+			}
+		}
+	}
+	
 	def reportPercentage = { attrs, body ->
 		def value = attrs['value']
-		
-		if(value == null || value.isNull()){			
-			out << '<div class="report-value report-value-null"'+
-			' data-report-value="'+message(code: 'report.value.null')+'"'+
-			' data-report-value-type="null">'+
-			message(code: 'report.value.null')+'</div>'
+
+		if(value == null || value.isNull()){
+			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
 		}
 		else{
 			def average = value.numberValue.round(2)
 			DecimalFormat df = new DecimalFormat('#%')
-			def reportValue = df.format(average)
-			out << '<div class="report-value"'+
-				' data-report-value="'+reportValue+'"'+
-				' data-report-value-type="'+ValueType.NUMBER+'">'+
-				reportValue+'</div>'
+			out << df.format(average)
 		}
 	}
 	

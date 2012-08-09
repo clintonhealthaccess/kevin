@@ -61,7 +61,7 @@
 											data-location-names="${i18n(field: location.names)}" 
 											data-location-code="${location.code}" data-target-code="${target.code}">
 										<g:if test="${dsrTable.getReportValue(location, target) != null}">
-											<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.data.type}" format="${target.format}"/>
+											<g:mapReportValue value="${dsrTable.getReportValue(location, target)}" type="${target.data.type}" format="${target.format}"/>
 										</g:if>
 										<g:else>
 											<div class="report-value report-value-na" data-report-value="${message(code:'report.value.na')}"><g:message code="report.value.na"/></div>
