@@ -83,4 +83,19 @@ class DashboardProgramControllerSpec extends DashboardIntegrationTests {
 		DashboardProgram.count() == 1
 	}
 	
+	def "search program"() {
+		setup:
+		def root = newReportProgram(CODE(1))
+		def program = newDashboardProgram(CODE(2), root, 1)
+		dashboardProgramController = new DashboardProgramController()
+		
+		when:
+		dashboardProgramController.params.q = CODE(2)
+		dashboardProgramController.search()
+		
+		then:
+		dashboardProgramController.modelAndView.model.entities.size() == 1
+		dashboardProgramController.modelAndView.model.entities[0].equals(program)
+		dashboardProgramController.modelAndView.model.entityCount == 1
+	}
 }

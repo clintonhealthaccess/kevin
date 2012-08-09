@@ -39,7 +39,7 @@
 			</tr>
 			<g:each in="${dsrTable.locations}" var="location">
 				<tr>					
-					<td>
+					<td data-location-code="${location.code}">
 						<g:if test="${location.collectsData()}"><g:i18n field="${location.names}" /></g:if>
 						<g:else>
 							<%

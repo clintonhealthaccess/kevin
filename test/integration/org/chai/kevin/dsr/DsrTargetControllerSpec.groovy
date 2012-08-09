@@ -140,4 +140,22 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		DsrTarget.count() == 0
 	}	
 	
+	def "search target"() {
+		setup:
+		def program = newReportProgram(CODE(1))
+		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
+		def category = newDsrTargetCategory(CODE(1), 1)
+		def target = newDsrTarget(CODE(1), dataElement, program, category)
+		dsrTargetController = new DsrTargetController()
+		dsrTargetController.dataService = dataService
+		
+		when:
+		dsrTargetController.params.q = CODE(1)
+		dsrTargetController.search()
+		
+		then:
+		dsrTargetController.modelAndView.model.entities.size() == 1
+		dsrTargetController.modelAndView.model.entities[0].equals(target)
+		dsrTargetController.modelAndView.model.entityCount == 1
+	}
 }

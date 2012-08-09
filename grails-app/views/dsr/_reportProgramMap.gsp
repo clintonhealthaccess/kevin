@@ -16,7 +16,7 @@
 					'Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>'
 		}).addTo(map);
 		
-		if("${!viewSkipLevels.contains(currentLocation.level)}"){
+		if(${!viewSkipLevels.contains(currentLocation.level)}){
 			mapLocations();
 			mapDataLocations();
 		}
@@ -52,10 +52,10 @@
 						    "properties": {
 						    	//TODO use i to get hex code from a color map to set color styles
 						        "style": {
-									color: "#7FCDBB", //"#99D8C9", //"#7FCDBB", //"#258CD5",
+									color: "#7FCDBB",			//"#99D8C9", //"#7FCDBB", //"#258CD5",
 						        	weight: 4,
-						        	fillColor: "#7FCDBB", //"#99D8C9", //"#7FCDBB", //"#258CD5",
-						            fillOpacity: 0.5 //0.4 //0.4
+						        	fillColor: "#7FCDBB",		//"#99D8C9", //"#7FCDBB", //"#258CD5",
+						            fillOpacity: 0.5 //0.4		//0.4 //0.5
 						        }
 						    }
 					};
@@ -67,16 +67,10 @@
 		
 		function mapDataLocations(){
 			<!-- Data Locations -->
-			var dataLocations = []
-			var maxReportValue = 0;
+			var dataLocations = [];
 			$('div.js-map-location[data-target-code="${currentTarget.code}"]').each(function(){
 		        var dataLocation = $(this).data('location-code');
-		        dataLocations.push(dataLocation);	        
-		        var valueType = $(this).children('div.report-value').data('report-value-type');
-		        var value = $(this).children('div.report-value').data('report-value')
-		        if(valueType == 'NUMBER' && parseFloat(value) > maxReportValue){
-					maxReportValue = parseFloat(value);
-				}			
+		        dataLocations.push(dataLocation);
 		    });
 		    var fosaIds = dataLocations.join('|');
 			
@@ -87,34 +81,54 @@
 				
 				jQuery.each(data.features, function(i,f){			
 					
-					var location = $('div.js-map-location[data-location-code="'+f.properties.fosaid+'"][data-target-code="${currentTarget.code}"]');			
-					var names = $(location).data('location-names');
-					var reportValue = $(location).children('div.report-value');			
-					var value = $(reportValue).data('report-value');
-					var valueType = $(reportValue).data('report-value-type');				
+					var mapLocation = $('div.js-map-location[data-location-code="'+f.properties.fosaid+'"][data-target-code="${currentTarget.code}"]');			
+					var locationName = $(mapLocation).data('location-names');
 					
-					//create point geojson feature
-					var geojsonPointFeature = {
-							"id": f.properties.fosaid,
-						    "type": f.type,    
-						    "geometry": {
-						        "type": f.geometry.type,
-						        "coordinates": f.geometry.coordinates
-						    },
-						    "properties": {				    	
-						    	"name": names,
-						    	"reportValue": value,
-						    	"reportValueType": valueType,
-						        "popupContent": "Facility: "names+'<br />'+"${i18n(field: currentTarget.names)}"+': '+value
-						    }
-					};
-					geojsonPointLayer.addData(geojsonPointFeature);
+					var mapValue = $(mapLocation).children('div.report-value');
+					var rawValue = $(mapValue).data('report-value-raw');			
+					var reportValue = $(mapValue).data('report-value');
+					var reportValueType = $(mapValue).data('report-value-type');				
+					
+					if(f.geometry){
+						//create point geojson feature
+						var geojsonPointFeature = {
+								"id": f.properties.fosaid,
+							    "type": f.type,    
+							    "geometry": {
+							        "type": f.geometry.type,
+							        "coordinates": f.geometry.coordinates
+							    },
+							    "properties": {
+							    	"rawValue": rawValue,
+							    	"reportValue": reportValue,
+							    	"reportValueType": reportValueType,
+							        "popupContent": 'Location: '+locationName+'<br /> ${i18n(field: currentTarget.names)}: '+reportValue
+							    }
+						};
+						geojsonPointLayer.addData(geojsonPointFeature);
+					}
+					else{
+						$('.nav-table td[data-location-code="'+f.properties.fosaid+'"]').css('color', 'lightgray');
+					}
 				});									
 			});
 		}		
 		
+		function getMaxRawValue(){
+			var maxRawValue = 0;			
+			$('div.js-map-location[data-target-code="${currentTarget.code}"]').each(function(){	        
+		        var valueType = $(this).children('div.report-value').data('report-value-type');
+		        var value = $(this).children('div.report-value').data('report-value-raw');
+		        if(valueType == 'NUMBER' && parseFloat(value) > maxRawValue){
+					maxRawValue = parseFloat(value);
+				}
+		 	});		 	
+		 	return (maxRawValue > 0 ? maxRawValue : 1);
+		 }
+		
 		function dataLocationPointToLayer(feature, latlng) {
 			
+			var rawValue = feature.properties.rawValue;
 			var reportValue = feature.properties.reportValue;
 			var reportValueType = feature.properties.reportValueType;				
 			
@@ -125,7 +139,7 @@
 			switch(reportValueType){
 				//TODO use ValueType enum
 				case 'BOOL':
-					if(reportValue){
+					if(rawValue){
 						reportValueIcon = L.icon({
 							iconUrl: "${resource(dir:'images',file:'/maps/report-value-true.png')}",
 							iconSize: [20, 20]
@@ -139,18 +153,35 @@
 					}
 					break;
 				case 'NUMBER':
-					var numSize = parseFloat(reportValue/maxReportValue)*25;
-					reportValueIcon = new L.HtmlIcon({
-					    html : "<span style='color:#fff;font-size:"+numSize+"px;font-weight:bold;'>"+reportValue+"</span>"
-					});
+					var maxRawValue = getMaxRawValue();
+					var rawValueSize = parseInt((parseFloat(rawValue)/maxRawValue)*50);
+					
+					reportValueIcon = L.DivIcon({html: reportValue, className:  feature.id + '-report-value-div-icon'});															
+					//var reportValueDiv = $(feature.id + '-report-value-div-icon');
+					//$(feature.id + '-report-value-div-icon').css('font-size', rawValueSize + 'px');
+					//$(feature.id + '-report-value-div-icon').css('font-weight', 'bold');
+					//$(feature.id + '-report-value-div-icon').append(reportValue);
+					
+					//reportValueIcon = new L.HtmlIcon({
+					    //html : reportValue,
+					    //color: "#000",
+					    //fontSize: rawValueSize + 'px',
+					    //fontWeight: "bold",
+					    //className:  feature.id + '-report-value-div-icon'			  		
+					//});
 					break;
 				case 'STRING':
 				case 'TEXT':
-					reportValueIcon = new L.HtmlIcon({
-					    html : "<span style='color:#fff;font-weight:bold;'>"+reportValue+"</span>"
-					});
+					reportValueIcon = L.divIcon({className: feature.id + '-report-value-div-icon-'});
+					var reportValueDiv = $(feature.id + '-report-value-div-icon');
+					$(reportValueDiv).css('font-size', '25px');
+					$(reportValueDiv).css('font-weight', 'bold');
+					$(reportValueDiv).append(reportValue);
+					
+					//reportValueIcon = new L.HtmlIcon({
+						//html : "<span style='color:#000;font-weight:bold;'>" + reportValue + "</span>"
+					//});
 					break;
-				case 'null':
 				default:
 					reportValueIcon = L.icon({
 							iconUrl: "${resource(dir:'images',file:'/maps/report-value-null.png')}",

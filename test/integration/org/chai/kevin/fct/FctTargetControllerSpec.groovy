@@ -35,8 +35,7 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 		fctTargetController.modelAndView.model.entityCount == 1
 		
 	}
-	
-	
+		
 	def "delete target" () {
 		setup:
 		setupLocationTree()
@@ -52,4 +51,19 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 		FctTarget.count() == 0
 	}
 	
+	def "search target"() {
+		setup:
+		def program = newReportProgram(CODE(1))
+		def target = newFctTarget(CODE(1), 1, program)
+		fctTargetController = new FctTargetController()
+		
+		when:
+		fctTargetController.params.q = CODE(1)
+		fctTargetController.search()
+		
+		then:
+		fctTargetController.modelAndView.model.entities.size() == 1
+		fctTargetController.modelAndView.model.entities[0].equals(target)
+		fctTargetController.modelAndView.model.entityCount == 1
+	}
 }

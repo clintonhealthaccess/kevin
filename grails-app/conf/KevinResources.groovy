@@ -165,8 +165,13 @@ modules = {
 		
 		resource url: 'http://cdn.leafletjs.com/leaflet-0.4/leaflet.js'
 		resource url: 'http://cdn.leafletjs.com/leaflet-0.4/leaflet.css'
-		resource url: '/js/maps/leaflet-html-icon.js'
 	}	
+	
+	leafleticon {
+		resource url: '/js/jquery/leafleticonlabel/jquery.leaflet-icon-label.js'
+		resource url: '/js/jquery/leafleticonlabel/jquery.leaflet-icon-label.css'
+		resource url: '/js/jquery/leafleticon/jquery.leaflet-html-icon.js'
+	}
 	
 	// Start resources for pages
 	list {
@@ -182,7 +187,7 @@ modules = {
 	}
 
 	dsr {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,leaflet'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,leaflet,leafleticon'
 	}
 
 	fct {

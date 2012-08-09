@@ -59,7 +59,7 @@ class CalculationController extends AbstractController {
 		List<Calculation> calculations = dataService.searchData(Calculation.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
-			entities: targets,
+			entities: calculations,
 			entityCount: dataService.countData(Calculation.class, params['q'], []),
 			template: "data/calculationList",
 			code: getLabel(),

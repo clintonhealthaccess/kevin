@@ -58,10 +58,8 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		DashboardTarget.count() == 0
 	}
 	
-	
 	def "save target with calculations"() {
 		setup:
-		setupLocationTree()
 		def ratio = newSum("1", CODE(2))
 		def root = newReportProgram(CODE(1))
 		def target = newDashboardTarget(TARGET1, ratio, root, 1)
@@ -111,4 +109,20 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		Sum.count() == 1
 	}
 	
+	def "search target"() {
+		setup:
+		def ratio = newSum("1", CODE(2))
+		def root = newReportProgram(CODE(1))
+		def target = newDashboardTarget(TARGET1, ratio, root, 1)
+		dashboardTargetController = new DashboardTargetController()
+		
+		when:
+		dashboardTargetController.params.q = TARGET1
+		dashboardTargetController.search()
+		
+		then:
+		dashboardTargetController.modelAndView.model.entities.size() == 1
+		dashboardTargetController.modelAndView.model.entities[0].equals(target)
+		dashboardTargetController.modelAndView.model.entityCount == 1
+	}
 }
