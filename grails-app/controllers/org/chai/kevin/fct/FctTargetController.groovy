@@ -113,7 +113,7 @@ class FctTargetController extends AbstractEntityController {
 	def edit = {
 		super.edit()
 	}
-	
+
 	def search = {
 		adaptParamsForList()
 		

@@ -106,6 +106,19 @@ class DashboardProgramController extends AbstractEntityController {
 		super.delete()
 	}
 	
+	def list = {
+		adaptParamsForList()
+		List<DashboardProgram> programs = DashboardProgram.list(params);
+		
+		render (view: '/entity/list', model:[
+			entities: programs,
+			template: "dashboard/programList",
+			code: getLabel(),
+			entityCount: DashboardProgram.count(),
+			entityClass: getEntityClass()
+		])
+	}
+
 	def search = {
 		adaptParamsForList()
 		
@@ -119,18 +132,5 @@ class DashboardProgramController extends AbstractEntityController {
 			search: true
 		])
 	}
-	
-	def list = {
-		adaptParamsForList()
-		List<DashboardProgram> programs = DashboardProgram.list(params);
-		
-		render (view: '/entity/list', model:[
-			entities: programs,
-			template: "dashboard/programList",
-			code: getLabel(),
-			entityCount: DashboardProgram.count(),
-			entityClass: getEntityClass()
-		])
-	}
-	
+
 }

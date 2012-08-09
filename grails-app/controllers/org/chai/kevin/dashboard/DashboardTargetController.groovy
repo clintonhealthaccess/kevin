@@ -98,6 +98,19 @@ class DashboardTargetController extends AbstractEntityController {
 		super.delete()
 	}
 	
+	def list = {
+		adaptParamsForList()
+		List<DashboardTarget> targets = DashboardTarget.list(params);
+		
+		render (view: '/entity/list', model:[
+			entities: targets,
+			template: "dashboard/targetList",
+			code: getLabel(),
+			entityCount: DashboardTarget.count(),
+			entityClass: getEntityClass()
+		])
+	}
+
 	def search = {
 		adaptParamsForList()
 		
@@ -112,16 +125,4 @@ class DashboardTargetController extends AbstractEntityController {
 		])
 	}
 	
-	def list = {
-		adaptParamsForList()
-		List<DashboardTarget> targets = DashboardTarget.list(params);
-		
-		render (view: '/entity/list', model:[
-			entities: targets,
-			template: "dashboard/targetList",
-			code: getLabel(),
-			entityCount: DashboardTarget.count(),
-			entityClass: getEntityClass()
-		])
-	}
 }

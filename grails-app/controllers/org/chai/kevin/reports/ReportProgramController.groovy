@@ -73,7 +73,7 @@ class ReportProgramController extends AbstractEntityController{
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
-
+	
 	def search = {
 		adaptParamsForList()
 		
