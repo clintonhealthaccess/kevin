@@ -158,12 +158,12 @@
 				break;
 			case 'NUMBER':
 				var maxRawValue = getMaxRawValue();
-				var rawValueSize = parseInt((parseFloat(rawValue)/maxRawValue)*25)+25; //min: 25px max: 50px
+				var rawValueSize = parseInt((parseFloat(rawValue)/maxRawValue)*25)+10; //min: 10px max: 35px
 				reportValueIcon = new L.Icon.Label.Default({							
 						iconUrl: "${resource(dir:'images',file:'/maps/report-value-null.png')}",
 						iconSize: new L.Point(20, 20),
 						hideIcon: true,
-						labelText: reportValue,
+						labelText: reportValue+'',
 						labelFontSize: rawValueSize + 'px',
 						labelAnchor: new L.Point(0, 8),
 						wrapperAnchor: new L.Point(13, 36),
