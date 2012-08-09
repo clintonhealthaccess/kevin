@@ -31,9 +31,6 @@
 						<g:if test="${dsrTable.getReportValue(location, target) != null}">						
 							<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.data.type}" format="${target.format}"/>
 						</g:if>
-						<g:else>
-							<div class="report-value-na"><g:message code="report.value.na"/></div>
-						</g:else>			
 					</td>
 				</g:each>
 			</g:if>
