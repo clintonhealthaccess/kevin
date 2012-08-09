@@ -18,7 +18,7 @@
 				<g:render template="/templates/topLevelReportFilters"/>
 			</div>
 			<div class="main">			
-				<g:topLevelReportTabs linkParams="${params}" exclude="${['dsrCategory', 'reportType']}" />					
+				<g:topLevelReportTabs linkParams="${params}" exclude="${['dsrTarget', 'dsrCategory', 'reportType']}" />					
 				<g:if test="${dsrTable != null}">
 					<ul>
 						<g:if test="${currentView == Utils.ReportType.MAP || (currentView == Utils.ReportType.TABLE && dsrTable.hasData())}">
@@ -30,7 +30,7 @@
 									<a class="level-up" href="${createLink(controller:'dsr', action:'view', params:parentProgramLinkParams)}">
 										<g:message code="report.view.label" args="${[i18n(field: currentProgram.parent.names)]}"/></a>	  
 							  	</g:if>
-								<g:render template="/templates/reportView" model="[linkParams:params]"/>
+								<g:reportView linkParams="${params}" exclude="${['dsrTarget']}"/>
 								<g:render template="/dsr/reportCategoryFilter" model="[linkParams:params]"/>												
 							</li>
 						</g:if>
@@ -39,7 +39,7 @@
 							<g:render template="/dsr/reportProgramMap" model="[linkParams:params]"/>
 							<g:render template="/dsr/reportProgramMapTable" model="[linkParams:params]"/>
 						</g:if>
-						<g:elseif test="${currentView == Utils.ReportType.TABLE && dsrTable.hasData()}">
+						<g:elseif test="${currentView == Utils.ReportType.TABLE && dsrTable != null && dsrTable.hasData()}">
 							<g:render template="/dsr/reportProgramTable"/>
 						</g:elseif>
 						<g:else>

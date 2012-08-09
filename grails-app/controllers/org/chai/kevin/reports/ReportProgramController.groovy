@@ -39,6 +39,8 @@ import org.chai.kevin.reports.ReportProgram
 
 class ReportProgramController extends AbstractEntityController{
 	
+	def dataService;
+	
 	def getEntity(def id) {
 		return ReportProgram.get(id)
 	}
@@ -72,6 +74,20 @@ class ReportProgramController extends AbstractEntityController{
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 
+	def search = {
+		adaptParamsForList()
+		
+		List<ReportProgram> programs = dataService.searchData(ReportProgram.class, params['q'], [], params);
+		
+		render (view: '/entity/list', model:[
+			entities: programs,
+			entityCount: dataService.countData(ReportProgram.class, params['q'], []),
+			template: "reports/programList",
+			code: getLabel(),
+			search: true
+		])
+	}
+	
 	def list = {
 		adaptParamsForList()
 		

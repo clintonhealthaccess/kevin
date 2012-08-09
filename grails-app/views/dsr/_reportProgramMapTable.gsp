@@ -18,7 +18,16 @@
 				<g:if test="${dsrTable.targets != null && !dsrTable.targets.empty}">
 					<g:each in="${dsrTable.targets}" var="target">
 						<td>
-							<g:i18n field="${target.names}" />
+							<g:if test="${currentTarget == target}"><g:i18n field="${target.names}" /></g:if>
+							<g:else>
+								<%
+									targetLinkParams = [:]
+									targetLinkParams.putAll linkParams
+									targetLinkParams['dsrTarget'] = target.id+""
+								%>
+								<a href="${createLink(controller:'dsr', action: 'view', params: targetLinkParams)}">
+								<g:i18n field="${target.names}" /></a>
+							</g:else>
 							<g:render template="/templates/help_tooltip" 
 								model="[names: i18n(field: target.names), descriptions: i18n(field: target.descriptions)]" />
 						</td>
@@ -30,7 +39,7 @@
 			</tr>
 			<g:each in="${dsrTable.locations}" var="location">
 				<tr>					
-					<td>
+					<td data-location-code="${location.code}">
 						<g:if test="${location.collectsData()}"><g:i18n field="${location.names}" /></g:if>
 						<g:else>
 							<%
@@ -48,12 +57,16 @@
 							<g:if test="${viewSkipLevels.contains(currentLocation.level)}"><td></td></g:if>
 							<g:else>
 								<td>
-									<g:if test="${dsrTable.getReportValue(location, target) != null}">
-										<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.data.type}" format="${target.format}"/>
-									</g:if>
-									<g:else>
-										<div class="report-value-na"><g:message code="report.value.na"/></div>
-									</g:else>
+									<div class="${currentTarget == target ? 'js-map-location' : ''}"
+											data-location-names="${i18n(field: location.names)}" 
+											data-location-code="${location.code}" data-target-code="${target.code}">
+										<g:if test="${dsrTable.getReportValue(location, target) != null}">
+											<g:mapReportValue value="${dsrTable.getReportValue(location, target)}" type="${target.data.type}" format="${target.format}"/>
+										</g:if>
+										<g:else>
+											<div class="report-value report-value-na" data-report-value="${message(code:'report.value.na')}"><g:message code="report.value.na"/></div>
+										</g:else>
+									</div>																		
 								</td>
 							</g:else>
 						</g:each>
@@ -65,4 +78,6 @@
 			</g:each>
 		</tbody>
 	</table>
+	<!-- TODO nav-table.sass & message.properties -->
+	<p style="margin-top:10px">* Denotes location missing map information.</p>
 </div>

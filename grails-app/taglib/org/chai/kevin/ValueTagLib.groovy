@@ -20,11 +20,60 @@ class ValueTagLib {
 
 	def languageService
 	
-	def reportValue = { attrs, body ->
+	//TODO fix this
+	def mapReportValue = { attrs, body ->
 		def value = attrs['value']
 		def type = attrs['type']
 		def format = attrs['format']
 		
+		if (value == null || value.isNull()) {
+			out << '<div class="report-value report-value-null"'+
+				' data-report-value="'+message(code: 'report.value.null')+'"'+
+				' data-report-value-type="null">'+
+				message(code: 'report.value.null')+'</div>'
+		}
+		else {
+			switch (type.type) {
+				case ValueType.BOOL:
+					if (value.booleanValue){
+						out << '<div class="report-value report-value-true"'+
+							' data-report-value="&#10003;"'+
+							' data-report-value-raw="'+value.booleanValue+'"'+
+							' data-report-value-type="'+type.type+'">'+
+							'&#10003;</div>'
+					}
+					else{
+						out << '<div class="report-value report-value-false"'+
+							' data-report-value="&#10007;"'+
+							' data-report-value-raw="'+value.booleanValue+'"'+
+							' data-report-value-type="'+type.type+'">'+
+							'&#10007;</div>'
+					}
+					break;
+				case ValueType.NUMBER:
+					def reportValue = languageService.getStringValue(value, type, null, format)
+					out << '<div class="report-value"'+
+						' data-report-value="'+reportValue+'"'+
+						' data-report-value-raw="'+value.numberValue+'"'+
+						' data-report-value-type="'+type.type+'">'+
+						reportValue+'</div>'
+					break;
+				default:
+					def reportValue = languageService.getStringValue(value, type, null, format)
+					out << '<div class="report-value"'+
+						' data-report-value="'+reportValue+'"'+
+						' data-report-value-raw="'+reportValue+'"'+
+						' data-report-value-type="'+type.type+'">'+
+						reportValue+'</div>'
+			}
+		}
+	}
+	
+	def reportValue = { attrs, body ->
+		def value = attrs['value']
+		def type = attrs['type']
+		def format = attrs['format']
+
 		if (value == null || value.isNull()) {
 			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
 		}
@@ -42,7 +91,7 @@ class ValueTagLib {
 	
 	def reportPercentage = { attrs, body ->
 		def value = attrs['value']
-		
+
 		if(value == null || value.isNull()){
 			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
 		}

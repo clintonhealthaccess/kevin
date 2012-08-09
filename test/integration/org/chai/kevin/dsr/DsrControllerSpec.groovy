@@ -28,6 +28,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		dsrController.params.location = Location.findByCode(RWANDA).id
 		dsrController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]		
 		dsrController.params.dsrCategory = category.id
+		dsrController.params.dsrTarget = target.id
 		dsrController.params.reportType = reportType.toString().toLowerCase()
 		def model = dsrController.view()
 		
@@ -38,6 +39,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.locationSkipLevels.equals(s([LocationLevel.findByCode(SECTOR)]))
 		model.currentCategory.equals(category)
+		model.currentTarget.equals(target)
 		model.currentView.equals(reportType)
 		model.dsrTable != null
 	}
@@ -61,6 +63,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		dsrController.params.location = Location.findByCode(RWANDA).id
 		dsrController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		dsrController.params.dsrCategory = category.id
+		dsrController.params.dsrTarget = target1.id
 		dsrController.params.reportType = reportType.toString().toLowerCase()
 		def model = dsrController.view()
 		
@@ -71,6 +74,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.locationSkipLevels.equals(s([LocationLevel.findByCode(SECTOR)]))
 		model.currentCategory.equals(category)
+		model.currentTarget.equals(target1)
 		model.currentView.equals(reportType)
 		model.dsrTable != null
 		model.dsrTable.targets == [target1]
@@ -255,6 +259,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		dsrController.params.location = Location.findByCode(RWANDA).id
 		dsrController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		dsrController.params.dsrCategory = category.id
+		dsrController.params.dsrTarget = target.id
 		dsrController.params.reportType = reportType.toString().toLowerCase()
 		def model = dsrController.view()
 		
@@ -265,6 +270,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.locationSkipLevels.equals(s([LocationLevel.findByCode(SECTOR)]))
 		model.currentCategory.equals(category)
+		model.currentTarget.equals(target)
 		model.currentView.equals(reportType)
 		model.dsrTable != null
 	}

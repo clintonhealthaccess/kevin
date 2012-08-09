@@ -50,6 +50,11 @@ class FilterTagLib {
 		def model = excludeLinkParams(attrs)	
 		out << render(template:'/templates/topLevelReportTabs', model:model)
 	}
+	
+	def reportView = {attrs, body ->
+		def model = excludeLinkParams(attrs)
+		out << render(template:'/templates/reportView', model:model)
+	}
 			
 	def periodFilter = {attrs, body ->
 		Period.withTransaction {
@@ -84,7 +89,7 @@ class FilterTagLib {
 			def model = excludeLinkParams(attrs)
 			def location = attrs['selected']
 			def locationFilterRoot = locationService.getRootLocation()	
-			def locationFilterTree = locationFilterRoot.collectLocationTreeWithData(attrs['locationSkipLevels'], attrs['selectedTypes'], false)
+			def locationFilterTree = locationFilterRoot.collectLocationTreeWithData(attrs['skipLevels'], attrs['selectedTypes'], false)
 			model << 
 				[
 					currentLocation: location,

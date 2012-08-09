@@ -50,7 +50,6 @@ modules = {
 		resource url: '/js/jquery/cluetip/lib/jquery.hoverIntent.js', bundle: 'core'
 		resource url: '/js/jquery/cluetip/jquery.cluetip.css', bundle: 'core'
 		resource url: '/js/cluetip_init.js', bundle: 'core'
-		//resource url: '/css/cluetip.css'
 	}
 
 	form {
@@ -166,6 +165,13 @@ modules = {
 		
 		resource url: 'http://cdn.leafletjs.com/leaflet-0.4/leaflet.js'
 		resource url: 'http://cdn.leafletjs.com/leaflet-0.4/leaflet.css'
+	}	
+	
+	leafleticon {
+		dependsOn 'jquery,leaflet'
+		
+		resource url: '/js/jquery/leafleticon/jquery.leaflet-icon-label.js'
+		resource url: '/js/jquery/leafleticon/jquery.leaflet-icon-label.css'
 	}
 	
 	// Start resources for pages
@@ -182,15 +188,15 @@ modules = {
 	}
 
 	dsr {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,leaflet'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,leaflet,leafleticon'
 	}
 
 	fct {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,valuefilter,leaflet'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,valuefilter'
 	}
 	
 	dashboard {
-		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen,chartanimation,comparefilter,leaflet'
+		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen,chartanimation,comparefilter'
 	}
 
 	cost {
