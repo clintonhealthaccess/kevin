@@ -168,9 +168,10 @@ modules = {
 	}	
 	
 	leafleticon {
-		resource url: '/js/jquery/leafleticonlabel/jquery.leaflet-icon-label.js'
-		resource url: '/js/jquery/leafleticonlabel/jquery.leaflet-icon-label.css'
-		resource url: '/js/jquery/leafleticon/jquery.leaflet-html-icon.js'
+		dependsOn 'jquery,leaflet'
+		
+		resource url: '/js/jquery/leafleticon/jquery.leaflet-icon-label.js'
+		resource url: '/js/jquery/leafleticon/jquery.leaflet-icon-label.css'
 	}
 	
 	// Start resources for pages

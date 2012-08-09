@@ -1,7 +1,12 @@
+/**
+ * Plugin for Leaflet to add labels to map markers 
+ * https://github.com/jacobtoye/Leaflet.iconlabel
+ *
+ 
 .leaflet-marker-icon-wrapper {
 	position: absolute
 }
-
+ 
 .leaflet-marker-icon-label {
 	background: #fff;
 	-moz-border-radius: 7px; 
@@ -19,3 +24,17 @@
 	user-select: none;
 	white-space: nowrap;
 }
+ */
+
+.leaflet-marker-icon-wrapper {
+	position: absolute
+}
+
+/* slister start */
+.leaflet-marker-icon-label {
+	color: #000;
+	font-size: 17px;
+	font-weight: bold;
+	white-space: nowrap;
+}
+/* slister end */

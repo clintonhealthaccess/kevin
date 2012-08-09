@@ -1,3 +1,9 @@
+/**
+ * Plugin for Leaflet to add labels to map markers 
+ * https://github.com/jacobtoye/Leaflet.iconlabel
+ *
+ */
+
 L.Icon.Label = L.Icon.extend({
 	options: {
 		/*
@@ -5,7 +11,16 @@ L.Icon.Label = L.Icon.extend({
 		wrapperAnchor: (Point) (position of icon and label relative to Lat/Lng)
 		iconAnchor: (Point) (top left position of icon within wrapper)
 		labelText: (String) (label's text component, if this is null the element will not be created)
+		
+		//slister start
+		labelFontColor: (String)
+		labelFontSize: (String)
+		labelFontWeight: (String)
+		showLabel: (Boolean)
+		//slister end
+		
 		*/
+		
 		/* Icon options:
 		iconUrl: (String) (required)
 		iconSize: (Point) (can be set through CSS)
@@ -13,6 +28,12 @@ L.Icon.Label = L.Icon.extend({
 		popupAnchor: (Point) (if not specified, popup opens in the anchor point)
 		shadowUrl: (Point) (no shadow by default)
 		shadowSize: (Point)
+		
+		//slister start
+		hideIcon: (Boolean)
+		showLabel: (Boolean)
+		//slister end
+		
 		*/
 		labelClassName: ''
 	},
@@ -51,10 +72,22 @@ L.Icon.Label = L.Icon.extend({
 
 		label.innerHTML = this.options.labelText;
 
+		//slister start
+		if(this.options.labelFontColor){
+			label.style.color = this.options.labelFontColor;
+		}
+		if(this.options.labelFontSize){
+			label.style.fontSize = this.options.labelFontSize;
+		}
+		if(this.options.labelFontWeight){
+			label.style.fontWeight = this.options.labelFontWeight;
+		}
+		//slister end
+		
 		//set up label's styles
 		label.style.marginLeft = this.options.labelAnchor.x + 'px';
-		label.style.marginTop = this.options.labelAnchor.y + 'px';
-
+		label.style.marginTop = this.options.labelAnchor.y + 'px';			
+		
 		//set up wrapper anchor
 		wrapper.style.marginLeft = (-this.options.wrapperAnchor.x) + 'px';
 		wrapper.style.marginTop = (-this.options.wrapperAnchor.y) + 'px';
@@ -64,9 +97,15 @@ L.Icon.Label = L.Icon.extend({
 		//reset icons margins (as super makes them -ve)
 		img.style.marginLeft = this.options.iconAnchor.x + 'px';
 		img.style.marginTop = this.options.iconAnchor.y + 'px';
-
-		wrapper.appendChild(img);
-		wrapper.appendChild(label);
+		
+		//slister start
+		if(!this.options.hideIcon){
+			wrapper.appendChild(img);	
+		}
+		if(this.options.showLabel){
+			wrapper.appendChild(label);
+		}
+		//slister end
 
 		return wrapper;
 	}
@@ -91,13 +130,24 @@ L.Icon.Label.Default = L.Icon.Label.extend({
 
 		//label's text component, if this is null the element will not be created
 		labelText: null,
-
+		//slister start
+		//TODO create styles for everything except font size
+		labelFontColor: null,
+		labelFontSize: null,
+		labelFontWeight: null,
+		//slister end
+		
 		/* From L.Icon.Default */
 		iconUrl: L.Icon.Default.imagePath + '/marker-icon.png',
 		iconSize: new L.Point(25, 41),
 		popupAnchor: new L.Point(0, -33),
 
 		shadowUrl: L.Icon.Default.imagePath + '/marker-shadow.png',
-		shadowSize: new L.Point(41, 41)
+		shadowSize: new L.Point(41, 41),
+
+		//slister start
+		hideIcon: false,
+		showLabel: true
+		//slister end
 	}
 });

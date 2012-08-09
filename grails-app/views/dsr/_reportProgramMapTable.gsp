@@ -78,4 +78,6 @@
 			</g:each>
 		</tbody>
 	</table>
+	<!-- TODO nav-table.sass & message.properties -->
+	<p style="margin-top:10px;">* Denotes location missing map information.</p>
 </div>
