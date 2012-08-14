@@ -90,9 +90,9 @@ grails.project.dependency.resolution = {
         runtime 'mysql:mysql-connector-java:5.1.13'
 		
 		test "org.codehaus.geb:geb-spock:0.7.1"
-		test("org.seleniumhq.selenium:selenium-firefox-driver:latest.release")
-		test("org.seleniumhq.selenium:selenium-chrome-driver:latest.release")
-		test("org.seleniumhq.selenium:selenium-htmlunit-driver:latest.release") {
+		test("org.seleniumhq.selenium:selenium-firefox-driver:2.20.0")
+		test("org.seleniumhq.selenium:selenium-chrome-driver:2.20.0")
+		test("org.seleniumhq.selenium:selenium-htmlunit-driver:2.20.0") {
 			excludes "xml-apis"
 		}
 		

@@ -8,7 +8,7 @@
 			<g:sortableColumn property="${SurveySummaryPage.LOCATION_SORT}" title="${message(code: 'location.label')}" params="${params}" defaultOrder="asc"/>
 			<th><g:message code="survey.summary.submitted" /></th>
 			<g:sortableColumn property="${SurveySummaryPage.PROGRESS_SORT}" title="${message(code: 'survey.summary.progress')}" params="${params}" defaultOrder="desc"/>
-			<th></th>
+			<th><g:message code="entity.list.manage.label"/></th>
 		</thead>
 		<tbody>
 			<g:set var="programsClosed" value="${true}"/>
@@ -24,30 +24,35 @@
 					<td>${programClosed?'\u2713':''}</td>
 					<td><span class="js_progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
 					<td>
-						<ul class="horizontal">
-							<li>
-								<a href="${createLink(controller: 'editSurvey', action: 'programPage', params: [program: currentProgram.id, location: location.id])}">
-									<g:message code="survey.summary.viewprogram.label" />
-								</a>
-							</li> 
-							<shiro:hasPermission permission="surveyExport:export">
-								<li> 
-									<a href="${createLink(controller: 'surveyExport', action: 'export', params: [program: currentProgram.id, location: location.id])}">
-										<g:message code="survey.summary.exportprogram.label" />
-									</a>
-								</li>
-							</shiro:hasPermission>
-							<shiro:hasPermission permission="surveySummary:submitAll">
-								<g:if test="${!programClosed}">
-									<g:set var="programsClosed" value="${false}"/>
-									<li> 
-										<a href="${createLink(controller: 'surveySummary', action: 'submitAll', params: [program: currentProgram.id, location: currentLocation.id, submitLocation: location.id])}">
-											<g:message code="survey.summary.submitprogram.label" />
+						<div class="js_dropdown dropdown"> 
+							<a class="js_dropdown-link with-highlight" href="#"><g:message code="entity.list.manage.label"/></a>
+							<div class="dropdown-list js_dropdown-list">
+								<ul>
+									<li>
+										<a href="${createLink(controller: 'editSurvey', action: 'programPage', params: [program: currentProgram.id, location: location.id])}">
+											<g:message code="survey.summary.viewprogram.label" />
 										</a>
-									</li>
-								</g:if>
-							</shiro:hasPermission>
-						</ul>
+									</li> 
+									<shiro:hasPermission permission="surveyExport:export">
+										<li> 
+											<a href="${createLink(controller: 'surveyExport', action: 'export', params: [program: currentProgram.id, location: location.id])}">
+												<g:message code="survey.summary.exportprogram.label" />
+											</a>
+										</li>
+									</shiro:hasPermission>
+									<shiro:hasPermission permission="surveySummary:submitAll">
+										<g:if test="${!programClosed}">
+											<g:set var="programsClosed" value="${false}"/>
+											<li> 
+												<a href="${createLink(controller: 'surveySummary', action: 'submitAll', params: [program: currentProgram.id, location: currentLocation.id, submitLocation: location.id])}">
+													<g:message code="survey.summary.submitprogram.label" />
+												</a>
+											</li>
+										</g:if>
+									</shiro:hasPermission>
+								</ul>
+							</div>
+						</div>
 					</td>					
 				</tr>
 				<tr class="explanation-row">
