@@ -97,4 +97,25 @@ class CalculateTaskSpec extends IntegrationTests {
 	}
 	
 	
+	def "get information when data found"() {
+		setup:
+		def user = newUser('user', 'uuid')
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '1']]))
+		def task = new CalculateTask(user: user, status: TaskStatus.NEW, dataId: normalizedDataElement.id).save(failOnError: true, flush: true)
+		
+		expect:
+		task.getInformation() == 'NormalizedDataElement: CODE1'
+	}
+	
+	def "get information when data not found"() {
+		setup:
+		def user = newUser('user', 'uuid')
+		def task = new CalculateTask(user: user, status: TaskStatus.NEW, dataId: 1).save(failOnError: true, flush: true)
+		
+		expect:
+		task.getInformation() == 'Data element not found'
+	}
+	
+	
 }

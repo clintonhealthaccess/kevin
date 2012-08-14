@@ -4,11 +4,13 @@ import org.chai.kevin.task.Task.TaskStatus;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.NormalizedDataElement;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 class CalculateTask extends Task {
 
 	def dataService
 	def refreshValueService
+	def messageSource
 	
 	Integer dataId
 	
@@ -27,7 +29,8 @@ class CalculateTask extends Task {
 	
 	String getInformation() {
 		def data = dataService.getData(dataId, Data.class)
-		return data.class.simpleName+': '+data?.code
+		if (data == null) return messageSource.getMessage('task.calculate.data.notfound', new Object[0], LocaleContextHolder.getLocale())
+		else return data.class.simpleName+': '+data.code
 	}
 	
 	boolean isUnique() {
