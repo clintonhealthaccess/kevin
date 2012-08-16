@@ -408,18 +408,14 @@ ul.filtered
   
 .element-enum
   height: 32px
-  margin-bottom: -10px
 
   .option-description-container
     text-align: right
-    margin-bottom: -10px
-    margin-top: -5px
     height: 20px
     
   .option-description
     font-size: 10px
     width: 205px
-    margin-bottom: 10px
     font-style: italic
 // end fterrier
 
@@ -499,10 +495,16 @@ form.search-form
 // fterrier start: admin hints
 .admin-hint
   display: none 
-  font-size: 9px
+  font-size: 8px
   color: red
-  margin-top: 4px
-  margin-bottom: 8px
+  a
+    font-size: 8px
+
+.element-enum .admin-hint
+  margin-top: -8px
+
+.minimized .admin-hint
+  display: none !important
 // fterrier end
 
 // fterrier start: admin list value layout
