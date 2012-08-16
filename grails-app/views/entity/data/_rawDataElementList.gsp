@@ -41,7 +41,7 @@
 						<div class="dropdown-list js_dropdown-list">
 							<ul>
 								<li>
-  									<a href="${createLink(controller:'data', action:'dataElementValueList', params:[data:rawDataElement.id])}">
+  									<a href="${createLink(controller:'data', action:'dataValueList', params:[data:rawDataElement.id])}">
   										<g:message code="dataelement.viewvalues.label"/>
   									</a>
   								</li>

@@ -42,6 +42,11 @@
 						<a class="js_dropdown-link with-highlight" href="#"><g:message code="entity.list.manage.label"/></a>
 						<div class="dropdown-list js_dropdown-list">
 							<ul>
+								<li>
+  									<a href="${createLink(controller:'data', action:'dataValueList', params:[data:calculation.id])}">
+  										<g:message code="dataelement.viewvalues.label"/>
+  									</a>
+  								</li>
   								<li>
   									<a href="${createLinkWithTargetURI(controller:'task', action:'create', params:[class:'CalculateTask', dataId:calculation.id])}">
   										<g:message code="dataelement.calculatevalues.label"/>
