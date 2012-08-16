@@ -10,12 +10,8 @@
 			<thead>
 				<tr>
 					<th><g:message code="datavalue.location.label"/></th>
-					<g:if test="${data != null}">
-						<g:sortableColumn property="status" title="${message(code: 'dataelementvalue.status.label')}" params="[data: data.id, period: selectedPeriod.id, q: params.q]"/>
-					</g:if>
-					<g:else>
-						<th><g:message code="dataelementvalue.status.label"/></th>
-					</g:else>
+					<th><g:message code="calculationvalue.type.label"/></th>
+					<th><g:message code="sumvalue.numberofdatalocations.label"/></th>
 					<th><g:message code="datavalue.value.label"/></th>
 				</tr>
 			</thead>
@@ -23,11 +19,12 @@
 				<g:each in="${entities}" status="i" var="value"> 
 					<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 						<td><g:i18n field="${value.location.names}"/></td>
-						<td>${value.status}</td>
+						<td><g:i18n field="${value.type.names}"/></td>
+						<td>${value.numberOfDataLocations}</td>
 						<td><g:adminValue value="${value.value}" type="${value.data.type}"/></td>
 					</tr>
 				</g:each>
 			</tbody>
 		</table>
-	</g:if>
+	</g:if>	
 </div>

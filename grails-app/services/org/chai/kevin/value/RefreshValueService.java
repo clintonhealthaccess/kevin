@@ -356,21 +356,11 @@ public class RefreshValueService {
 	}
 	
 	public void updateCalculationPartialValues(Calculation<?> calculation, CalculationLocation location, Period period) {
-		List<CalculationPartialValue> oldPartialValues = (List<CalculationPartialValue>)valueService.getPartialValues(calculation, location, period);
-		Map<DataLocationType, CalculationPartialValue> oldPartialValueMap = new HashMap<DataLocationType, CalculationPartialValue>();
-		for (CalculationPartialValue oldPartialValue : oldPartialValues) {
-			oldPartialValueMap.put(oldPartialValue.getType(), oldPartialValue);
-		}
+		valueService.deleteValues(calculation, location, period);
 		
 		for (CalculationPartialValue newPartialValue : expressionService.calculatePartialValues(calculation, location, period)) {
-			CalculationPartialValue oldPartialValue = oldPartialValueMap.get(newPartialValue.getType());
-			
-			if (oldPartialValue == null) oldPartialValue = newPartialValue;
-			else {
-				oldPartialValue.setValue(newPartialValue.getValue());
-			}
-			valueService.save(oldPartialValue);
-			sessionFactory.getCurrentSession().evict(oldPartialValue);
+			valueService.save(newPartialValue);
+			sessionFactory.getCurrentSession().evict(newPartialValue);
 		}
 		calculation.setLastValueChanged(new Date());
 	}
