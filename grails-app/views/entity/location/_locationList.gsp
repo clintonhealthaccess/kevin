@@ -6,6 +6,7 @@
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="location.level.label"/></th>
 			<th><g:message code="location.parent.label"/></th>
+			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -34,6 +35,25 @@
 				<td>
 					<g:i18n field="${location.parent?.names}"/>
 				</td>
+				<td>
+					<div class="js_dropdown dropdown"> 
+						<a class="js_dropdown-link with-highlight" href="#"><g:message code="entity.list.manage.label"/></a>
+						<div class="dropdown-list js_dropdown-list">
+							<ul>
+								<li>
+  									<a href="${createLink(controller:'dataLocation', action:'list', params:[location:location.id])}">
+  										<g:message code="default.list.label" args="[message(code:'datalocation.label')]" />
+  									</a>
+  								</li>
+  								<li>
+  									<a href="${createLink(controller:'location', action:'list', params:[parent:location.id])}">
+  										<g:message code="default.list.label" args="[message(code:'location.label')]" />
+  									</a>
+  								</li>
+  							</ul>
+  						</div>
+  					</div>
+  				</td>
 			</tr>
 		</g:each>
 	</tbody>

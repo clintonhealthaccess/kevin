@@ -41,7 +41,13 @@ class DataLocationController extends AbstractEntityController {
 	def list = {
 		adaptParamsForList()
 		
-		List<DataLocation> locations = DataLocation.list(params);
+		def location = Location.get(params.int('location'))
+		def type = DataLocationType.get(params.int('type'))
+		
+		def locations = null
+		if (location != null) locations = DataLocation.findAllByLocation(location, params)
+		else if (type != null) locations = DataLocation.findAllByType(type, params)
+		else locations = DataLocation.list(params);
 
 		render (view: '/entity/list', model:[
 			template:"location/dataLocationList",
