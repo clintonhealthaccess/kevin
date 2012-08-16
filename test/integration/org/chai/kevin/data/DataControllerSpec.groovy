@@ -47,7 +47,7 @@ class DataControllerSpec extends IntegrationTests {
 		dataController = new DataController()
 		
 		when:
-		dataController.dataElementValueList()
+		dataController.dataValueList()
 		
 		then:
 		dataController.modelAndView == null
@@ -63,7 +63,7 @@ class DataControllerSpec extends IntegrationTests {
 		when:
 		def dataElementValue = newRawDataElementValue(dataElement, period1, DataLocation.findByCode(BUTARO), Value.NULL_INSTANCE())
 		dataController.params.data = dataElement.id
-		dataController.dataElementValueList()
+		dataController.dataValueList()
 		
 		then:
 		dataController.modelAndView.model.selectedPeriod.equals(period1)
@@ -84,7 +84,7 @@ class DataControllerSpec extends IntegrationTests {
 		dataController.params.period = period1.id
 		dataController.params.data = dataElement.id
 		dataController.params.max = 1
-		dataController.dataElementValueList()
+		dataController.dataValueList()
 		
 		then:
 		dataController.modelAndView.model.entities.equals([dataElementValue1])
@@ -100,7 +100,7 @@ class DataControllerSpec extends IntegrationTests {
 		
 		when:
 		dataController.params.data = dataElement.id
-		dataController.dataElementValueList()
+		dataController.dataValueList()
 		
 		then:
 		dataController.modelAndView.model.periods.equals([period1])
@@ -108,7 +108,7 @@ class DataControllerSpec extends IntegrationTests {
 		
 		when:
 		def dataElementValue = newRawDataElementValue(dataElement, period1, DataLocation.findByCode(BUTARO), Value.NULL_INSTANCE())
-		dataController.dataElementValueList()
+		dataController.dataValueList()
 		
 		then:
 		dataController.modelAndView.model.periods.equals([period1])
@@ -125,7 +125,7 @@ class DataControllerSpec extends IntegrationTests {
 		
 		when:
 		dataController.params.data = dataElement.id
-		dataController.dataElementValueList()
+		dataController.dataValueList()
 		
 		then:
 		dataController.modelAndView.model.periods.equals([period1])
@@ -133,7 +133,7 @@ class DataControllerSpec extends IntegrationTests {
 		
 		when:
 		def dataElementValue = newNormalizedDataElementValue(dataElement, DataLocation.findByCode(BUTARO), period1, Status.VALID, Value.NULL_INSTANCE())
-		dataController.dataElementValueList()
+		dataController.dataValueList()
 		
 		then:
 		dataController.modelAndView.model.periods.equals([period1])

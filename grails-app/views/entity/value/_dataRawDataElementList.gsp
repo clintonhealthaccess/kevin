@@ -9,8 +9,8 @@
 		<table class="listing">
 			<thead>
 				<tr>
-					<th><g:message code="dataelementvalue.location.label"/></th>
-					<th><g:message code="dataelementvalue.value.label"/></th>
+					<th><g:message code="datavalue.location.label"/></th>
+					<th><g:message code="datavalue.value.label"/></th>
 				</tr>
 			</thead>
 			<tbody>

@@ -155,17 +155,16 @@ class DataController extends AbstractController {
 				entities: values,
 				entityCount: valueCount,
 				template: "value/data"+data.class.simpleName+"List",
-				code: 'dataelementvalue.label',
+				code: 'datavalue.label',
 				search: true
 			])
 		}
 	}
 	
-	// TODO move to DataElementController
-	def dataElementValueList = {
+	def dataValueList = {
 		adaptParamsForList()
 		
-		def data = dataService.getData(params.int('data'), DataElement.class)
+		def data = dataService.getData(params.int('data'), Data.class)
 		if (data == null) {
 			response.sendError(404)
 		}
@@ -174,13 +173,13 @@ class DataController extends AbstractController {
 			def period = Period.get(params.int('period'))
 			if (period == null) period = Period.list()[Period.count() - 1]
 			
-			def values = valueService.listDataElementValues(
+			def values = valueService.listDataValues(
 				data,
 				null,
 				period,
 				params
 			)
-			def valueCount = valueService.countDataElementValues(null, data, null, period)
+			def valueCount = valueService.countDataValues(null, data, null, period)
 			
 			render (view: '/entity/list', model:[
 				data: data,
@@ -189,7 +188,7 @@ class DataController extends AbstractController {
 				entities: values,
 				entityCount: valueCount,
 				template: "value/data"+data.class.simpleName+"List",
-				code: 'dataelementvalue.label',
+				code: 'datavalue.label',
 				search: true
 			])
 		}
