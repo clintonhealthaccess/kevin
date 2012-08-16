@@ -6,6 +6,7 @@
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="datalocation.type.label"/></th>
 			<th><g:message code="datalocation.location.label"/></th>
+			<th><g:message code="locationlevel.label"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -33,6 +34,9 @@
 				</td>
 				<td>
 					<g:i18n field="${location.location.names}"/>
+				</td>
+				<td>
+					<g:i18n field="${location.location.level.names}"/>
 				</td>
 			</tr>
 		</g:each>
