@@ -98,4 +98,44 @@ class LocationControllerSpec extends IntegrationTests {
 		jsonResult.elements.size() == 5
 	}
 	
+	
+	def "test list"() {
+		setup:
+		setupLocationTree()
+		locationController = new LocationController()
+		
+		when:
+		locationController.list()
+		
+		then:
+		s(locationController.modelAndView.model.entities) == s([Location.findByCode(RWANDA), Location.findByCode(NORTH), Location.findByCode(BURERA)])
+	}
+	
+	def "test list with location"() {
+		setup:
+		setupLocationTree()
+		locationController = new LocationController()
+		
+		when:
+		locationController.params.parent = Location.findByCode(RWANDA).id
+		locationController.list()
+		
+		then:
+		locationController.modelAndView.model.entities == [Location.findByCode(NORTH)]
+	}
+	
+	def "test list with type"() {
+		setup:
+		setupLocationTree()
+		locationController = new LocationController()
+		
+		when:
+		locationController.params.level = LocationLevel.findByCode(NATIONAL).id
+		locationController.list()
+		
+		then:
+		locationController.modelAndView.model.entities == [Location.findByCode(RWANDA)]
+		
+	}
+	
 }

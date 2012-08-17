@@ -76,7 +76,13 @@ class LocationController extends AbstractEntityController {
 	def list = {
 		adaptParamsForList()
 		
-		List<Location> locations = Location.list(params);
+		def level = LocationLevel.get(params.int('level'))
+		def location = Location.get(params.int('parent'))
+		
+		def locations = null
+		if (level != null) locations = Location.findAllByLevel(level, params)
+		else if (location != null) locations = Location.findAllByParent(location, params)
+		else locations = Location.list(params);
 
 		render (view: '/entity/list', model:[
 			template:"location/locationList",
