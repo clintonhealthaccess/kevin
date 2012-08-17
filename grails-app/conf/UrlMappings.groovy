@@ -44,12 +44,6 @@ class UrlMappings {
 		
 		"/fct/$action/$period?/$program?/$location?/$fctTarget?"(controller:"fct")
 		
-		"/maps/view"(controller:"maps", action:"view")
-		
-		"/maps/map/$period?/$location?/$level?/$target?"(controller:"maps", action: "map")
-		
-		"/chart/chart/$data/$location"(controller:"chart", action: "chart")
-		
 		"/auth/$action"(controller:"auth")
 		
 		"/editSurvey/$action/$location?"(controller:"editSurvey")
