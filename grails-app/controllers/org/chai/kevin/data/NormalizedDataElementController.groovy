@@ -158,7 +158,6 @@ class NormalizedDataElementController extends AbstractEntityController {
 			render (view: '/entity/data/explainNormalizedDataElement',  model: [
 				normalizedDataElement: normalizedDataElement, 
 				referencingData: referencingData,
-				values: valueService.getNumberOfValues(normalizedDataElement),
 				valuesWithError: valuesWithError
 			])
 		}

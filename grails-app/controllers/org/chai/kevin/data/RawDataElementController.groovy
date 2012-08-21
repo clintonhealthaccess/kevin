@@ -179,11 +179,6 @@ class RawDataElementController extends AbstractEntityController {
 			List<Period> periods = Period.list([cache: true]);
 			Set<SurveyElement> surveyElements = surveyService.getSurveyElements(rawDataElement, null);
 
-			Map<Period, Long> periodValues = new HashMap<Period,Integer>();
-			for(Period period : periods) {
-				periodValues.put(period, valueService.getNumberOfValues(rawDataElement, period));
-			}
-
 			Map<SurveyElement, Integer> surveyElementMap = new HashMap<SurveyElement,Integer>();
 			for(SurveyElement surveyElement: surveyElements) {
 				surveyElementMap.put(surveyElement, surveyService.getNumberOfApplicableDataLocationTypes(surveyElement));
@@ -192,7 +187,9 @@ class RawDataElementController extends AbstractEntityController {
 			Set<Data<?>> referencingData = dataService.getReferencingData(rawDataElement)
 
 			render (view: '/entity/data/explainRawDataElement',  model: [
-				rawDataElement: rawDataElement, surveyElements: surveyElementMap, periodValues: periodValues, referencingData: referencingData
+				rawDataElement: rawDataElement, 
+				surveyElements: surveyElementMap, 
+				referencingData: referencingData
 			])
 		}
 	}

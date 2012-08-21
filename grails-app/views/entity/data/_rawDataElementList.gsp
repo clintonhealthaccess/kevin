@@ -31,7 +31,11 @@
   				<td>${rawDataElement.id}</td> 
   				<td>${rawDataElement.code}</td>  				
   				<td class="data-element-explainer" data-data="${rawDataElement.id}">
-  					<a href="${createLink(controller:'rawDataElement', action:'getExplainer', params:[id: rawDataElement.id])}"><g:i18n field="${rawDataElement.names}" /></a>
+  					<a class="cluetip"
+  						href="${createLink(controller:'rawDataElement', action:'getExplainer', params:[id: rawDataElement.id])}"
+					 	rel="${createLink(controller: 'data', action:'getDescription', params:[id: rawDataElement.id])}">
+  						<g:i18n field="${rawDataElement.names}" />
+  					</a>
   				</td>
   				<td><g:toHtml value="${rawDataElement.type.getDisplayedValue(2, 2)}"/></td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${rawDataElement.lastValueChanged}"/></td>
@@ -61,7 +65,7 @@
   				</td>
   			</tr>
   			<tr class="explanation-row">
-  				<td colspan="6">
+  				<td colspan="7">
   					<div class="explanation-cell" id="explanation-${rawDataElement.id}"></div>
   				</td>
   			</tr>

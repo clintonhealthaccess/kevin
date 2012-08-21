@@ -23,9 +23,14 @@ class DataController extends AbstractController {
 			render(contentType:"text/json") { result = 'error' }
 		}
 		else {
+			def periodValues = [:]
+			for (Period period : Period.list()) {
+				periodValues.put(period, valueService.getNumberOfValues(data, period));
+			}
+
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: '/entity/data/dataDescription', model: [data: data])
+				html = g.render (template: '/entity/data/dataDescription', model: [data: data, periodValues: periodValues])
 			}
 		}
 	}

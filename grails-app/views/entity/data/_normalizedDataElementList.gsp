@@ -64,7 +64,7 @@
   				</td>
   			</tr>
   			<tr class="explanation-row">
-  				<td colspan="8">
+  				<td colspan="9">
   					<div class="explanation-cell" id="explanation-${normalizedDataElement.id}"></div>
   				</td>
   			</tr>
