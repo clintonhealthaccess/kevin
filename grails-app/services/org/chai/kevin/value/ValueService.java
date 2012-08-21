@@ -89,8 +89,8 @@ public class ValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=true)
-	public <T extends DataValue> List<T> searchDataElementValues(String text, DataElement<T> data, DataLocation dataLocation, Period period, Map<String, Object> params) {
-		if (log.isDebugEnabled()) log.debug("searchDataElementValues(text="+text+", data="+data+", period="+period+", dataLocation="+dataLocation+")");
+	public <T extends DataValue> List<T> searchDataValues(String text, DataElement<T> data, DataLocation dataLocation, Period period, Map<String, Object> params) {
+		if (log.isDebugEnabled()) log.debug("searchDataValues(text="+text+", data="+data+", period="+period+", dataLocation="+dataLocation+")");
 		Criteria criteria = getCriteria(data, dataLocation, period);
 		criteria.createAlias("location", "location");
 		addSortAndLimitCriteria(criteria, params);
@@ -99,7 +99,7 @@ public class ValueService {
 		List<T> result = criteria.list();
 		filterList(result, text);
 		
-		if (log.isDebugEnabled()) log.debug("searchDataElementValues(...)=");
+		if (log.isDebugEnabled()) log.debug("searchDataValues(...)=");
 		return result;
 	}
 	
