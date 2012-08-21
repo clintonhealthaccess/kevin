@@ -34,37 +34,48 @@
 
   th
     padding: 10px
+    //slister start
+    text-align: right
+    //slister end
 
   td
     padding: 3px 15px
-    &:nth-child(2)
-      background: $filler
-      border-left: 1px solid $filler - #111
+    //slister start
+    text-align: right 
+    &:first-child 
       border-right: 1px solid $primary
-      color: $primary
-      font-weight: bold
-      text-align: right
-    
+    //&:nth-child(2)
+      //background: $filler
+      //border-left: 1px solid $filler - #111
+      //border-right: 1px solid $primary
+      //color: $primary
+      //font-weight: bold
+      //text-align: right 
+      //slister end
     a
       font-size: 11px
 
-  th, td
-    &:first-child
-      text-align: right
-    &:nth-child(2)
-      width: 25px
-        
-  tr.parent
-    td, th
-      //slister start
-      color: #258CD5
+  //slister start
+  //th, td
+    //&:first-child
+      //text-align: right
+    //&:nth-child(2)
+      //width: 25px
       //slister end
-      background: $filler
+
+  tr.parent    
+    td, th 
+      //slister start     
+      color: #258CD5
+      background: $filler !important
+      //slister end
       border-bottom: 1px solid #8fbde0
       padding: 15px !important
     td, th, a
-      font-size: 14px
-      font-weight: bold    
+      //slister start
+      //font-size: 14px
+      font-weight: bold
+      //slister end    
       
   tr.program
     > td
@@ -86,6 +97,9 @@
   &.number
     td, th
       padding: 7px 15px
+      //slister start
+      border-top: 1px solid #eee
+      //slister end
       &:first-child
         width: 200px
       &:nth-child(n+3)
@@ -95,6 +109,11 @@
     .program tbody
       td:last-child
         border-right: none
+    //slister start
+    .selected
+      background: #f9f9f9
+      color: black
+      //slister end
       
   &.graph
     td, th
@@ -117,13 +136,48 @@
         
 .map-wrap
   border: 1px solid $filler
-  margin-bottom: 1px
   //slister start
-  margin-top: 5px
+  //margin-bottom: 1px
   //slister end
+  margin-top: 5px
   position: relative
   width: 968px
-  
+
+//slister start
+.map    
+  height: 500px
+  margin: 10px auto 0px
+  width: 948px
+
+  .report-value-marker-true
+    color: $primary
+    font-size: 20px
+    font-weight: bold
+  .report-value-marker-false
+    color: $worst
+    opacity: 0.5
+    font-size: 20px
+  .report-value-marker-number, 
+  .report-value-marker-string, 
+  .report-value-marker-text
+    opacity: 0.5
+  .report-value-marker-na
+    color: darkgray
+    opacity: 0.5
+
+  .indicator-best
+    color: $best
+  .indicator-middle
+    color: $primary
+  .indicator-worst
+    color: $worst
+
+  .leaflet-popup
+    bottom: 0px !important
+  .leaflet-control-attribution a
+    font-size: 11px
+    //slister end
+
 .switch
   background: #fff
   border: 1px solid $primary + #222

@@ -47,13 +47,23 @@ class FilterTagLib {
 	def reportService;
 	
 	def topLevelReportTabs = {attrs, body ->
-		def model = excludeLinkParams(attrs)	
+		def model = excludeLinkParams(attrs)
 		out << render(template:'/templates/topLevelReportTabs', model:model)
 	}
 	
 	def reportView = {attrs, body ->
 		def model = excludeLinkParams(attrs)
 		out << render(template:'/templates/reportView', model:model)
+	}
+	
+	def reportCategoryFilter = {attrs, body ->
+		def model = excludeLinkParams(attrs)
+		out << render(template:'/dsr/reportCategoryFilter', model:model)
+	}
+	
+	def reportTargetFilter = {attrs, body ->
+		def model = excludeLinkParams(attrs)
+		out << render(template:'/fct/reportTargetFilter', model:model)
 	}
 			
 	def periodFilter = {attrs, body ->

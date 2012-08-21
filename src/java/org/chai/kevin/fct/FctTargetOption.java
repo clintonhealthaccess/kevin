@@ -6,10 +6,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.data.Sum;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
@@ -20,10 +22,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class FctTargetOption extends ReportEntity implements Exportable {
 
-	private Long id;
+	private Long id;	
 	private Sum sum;
 	private FctTarget target;	
-//	private String format;
+	private String format = "#";
 	
 	@Id
 	@GeneratedValue
@@ -33,6 +35,11 @@ public class FctTargetOption extends ReportEntity implements Exportable {
 	
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	@Transient
+	public Type getType() {
+		return getSum().getType();
 	}
 	
 	@ManyToOne(targetEntity=Sum.class)
@@ -52,15 +59,11 @@ public class FctTargetOption extends ReportEntity implements Exportable {
 	public void setTarget(FctTarget target) {
 		this.target = target;
 	}
-		
-//	@Basic
-//	public String getFormat() {
-//		return format;
-//	}
-//
-//	public void setFormat(String format) {
-//		this.format = format;
-//	}
+	
+	@Transient
+	public String getFormat() {
+		return format;
+	}
 
 	@Override
 	public String toString() {
