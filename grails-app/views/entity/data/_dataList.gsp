@@ -8,4 +8,3 @@
 		<span>[${item.id}]</span>
 	</li>
 </g:each>
-

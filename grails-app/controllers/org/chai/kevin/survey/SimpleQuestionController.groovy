@@ -88,20 +88,4 @@ class SimpleQuestionController extends AbstractEntityController {
 		if (entity.surveyElement != null) entity.surveyElement.surveyQuestion = entity
 	}
 	
-	def getDescription = {
-		def question = SurveySimpleQuestion.get(params.int('question'))
-		
-		if (question == null) {
-			render(contentType:"text/json") {
-				result = 'error'
-			}
-		}
-		else {
-			render(contentType:"text/json") {
-				result = 'success'
-				html = g.render (template: '/survey/admin/questionDescription', model: [question: question])
-			}
-		}
-	}
-
 }
