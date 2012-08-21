@@ -106,17 +106,4 @@ class TableQuestionController extends AbstractEntityController {
 		render (view: '/entity/edit', model: model)
 	}
 
-	def getDescription = {
-		def question = SurveyTableQuestion.get(params.int('question'))
-
-		if (question == null) {
-			render(contentType:"text/json") { result = 'error' }
-		}
-		else {
-			render(contentType:"text/json") {
-				result = 'success'
-				html = g.render (template: '/survey/admin/questionDescription', model: [question: question])
-			}
-		}
-	}
 }
