@@ -394,6 +394,55 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		Sum.list()[0].refreshed != null
 	}
 	
+	def "test refresh sum refreshes all fields"() {
+		when:
+		def refreshed = new Date()
+		setupLocationTree()
+		def period = newPeriod()
+		def ratio = newSum("1", CODE(2))
+		def partialValue = newSumPartialValue(ratio, period, Location.findByCode(BURERA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 0, v("1"))
+		
+		then:
+		SumPartialValue.count() == 1
+		
+		when:
+		refreshValueService.refreshCalculation(ratio, new TestProgress());
+
+		then:
+		SumPartialValue.count() == 8
+		SumPartialValue.list().each {
+			assert it.numberOfDataLocations != 0
+		}
+	}
+	
+	def "test refresh aggregation refreshes all fields"() {
+		when:
+		def refreshed = new Date()
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		def aggregation = newAggregation("\$"+dataElement1.id, CODE(3))
+		
+		then:
+		AggregationPartialValue.count() == 0
+		
+		when:
+		refreshValueService.refreshCalculation(aggregation, new TestProgress());
+
+		then:
+		AggregationPartialValue.count() == 8
+		
+		when:
+		aggregation.expression = '\$'+dataElement1.id+' + \$'+dataElement2.id
+		aggregation.refreshed = null
+		aggregation.save(failOnError: true, flush: true)
+		refreshValueService.refreshCalculation(aggregation, new TestProgress());
+
+		then:
+		AggregationPartialValue.count() == 16
+	}
+	
 	def "test refresh calculations refreshes dependencies first - with data element"() {
 		when:
 		setupLocationTree()

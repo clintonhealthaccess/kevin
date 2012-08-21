@@ -4,6 +4,7 @@
 			<th/>
 			<th><g:message code="entity.code.label"/></th>
 			<th><g:message code="entity.name.label"/></th>
+			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -26,6 +27,20 @@
 				<td>
 					<g:i18n field="${dataLocationType.names}"/>
 				</td>
+				<td>
+					<div class="js_dropdown dropdown"> 
+						<a class="js_dropdown-link with-highlight" href="#"><g:message code="entity.list.manage.label"/></a>
+						<div class="dropdown-list js_dropdown-list">
+							<ul>
+								<li>
+  									<a href="${createLink(controller:'dataLocation', action:'list', params:[type:dataLocationType.id])}">
+  										<g:message code="default.list.label" args="[message(code:'datalocation.label')]" />
+  									</a>
+  								</li>
+  							</ul>
+  						</div>
+  					</div>
+  				</td>
 			</tr>
 		</g:each>
 	</tbody>

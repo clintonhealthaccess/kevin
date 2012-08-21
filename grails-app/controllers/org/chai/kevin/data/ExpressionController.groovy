@@ -66,7 +66,7 @@ class ExpressionController {
 				entities: values,
 				entityCount: values.size(),
 				template: "value/data"+dataElement.class.simpleName+"List",
-				code: 'dataelementvalue.label',
+				code: 'datavalue.label',
 				search: true
 			])
 		}

@@ -232,23 +232,31 @@ class ValueServiceSpec extends IntegrationTests {
 		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), v("40"))
 		
 		then:
-		valueService.listDataElementValues(rawDataElement, null, period, [:]).equals([rawDataElementValue])
+		valueService.listDataValues(rawDataElement, null, period, [:]).equals([rawDataElementValue])
 		
 		when:
 		def period2 = newPeriod()
 		def rawDataElementValue2 = newRawDataElementValue(rawDataElement, period2, DataLocation.findByCode(BUTARO), v("40"))
 		
 		then:
-		valueService.listDataElementValues(rawDataElement, null, period, [:]).equals([rawDataElementValue])
-		valueService.listDataElementValues(rawDataElement, null, null, [:]).equals([rawDataElementValue, rawDataElementValue2])
+		valueService.listDataValues(rawDataElement, null, period, [:]).equals([rawDataElementValue])
+		valueService.listDataValues(rawDataElement, null, null, [:]).equals([rawDataElementValue, rawDataElementValue2])
 		
 		when:
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		def rawDataElementValue21 = newRawDataElementValue(rawDataElement2, period, DataLocation.findByCode(KIVUYE), v("40"))
 		
 		then:
-		valueService.listDataElementValues(rawDataElement2, null, period, [:]).equals([rawDataElementValue21])
-		valueService.listDataElementValues(rawDataElement, DataLocation.findByCode(BUTARO), period, [:]).equals([rawDataElementValue])
+		valueService.listDataValues(rawDataElement2, null, period, [:]).equals([rawDataElementValue21])
+		valueService.listDataValues(rawDataElement, DataLocation.findByCode(BUTARO), period, [:]).equals([rawDataElementValue])
+		
+		when:
+		def sum = newSum("1", CODE(4))
+		def sumValue = newSumPartialValue(sum, period, DataLocation.findByCode(BUTARO), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 0, v("1"))
+		
+		then:
+		valueService.listDataValues(sum, null, period, [:]).equals([sumValue])
+		valueService.listDataValues(sum, DataLocation.findByCode(BUTARO), period, [:]).equals([sumValue])
 	}
 	
 	def "test normalized value list with order"() {
@@ -263,8 +271,8 @@ class ValueServiceSpec extends IntegrationTests {
 		def value2 = NormalizedDataElementValue.list().find {it.status == Status.MISSING_EXPRESSION}
 		
 		then:
-		valueService.listDataElementValues(normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2, value1])
-		valueService.listDataElementValues(normalizedDataElement, null, period, ['sort':'status', 'order':'desc']).equals([value1, value2])
+		valueService.listDataValues(normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2, value1])
+		valueService.listDataValues(normalizedDataElement, null, period, ['sort':'status', 'order':'desc']).equals([value1, value2])
 	}
 	
 	def "test search normalized value"() {
@@ -279,8 +287,8 @@ class ValueServiceSpec extends IntegrationTests {
 		def value2 = NormalizedDataElementValue.list().find {it.location.code == BUTARO}
 		
 		then:
-		valueService.searchDataElementValues(KIVUYE, normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value1])
-		valueService.searchDataElementValues(BUTARO, normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2])
+		valueService.searchDataValues(KIVUYE, normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value1])
+		valueService.searchDataValues(BUTARO, normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2])
 	}
 	
 	def "test search normalized value on name and code"() {
@@ -302,8 +310,8 @@ class ValueServiceSpec extends IntegrationTests {
 		def value2 = NormalizedDataElementValue.list().find {it.location.code == BUTARO}
 		
 		then:
-		valueService.searchDataElementValues("loc1", normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value1])
-		valueService.searchDataElementValues("loc2", normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2])
+		valueService.searchDataValues("loc1", normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value1])
+		valueService.searchDataValues("loc2", normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2])
 	}
 	
 	def "test search normalized value with order"() {
@@ -318,8 +326,8 @@ class ValueServiceSpec extends IntegrationTests {
 		def value2 = NormalizedDataElementValue.list().find {it.status == Status.MISSING_EXPRESSION}
 		
 		then:
-		valueService.searchDataElementValues("", normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2, value1])
-		valueService.searchDataElementValues("", normalizedDataElement, null, period, ['sort':'status', 'order':'desc']).equals([value1, value2])
+		valueService.searchDataValues("", normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2, value1])
+		valueService.searchDataValues("", normalizedDataElement, null, period, ['sort':'status', 'order':'desc']).equals([value1, value2])
 	}
 	
 	def "test value count"() {
@@ -331,31 +339,31 @@ class ValueServiceSpec extends IntegrationTests {
 		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), v("40"))
 		
 		then:
-		valueService.countDataElementValues(null, rawDataElement, null, period) == 1
+		valueService.countDataValues(null, rawDataElement, null, period) == 1
 		
 		when:
 		def period2 = newPeriod()
 		def rawDataElementValue2 = newRawDataElementValue(rawDataElement, period2, DataLocation.findByCode(BUTARO), v("40"))
 		
 		then:
-		valueService.countDataElementValues(null, rawDataElement, null, period) == 1
-		valueService.countDataElementValues(null, rawDataElement, null, null) == 2
+		valueService.countDataValues(null, rawDataElement, null, period) == 1
+		valueService.countDataValues(null, rawDataElement, null, null) == 2
 		
 		when:
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		def rawDataElementValue21 = newRawDataElementValue(rawDataElement2, period, DataLocation.findByCode(KIVUYE), v("40"))
 		
 		then:
-		valueService.countDataElementValues(null, rawDataElement2, null, period) == 1
-		valueService.countDataElementValues(null, rawDataElement, DataLocation.findByCode(BUTARO), period) == 1
+		valueService.countDataValues(null, rawDataElement2, null, period) == 1
+		valueService.countDataValues(null, rawDataElement, DataLocation.findByCode(BUTARO), period) == 1
 		
 		when:
 		def rawDataElementValue22 = newRawDataElementValue(rawDataElement2, period, DataLocation.findByCode(BUTARO), v("40"))
 		
 		then:
-		valueService.countDataElementValues("but", rawDataElement2, null, period) == 1
-		valueService.countDataElementValues("kiv", rawDataElement2, null, period) == 1
-		valueService.countDataElementValues("", rawDataElement2, null, period) == 2
+		valueService.countDataValues("but", rawDataElement2, null, period) == 1
+		valueService.countDataValues("kiv", rawDataElement2, null, period) == 1
+		valueService.countDataValues("", rawDataElement2, null, period) == 2
 	}
 
 	def "test delete data element values"() {

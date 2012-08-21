@@ -89,8 +89,8 @@ public class ValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=true)
-	public <T extends DataValue> List<T> searchDataElementValues(String text, DataElement<T> data, DataLocation dataLocation, Period period, Map<String, Object> params) {
-		if (log.isDebugEnabled()) log.debug("searchDataElementValues(text="+text+", data="+data+", period="+period+", dataLocation="+dataLocation+")");
+	public <T extends DataValue> List<T> searchDataValues(String text, DataElement<T> data, DataLocation dataLocation, Period period, Map<String, Object> params) {
+		if (log.isDebugEnabled()) log.debug("searchDataValues(text="+text+", data="+data+", period="+period+", dataLocation="+dataLocation+")");
 		Criteria criteria = getCriteria(data, dataLocation, period);
 		criteria.createAlias("location", "location");
 		addSortAndLimitCriteria(criteria, params);
@@ -99,7 +99,7 @@ public class ValueService {
 		List<T> result = criteria.list();
 		filterList(result, text);
 		
-		if (log.isDebugEnabled()) log.debug("searchDataElementValues(...)=");
+		if (log.isDebugEnabled()) log.debug("searchDataValues(...)=");
 		return result;
 	}
 	
@@ -138,19 +138,19 @@ public class ValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=true)
-	public <T extends DataValue> List<T> listDataElementValues(DataElement<T> data, DataLocation dataLocation, Period period, Map<String, Object> params) {
-		if (log.isDebugEnabled()) log.debug("listDataElementValues(data="+data+", period="+period+", dataLocation="+dataLocation+")");
+	public <T extends DataValue> List<T> listDataValues(Data<T> data, DataLocation dataLocation, Period period, Map<String, Object> params) {
+		if (log.isDebugEnabled()) log.debug("listDataValues(data="+data+", period="+period+", dataLocation="+dataLocation+")");
 		Criteria criteria = getCriteria(data, dataLocation, period);
 		criteria.createAlias("location", "location");
 		addSortAndLimitCriteria(criteria, params);
 		
 		List<T> result = criteria.list();
-		if (log.isDebugEnabled()) log.debug("listDataElementValues(...)=");
+		if (log.isDebugEnabled()) log.debug("listDataValues(...)=");
 		return result;
 	}
 	
-	public <T extends DataValue> Long countDataElementValues(String text, DataElement<T> data, DataLocation dataLocation, Period period) {
-		if (log.isDebugEnabled()) log.debug("listDataElementValues(data="+data+", period="+period+", dataLocation="+dataLocation+")");
+	public <T extends DataValue> Long countDataValues(String text, Data<T> data, DataLocation dataLocation, Period period) {
+		if (log.isDebugEnabled()) log.debug("countDataValues(data="+data+", period="+period+", dataLocation="+dataLocation+")");
 		Criteria criteria = getCriteria(data, dataLocation, period);
 		if (text != null) {
 			criteria.createAlias("location", "location");
@@ -158,11 +158,11 @@ public class ValueService {
 		}
 		
 		Long result = (Long)criteria.setProjection(Projections.count("id")).uniqueResult();
-		if (log.isDebugEnabled()) log.debug("listDataElementValues(...)=");
+		if (log.isDebugEnabled()) log.debug("countDataValues(...)=");
 		return result;
 	}
 	
-	private <T extends DataValue> Criteria getCriteria(DataElement<T> data, DataLocation dataLocation, Period period) {
+	private <T extends DataValue> Criteria getCriteria(Data<T> data, DataLocation dataLocation, Period period) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(data.getValueClass());
 		criteria.add(Restrictions.eq("data", data));
 		if (period != null) criteria.add(Restrictions.eq("period", period));
