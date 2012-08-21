@@ -85,9 +85,9 @@ public class FctTable extends ReportTable<FctTargetOption, CalculationLocation, 
 	}
 	
 	public Value getMapReportValue(CalculationLocation location, FctTargetOption targetOption){
-		Value reportValue = null;
-		Map<FctTargetOption, SumValue> reportValues = valueMap.get(location);
-		if (reportValues != null) reportValue = reportValues.get(targetOption).getValue();
-		return reportValue;
+		Value value = null;
+		SumValue sumValue = super.getReportValue(location, targetOption);
+		if(sumValue != null) value = sumValue.getValue();
+		return value;
 	}
 }

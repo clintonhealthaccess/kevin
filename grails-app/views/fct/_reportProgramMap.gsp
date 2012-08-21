@@ -1,10 +1,5 @@
 <%@ page import="org.chai.kevin.data.Type.ValueType" %>
-<div class='map-wrap'>
-	<g:if test="${viewSkipLevels != null && viewSkipLevels.contains(currentLocation.level)}">
-		<p class='nodata'>
-			<g:message code="dsr.report.map.noinformation.exceptdistrict.label" />
-		</p>
-	</g:if>
+<div class='map-wrap'>	
 	<div id="map" class="map"></div>
 	<!-- TODO move this to a map_init.js file -->
 	<r:script>
@@ -17,36 +12,8 @@
 				'Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>'
 	}).addTo(map);
 	
-	var maxRawValue = function getMaxRawValue(){
-		var maxRawValue = 0;
-		$('div.js-map-location').each(function(){	        
-			var valueType = $(this).children('div.report-value').data('report-value-type');
-			if(valueType == '${ValueType.NUMBER}'){
-				var value = $(this).children('div.report-value').data('report-value-raw');
-				if(parseFloat(value) > maxRawValue)
-					maxRawValue = parseFloat(value);
-			}
-		});		 	
-		return (maxRawValue > 0 ? maxRawValue : 1);
-	}
-	
-	var modeRawValues = function getModeRawValues(){
-		var modeReportValues = [];
-		$('div.js-map-location').each(function(){	        
-			var valueType = $(this).children('div.report-value').data('report-value-type');
-			if(valueType == '${ValueType.NUMBER}'){
-				var value = $(this).children('div.report-value').data('report-value-raw');
-				if(modeReportValues.indexOf(value) < 0)
-					modeReportValues.push(value);
-			}
-		});		 	
-		return (maxRawValue > 0 ? maxRawValue : 1);
-	}
-	
-	if(${viewSkipLevels != null && !viewSkipLevels.contains(currentLocation.level)}){
-		mapLocations();
-		mapDataLocations();									
-	}		
+	mapLocations();
+	mapDataLocations();
 	
 	function mapLocations(){
 	
@@ -97,7 +64,7 @@
 	
 		<!-- Data Locations -->
 		var dataLocations = [];
-		$('div.js-map-location').each(function(){
+		$('div.js-map-location.selected').each(function(){
 	        var dataLocation = $(this).data('location-code');
 	        if(dataLocations.indexOf(dataLocation) < 0){
 	        	dataLocations.push(dataLocation+'');
@@ -114,51 +81,52 @@
 			
 			jQuery.each(data.features, function(i,f){
 				
-				fosaDataLocations.push(f.properties.fosaid+'');
-				
-				var mapLocation = $('div.js-map-location[data-location-code="'+f.properties.fosaid+'"]');		
-				var locationName = $(mapLocation).data('location-names');
-				var indicatorName = $(mapLocation).data('indicator-names');
-				var indicatorClass = $(mapLocation).data('indicator-class');
-				
-				var mapValue = $(mapLocation).children('div.report-value');
-				var rawValue = $(mapValue).data('report-value-raw');			
-				var reportValue = $(mapValue).data('report-value');
-				var reportValueType = $(mapValue).data('report-value-type');				
-				
-				if(f.geometry){
-					//create point geojson feature
-					var geojsonPointFeature = {
-							"id": f.properties.fosaid,
-						    "type": f.type,    
-						    "geometry": {
-						        "type": f.geometry.type,
-						        "coordinates": f.geometry.coordinates
-						    },
-						    "properties": {
-						    	"rawValue": rawValue,
-						    	"reportValue": reportValue,
-						    	"reportValueType": reportValueType,
-						    	"locationName": locationName,
-						    	"indicatorName": indicatorName,
-						    	"indicatorClass": indicatorClass,
-						        "popupContent": 'Location: '+locationName+'<br /> '+indicatorName+': '+reportValue
-						    }
-					};
-					geojsonPointLayer.addData(geojsonPointFeature);
-				}
-				else{
-					//TODO get rid of this
-					//missing fosa data location coordinates
-					$('.nav-table td[data-location-code="'+f.properties.fosaid+'"]').append('*');
-				}
-			});
+				$('.js-map-location.selected[data-location-code="'+f.properties.fosaid+'"]').each(function(index, mapLocation){					
+					fosaDataLocations.push(f.properties.fosaid+'');
+										
+					var locationName = $(mapLocation).data('location-names');						
+					var indicatorName = $(mapLocation).data('indicator-names');
+					var indicatorClass = $(mapLocation).data('indicator-class');
+					
+					var mapValue = $(mapLocation).children('div.report-value');
+					var rawValue = $(mapValue).data('report-value-raw');			
+					var reportValue = $(mapValue).data('report-value');
+					var reportValueType = $(mapValue).data('report-value-type');				
+					
+					if(f.geometry){
+						//create point geojson feature
+						var geojsonPointFeature = {
+								"id": f.properties.fosaid,
+							    "type": f.type,    
+							    "geometry": {
+							        "type": f.geometry.type,
+							        "coordinates": f.geometry.coordinates
+							    },
+							    "properties": {
+							    	"rawValue": rawValue,
+							    	"reportValue": reportValue,
+							    	"reportValueType": reportValueType,
+							    	"locationName": locationName,
+							    	"indicatorName": indicatorName,
+							    	"indicatorClass": indicatorClass,
+							        "popupContent": 'Location: '+locationName+'<br /> '+indicatorName+': '+reportValue
+							    }
+						};
+						geojsonPointLayer.addData(geojsonPointFeature);
+					}
+					else{
+						//TODO get rid of this
+						//missing fosa coordinates
+						$('.nav-table td[data-location-code="'+f.properties.fosaid+'"]').append('&#185;');
+					}
+				});								
+			});						
 			
 			for(var i = 0 ; i < dataLocations.length; i++){
 				var dataLocation = dataLocations[i];
 				if(fosaDataLocations.indexOf(dataLocation) < 0){
-					//missing fosa data location
-					$('.nav-table td[data-location-code="'+dataLocation+'"]').append('*');
+					//missing fosa facility
+					$('.nav-table td[data-location-code="'+dataLocation+'"]').append('&#178;');
 				}
 			}									
 		});
@@ -168,41 +136,33 @@
 		
 		var rawValue = feature.properties.rawValue;
 		var reportValue = feature.properties.reportValue;
-		var reportValueType = feature.properties.reportValueType;	
-		var indicatorClass = feature.properties.indicatorClass;			
+		var indicatorClass = feature.properties.indicatorClass;
 		
-		var reportValueIcon = null;
-		var rawValueFontSize = null;
-		var labelClassName = null;		
-		var geojsonMarkerOptions = null;
-		var geojsonMarker = null;
+		var geojsonMarkerOptions = {
+		    radius: 10,
+		    fillColor: "#ff7800",
+		    color: "#000",
+		    weight: 1,
+		    opacity: 1,
+		    fillOpacity: 0.8
+		};
 		
-		//TODO		
-		reportValueIcon = new L.Icon.Label.Default({					
-				iconUrl: "${resource(dir:'images',file:'/maps/report-value-null.png')}",
-				iconSize: new L.Point(20, 20),
-				hideIcon: true,
-				labelText: reportValue,
-				labelAnchor: new L.Point(0, 0),
-				wrapperAnchor: new L.Point(13, 5),
-				labelClassName: 'report-value-marker',
-				shadowUrl: null
-		});
-		
-		rawValue = parseFloat(rawValue);				
-		if(rawValue == 0){
-			if(modeRawValues == [0, 1]){
-				if(rawValue == 0) 
-					rawValueFontSize = 0.5;
-			}
+		switch(indicatorClass){			
+			case 'indicator-worst':
+				geojsonMarkerOptions.fillColor = "#d30000"				
+				break;				
+			case 'indicator-middle':
+				geojsonMarkerOptions.fillColor = "#258cd5"
+				break;
+			case 'indicator-best':
+				geojsonMarkerOptions.fillColor = "#65c029"
+				break;
+			default:
+				geojsonMarkerOptions.fillColor = "#000"
+				break;
 		}
-		rawValueFontSize = parseInt((rawValue/maxRawValue)*25)+10; //min: 10px max: 35px				
-		reportValueIcon.options.labelFontSize = rawValueFontSize + 'px'
-		reportValueIcon.options.labelClassName += ' report-value-marker-number'
-		if(indicatorClass != null) reportValueIcon.options.labelClassName += ' ' + indicatorClass
 		
-		geojsonMarkerOptions = {icon: reportValueIcon};
-		geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
+		geojsonMarker = L.circleMarker(latlng, geojsonMarkerOptions);
        	return geojsonMarker;		
    	}
 	

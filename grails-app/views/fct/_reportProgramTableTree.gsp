@@ -31,13 +31,13 @@
 						<g:if test="${fctTable.getReportValue(location, targetOption).getValue() != null 
 							&& !fctTable.getReportValue(location, targetOption).getValue().isNull()}">
 							<div class="report-location-value">
-								<g:reportValue value="${fctTable.getReportValue(location, targetOption).getValue()}" type="${targetOption.sum.type}"/>
+								<g:reportValue value="${fctTable.getReportValue(location, targetOption).getValue()}" type="${targetOption.type}" format="${targetOption.numberFormat}"/>
 							</div>
 						</g:if>
 						<g:if test="${fctTable.getReportValue(location, targetOption).getAverage() != null 
 							&& !fctTable.getReportValue(location, targetOption).getAverage().isNull()}">
 							<div class="report-location-percentage hidden">
-								<g:reportPercentage value="${fctTable.getReportValue(location, targetOption).getAverage()}"/>
+								<g:reportPercentage value="${fctTable.getReportValue(location, targetOption).getAverage()}" type="${targetOption.type}" format="${targetOption.percentageFormat}"/>
 							</div>
 						</g:if>
 					</g:if>

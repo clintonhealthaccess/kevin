@@ -3,15 +3,7 @@
 		<tbody>
 			<tr class='parent'>
 				<td>
-					<g:if test="${currentLocation.parent != null}">
-						<%
-							parentLocationLinkParams = [:]
-							parentLocationLinkParams.putAll linkParams
-							parentLocationLinkParams['location'] = currentLocation.parent?.id+""
-						%>
-						<a class="level-up left" href="${createLink(controller: controllerName, action: 'view', params: parentLocationLinkParams)}">
-						<g:message code="report.view.label" args="${[i18n(field: currentLocation.parent.names)]}"/></a>		  
-					</g:if>
+					<g:render template="/templates/reportLocationParent"/>
 					<g:i18n field="${currentLocation.names}" />					
 				</td>
 				<g:if test="${reportIndicators != null && !reportIndicators.empty}">
@@ -26,7 +18,7 @@
 									indicatorLinkParams.putAll linkParams
 									indicatorLinkParams['indicators'] = indicator.id+""
 								%>
-								<a href="${createLink(controller: controllerName, action: 'view', params: indicatorLinkParams)}">
+								<a href="${createLink(controller: controllerName, action: actionName, params: indicatorLinkParams)}">
 								<g:i18n field="${indicator.names}" /></a>
 							</g:else>
 							<g:render template="/templates/help_tooltip" 
@@ -48,7 +40,7 @@
 								locationLinkParams.putAll linkParams
 								locationLinkParams['location'] = location.id+""
 							%>
-							<a href="${createLink(controller: controllerName, action: 'view',  params: locationLinkParams)}">
+							<a href="${createLink(controller: controllerName, action: actionName,  params: locationLinkParams)}">
 							<g:i18n field="${location.names}" /></a>
 						</g:else>
 					</td>
@@ -56,16 +48,15 @@
 						<g:each in="${reportIndicators}" var="indicator">
 							<g:if test="${viewSkipLevels != null && viewSkipLevels.contains(currentLocation.level)}"><td></td></g:if>
 							<g:else>
-								<td class="${currentIndicators.contains(indicator) ? 'selected' : ''}">									
-									<div class="${currentIndicators.contains(indicator) ? 'js-map-location' : ''}"
-										data-location-code="${location.code}" data-location-names="${i18n(field: location.names)}"
-										data-indicator-code="${indicator.code}" data-indicator-names="${i18n(field:indicator.names)}">
-										<g:if test="${reportTable.getReportValue(location, indicator) != null}">
-											<g:mapReportValue value="${reportTable.getMapReportValue(location, indicator)}" type="${indicator.getType()}" format="${indicator.getFormat()}"/>
-										</g:if>
-										<g:else>
-											<div class="report-value report-value-na" data-report-value="${message(code:'report.value.na')}"><g:message code="report.value.na"/></div>
-										</g:else>
+								<td>
+									<div class="js-map-location ${currentIndicators.contains(indicator) ? 'selected' : ''}"
+											data-location-code="${location.code}" 
+											data-location-names="${i18n(field: location.names)}"
+											data-indicator-code="${indicator.code}" 
+											data-indicator-names="${i18n(field:indicator.names)}">
+										<g:mapReportValue value="${reportTable.getMapReportValue(location, indicator)}" 
+															type="${indicator.getType()}" 
+															format="${indicator.getFormat()}"/>
 									</div>
 								</td>
 							</g:else>
@@ -79,5 +70,6 @@
 		</tbody>
 	</table>
 	<!-- TODO nav-table.sass & message.properties -->
-	<p style="font-size:11px; margin-top:10px;">* Denotes location missing map information.</p>
+	<p style="font-size:11px; margin-top:10px;">&#185; Denotes missing FOSA coordinates.</p>
+	<p style="font-size:11px; margin-top:10px;">&#178; Denotes missing FOSA facility.</p>
 </div>

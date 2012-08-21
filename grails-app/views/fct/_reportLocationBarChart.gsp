@@ -30,13 +30,13 @@
 										<g:set var="value" value="${fctTable.getReportValue(location, targetOption)}"/>									
 										<g:if test="${value != null && value.getValue() != null && !value.getValue().isNull() && value.getAverage() != null && !value.getAverage().isNull()}">											
 											<!-- report value -->
-											<g:set var="reportValue" value="${g.reportValue(value: fctTable.getReportValue(location, targetOption).getValue(), type: targetOption.type, format: targetOption.format)}"/>											
+											<g:set var="reportValue" value="${g.reportValue(value: fctTable.getReportValue(location, targetOption).getValue(), type: targetOption.type, format: targetOption.numberFormat)}"/>											
 											<!-- report value between 0 and 1 -->
 											<g:set var="reportAverage" value="${fctTable.getReportValue(location, targetOption).getAverage().numberValue.round(2)}"/>
 											<!-- report value between 0% and 100% -->
-											<g:set var="reportPercentage" value="${g.reportPercentage(value: fctTable.getReportValue(location, targetOption).getAverage())}"/>
+											<g:set var="reportPercentage" value="${g.reportPercentage(value: fctTable.getReportValue(location, targetOption).getAverage(), type: targetOption.type, format: targetOption.percentageFormat)}"/>
 											<!-- report total data locations -->
-											<g:set var="totalDataLocations" value="${fctTable.getReportValue(location, targetOption).getNumberOfDataLocations()}"/>											
+											<g:set var="totalDataLocations" value="${fctTable.getReportValue(location, targetOption).getNumberOfDataLocations()}"/>
 											<!-- stacked bar -->
 											<div class="js_bar_vertical bar-vertical tooltip ${i == 0 ? 'indicator-worst': i == fctTable.targetOptions.size()-1 ? 'indicator-best': 'indicator-middle'}"
 												data-percentage="${reportPercentage}"
