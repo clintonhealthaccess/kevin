@@ -1,23 +1,19 @@
 <%@ page import="org.chai.kevin.util.Utils" %>
-<g:if test="${currentView == Utils.ReportType.MAP}">
-	<%
-		newLinkParams = [:]
-		newLinkParams.putAll linkParams
+<%
+	newLinkParams = [:]
+	newLinkParams.putAll linkParams
+	if(currentView == Utils.ReportType.MAP) 
 		newLinkParams['reportType'] = Utils.ReportType.TABLE.toString().toLowerCase()
-	%>
-	<a class="right switch" 
-	href="${createLink(controller: 'dsr', action: 'view', params: newLinkParams)}">
-	<g:message code="report.view.table"/>
-	</a>
-</g:if>
-<g:else>
-	<%
-		newLinkParams = [:]
-		newLinkParams.putAll linkParams
+	else 
 		newLinkParams['reportType'] = Utils.ReportType.MAP.toString().toLowerCase()
-	%>
-	<a class="right switch" 
-	href="${createLink(controller: 'dsr', action: 'view', params: newLinkParams)}">
-	<g:message code="report.view.map"/>
-	</a>
-</g:else>
+%>
+<g:form method="get" url="[controller:controllerName, action:actionName, params: newLinkParams]">
+	<button class="right" type="submit">
+		<g:if test="${currentView == Utils.ReportType.MAP}">
+			<g:message code="report.view.table"/>
+		</g:if>
+		<g:else>
+			<g:message code="report.view.map"/>
+		</g:else>
+	</button>
+</g:form>

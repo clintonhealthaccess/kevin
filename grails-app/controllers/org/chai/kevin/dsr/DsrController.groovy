@@ -32,6 +32,7 @@ import org.chai.kevin.AbstractController
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import java.util.Collections;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.jasper.compiler.Node.ParamsAction;
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.LanguageService
@@ -55,6 +56,15 @@ class DsrController extends AbstractController {
 			
 		if(params.int('dsrCategory') != null){
 			dsrTargetCategory = DsrTargetCategory.get(params.int('dsrCategory'))
+			
+			// reset the category if it doesn't belong to the right program
+			if(dsrTargetCategory != null){
+				def categories = dsrService.getTargetCategories(program)
+				if(categories != null && !categories.empty){
+					if(!categories.contains(dsrTargetCategory))
+						dsrTargetCategory = null
+				}								
+			}
 		}
 		
 		if(dsrTargetCategory == null){
@@ -68,23 +78,38 @@ class DsrController extends AbstractController {
 		return dsrTargetCategory
 	}
 	
-	public DsrTarget getDsrTarget(def category, def program){
-		def dsrTarget = null
+	public Set<DsrTarget> getDsrIndicators(def reportType, def category, def program){
+		Set<DsrTarget> dsrIndicators = null
+		
+		if(reportType == ReportType.TABLE) return dsrIndicators
+		
+		dsrIndicators = new HashSet<DsrTarget>()			
+		if(params.list('indicators') != null && !params.list('indicators').empty){
+			def indicators = params.list('indicators')
+			dsrIndicators.addAll(indicators.collect{ NumberUtils.isNumber(it as String) ? DsrTarget.get(it) : null } - null)
 			
-		if(params.int('dsrTarget') != null){
-			dsrTarget = DsrTarget.get(params.int('dsrTarget'))
+			// reset the indicators if any of them don't belong to the right category
+			if(dsrIndicators != null){
+				for(DsrTarget dsrIndicator in dsrIndicator){
+					if(!dsrIndicator.category.equals(category)){
+						dsrIndicators = null
+						break;
+					}
+				}
+			}
 		}
 		
-		if(dsrTarget == null){
+		if(dsrIndicators == null || dsrIndicators.empty){
 			if(category == null) category = getDsrTargetCategory(program);
 			if(category != null){
 				def targets = category.getTargetsForProgram(program)
-				if(targets != null && !targets.empty)
-					dsrTarget = targets.first()
+				if(targets != null && !targets.empty){
+					dsrIndicators.addAll(targets.sort().first())
+				}
 			}			
 		}
 		
-		return dsrTarget
+		return dsrIndicators
 	}
 	
 	def index = {
@@ -99,35 +124,37 @@ class DsrController extends AbstractController {
 		Location location = getLocation()
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 		DsrTargetCategory dsrCategory = getDsrTargetCategory(program)
-		DsrTarget dsrTarget = getDsrTarget(dsrCategory, program)
 		
-		ReportType reportView = getReportType()	
-		def viewSkipLevels = dsrService.getSkipViewLevels(reportView)
+		ReportType reportType = getReportType()
+		def viewSkipLevels = dsrService.getSkipViewLevels(reportType)
+		
+		Set<DsrTarget> dsrIndicators = getDsrIndicators(reportType, dsrCategory, program)
 		
 		def locationSkipLevels = dsrService.getSkipLocationLevels()
 		def locationTree = location.collectLocationTreeWithData(locationSkipLevels, dataLocationTypes, false).asList()
 		
 		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id, 
 							'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 							
-							'dsrCategory':dsrCategory?.id,
-							'dsrTarget':dsrTarget?.id,
-							'reportType':reportView.toString().toLowerCase()]
+							'dsrCategory':dsrCategory?.id,							
+							'reportType':reportType.toString().toLowerCase()]
+		if(dsrIndicators != null) reportParams['indicators'] = dsrIndicators.collect{ it.id }
+		
 		def newParams = redirectIfDifferent(reportParams)
 		
-		if(newParams != null && !newParams.empty) { 
+		if(newParams != null && !newParams.empty) {
 			redirect(controller: 'dsr', action: 'view', params: newParams)
 		}
 		else {
 			def dsrTable = null
 			if (dsrCategory != null)
-				dsrTable = dsrService.getDsrTable(location, program, period, dataLocationTypes, dsrCategory, reportView);			
+				dsrTable = dsrService.getDsrTable(location, program, period, dataLocationTypes, dsrCategory, reportType);			
 			
 			if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+" root program: "+program+", root location: "+location)
 			
 			[
 				dsrTable: dsrTable,
 				currentCategory: dsrCategory,
-				currentTarget: dsrTarget,
+				currentIndicators: dsrIndicators,
 				currentPeriod: period,
 				currentProgram: program,
 				selectedTargetClass: DsrTarget.class,
@@ -135,7 +162,7 @@ class DsrController extends AbstractController {
 				locationTree: locationTree,
 				currentLocationTypes: dataLocationTypes,
 				locationSkipLevels: locationSkipLevels,
-				currentView: reportView,
+				currentView: reportType,
 				viewSkipLevels: viewSkipLevels
 			]
 		}

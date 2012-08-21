@@ -36,7 +36,7 @@
 				<td>
 					<g:set var="percentageValue" value="${dashboard.getPercentage(currentLocation, entity)}" />
 					<g:if test="${!percentageValue.isNull()}">
-						<g:reportValue value="${percentageValue}" type="${dashboard.type}" format="#%"/>
+						<g:reportValue value="${percentageValue}" type="${dashboard.type}" format="${dashboard.format}"/>
 					</g:if>
 					<g:else>
 						<g:message code="report.value.na"/>
@@ -52,15 +52,15 @@
 					</g:if>
 					<g:elseif test="${percentageValue.numberValue <= 1}">
 						<div class="js_bar_horizontal tooltip horizontal-bar" 
-							data-percentage="${percentageValue.numberValue * 100}"
-							style="width:${percentageValue.numberValue * 100}%"							 
-							original-title="${percentageValue.numberValue * 100}%"></div>
+							data-percentage="${g.reportValue(value: percentageValue, type: dashboard.type, format: dashboard.format)}"
+							style="width:${g.reportValue(value: percentageValue, type: dashboard.type, format: dashboard.format)}"							 
+							original-title="${g.reportValue(value: percentageValue, type: dashboard.type, format: dashboard.format)}"></div>
 					</g:elseif>
 					<g:else>
 						<div class="js_bar_horizontal tooltip horizontal-bar expand-bar" 
-							data-percentage="${percentageValue.numberValue * 100}" 
-							style="width:100%"							 
-							original-title="${percentageValue.numberValue * 100}%"></div>
+							data-percentage="${g.reportValue(value: percentageValue, type: dashboard.type, format: dashboard.format)}"
+							style="width:100%"
+							original-title="${g.reportValue(value: percentageValue, type: dashboard.type, format: dashboard.format)}"></div>
 					</g:else>						
 					<!-- comparison value -->
 					<div id="compare-dashboard-entity-${entity.id}" 

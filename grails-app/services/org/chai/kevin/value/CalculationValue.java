@@ -24,6 +24,8 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 		this.location = location;
 	}
 	
+	public abstract boolean isNull();
+	
 	@Transient
 	public abstract Value getValue();
 	

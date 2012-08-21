@@ -26,6 +26,11 @@ public class AggregationValue extends CalculationValue<AggregationPartialValue> 
 	}
 
 	@Override
+	public boolean isNull(){
+		return getValue().isNull();
+	}
+	
+	@Override
 	public Value getValue() {
 		Map<String, Double> values = new HashMap<String, Double>();
 		for (AggregationPartialValue aggregationPartialValue : getCalculationPartialValues()) {

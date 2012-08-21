@@ -149,7 +149,7 @@ public abstract class AbstractController {
 			
 			// url value to compare with
 			def urlValue = null
-			if(key == 'dataLocationTypes') 
+			if(key == 'dataLocationTypes' || key == 'indicators') 
 				urlValue = params.list(key).toString()
 			else 
 				urlValue = params[key].toString()
@@ -167,7 +167,9 @@ public abstract class AbstractController {
 					", period: "+newParams['period']+
 					", program: "+newParams['program']+
 					", location: "+newParams['location']+
-					", dataLocationTypes: "+newParams['dataLocationTypes']);
+					", dataLocationTypes: "+newParams['dataLocationTypes']+
+					", reportType: "+newParams['reportType']+
+					", indicators: "+newParams['indicators']);
 			}
 			return newParams;
 		}

@@ -5,6 +5,7 @@ import org.chai.kevin.IntegrationTests
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.util.Utils
 
 class FctControllerSpec extends FctIntegrationTests {
 
@@ -18,6 +19,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		def target = newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
+		def reportType = Utils.ReportType.TABLE
 		
 		when: "valid table"
 		fctController = new FctController()
@@ -26,6 +28,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		fctController.params.location = Location.findByCode(RWANDA).id
 		fctController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		fctController.params.fctTarget = target.id
+		fctController.params.reportType = reportType.toString().toLowerCase()
 		def model = fctController.view()
 		
 		then:
@@ -183,6 +186,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
+		def reportType = Utils.ReportType.TABLE
 		
 		when:
 		fctController = new FctController()
@@ -190,6 +194,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		fctController.params.program = program.id
 		fctController.params.location = Location.findByCode(BURERA).id		
 		fctController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		fctController.params.reportType = reportType.toString().toLowerCase()
 		def model = fctController.view()
 		
 		then:
@@ -203,6 +208,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("1", CODE(2))
 		def target = newFctTarget(CODE(3), 1, program)
+		def reportType = Utils.ReportType.TABLE
 		
 		when:
 		fctController = new FctController()
@@ -211,6 +217,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		fctController.params.location = Location.findByCode(BURERA).id
 		fctController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		fctController.params.fctTarget = target.id
+		fctController.params.reportType = reportType.toString().toLowerCase()
 		def model = fctController.view()
 		
 		then:
@@ -226,6 +233,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		def sum = newSum("1", CODE(2))
 		def target = newFctTarget(CODE(3), 1, program)
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
+		def reportType = Utils.ReportType.TABLE
 		
 		when:
 		fctController = new FctController()
@@ -234,6 +242,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		fctController.params.location = Location.findByCode(BURERA).id
 		fctController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		fctController.params.fctTarget = target.id
+		fctController.params.reportType = reportType.toString().toLowerCase()
 		def model = fctController.view()
 		
 		then:
