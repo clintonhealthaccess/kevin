@@ -27,12 +27,10 @@
 */
 
 import org.chai.kevin.ExpressionService
-import org.chai.kevin.InfoService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.RefreshValueService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
-import org.chai.kevin.maps.MapsService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationService;
@@ -40,7 +38,6 @@ import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardValueService
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.data.DataService;
-import org.chai.kevin.data.InfoService
 import org.chai.kevin.dsr.DsrService
 import org.chai.kevin.exports.CalculationExportService;
 import org.chai.kevin.exports.DataElementExportService;
@@ -48,7 +45,6 @@ import org.chai.kevin.exports.EntityExportService
 import org.chai.kevin.exports.SurveyExportService
 import org.chai.kevin.fct.FctService
 import org.chai.kevin.form.FormValidationService
-import org.chai.kevin.maps.MapsService
 import org.chai.kevin.planning.PlanningService
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.survey.SurveyCopyService
@@ -166,12 +162,6 @@ beans = {
 		locationSkipLevels = fctSkipLevels
 	}
 	
-	mapsService(MapsService) {
-		locationService = ref("locationService")
-		valueService = ref("valueService")
-		infoService = ref("infoService")
-	}
-
 	costTableService(CostTableService) {
 		reportService = ref("reportService")
 		costService = ref("costService")
@@ -194,13 +184,7 @@ beans = {
 		sessionFactory = ref("sessionFactory")
 	}
 	
-	infoService(InfoService) {
-		expressionService = ref("expressionService")
-		valueService = ref("valueService")
-	}
-	
 	dashboardPercentageService(DashboardValueService) {
-//		infoService = ref("infoService")
 		valueService = ref("valueService")
 		dashboardService = ref("dashboardService")
 	}
