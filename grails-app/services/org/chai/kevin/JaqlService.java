@@ -31,7 +31,7 @@ public class JaqlService {
 		return executeQuery(expression, valueMap);
 	}
 
-	@Cacheable("jsonValueCache")
+//	@Cacheable("jsonValueCache")
 	public JsonValue getJsonValue(String expression, Map<String, String> variables) {
 		Map<String, JsonValue> valueMap = new HashMap<String, JsonValue>();
 		for (Entry<String, String> variable : variables.entrySet()) {
