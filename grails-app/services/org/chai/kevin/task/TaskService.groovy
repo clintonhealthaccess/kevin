@@ -2,10 +2,12 @@ package org.chai.kevin.task
 
 import org.chai.kevin.task.Task;
 import org.chai.kevin.task.Task.TaskStatus;
+import org.springframework.amqp.core.Message;
 
 class TaskService {
 	
 	static rabbitQueue = 'adminQueue'
+	
 	static transactional = false
 	
 	def handleMessage(Long taskId) {
@@ -20,7 +22,7 @@ class TaskService {
 		executeTask(taskId)
 	}
 	
-	def handleMessage(String taskId) {
+	void handleMessage(String taskId) {
 		if (log.isDebugEnabled()) log.debug('handleMessage(String taskId='+taskId+')')
 		
 		executeTask(taskId)

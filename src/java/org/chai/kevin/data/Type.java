@@ -494,6 +494,8 @@ public class Type extends JSONValue implements Exportable {
 	}
 	
 	public Value getValueFromJaql(String jaqlString) {
+		if (log.isDebugEnabled()) log.debug("getValueFromJaql(jaqlString="+jaqlString+")");
+		
 		if (jaqlString == null || jaqlString.equals("null") || jaqlString.equals("\"null\"")) return Value.NULL_INSTANCE();
 		try {
 			JSONObject object = new JSONObject();
@@ -548,7 +550,9 @@ public class Type extends JSONValue implements Exportable {
 				default:
 					throw new NotImplementedException();
 			}
-			return new Value(object);
+			Value result = new Value(object);
+			if (log.isDebugEnabled()) log.debug("getValueFromJaql(...)="+result);
+			return result;
 		} catch (JSONException e) {
 			throw new IllegalArgumentException("jaql value does not correspond to type", e);
 		}
