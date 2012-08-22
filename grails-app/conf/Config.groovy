@@ -152,7 +152,7 @@ rabbitmq {
 		username = 'guest'
 		password = 'guest'
 		hostname = '127.0.0.1'
-		consumers = 5
+		consumers = 1
 	}
 	queues = {
 		adminQueue durable: true, autoDelete: false
