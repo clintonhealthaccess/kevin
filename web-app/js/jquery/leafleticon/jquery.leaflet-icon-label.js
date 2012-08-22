@@ -13,9 +13,7 @@ L.Icon.Label = L.Icon.extend({
 		labelText: (String) (label's text component, if this is null the element will not be created)
 		
 		//slister start
-		labelFontColor: (String)
 		labelFontSize: (String)
-		labelFontWeight: (String)
 		showLabel: (Boolean)
 		//slister end
 		
@@ -73,14 +71,8 @@ L.Icon.Label = L.Icon.extend({
 		label.innerHTML = this.options.labelText;
 
 		//slister start
-		if(this.options.labelFontColor){
-			label.style.color = this.options.labelFontColor;
-		}
 		if(this.options.labelFontSize){
 			label.style.fontSize = this.options.labelFontSize;
-		}
-		if(this.options.labelFontWeight){
-			label.style.fontWeight = this.options.labelFontWeight;
 		}
 		//slister end
 		
@@ -132,9 +124,7 @@ L.Icon.Label.Default = L.Icon.Label.extend({
 		labelText: null,
 		//slister start
 		//TODO create styles for everything except font size
-		labelFontColor: null,
-		labelFontSize: null,
-		labelFontWeight: null,
+		labelFontSize: '17px',
 		//slister end
 		
 		/* From L.Icon.Default */

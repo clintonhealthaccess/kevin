@@ -95,6 +95,13 @@
     &:hover, &:focus
       border: 1px solid $primary + #111
       opacity: 1
+  //slister start
+  .indicators-selected
+    font-size: 11px
+    margin-top: 8px
+    span
+      font-weight: bold
+      //slister end
 
 // slister start: updates to fct bar chart
 .vertical-graph
@@ -123,7 +130,16 @@
     .bar-vertical
       display: block      
       width: 38px
-      
+
+    //slister start
+    .indicator-best
+      background: $best
+    .indicator-middle
+      background: $primary
+    .indicator-worst
+      background: $worst
+      //slister end
+    
     span
       font-size: 10px
       font-weight: bold
@@ -140,6 +156,15 @@
       margin-right: 5px
       width: 10px
       
+    //slister start
+    .indicator-best
+      background: $best
+    .indicator-middle
+      background: $primary
+    .indicator-worst
+      background: $worst
+      //slister end
+      
 .chart
   display: inline-block
   float: left
@@ -155,14 +180,6 @@
       margin-top: 85px
     &:last-child
       margin-top: 85px
-// slister end
-      
-.bar-first
-  background: $best
-.bar-middle
-  background: $primary
-.bar-last
-  background: $worst
 
 .horizontal-graph-wrap
   overflow: hidden

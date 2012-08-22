@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.persistence.Transient;
+
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.Location;
@@ -40,6 +42,7 @@ import org.chai.kevin.value.Value;
 public class Dashboard {
 	
 	private static Type DASHBOARD_TYPE = Type.TYPE_NUMBER();
+	private String format = "#%";
 	
 	private List<CalculationLocation> locations;
 	private List<DashboardEntity> dashboardEntities;
@@ -68,13 +71,17 @@ public class Dashboard {
 		return locationPath;
 	}
 	
-	// TODO rename this (in gsp + javascript to getAverage)
 	public Value getPercentage(CalculationLocation location, DashboardEntity dashboardEntity) {		
 		return valueMap.get(location).get(dashboardEntity);
 	}
 	
 	public Type getType() {
 		return DASHBOARD_TYPE;
+	}
+	
+	@Transient
+	public String getFormat(){
+		return format;
 	}
 	
 	public boolean hasData(){

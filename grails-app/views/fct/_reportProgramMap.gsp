@@ -17,6 +17,32 @@
 				'Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>'
 	}).addTo(map);
 	
+	var maxRawValue = function getMaxRawValue(){
+		var maxRawValue = 0;
+		$('div.js-map-location').each(function(){	        
+			var valueType = $(this).children('div.report-value').data('report-value-type');
+			if(valueType == '${ValueType.NUMBER}'){
+				var value = $(this).children('div.report-value').data('report-value-raw');
+				if(parseFloat(value) > maxRawValue)
+					maxRawValue = parseFloat(value);
+			}
+		});		 	
+		return (maxRawValue > 0 ? maxRawValue : 1);
+	}
+	
+	var modeRawValues = function getModeRawValues(){
+		var modeReportValues = [];
+		$('div.js-map-location').each(function(){	        
+			var valueType = $(this).children('div.report-value').data('report-value-type');
+			if(valueType == '${ValueType.NUMBER}'){
+				var value = $(this).children('div.report-value').data('report-value-raw');
+				if(modeReportValues.indexOf(value) < 0)
+					modeReportValues.push(value);
+			}
+		});		 	
+		return (maxRawValue > 0 ? maxRawValue : 1);
+	}
+	
 	if(${viewSkipLevels != null && !viewSkipLevels.contains(currentLocation.level)}){
 		mapLocations();
 		mapDataLocations();									
@@ -90,7 +116,7 @@
 				
 				fosaDataLocations.push(f.properties.fosaid+'');
 				
-				var mapLocation = $('div.js-map-location[data-location-code="'+f.properties.fosaid+'"]');	
+				var mapLocation = $('div.js-map-location[data-location-code="'+f.properties.fosaid+'"]');		
 				var locationName = $(mapLocation).data('location-names');
 				var indicatorName = $(mapLocation).data('indicator-names');
 				var indicatorClass = $(mapLocation).data('indicator-class');
@@ -142,7 +168,8 @@
 		
 		var rawValue = feature.properties.rawValue;
 		var reportValue = feature.properties.reportValue;
-		var reportValueType = feature.properties.reportValueType;
+		var reportValueType = feature.properties.reportValueType;	
+		var indicatorClass = feature.properties.indicatorClass;			
 		
 		var reportValueIcon = null;
 		var rawValueFontSize = null;
@@ -150,46 +177,29 @@
 		var geojsonMarkerOptions = null;
 		var geojsonMarker = null;
 		
+		//TODO		
 		reportValueIcon = new L.Icon.Label.Default({					
 				iconUrl: "${resource(dir:'images',file:'/maps/report-value-null.png')}",
 				iconSize: new L.Point(20, 20),
 				hideIcon: true,
-				labelText: reportValue+'',
+				labelText: reportValue,
 				labelAnchor: new L.Point(0, 0),
 				wrapperAnchor: new L.Point(13, 5),
 				labelClassName: 'report-value-marker',
 				shadowUrl: null
 		});
 		
-		switch(reportValueType){			
-			case '${ValueType.BOOL}':
-				if(rawValue)
-					reportValueIcon.options.labelClassName += ' report-value-marker-true'
-				else
-					reportValueIcon.options.labelClassName += ' report-value-marker-false'
-				reportValueIcon.options.labelFontSize = '20px'
-				break;				
-			case '${ValueType.STRING}':
-				reportValueIcon.options.labelClassName += ' report-value-marker-string'
-				break;				
-			case '${ValueType.TEXT}':
-				reportValueIcon.options.labelClassName += ' report-value-marker-text'
-				break;			
-			case '${ValueType.NUMBER}':
-				rawValue = parseFloat(rawValue);				
-				var maxRawValue = getMaxRawValue();
-				if(rawValue/maxRawValue < 0.5)
-					reportValueIcon.options.labelFontSize = rawValueFontSize + 'px'
-				else{
-					rawValueFontSize = parseInt((rawValue/maxRawValue)*25)+10; //min: 10px max: 35px
-					reportValueIcon.options.labelFontSize = rawValueFontSize + 'px'
-				}				
-				reportValueIcon.options.labelClassName += ' report-value-marker-number'
-				break;				
-			default:
-				reportValueIcon.options.labelClassName += ' report-value-marker-na'
-				break;
+		rawValue = parseFloat(rawValue);				
+		if(rawValue == 0){
+			if(modeRawValues == [0, 1]){
+				if(rawValue == 0) 
+					rawValueFontSize = 0.5;
+			}
 		}
+		rawValueFontSize = parseInt((rawValue/maxRawValue)*25)+10; //min: 10px max: 35px				
+		reportValueIcon.options.labelFontSize = rawValueFontSize + 'px'
+		reportValueIcon.options.labelClassName += ' report-value-marker-number'
+		if(indicatorClass != null) reportValueIcon.options.labelClassName += ' ' + indicatorClass
 		
 		geojsonMarkerOptions = {icon: reportValueIcon};
 		geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
@@ -200,19 +210,6 @@
 	    if (feature.properties && feature.properties.popupContent) {
 	        layer.bindPopup(feature.properties.popupContent);
     	}
-	}
-	
-	function getMaxRawValue(){
-		var maxRawValue = 0;
-		$('div.js-map-location').each(function(){	        
-			var valueType = $(this).children('div.report-value').data('report-value-type');
-			if(valueType == '${ValueType.NUMBER}'){
-				var value = $(this).children('div.report-value').data('report-value-raw');
-				if(parseFloat(value) > maxRawValue)
-					maxRawValue = parseFloat(value);
-			}
-		});		 	
-		return (maxRawValue > 0 ? maxRawValue : 1);
 	}		
 	</r:script>
 </div>

@@ -36,11 +36,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Importable;
 import org.chai.kevin.data.Data;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.StoredValue;
@@ -66,6 +68,11 @@ public class DsrTarget extends AbstractReportTarget implements Exportable, Impor
 	public void setId(Long id) {
 		this.id = id;
 	}	
+	
+	@Transient
+	public Type getType() {
+		return getData().getType();
+	}
 	
 	@ManyToOne(targetEntity=Data.class, optional=false)
 	public Data<StoredValue> getData() {

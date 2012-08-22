@@ -68,4 +68,11 @@ public class DsrTable extends ReportTable<DsrTarget, CalculationLocation, Value>
 		return targetCategories;
 	}
 
+	public boolean hasData(){
+		return (super.hasData());
+	}
+	
+	public Value getMapReportValue(CalculationLocation location, DsrTarget target){
+		return super.getReportValue(location, target);
+	}
 }

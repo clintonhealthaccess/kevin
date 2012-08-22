@@ -20,6 +20,7 @@ import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
+import org.chai.kevin.util.Utils.ReportType;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
@@ -35,7 +36,7 @@ public class FctService {
 	
 	@Cacheable("fctCache")
 	@Transactional(readOnly = true)
-	public FctTable getFctTable(Location location, ReportProgram program, FctTarget target, Period period, Set<DataLocationType> types) {		
+	public FctTable getFctTable(Location location, ReportProgram program, FctTarget target, Period period, Set<DataLocationType> types, ReportType reportType) {		
 		if (log.isDebugEnabled()) 
 			log.debug("getFctTable(period="+period+",location="+location+",program="+program+",target="+target+")");				
 				
@@ -49,10 +50,17 @@ public class FctService {
 			return new FctTable(valueMap, targetOptions, targets, topLevelLocations);
 		Collections.sort(targetOptions);
 		
-		Set<LocationLevel> skips = reportService.getSkipReportLevels(locationSkipLevels);
-		List<CalculationLocation> treeLocations = new ArrayList<CalculationLocation>();
-		treeLocations.addAll(location.collectLocationTreeWithData(skips, types, true));
-//		treeLocations.addAll(location.collectDataLocations(skips, types));
+		Set<LocationLevel> skips = reportService.getSkipReportLevels(locationSkipLevels);	
+		Set<CalculationLocation> treeLocations = new HashSet<CalculationLocation>();		
+		switch(reportType){
+			case MAP:
+				treeLocations = new HashSet<CalculationLocation>(location.getChildrenWithData(skips, types, true));
+				break;
+			case TABLE:
+			default:
+				treeLocations = new HashSet<CalculationLocation>(location.collectLocationTreeWithData(skips, types, true));
+				topLevelLocations.addAll(location.getChildrenWithData(skips, types, true));
+		}
 		
 		for (CalculationLocation treeLocation : treeLocations) {
 			Map<FctTargetOption, SumValue> targetMap = new HashMap<FctTargetOption, SumValue>();
@@ -61,9 +69,7 @@ public class FctService {
 				targetMap.put(targetOption, getFctValue(targetOption, treeLocation, period, types));
 			}
 			valueMap.put(treeLocation, targetMap);
-		}
-		
-		topLevelLocations.addAll(location.getChildrenWithData(skips, types, true));
+		}				
 		
 		targets = getFctTargetsWithOptions(program);		
 		Collections.sort(targets);
