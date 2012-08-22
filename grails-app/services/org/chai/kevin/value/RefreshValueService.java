@@ -190,6 +190,8 @@ public class RefreshValueService {
 		NormalizedDataElementValue newValue = expressionService.calculateValue(normalizedDataElement, dataLocation, period);
 		NormalizedDataElementValue oldValue = valueService.getDataElementValue(normalizedDataElement, dataLocation, period);
 		
+		if (log.isDebugEnabled()) log.debug("updating NDE for: "+dataLocation+", new value: "+newValue);
+		
 		if (oldValue == null) oldValue = newValue;
 		else {
 			oldValue.setValue(newValue.getValue());
