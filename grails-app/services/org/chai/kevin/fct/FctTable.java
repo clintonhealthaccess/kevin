@@ -84,10 +84,21 @@ public class FctTable extends ReportTable<FctTargetOption, CalculationLocation, 
 		return (super.hasData());
 	}
 	
+	public SumValue getTableReportValue(CalculationLocation location, FctTargetOption targetOption){
+		return super.getReportValue(location, targetOption);
+	}
+	
 	public Value getMapReportValue(CalculationLocation location, FctTargetOption targetOption){
 		Value value = null;
 		SumValue sumValue = super.getReportValue(location, targetOption);
 		if(sumValue != null) value = sumValue.getValue();
+		return value;
+	}
+	
+	public Value getMapReportPercentage(CalculationLocation location, FctTargetOption targetOption){
+		Value value = null;
+		SumValue sumValue = super.getReportValue(location, targetOption);
+		if(sumValue != null) value = sumValue.getAverage();
 		return value;
 	}
 }

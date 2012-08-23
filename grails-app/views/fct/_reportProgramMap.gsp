@@ -64,7 +64,7 @@
 	
 		<!-- Data Locations -->
 		var dataLocations = [];
-		$('div.js-map-location.selected').each(function(){
+		$('.js-map-table-value.js-selected-value').each(function(){
 	        var dataLocation = $(this).data('location-code');
 	        if(dataLocations.indexOf(dataLocation) < 0){
 	        	dataLocations.push(dataLocation+'');
@@ -81,15 +81,15 @@
 			
 			jQuery.each(data.features, function(i,f){
 				
-				$('.js-map-location.selected[data-location-code="'+f.properties.fosaid+'"]').each(function(index, mapLocation){					
+				$('.js-map-table-value.js-selected-value[data-location-code="'+f.properties.fosaid+'"]').each(function(index, mapTableValue){					
 					fosaDataLocations.push(f.properties.fosaid+'');
 										
-					var locationName = $(mapLocation).data('location-names');						
-					var indicatorName = $(mapLocation).data('indicator-names');
-					var indicatorClass = $(mapLocation).data('indicator-class');
+					var locationName = $(mapTableValue).data('location-names');						
+					var indicatorName = $(mapTableValue).data('indicator-names');
+					var indicatorClass = $(mapTableValue).data('indicator-class');
 					
-					var mapValue = $(mapLocation).children('div.report-value');
-					var rawValue = $(mapValue).data('report-value-raw');			
+					var mapValue = $(mapTableValue).children('div.report-value-number').children('div.report-value');
+					var rawValue = $(mapValue).data('report-value-raw');
 					var reportValue = $(mapValue).data('report-value');
 					var reportValueType = $(mapValue).data('report-value-type');				
 					
@@ -115,7 +115,6 @@
 						geojsonPointLayer.addData(geojsonPointFeature);
 					}
 					else{
-						//TODO get rid of this
 						//missing fosa coordinates
 						$('.nav-table td[data-location-code="'+f.properties.fosaid+'"]').append('&#185;');
 					}
@@ -139,29 +138,13 @@
 		var indicatorClass = feature.properties.indicatorClass;
 		
 		var geojsonMarkerOptions = {
-		    radius: 10,
-		    fillColor: "#ff7800",
-		    color: "#000",
+		    radius: 8,
+		    fillColor: mapColors[indicatorClass],
+		    color: mapColors[indicatorClass],
 		    weight: 1,
 		    opacity: 1,
-		    fillOpacity: 0.8
+		    fillOpacity: 0.75
 		};
-		
-		switch(indicatorClass){			
-			case 'indicator-worst':
-				geojsonMarkerOptions.fillColor = "#d30000"				
-				break;				
-			case 'indicator-middle':
-				geojsonMarkerOptions.fillColor = "#258cd5"
-				break;
-			case 'indicator-best':
-				geojsonMarkerOptions.fillColor = "#65c029"
-				break;
-			default:
-				geojsonMarkerOptions.fillColor = "#000"
-				break;
-		}
-		
 		geojsonMarker = L.circleMarker(latlng, geojsonMarkerOptions);
        	return geojsonMarker;		
    	}
@@ -169,6 +152,13 @@
 	function onEachFeature(feature, layer) {
 	    if (feature.properties && feature.properties.popupContent) {
 	        layer.bindPopup(feature.properties.popupContent);
+	        	        
+	        layer.on("mouseover", function (e) {
+	        	layer.openPopup();
+            });
+	        layer.on("mouseout", function (e) {
+                map.closePopup();
+            });
     	}
 	}		
 	</r:script>

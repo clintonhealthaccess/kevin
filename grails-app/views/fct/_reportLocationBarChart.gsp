@@ -21,41 +21,40 @@
 		<tr>
 			<g:if test="${fctTable != null && fctTable.topLevelLocations != null && !fctTable.topLevelLocations.empty}">
 				<g:each in="${fctTable.topLevelLocations}" var="location">
-						<td>
-							<g:if test="${fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty}">								
-								<!-- total report average between 0 and 1 -->
-								<g:set var="totalAverage" value="${fctTable.getTotalAverage(location)}" />											
-								<div class="bars-vertical" data-total-average="${totalAverage}" style="margin-bottom:${totalAverage > 0 && totalAverage < 1 ? ((totalAverage-1)*200).round() : 0}px;">									
-									<g:each in="${fctTable.targetOptions.reverse()}" var="targetOption" status="i">
-										<g:set var="value" value="${fctTable.getReportValue(location, targetOption)}"/>									
-										<g:if test="${value != null && value.getValue() != null && !value.getValue().isNull() && value.getAverage() != null && !value.getAverage().isNull()}">											
-											<!-- report value -->
-											<g:set var="reportValue" value="${g.reportValue(value: fctTable.getReportValue(location, targetOption).getValue(), type: targetOption.type, format: targetOption.numberFormat)}"/>											
-											<!-- report value between 0 and 1 -->
-											<g:set var="reportAverage" value="${fctTable.getReportValue(location, targetOption).getAverage().numberValue.round(2)}"/>
-											<!-- report value between 0% and 100% -->
-											<g:set var="reportPercentage" value="${g.reportPercentage(value: fctTable.getReportValue(location, targetOption).getAverage(), type: targetOption.type, format: targetOption.percentageFormat)}"/>
-											<!-- report total data locations -->
-											<g:set var="totalDataLocations" value="${fctTable.getReportValue(location, targetOption).getNumberOfDataLocations()}"/>
-											<!-- stacked bar -->
-											<div class="js_bar_vertical bar-vertical tooltip ${i == 0 ? 'indicator-worst': i == fctTable.targetOptions.size()-1 ? 'indicator-best': 'indicator-middle'}"
-												data-percentage="${reportPercentage}"
-												title="${reportTooltip(average: reportPercentage, value: reportValue, totalLocations: totalDataLocations)}"
-												style="height: ${reportPercentage};">
-												<g:if test="${reportAverage > 0.06}">
-													<span data-average="${reportAverage}" data-percentage="${reportPercentage}">${reportValue}</span>
-												</g:if>
-											</div>
-										</g:if>
-										<g:else>
-											<div class="js_bar_vertical tooltip"
-												data-percentage="N/A" title="${message(code:'fct.report.table.na')}" 
-												style="height: 0%;"></div>
-										</g:else>
-									</g:each>
-								</div>
-							</g:if>
-						</td>
+					<td>
+						<g:if test="${fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
+														
+							<!-- total report average between 0 and 1 --><g:set var="totalAverage" value="${fctTable.getTotalAverage(location)}" />
+																		
+							<div class="bars-vertical" data-total-average="${totalAverage}" style="margin-bottom:${totalAverage > 0 && totalAverage < 1 ? ((totalAverage-1)*200).round() : 0}px;">									
+								<g:each in="${fctTable.targetOptions.reverse()}" var="targetOption" status="i">
+									<g:set var="value" value="${fctTable.getTableReportValue(location, targetOption)}"/>									
+									<g:if test="${value != null && value.getValue() != null && !value.getValue().isNull() && value.getAverage() != null && !value.getAverage().isNull()}">											
+										
+										<!-- report value number --><g:set var="reportValue" value="${g.reportValue(value: fctTable.getTableReportValue(location, targetOption).getValue(), type: targetOption.type, format: targetOption.numberFormat)}"/>											
+										<!-- report value number 0-1 --><g:set var="reportAverage" value="${fctTable.getTableReportValue(location, targetOption).getAverage().numberValue.round(2)}"/>
+										<!-- report value percentage 0%-100% --><g:set var="reportPercentage" value="${g.reportPercentage(value: fctTable.getTableReportValue(location, targetOption).getAverage(), type: targetOption.type, format: targetOption.percentageFormat)}"/>
+										<!-- total data locations --><g:set var="totalDataLocations" value="${fctTable.getTableReportValue(location, targetOption).getNumberOfDataLocations()}"/>
+										
+										<!-- stacked bar -->
+										<div class="js_bar_vertical bar-vertical tooltip ${i == 0 ? 'indicator-worst': i == fctTable.targetOptions.size()-1 ? 'indicator-best': 'indicator-middle'}"
+											data-percentage="${reportPercentage}"
+											title="${reportTooltip(average: reportPercentage, value: reportValue, totalLocations: totalDataLocations)}"
+											style="height: ${reportPercentage};">
+											<g:if test="${reportAverage > 0.06}">
+												<span data-average="${reportAverage}" data-percentage="${reportPercentage}">${reportValue}</span>
+											</g:if>
+										</div>
+									</g:if>
+									<g:else>
+										<div class="js_bar_vertical tooltip"
+											data-percentage="N/A" title="${message(code:'fct.report.table.na')}" 
+											style="height: 0%;"></div>
+									</g:else>
+								</g:each>
+							</div>
+						</g:if>
+					</td>
 				</g:each>
 			</g:if>
 		</tr>
@@ -63,7 +62,17 @@
 		<tr>
 			<g:if test="${fctTable != null && fctTable.topLevelLocations != null && !fctTable.topLevelLocations.empty}">
 				<g:each in="${fctTable.topLevelLocations}" var="location">
-					<td><g:i18n field="${location.names}" /></td>
+					<td>
+						<g:if test="${!location.collectsData()}">
+							<% def childLocationLinkParams = new HashMap(params) %>
+							<% childLocationLinkParams['location'] = location.id+"" %>
+							<a href="${createLink(controller:controllerName, action:actionName, params:childLocationLinkParams)}">
+							<g:i18n field="${location.names}" /></a>
+						</g:if>
+						<g:else>
+							<g:i18n field="${location.names}" />
+						</g:else>
+					</td>
 				</g:each>
 			</g:if>
 		</tr>

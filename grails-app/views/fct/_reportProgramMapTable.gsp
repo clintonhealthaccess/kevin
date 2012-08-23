@@ -3,7 +3,7 @@
 		<tbody>
 			<tr class='parent'>
 				<td>
-					<g:render template="/templates/reportLocationParent"/>
+					<div class="left"><g:render template="/templates/reportLocationParent"/></div>
 					<g:i18n field="${currentLocation.names}" />
 				</td>
 				<g:if test="${reportIndicators != null && !reportIndicators.empty}">
@@ -39,15 +39,24 @@
 							<g:else>
 								<td>
 									<g:set var="mapReportValue" value="${reportTable.getMapReportValue(location, indicator)}"/>
-									<div class="js-map-location ${mapReportValue != null && !mapReportValue.isNull() && mapReportValue.numberValue > 0 ? 'selected':''}"
+									<div class="js-map-table-value ${mapReportValue != null && !mapReportValue.isNull() && mapReportValue.numberValue > 0 ? 'js-selected-value':''}"
 											data-location-code="${location.code}" 
 											data-location-names="${i18n(field: location.names)}" 
 											data-indicator-code="${indicator.code}" 
 											data-indicator-names="${i18n(field:indicator.names)}"
-											data-indicator-class="${i == reportIndicators.size()-1 ? 'indicator-worst': i == 0 ? 'indicator-best': 'indicator-middle'}"> 
-										<g:mapReportValue value="${reportTable.getMapReportValue(location, indicator)}"
+											data-indicator-class="${i == reportIndicators.size()-1 ? 'indicator-worst': i == 0 ? 'indicator-best': 'indicator-middle'}">
+										<div class="report-value-number">
+											<g:mapReportValue value="${reportTable.getMapReportValue(location, indicator)}"
 															type="${indicator.type}"
 															format="${indicator.numberFormat}"/>
+										</div>
+										<g:if test="${!location.collectsData()}">
+											<div class="report-value-percentage hidden">
+												<g:reportPercentage value="${reportTable.getMapReportPercentage(location, indicator)}" 
+																type="${indicator.type}" 
+																format="${indicator.percentageFormat}"/>
+											</div>
+										</g:if>
 									</div>
 								</td>
 							</g:else>

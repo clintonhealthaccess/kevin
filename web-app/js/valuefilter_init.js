@@ -1,11 +1,11 @@
 function valueFilterChange(element) {
 	var valueId = $(element).val();
 	if(valueId == 0){
-		$('.report-location-value').show();
-		$('.report-location-percentage').hide();				
+		$('.report-value-number').show();
+		$('.report-value-percentage').hide();				
 	} else if(valueId == 1) {
-		$('.report-location-value').hide();
-		$('.report-location-percentage').show();
+		$('.report-value-number').hide();
+		$('.report-value-percentage').show();
 	} else {
 		
 	}

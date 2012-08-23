@@ -20,7 +20,6 @@ class ValueTagLib {
 
 	def languageService
 	
-	//TODO fix this
 	def mapReportValue = { attrs, body ->
 		def value = attrs['value']
 		def type = attrs['type']

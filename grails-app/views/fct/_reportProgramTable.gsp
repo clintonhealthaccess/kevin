@@ -2,9 +2,9 @@
 	<thead>
 		<tr>
 			<th>
-				<a class="expand-all" href="#"><g:message code="report.program.table.tree.expandall"/></a> 
-				<a class="collapse-all" href="#"><g:message code="report.program.table.tree.collapseall"/></a>	
-				<g:render template="/templates/reportLocationParent"/>		
+				<g:render template="/templates/reportExpandCollapse"/>
+				<br/><br/>
+				<div class="left" style="margin-left:4px"><g:render template="/templates/reportLocationParent"/></div>						
 			</th>
 			<g:if test="${fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
 				<g:each in="${fctTable.targetOptions}" var="targetOption">

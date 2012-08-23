@@ -71,7 +71,7 @@
 	
 		<!-- Data Locations -->
 		var dataLocations = [];
-		$('div.js-map-location.selected').each(function(){
+		$('.js-map-table-value.js-selected-value').each(function(){
 	        var dataLocation = $(this).data('location-code');
 	        if(dataLocations.indexOf(dataLocation) < 0){
 	        	dataLocations.push(dataLocation+'');
@@ -88,7 +88,7 @@
 			
 			jQuery.each(data.features, function(i,f){
 				
-				$('.js-map-location.selected[data-location-code="'+f.properties.fosaid+'"]').each(function(index, mapLocation){					
+				$('.js-map-table-value.js-selected-value[data-location-code="'+f.properties.fosaid+'"]').each(function(index, mapLocation){					
 					fosaDataLocations.push(f.properties.fosaid+'');
 										
 					var locationName = $(mapLocation).data('location-names');						
@@ -120,7 +120,6 @@
 						geojsonPointLayer.addData(geojsonPointFeature);
 					}
 					else{
-						//TODO get rid of this
 						//missing fosa coordinates
 						$('.nav-table td[data-location-code="'+f.properties.fosaid+'"]').append('&#185;');
 					}				
@@ -166,7 +165,6 @@
 					reportValueIcon.options.labelClassName += ' report-value-marker-true'
 				else
 					reportValueIcon.options.labelClassName += ' report-value-marker-false'
-				reportValueIcon.options.labelFontSize = '20px'
 				break;				
 			case '${ValueType.STRING}':
 				reportValueIcon.options.labelClassName += ' report-value-marker-string'
@@ -177,10 +175,8 @@
 			case '${ValueType.NUMBER}':
 				rawValue = parseFloat(rawValue);				
 				var maxRawValue = getMaxRawValue();
-				if(rawValue/maxRawValue < 0.5)
-					reportValueIcon.options.labelFontSize = rawValueFontSize + 'px'
-				else{
-					rawValueFontSize = parseInt((rawValue/maxRawValue)*25)+10; //min: 10px max: 35px
+				if(rawValue/maxRawValue > 0.5){
+					rawValueFontSize = parseInt((rawValue/maxRawValue)*17)+17; //min: 17px max: 35px
 					reportValueIcon.options.labelFontSize = rawValueFontSize + 'px'
 				}				
 				reportValueIcon.options.labelClassName += ' report-value-marker-number'
@@ -203,7 +199,7 @@
 	
 	function getMaxRawValue(){
 		var maxRawValue = 0;
-		$('div.js-map-location').each(function(){	        
+		$('div.js-map-table-value.js-selected-value').each(function(){	        
 			var valueType = $(this).children('div.report-value').data('report-value-type');
 			if(valueType == '${ValueType.NUMBER}'){
 				var value = $(this).children('div.report-value').data('report-value-raw');

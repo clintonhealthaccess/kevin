@@ -3,7 +3,7 @@
 		<tbody>
 			<tr class='parent'>
 				<td>
-					<g:render template="/templates/reportLocationParent"/>
+					<div class="left"><g:render template="/templates/reportLocationParent"/></div>
 					<g:i18n field="${currentLocation.names}" />					
 				</td>
 				<g:if test="${reportIndicators != null && !reportIndicators.empty}">
@@ -48,8 +48,8 @@
 						<g:each in="${reportIndicators}" var="indicator">
 							<g:if test="${viewSkipLevels != null && viewSkipLevels.contains(currentLocation.level)}"><td></td></g:if>
 							<g:else>
-								<td>
-									<div class="js-map-location ${currentIndicators.contains(indicator) ? 'selected' : ''}"
+								<td class="${currentIndicators.contains(indicator) ? 'selected' : ''}">
+									<div class="js-map-table-value ${currentIndicators.contains(indicator) ? 'js-selected-value' : ''}"
 											data-location-code="${location.code}" 
 											data-location-names="${i18n(field: location.names)}"
 											data-indicator-code="${indicator.code}" 
