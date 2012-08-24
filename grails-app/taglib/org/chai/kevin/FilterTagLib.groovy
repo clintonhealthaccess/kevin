@@ -65,6 +65,11 @@ class FilterTagLib {
 		def model = excludeLinkParams(attrs)
 		out << render(template:'/fct/reportTargetFilter', model:model)
 	}
+	
+	def reportValueFilter = {attrs, body ->
+		def model = excludeLinkParams(attrs)
+		out << render(template:'/fct/reportValueFilter', model:model)
+	}
 			
 	def periodFilter = {attrs, body ->
 		Period.withTransaction {

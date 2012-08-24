@@ -20,7 +20,6 @@ class ValueTagLib {
 
 	def languageService
 	
-	//TODO fix this
 	def mapReportValue = { attrs, body ->
 		def value = attrs['value']
 		def type = attrs['type']
@@ -91,13 +90,15 @@ class ValueTagLib {
 	
 	def reportPercentage = { attrs, body ->
 		def value = attrs['value']
-
+		def type = attrs['type']
+		def format = attrs['format']
+		
 		if(value == null || value.isNull()){
 			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
 		}
 		else{
 			def average = value.numberValue.round(2)
-			DecimalFormat df = new DecimalFormat('#%')
+			DecimalFormat df = new DecimalFormat(format)
 			out << df.format(average)
 		}
 	}
