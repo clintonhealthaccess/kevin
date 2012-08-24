@@ -107,7 +107,7 @@ grails.project.dependency.resolution = {
 		compile ":jquery:1.7.1"
 		compile ":resources:1.2-RC1"
 		compile ":shiro:1.1.5"
-		compile ":springcache:1.3.3"
+		compile ":springcache:1.3.1"
 		compile ":compass-sass:0.7"
 		compile ":google-analytics:1.0"
 		compile ":quartz:1.0-RC2"

@@ -84,7 +84,6 @@ beans = {
 	
 	jaqlService(JaqlService) { bean ->
 		bean.singleton = true
-		jaqlService = ref("jaqlService")
 	}
 	
 	refreshValueService(RefreshValueService) {
