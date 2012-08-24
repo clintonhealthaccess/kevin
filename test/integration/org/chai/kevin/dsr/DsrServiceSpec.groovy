@@ -309,7 +309,36 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		dsrTable.locations.equals(s([Location.findByCode(BURERA)]))
 		
 	}
-	
+
+	def "get dsr table report value"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def program = newReportProgram(CODE(1))
+		def location = Location.findByCode(BURERA)
+		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		def category = newDsrTargetCategory(CODE(1), 1)
+		def target = newDsrTarget(CODE(3), 1, dataElement, program, category)
+		def types = new HashSet([
+			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
+			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
+		])
+		def reportType = Utils.ReportType.TABLE
+
+		when:
+		def dsrTable = dsrService.getDsrTable(location, program, period, types, category, reportType)
+
+		then:
+		dsrTable.getTableReportValue(DataLocation.findByCode(BUTARO), target) == null
+
+		when:
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_NUMBER(10d))
+		dsrTable = dsrService.getDsrTable(location, program, period, types, category, reportType)
+
+		then:
+		dsrTable.getTableReportValue(DataLocation.findByCode(BUTARO), target).getNumberValue() == 10d
+	}
+		
 	def "get dsr with sorted targets"() {
 		setup:
 		setupLocationTree()
@@ -416,4 +445,34 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			LocationLevel.findByCode(SECTOR)
 		]))
 	}
+
+	def "get dsr map report value"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def program = newReportProgram(CODE(1))
+		def location = Location.findByCode(BURERA)
+		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		def category = newDsrTargetCategory(CODE(1), 1)
+		def target = newDsrTarget(CODE(3), 1, dataElement, program, category)
+		def types = new HashSet([
+			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
+			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
+		])
+		def reportType = Utils.ReportType.TABLE
+
+		when:
+		def dsrTable = dsrService.getDsrTable(location, program, period, types, category, reportType)
+
+		then:
+		dsrTable.getMapReportValue(DataLocation.findByCode(BUTARO), target) == null
+
+		when:
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_NUMBER(10d))
+		dsrTable = dsrService.getDsrTable(location, program, period, types, category, reportType)
+
+		then:
+		dsrTable.getMapReportValue(DataLocation.findByCode(BUTARO), target).getNumberValue() == 10d
+	}
+	
 }
