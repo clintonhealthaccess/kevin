@@ -107,4 +107,20 @@ class QuestionController extends AbstractController {
 			}
 		}
 	}
+	
+	def getDescription = {
+		def question = surveyService.getSurveyQuestion(params.int('question')) 
+		
+		if (question == null) {
+			render(contentType:"text/json") {
+				result = 'error'
+			}
+		}
+		else {
+			render(contentType:"text/json") {
+				result = 'success'
+				html = g.render (template: '/survey/admin/questionDescription', model: [question: question])
+			}
+		}
+	}
 }
