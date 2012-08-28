@@ -97,11 +97,11 @@ class ValueTagLib {
 	}
 	
 	def reportBarTooltip = { attrs, body ->
-		def average = attrs['average']
+		def percentage = attrs['percentage']
 		def value = attrs['value']
 		def totalLocations = attrs['totalLocations']
 		
-		out << message(code: 'fct.report.chart.tooltip.percentage')+': '+average+'<br />'+
+		out << message(code: 'fct.report.chart.tooltip.percentage')+': '+percentage+'<br />'+
 				message(code: 'fct.report.chart.tooltip.value')+': '+value+'<br />'+
 				message(code: 'fct.report.chart.tooltip.datalocations')+': '+totalLocations
 	}
@@ -156,7 +156,7 @@ class ValueTagLib {
 	}
 	
 	def String reportTooltip(String tooltip, String value){
-		if(tooltip != null && tooltip != "")
+		if(tooltip != null && tooltip != "null" && tooltip != "")
 			return '<span class="tooltip" original-title="'+tooltip+'">'+value+'</span>'
 		else
 			return value;

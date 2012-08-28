@@ -39,7 +39,7 @@
 										<!-- stacked bar -->
 										<div class="js_bar_vertical bar-vertical tooltip ${i == 0 ? 'indicator-worst': i == fctTable.targetOptions.size()-1 ? 'indicator-best': 'indicator-middle'}"
 											data-percentage="${barPercentage}"
-											title="${reportBarTooltip(average: barPercentage, value: barValue, totalLocations: totalDataLocations)}"
+											title="${reportBarTooltip(percentage: barPercentage, value: barValue, totalLocations: totalDataLocations)}"
 											style="height: ${barPercentage};">
 											<g:if test="${barAverage > 0.06}">
 												<span data-average="${barAverage}" data-percentage="${barPercentage}">${barValue}</span>
