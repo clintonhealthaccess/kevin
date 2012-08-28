@@ -20,78 +20,71 @@ class ValueTagLib {
 
 	def languageService
 	
-	def mapReportValue = { attrs, body ->
+	def reportMapValue = { attrs, body ->
 		def value = attrs['value']
 		def type = attrs['type']
 		def format = attrs['format']
 		
 		if (value == null || value.isNull()) {
 			out << '<div class="report-value report-value-null"'+
-				' data-report-value="'+message(code: 'report.value.null')+'"'+
-				' data-report-value-type="null">'+
-				message(code: 'report.value.null')+'</div>'
+					' data-report-value="'+message(code: 'report.value.null')+'"'+
+					' data-report-value-type="null">'+
+					message(code: 'report.value.null')+'</div>'
 		}
 		else {
 			switch (type.type) {
 				case ValueType.BOOL:
 					if (value.booleanValue){
 						out << '<div class="report-value report-value-true"'+
-							' data-report-value="&#10003;"'+
-							' data-report-value-raw="'+value.booleanValue+'"'+
-							' data-report-value-type="'+type.type+'">'+
-							'&#10003;</div>'
+								' data-report-value="&#10003;"'+
+								' data-report-value-raw="'+value.booleanValue+'"'+
+								' data-report-value-type="'+type.type+'">'+
+								'&#10003;</div>'
 					}
 					else{
 						out << '<div class="report-value report-value-false"'+
-							' data-report-value="&#10007;"'+
-							' data-report-value-raw="'+value.booleanValue+'"'+
-							' data-report-value-type="'+type.type+'">'+
-							'&#10007;</div>'
+								' data-report-value="&#10007;"'+
+								' data-report-value-raw="'+value.booleanValue+'"'+
+								' data-report-value-type="'+type.type+'">'+
+								'&#10007;</div>'
 					}
 					break;
 				case ValueType.NUMBER:
 					def reportValue = languageService.getStringValue(value, type, null, format)
 					out << '<div class="report-value"'+
-						' data-report-value="'+reportValue+'"'+
-						' data-report-value-raw="'+value.numberValue+'"'+
-						' data-report-value-type="'+type.type+'">'+
-						reportValue+'</div>'
+							' data-report-value="'+reportValue+'"'+
+							' data-report-value-raw="'+value.numberValue+'"'+
+							' data-report-value-type="'+type.type+'">'+
+							reportValue+'</div>'
 					break;
 				default:
 					def reportValue = languageService.getStringValue(value, type, null, format)
 					out << '<div class="report-value"'+
-						' data-report-value="'+reportValue+'"'+
-						' data-report-value-raw="'+reportValue+'"'+
-						' data-report-value-type="'+type.type+'">'+
-						reportValue+'</div>'
+							' data-report-value="'+reportValue+'"'+
+							' data-report-value-raw="'+reportValue+'"'+
+							' data-report-value-type="'+type.type+'">'+
+							reportValue+'</div>'
 			}
 		}
 	}
 	
-	def reportValue = { attrs, body ->
+	def reportBarValue = { attrs, body ->
 		def value = attrs['value']
 		def type = attrs['type']
 		def format = attrs['format']
-
+		
 		if (value == null || value.isNull()) {
 			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
 		}
 		else {
-			switch (type.type) {
-				case ValueType.BOOL:
-					if (value.booleanValue) out << '<div class="report-value-true">&#10003;</div>'
-					else out << '<div class="report-value-false">&#10007;</div>'
-					break;
-				default:
-					out << languageService.getStringValue(value, type, null, format)
-			}
+			out << languageService.getStringValue(value, type, null, format)
 		}
-	}
-	
-	def reportPercentage = { attrs, body ->
+	}	
+
+	def reportBarPercentage = { attrs, body ->
 		def value = attrs['value']
 		def type = attrs['type']
-		def format = attrs['format']
+		def format = attrs['format']		
 		
 		if(value == null || value.isNull()){
 			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
@@ -103,7 +96,7 @@ class ValueTagLib {
 		}
 	}
 	
-	def reportTooltip = { attrs, body ->
+	def reportBarTooltip = { attrs, body ->
 		def average = attrs['average']
 		def value = attrs['value']
 		def totalLocations = attrs['totalLocations']
@@ -111,6 +104,62 @@ class ValueTagLib {
 		out << message(code: 'fct.report.chart.tooltip.percentage')+': '+average+'<br />'+
 				message(code: 'fct.report.chart.tooltip.value')+': '+value+'<br />'+
 				message(code: 'fct.report.chart.tooltip.datalocations')+': '+totalLocations
+	}
+	
+	def reportValue = { attrs, body ->
+		def value = attrs['value']
+		def type = attrs['type']
+		def format = attrs['format']
+
+		def tooltip = attrs['tooltip'].toString()
+		
+		if (value == null || value.isNull()) {
+			out << '<div class="report-value-null">'+
+					reportTooltip(tooltip, message(code: 'report.value.null')+'')+
+					'</div>'
+		}
+		else {
+			switch (type.type) {
+				case ValueType.BOOL:
+					if (value.booleanValue){
+						out << '<div class="report-value-true">'+
+								reportTooltip(tooltip, '&#10003;')+
+								'</div>'
+					}
+					else{
+						out << '<div class="report-value-false">'+
+								reportTooltip(tooltip, '&#10007;')+
+								'</div>'
+					}
+					break;
+				default:
+					out << reportTooltip(tooltip, languageService.getStringValue(value, type, null, format))
+			}
+		}
+	}
+	
+	def reportPercentage = { attrs, body ->
+		def value = attrs['value']
+		def type = attrs['type']
+		def format = attrs['format']
+		
+		def tooltip = attrs['tooltip'].toString()
+		
+		if(value == null || value.isNull()){
+			out << '<div class="report-value-null">'+reportTooltip(tooltip, message(code: 'report.value.null')+'')+'</div>'
+		}
+		else{
+			def average = value.numberValue.round(2)
+			DecimalFormat df = new DecimalFormat(format)
+			out << reportTooltip(tooltip, df.format(average))
+		}
+	}
+	
+	def String reportTooltip(String tooltip, String value){
+		if(tooltip != null && tooltip != "")
+			return '<span class="tooltip" original-title="'+tooltip+'">'+value+'</span>'
+		else
+			return value;
 	}
 	
 	def adminValue = {attrs, body ->

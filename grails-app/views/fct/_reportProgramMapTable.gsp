@@ -38,15 +38,16 @@
 							<g:if test="${viewSkipLevels != null && viewSkipLevels.contains(currentLocation.level)}"><td></td></g:if>
 							<g:else>
 								<td>
-									<g:set var="mapReportValue" value="${reportTable.getMapReportValue(location, indicator)}"/>
-									<div class="js-map-table-value ${mapReportValue != null && !mapReportValue.isNull() && mapReportValue.numberValue > 0 ? 'js-selected-value':''}"
+									<g:set var="reportMapValue" value="${reportTable.getMapReportValue(location, indicator)}"/>
+									<div class="js-map-table-value ${reportMapValue != null && !reportMapValue.isNull() && reportMapValue.numberValue > 0 ? 'js-selected-value':''}"
 											data-location-code="${location.code}" 
 											data-location-names="${i18n(field: location.names)}" 
 											data-indicator-code="${indicator.code}" 
 											data-indicator-names="${i18n(field:indicator.names)}"
 											data-indicator-class="${i == reportIndicators.size()-1 ? 'indicator-worst': i == 0 ? 'indicator-best': 'indicator-middle'}">
 										<div class="report-value-number">
-											<g:mapReportValue value="${reportTable.getMapReportValue(location, indicator)}"
+											<g:reportMapValue 
+															value="${reportTable.getMapReportValue(location, indicator)}"
 															type="${indicator.type}"
 															format="${indicator.numberFormat}"/>
 										</div>
