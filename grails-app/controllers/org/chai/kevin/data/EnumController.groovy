@@ -92,6 +92,7 @@ class EnumController extends AbstractEntityController {
 			entities: enums,
 			template: "data/enumList",
 			entityCount: enumService.countEnum(params['q']),
+			entityClass: getEntityClass(),
 			q:params['q'],
 			code: getLabel()			
 		])

@@ -127,6 +127,7 @@ class DashboardProgramController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: programs,
 			entityCount: dataService.countData(DashboardProgram.class, params['q'], []),
+			entityClass: getEntityClass(),
 			template: "dashboard/programList",
 			code: getLabel(),
 			search: true

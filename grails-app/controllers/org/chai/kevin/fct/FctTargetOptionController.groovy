@@ -87,6 +87,7 @@ class FctTargetOptionController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: targetOptions,
 			entityCount: dataService.countData(FctTargetOption.class, params['q'], []),
+			entityClass: getEntityClass(),
 			template: "fct/targetOptionList",
 			code: getLabel(),
 			search: true

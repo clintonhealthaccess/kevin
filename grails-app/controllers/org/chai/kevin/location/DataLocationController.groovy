@@ -67,6 +67,7 @@ class DataLocationController extends AbstractEntityController {
 			template:"location/dataLocationList",
 			entities: locations,
 			entityCount: locationService.countLocation(DataLocation.class, params['q']),
+			entityClass: getEntityClass(),
 			code: getLabel()
 		])
 	}

@@ -119,6 +119,7 @@ class DashboardTargetController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: targets,
 			entityCount: dataService.countData(DashboardTarget.class, params['q'], []),
+			entityClass: getEntityClass(),
 			template: "dashboard/targetList",
 			code: getLabel(),
 			search: true

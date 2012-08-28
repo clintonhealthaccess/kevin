@@ -8,12 +8,17 @@
 	</g:each>
 </ul>
 <!-- map colors -->
-<r:script>
+<r:script>	
+
 	var mapColors = {
-		'indicator-best' : rgb2hex($('.map_legend .indicator-best').css('background-color')),		//green
-		'indicator-middle': rgb2hex($('.map_legend .indicator-middle').css('background-color')),	//yellow
-		'indicator-worst': rgb2hex($('.map_legend .indicator-worst').css('background-color'))		//red
-	}
+		'indicator-best' : ($('.map_legend .indicator-best').length == 1 ?
+				rgb2hex($('.map_legend .indicator-best').css('background-color')) : 'green'),		//green
+		'indicator-middle': ($('.map_legend .indicator-middle').length == 1 ?
+				rgb2hex($('.map_legend .indicator-middle').css('background-color')) : 'yellow'),	//yellow
+		'indicator-worst': ($('.map_legend .indicator-worst').length == 1 ?
+				rgb2hex($('.map_legend .indicator-worst').css('background-color')) : 'red')			//red
+	}		
+	
 	function rgb2hex(rgb){
 	 rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
 	 return "#" +

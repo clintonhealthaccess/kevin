@@ -155,6 +155,7 @@ class RawDataElementController extends AbstractEntityController {
 			template: "data/rawDataElementList",
 			code: getLabel(),
 			entityCount: dataService.countData(RawDataElement.class, params['q'], []),
+			entityClass: getEntityClass(),
 			search: true
 		])
 	}

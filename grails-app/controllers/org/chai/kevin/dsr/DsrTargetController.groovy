@@ -104,6 +104,7 @@ class DsrTargetController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: targets,
 			entityCount: dataService.countData(DsrTarget.class, params['q'], []),
+			entityClass: getEntityClass(),
 			template: "dsr/targetList",
 			code: getLabel(),
 			search: true

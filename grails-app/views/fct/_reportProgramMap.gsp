@@ -27,6 +27,7 @@
 				var polygonCoordinates = []
 				var coordinates = []
 				var latlonRegex = /\[(\-|\d|\.)*,(\-|\d|\.)*\]/g;
+				//TODO if coordinates == null
 				$(f.properties.coordinates.match(latlonRegex)).each(function(){
 					var coordinate = this;
 					coordinate = this.replace(/(\[|\])/g,"");
