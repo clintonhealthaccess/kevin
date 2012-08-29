@@ -1,4 +1,4 @@
-<div>
+<div class="left">
 	<%
 		newLinkParams = [:]
 		newLinkParams.putAll linkParams
@@ -9,10 +9,10 @@
 			<a class="datalocation js_dropdown-link nice-button with-highlight" href="#">
 				<g:if test="${currentLocationTypes != null && !currentLocationTypes.empty}">
 					<g:each in="${currentLocationTypes}" var="currentLocationType" status="i">					
-							<g:if test="${i < currentLocationTypes.size() && i < 4}">
-								<g:i18n field="${currentLocationType.names}"/><g:if test="${i < currentLocationTypes.size()-1 && i < 3}">, </g:if>
+							<g:if test="${i < currentLocationTypes.size() && i < 3}">
+								<g:i18n field="${currentLocationType.names}"/><g:if test="${i < currentLocationTypes.size()-1 && i < 2}">, </g:if>
 							</g:if>
-					</g:each><g:if test="${currentLocationTypes.size() > 4}">...</g:if>
+					</g:each><g:if test="${currentLocationTypes.size() > 3}">...</g:if>
 				</g:if>
 			</a>
 			<g:if test="${dataLocationTypes != null && !dataLocationTypes.empty}">
