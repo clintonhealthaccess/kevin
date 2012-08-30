@@ -58,8 +58,11 @@ public class DsrService {
 		List<DsrTarget> targets = new ArrayList<DsrTarget>();
 		targets.addAll(category.getTargetsForProgram(program));
 		
-		Map<CalculationLocation, Map<DsrTarget, Value>> valueMap = new HashMap<CalculationLocation, Map<DsrTarget, Value>>();		
 		List<DsrTargetCategory> targetCategories = new ArrayList<DsrTargetCategory>();
+		targetCategories = getTargetCategories(program);
+		Collections.sort(targetCategories);
+		
+		Map<CalculationLocation, Map<DsrTarget, Value>> valueMap = new HashMap<CalculationLocation, Map<DsrTarget, Value>>();				
 		
 		if(calculationLocations.isEmpty() || targets.isEmpty()) 
 			return new DsrTable(valueMap, calculationLocations, targets, targetCategories);		
@@ -90,10 +93,7 @@ public class DsrService {
 					}	
 				}				
 			}
-		}				
-			
-		targetCategories = getTargetCategories(program);
-		Collections.sort(targetCategories);
+		}					
 		
 		DsrTable dsrTable = new DsrTable(valueMap, calculationLocations, targets, targetCategories);
 		if (log.isDebugEnabled()) log.debug("getDsrTable(...)="+dsrTable);

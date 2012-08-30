@@ -93,19 +93,4 @@ class CheckboxQuestionController extends AbstractEntityController {
 		}
 	}
 	
-	def getDescription = {
-		def question = SurveyCheckboxQuestion.get(params.int('question'))
-		
-		if (question == null) {
-			render(contentType:"text/json") {
-				result = 'error'
-			}
-		}
-		else {
-			render(contentType:"text/json") {
-				result = 'success'
-				html = g.render (template: '/survey/admin/questionDescription', model: [question: question])
-			}
-		}
-	}
 }

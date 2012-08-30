@@ -23,11 +23,12 @@ class FctServiceSpec extends FctIntegrationTests {
 		def targetOption = newFctTargetOption(CODE(4), 1, target, sum)
 		def location = Location.findByCode(RWANDA)
 		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		def reportType = Utils.ReportType.TABLE
 		def fctTable = null
 		refresh()
 		
 		when:
-		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes)
+		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes, reportType)
 		
 		then:
 		fctTable.getReportValue(Location.findByCode(NORTH), targetOption).getValue().numberValue == 2d
@@ -35,7 +36,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		
 		when:
 		dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)])
-		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes)
+		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes, reportType)
 		
 		then:
 		fctTable.getReportValue(Location.findByCode(NORTH), targetOption).getValue().numberValue == 1d
@@ -54,12 +55,13 @@ class FctServiceSpec extends FctIntegrationTests {
 		def location = Location.findByCode(RWANDA)
 		def level = locationService.getLevelAfter(location.getLevel(), new HashSet([LocationLevel.findByCode(SECTOR)]))
 		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		def reportType = Utils.ReportType.TABLE
 		def fctTable = null
 		
 		when:
 		def dummy = newLocation("dummy", location, level)
 		refresh()
-		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes)
+		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes, reportType)
 		
 		then:
 		fctTable.getReportValue(Location.findByCode("dummy"), targetOption) == null
@@ -146,18 +148,19 @@ class FctServiceSpec extends FctIntegrationTests {
 		def target = newFctTarget(CODE(4), 1, program)
 		def targetOption = newFctTargetOption(CODE(5), 1, target, sum)
 		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		def reportType = Utils.ReportType.TABLE
 		def fctTable = null
 		refresh()
 		
 		when:
-		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes)
+		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes, reportType)
 		
 		then:
 		fctTable.topLevelLocations.equals([Location.findByCode(NORTH)])
 		
 		when:
 		location = Location.findByCode(BURERA)
-		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes)
+		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes, reportType)
 		
 		then:
 		fctTable.topLevelLocations.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
@@ -174,10 +177,11 @@ class FctServiceSpec extends FctIntegrationTests {
 		def target = newFctTarget(CODE(4), 1, program)
 		def targetOption = newFctTargetOption(CODE(5), 1, target, sum1)
 		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		def reportType = Utils.ReportType.TABLE
 		refresh()
 		
 		when: "total report average = 1"
-		def fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes)
+		def fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes, reportType)
 		
 		then:
 		fctTable.getTotalAverage(location) == 1
@@ -189,7 +193,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		def targetHC = newFctTarget(CODE(8), 1, program)
 		def targetOptionHC = newFctTargetOption(CODE(9), 1, targetHC, sumHC)
 		refresh()
-		fctTable = fctService.getFctTable(location, program, targetHC, period, dataLocationTypes)
+		fctTable = fctService.getFctTable(location, program, targetHC, period, dataLocationTypes, reportType)
 		
 		then:
 		fctTable.getTotalAverage(location) == 0.67
@@ -205,7 +209,7 @@ class FctServiceSpec extends FctIntegrationTests {
 			i++
 		}
 		refresh()
-		fctTable = fctService.getFctTable(location, program, targetHC, period, dataLocationTypes)
+		fctTable = fctService.getFctTable(location, program, targetHC, period, dataLocationTypes, reportType)
 		
 		then:
 		fctTable.getReportValue(location, targetOptionHC).getNumberOfDataLocations() == 33

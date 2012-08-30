@@ -144,14 +144,14 @@ class DataController extends AbstractController {
 			def period = Period.get(params.int('period'))
 			if (period == null) period = Period.list()[Period.count() - 1]
 			
-			def values = valueService.searchDataElementValues(
+			def values = valueService.searchDataValues(
 				params.q,
 				data,
 				null,
 				period,
 				params
 			)
-			def valueCount = valueService.countDataElementValues(params.q, data, null, period)
+			def valueCount = valueService.countDataValues(params.q, data, null, period)
 			
 			render (view: '/entity/list', model:[
 				data: data,

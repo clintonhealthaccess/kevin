@@ -29,7 +29,7 @@
 				<g:each in="${dsrTable.targets}" var="target">
 					<td>
 						<g:if test="${dsrTable.getReportValue(location, target) != null}">						
-							<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.data.type}" format="${target.format}"/>
+							<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.type}" format="${target.format}"/>
 						</g:if>
 					</td>
 				</g:each>

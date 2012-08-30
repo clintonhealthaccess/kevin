@@ -162,17 +162,14 @@ modules = {
 	}
 	
 	leaflet {
+		dependsOn 'jquery'
 		
 		resource url: 'http://cdn.leafletjs.com/leaflet-0.4/leaflet.js'
 		resource url: 'http://cdn.leafletjs.com/leaflet-0.4/leaflet.css'
-	}	
-	
-	leafleticon {
-		dependsOn 'jquery,leaflet'
 		
 		resource url: '/js/jquery/leafleticon/jquery.leaflet-icon-label.js'
 		resource url: '/js/jquery/leafleticon/jquery.leaflet-icon-label.css'
-	}
+	}	
 	
 	// Start resources for pages
 	list {
@@ -188,11 +185,11 @@ modules = {
 	}
 
 	dsr {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,leaflet,leafleticon'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,leaflet'
 	}
 
 	fct {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,valuefilter'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,valuefilter,leaflet'
 	}
 	
 	dashboard {

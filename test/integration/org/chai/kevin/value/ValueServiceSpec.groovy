@@ -287,8 +287,8 @@ class ValueServiceSpec extends IntegrationTests {
 		def value2 = NormalizedDataElementValue.list().find {it.location.code == BUTARO}
 		
 		then:
-		valueService.searchDataElementValues(KIVUYE, normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value1])
-		valueService.searchDataElementValues(BUTARO, normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2])
+		valueService.searchDataValues(KIVUYE, normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value1])
+		valueService.searchDataValues(BUTARO, normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2])
 	}
 	
 	def "test search normalized value on name and code"() {
@@ -310,8 +310,8 @@ class ValueServiceSpec extends IntegrationTests {
 		def value2 = NormalizedDataElementValue.list().find {it.location.code == BUTARO}
 		
 		then:
-		valueService.searchDataElementValues("loc1", normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value1])
-		valueService.searchDataElementValues("loc2", normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2])
+		valueService.searchDataValues("loc1", normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value1])
+		valueService.searchDataValues("loc2", normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2])
 	}
 	
 	def "test search normalized value with order"() {
@@ -326,8 +326,8 @@ class ValueServiceSpec extends IntegrationTests {
 		def value2 = NormalizedDataElementValue.list().find {it.status == Status.MISSING_EXPRESSION}
 		
 		then:
-		valueService.searchDataElementValues("", normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2, value1])
-		valueService.searchDataElementValues("", normalizedDataElement, null, period, ['sort':'status', 'order':'desc']).equals([value1, value2])
+		valueService.searchDataValues("", normalizedDataElement, null, period, ['sort':'status', 'order':'asc']).equals([value2, value1])
+		valueService.searchDataValues("", normalizedDataElement, null, period, ['sort':'status', 'order':'desc']).equals([value1, value2])
 	}
 	
 	def "test value count"() {

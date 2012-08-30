@@ -1,6 +1,5 @@
 package org.chai.kevin.value;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +19,11 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 		super(calculationPartialValues, calculation, period, location);
 	}
 
+	@Override
+	public boolean isNull(){
+		return getValue().isNull();
+	}
+	
 	@Override
 	public Value getValue() {
 		//data Location

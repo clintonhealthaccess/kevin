@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.value.Value;
 
 public abstract class ReportTable<T, S extends CalculationLocation, U> {
 
@@ -29,4 +30,6 @@ public abstract class ReportTable<T, S extends CalculationLocation, U> {
 		if (reportValues != null) reportValue = reportValues.get(target);
 		return reportValue;
 	}
+	
+	public abstract Value getMapReportValue(CalculationLocation location, T indicator);
 }

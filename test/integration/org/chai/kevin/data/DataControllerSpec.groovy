@@ -254,5 +254,25 @@ class DataControllerSpec extends IntegrationTests {
 		Task.count() == 1
 		Task.list()[0].dataId == normalizedDataElement.id
 	}
+	
+	def "search value works"() {
+		setup:
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		dataController = new DataController()
+		
+		when:
+		def dataElementValue1 = newRawDataElementValue(dataElement, period1, DataLocation.findByCode(BUTARO), Value.NULL_INSTANCE())
+		def dataElementValue2 = newRawDataElementValue(dataElement, period1, DataLocation.findByCode(KIVUYE), Value.NULL_INSTANCE())
+		dataController.params.period = period1.id
+		dataController.params.data = dataElement.id
+		dataController.params.q = 'but'
+		dataController.search()
+		
+		then:
+		dataController.modelAndView.model.entities.equals([dataElementValue1])
+	}
 
 }
