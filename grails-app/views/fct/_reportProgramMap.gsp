@@ -3,6 +3,8 @@
 	<div id="map" class="map"></div>
 	<!-- TODO move this to a map_init.js file -->
 	<r:script>
+	
+	<!-- the map -->
 	var map = L.map('map').setView([-1.951069, lng=30.06134], 10);
 	L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
 		maxZoom: 18,
@@ -12,21 +14,35 @@
 				'Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>'
 	}).addTo(map);
 	
-	mapLocations();
-	mapDataLocations();
+	<!-- locations -->
+	var locationLayer = L.geoJson(null, {		
+		style: function (feature) {
+			return feature.properties && feature.properties.style;
+		}
+	}).addTo(map);
+			
+	<!-- data locations -->
+	var dataLocationLayer = L.geoJson(null, {
+		pointToLayer: dataLocationPointToLayer, 
+		onEachFeature: onEachDataLocationFeature
+	}).addTo(map);
 	
-	function mapLocations(){
-	
+	addLocationLayerData(locationLayer, dataLocationLayer);
+
+	function addLocationLayerData(locationLayer){
 		<!-- Locations -->
 		var locationUrl = "http://geocommons.com/datasets/265901/features.json?filter[code][][equals]=${currentLocation.code}";		
-		jQuery.getJSON(locationUrl, function(data){
+		jQuery.getJSON(locationUrl, function(data){		
+		
 			jQuery.each(data.features, function(i,f){
 				
-				//TODO get rid of this and use f.geometry.coordinates		
+				//TODO get rid of this and use f.geometry.coordinates
+					
 				//create polygon coordinates
 				var polygonCoordinates = []
 				var coordinates = []
 				var latlonRegex = /\[(\-|\d|\.)*,(\-|\d|\.)*\]/g;
+				
 				//TODO if coordinates == null
 				$(f.properties.coordinates.match(latlonRegex)).each(function(){
 					var coordinate = this;
@@ -51,18 +67,23 @@
 								color: "#7FCDBB",			//"#99D8C9",
 					        	weight: 4,
 					        	fillColor: "#7FCDBB",		//"#99D8C9",
-					            fillOpacity: 0.5 //0.4		//0.4
-					        }
+					            fillOpacity: 0.5,			//0.4
+					            clickable: false					            
+					        },
 					    }
 				};
-				var geojsonPolygonLayer = L.geoJson(geojsonPolygonFeature, {style: geojsonPolygonFeature.properties.style}).addTo(map);
-				map.fitBounds(geojsonPolygonLayer.getBounds());
+				var geojsonPolygon = L.geoJson(geojsonPolygonFeature);
+				var latLngBounds = geojsonPolygon.getBounds();
+				map.fitBounds(latLngBounds);
+				locationLayer.addData(geojsonPolygonFeature);							
 			});
-		});
-	}						
+			
+			addDataLocationLayerData(dataLocationLayer);
+			
+		});		
+	}
 	
-	function mapDataLocations(){
-	
+	function addDataLocationLayerData(dataLocationLayer){
 		<!-- Data Locations -->
 		var dataLocations = [];
 		$('.js-map-table-value.js-selected-value').each(function(){
@@ -76,9 +97,10 @@
 		var dataLocationUrl = "http://geocommons.com/datasets/262585/features.json?filter[fosaid][][in]="+fosaIds;
 		jQuery.getJSON(dataLocationUrl, function(data){
 			
-			var fosaDataLocations = []
+			if(locationLayer.whatever){
+			}
 			
-			var geojsonPointLayer = L.geoJson(null, {pointToLayer: dataLocationPointToLayer, onEachFeature: onEachFeature}).addTo(map);				
+			var fosaDataLocations = []
 			
 			jQuery.each(data.features, function(i,f){
 				
@@ -113,7 +135,7 @@
 							        "popupContent": 'Location: '+locationName+'<br /> '+indicatorName+': '+reportValue
 							    }
 						};
-						geojsonPointLayer.addData(geojsonPointFeature);
+						dataLocationLayer.addData(geojsonPointFeature);
 					}
 					else{
 						//missing fosa coordinates
@@ -130,14 +152,12 @@
 				}
 			}									
 		});
-	}				
+	}
 	
-	function dataLocationPointToLayer(feature, latlng) {
-		
+	function dataLocationPointToLayer(feature, latlng) {		
 		var rawValue = feature.properties.rawValue;
 		var reportValue = feature.properties.reportValue;
 		var indicatorClass = feature.properties.indicatorClass;
-		
 		var geojsonMarkerOptions = {
 		    radius: 8,
 		    fillColor: mapColors[indicatorClass],
@@ -146,14 +166,17 @@
 		    opacity: 1,
 		    fillOpacity: 0.75
 		};
-		geojsonMarker = L.circleMarker(latlng, geojsonMarkerOptions);
-       	return geojsonMarker;		
+		var geojsonMarker = L.circleMarker(latlng, geojsonMarkerOptions);		
+       	return geojsonMarker;
    	}
 	
-	function onEachFeature(feature, layer) {
+	function onEachLocationFeature(feature, layer){
+		layer.options.geometry = feature.geometry;
+	}
+			
+	function onEachDataLocationFeature(feature, layer) {
 	    if (feature.properties && feature.properties.popupContent) {
-	        layer.bindPopup(feature.properties.popupContent);
-	        	        
+	        layer.bindPopup(feature.properties.popupContent);	        	        
 	        layer.on("mouseover", function (e) {
 	        	layer.openPopup();
             });
@@ -161,6 +184,7 @@
                 map.closePopup();
             });
     	}
-	}		
+    	layer.options.geometry = feature.geometry;
+	}
 	</r:script>
 </div>
