@@ -43,6 +43,7 @@ import org.chai.kevin.location.DataLocationType;
 
 class FilterTagLib {
 
+	def languageService;
 	def locationService;
 	def reportService;
 	
@@ -64,6 +65,11 @@ class FilterTagLib {
 	def reportTargetFilter = {attrs, body ->
 		def model = excludeLinkParams(attrs)
 		out << render(template:'/fct/reportTargetFilter', model:model)
+	}
+	
+	def reportValueFilter = {attrs, body ->
+		def model = excludeLinkParams(attrs)
+		out << render(template:'/fct/reportValueFilter', model:model)
 	}
 			
 	def periodFilter = {attrs, body ->
@@ -113,10 +119,14 @@ class FilterTagLib {
 	def dataLocationTypeFilter = {attrs, body ->
 		DataLocationType.withTransaction {
 			def model = excludeLinkParams(attrs)
+			def currentLocationTypes = null
+			if(attrs['selected'] == null) currentLocationTypes = []
+			else currentLocationTypes = attrs['selected'].asList().sort{it.id}
+			def dataLocationTypes = DataLocationType.list([cache: true]).sort{it.id}
 			model << 
 				[
-					currentLocationTypes: attrs['selected'],
-					dataLocationTypes: DataLocationType.list([cache: true])					
+					currentLocationTypes: currentLocationTypes,
+					dataLocationTypes: dataLocationTypes					
 				]			
 			out << render(template:'/tags/filter/dataLocationTypeFilter', model:model)
 		}

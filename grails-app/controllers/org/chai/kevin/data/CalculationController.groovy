@@ -61,6 +61,7 @@ class CalculationController extends AbstractController {
 		render (view: '/entity/list', model:[
 			entities: calculations,
 			entityCount: dataService.countData(Calculation.class, params['q'], []),
+			entityClass: getEntityClass(),
 			template: "data/calculationList",
 			code: getLabel(),
 			search: true

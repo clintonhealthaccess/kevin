@@ -1,7 +1,6 @@
 <div class="selector">
 	<g:if test="${dsrTable.targetCategories != null && !dsrTable.targetCategories.empty}">
-		<g:form name="dsrCategory-form" method="get" url="${[controller:'dsr', action:'view']}">
-			
+		<g:form name="dsrCategory-form" method="get" url="${[controller:controllerName, action:actionName]}">			
 			<span><g:message code="dsr.report.category.selector"/>:</span>
 			<select name="dsrCategory" onchange="$(document).find('#js_dsr-category-'+$(this).val())[0].click();">
 				<g:each in="${dsrTable.targetCategories}" var="category">
@@ -20,7 +19,7 @@
 					newLinkParams.putAll linkParams
 					newLinkParams['dsrCategory'] = category.id
 				%>
-				<a id="js_dsr-category-${category.id}" href="${createLink(controller: 'dsr', action: 'view', params: newLinkParams)}"></a>
+				<a id="js_dsr-category-${category.id}" href="${createLink(controller:controllerName, action:actionName, params:newLinkParams)}"></a>
 			</g:each>
 		</div>
 	</g:if>

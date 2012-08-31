@@ -135,6 +135,7 @@ class EnumOptionController extends AbstractEntityController {
 				entities: options,
 				template: "data/enumOptionList",
 				entityCount: enumOptionService.countEnumOption(enume,params['q']),
+				entityClass: getEntityClass(),
 				q:params['q'],
 				code: getLabel()
 			])

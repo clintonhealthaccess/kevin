@@ -31,5 +31,6 @@ public abstract class ReportTable<T, S extends CalculationLocation, U> {
 		return reportValue;
 	}
 	
+	public abstract U getTableReportValue(CalculationLocation location, T indicator);
 	public abstract Value getMapReportValue(CalculationLocation location, T indicator);
 }

@@ -22,17 +22,15 @@
 				<g:topLevelReportTabs linkParams="${params}" exclude="${['dsrCategory', 'indicators', 'reportType']}" />
 				<g:if test="${dsrTable != null}">
 					<ul>
-						<li>
-							<g:if test="${currentView == Utils.ReportType.MAP}">
-								<g:render template="/dsr/map"/>
-							</g:if>
-							<g:elseif test="${currentView == Utils.ReportType.TABLE && dsrTable.hasData()}">
-								<g:render template="/dsr/table"/>								
-							</g:elseif>
-							<g:else>
-								<p class="nav-help"><g:message code="dsr.report.table.noselection.label"/></p>
-							</g:else>
-						</li>
+						<g:if test="${currentView == Utils.ReportType.MAP}">
+							<g:render template="/dsr/map"/>
+						</g:if>
+						<g:elseif test="${currentView == Utils.ReportType.TABLE && dsrTable.hasData()}">
+							<g:render template="/dsr/table"/>								
+						</g:elseif>
+						<g:else>
+							<p class="nav-help"><g:message code="dsr.report.table.noselection.label"/></p>
+						</g:else>
 					</ul>
 				</g:if>
 				<g:else>

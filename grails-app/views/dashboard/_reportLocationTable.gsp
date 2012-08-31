@@ -12,11 +12,12 @@
 			<tr>
 				<g:set var="percentageValue" />
 				<td><g:if test="${!location.collectsData()}">
-						<a href="${createLink(controller:'dashboard', action:'view', 
-						params:[period: currentPeriod.id, program: currentProgram.id, location: location.id])}">
-							<g:i18n field="${location.names}" />
-						</a>
-					</g:if> <g:else>
+						<% def childLocationLinkParams = new HashMap(params) %>
+						<% childLocationLinkParams['location'] = location.id+"" %>
+						<a href="${createLink(controller:controllerName, action:actionName, params:childLocationLinkParams)}">
+						<g:i18n field="${location.names}" /></a>
+					</g:if>
+					<g:else>
 						<g:i18n field="${location.names}" />
 					</g:else>
 				</td>

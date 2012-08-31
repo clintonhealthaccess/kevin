@@ -6,14 +6,10 @@
 		</td>
 		<g:each in="${fctTable.targetOptions}" var="targetOption">
 			<td>
-				<g:if test="${fctTable.getReportValue(location, targetOption) != null && !fctTable.getReportValue(location, targetOption).getValue().isNull()}">
-					<div class="report-datalocation-value">
-						<g:reportValue value="${fctTable.getReportValue(location, targetOption).getValue()}" type="${targetOption.sum.type}"/>
-					</div>					
-				</g:if>
-				<g:else>
-					<div class="report-value-na"><g:message code="report.value.na"/></div>
-				</g:else>
+				<g:reportValue
+					tooltip="${i18n(field: targetOption.names)}"
+					value="${fctTable.getTableReportValue(location, targetOption).getValue()}" 
+					type="${targetOption.sum.type}"/>					
 			</td>
 		</g:each>
 	</tr>
@@ -27,22 +23,26 @@
 			</td>
 			<g:each in="${fctTable.targetOptions}" var="targetOption">
 				<td>
-					<g:if test="${fctTable.getReportValue(location, targetOption) != null}">
-						<g:if test="${fctTable.getReportValue(location, targetOption).getValue() != null 
-							&& !fctTable.getReportValue(location, targetOption).getValue().isNull()}">
-							<div class="report-location-value">
-								<g:reportValue value="${fctTable.getReportValue(location, targetOption).getValue()}" type="${targetOption.sum.type}"/>
-							</div>
-						</g:if>
-						<g:if test="${fctTable.getReportValue(location, targetOption).getAverage() != null 
-							&& !fctTable.getReportValue(location, targetOption).getAverage().isNull()}">
-							<div class="report-location-percentage hidden">
-								<g:reportPercentage value="${fctTable.getReportValue(location, targetOption).getAverage()}"/>
-							</div>
-						</g:if>
+					<g:if test="${fctTable.getTableReportValue(location, targetOption) != null}">
+						<div class="report-value-number">
+							<g:reportValue
+								tooltip="${i18n(field: targetOption.names)}" 
+								value="${fctTable.getTableReportValue(location, targetOption).getValue()}" 
+								type="${targetOption.type}" 
+								format="${targetOption.numberFormat}"/>
+						</div>
+						<div class="report-value-percentage hidden">
+							<g:reportPercentage
+								tooltip="${i18n(field: targetOption.names)}"
+								value="${fctTable.getTableReportValue(location, targetOption).getAverage()}" 
+								type="${targetOption.type}" 
+								format="${targetOption.percentageFormat}"/>
+						</div>
 					</g:if>
 					<g:else>
-						<div class="report-value-na"><g:message code="report.value.na"/></div>
+						<span class="tooltip" original-title="${i18n(field: targetOption.names)}">
+							<div class="report-value-na"><g:message code="report.value.na"/></div>
+						</span>
 					</g:else>
 				</td>
 			</g:each>

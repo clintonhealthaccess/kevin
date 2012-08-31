@@ -108,6 +108,5 @@ class LanguageService implements ApplicationContextAware {
 				result = value.stringValue
 		}
 		return result;
-	}
-	
+	}	
 }

@@ -122,6 +122,7 @@ class UserController extends AbstractEntityController {
 			template:"user/userList",
 			entities: users,
 			entityCount: userService.countUser(params['q']),
+			entityClass: getEntityClass(),
 			code: getLabel(),
 			search: true
 		])

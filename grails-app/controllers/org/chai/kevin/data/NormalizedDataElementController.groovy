@@ -126,6 +126,7 @@ class NormalizedDataElementController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: normalizedDataElements,
 			entityCount: dataService.countData(NormalizedDataElement.class, params['q'], []),
+			entityClass: getEntityClass(),
 			template: "data/normalizedDataElementList",
 			code: getLabel(),
 			search: true

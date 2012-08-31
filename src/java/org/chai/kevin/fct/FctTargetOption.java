@@ -25,7 +25,8 @@ public class FctTargetOption extends ReportEntity implements Exportable {
 	private Long id;	
 	private Sum sum;
 	private FctTarget target;	
-	private String format = "#";
+	private String numberFormat = "#";
+	private String percentageFormat = "#%";
 	
 	@Id
 	@GeneratedValue
@@ -61,10 +62,15 @@ public class FctTargetOption extends ReportEntity implements Exportable {
 	}
 	
 	@Transient
-	public String getFormat() {
-		return format;
+	public String getNumberFormat() {
+		return numberFormat;
 	}
 
+	@Transient
+	public String getPercentageFormat() {
+		return percentageFormat;
+	}
+	
 	@Override
 	public String toString() {
 		return "FctTargetOption[getId()=" + getId() + ", getCode()=" + getCode() + "]";

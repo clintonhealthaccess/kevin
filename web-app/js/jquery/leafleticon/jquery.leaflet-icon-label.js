@@ -124,7 +124,7 @@ L.Icon.Label.Default = L.Icon.Label.extend({
 		labelText: null,
 		//slister start
 		//TODO create styles for everything except font size
-		labelFontSize: '17px',
+		labelFontSize: null,
 		//slister end
 		
 		/* From L.Icon.Default */

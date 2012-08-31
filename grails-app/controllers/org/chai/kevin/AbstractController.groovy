@@ -96,7 +96,7 @@ public abstract class AbstractController {
 			dataLocationTypes.addAll(ConfigurationHolder.config.site.datalocationtype.checked.collect{ DataLocationType.findByCode(it) } - null)
 		}
 		
-		return dataLocationTypes.sort()
+		return dataLocationTypes
 	}
 	
 	public Set<Period> getPeriods() {

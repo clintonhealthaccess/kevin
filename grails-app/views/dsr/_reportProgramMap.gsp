@@ -6,7 +6,7 @@
 		</p>
 	</g:if>
 	<div id="map" class="map"></div>
-	<!-- TODO move this to a map_init.js file -->
+	<!-- TODO update and move this to a map_init.js file -->
 	<r:script>
 	var map = L.map('map').setView([-1.951069, lng=30.06134], 10);
 	L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
@@ -20,7 +20,7 @@
 	if(${viewSkipLevels != null && !viewSkipLevels.contains(currentLocation.level)}){
 		mapLocations();
 		mapDataLocations();									
-	}		
+	}
 	
 	function mapLocations(){
 	
@@ -34,6 +34,7 @@
 				var polygonCoordinates = []
 				var coordinates = []
 				var latlonRegex = /\[(\-|\d|\.)*,(\-|\d|\.)*\]/g;
+				//TODO if coordinates == null
 				$(f.properties.coordinates.match(latlonRegex)).each(function(){
 					var coordinate = this;
 					coordinate = this.replace(/(\[|\])/g,"");
@@ -65,13 +66,13 @@
 				map.fitBounds(geojsonPolygonLayer.getBounds());
 			});
 		});
-	}						
+	}
 	
 	function mapDataLocations(){
 	
 		<!-- Data Locations -->
 		var dataLocations = [];
-		$('div.js-map-location').each(function(){
+		$('.js-map-table-value.js-selected-value').each(function(){
 	        var dataLocation = $(this).data('location-code');
 	        if(dataLocations.indexOf(dataLocation) < 0){
 	        	dataLocations.push(dataLocation+'');
@@ -88,55 +89,53 @@
 			
 			jQuery.each(data.features, function(i,f){
 				
-				fosaDataLocations.push(f.properties.fosaid+'');
-				
-				var mapLocation = $('div.js-map-location[data-location-code="'+f.properties.fosaid+'"]');	
-				var locationName = $(mapLocation).data('location-names');
-				var indicatorName = $(mapLocation).data('indicator-names');
-				var indicatorClass = $(mapLocation).data('indicator-class');
-				
-				var mapValue = $(mapLocation).children('div.report-value');
-				var rawValue = $(mapValue).data('report-value-raw');			
-				var reportValue = $(mapValue).data('report-value');
-				var reportValueType = $(mapValue).data('report-value-type');				
-				
-				if(f.geometry){
-					//create point geojson feature
-					var geojsonPointFeature = {
-							"id": f.properties.fosaid,
-						    "type": f.type,    
-						    "geometry": {
-						        "type": f.geometry.type,
-						        "coordinates": f.geometry.coordinates
-						    },
-						    "properties": {
-						    	"rawValue": rawValue,
-						    	"reportValue": reportValue,
-						    	"reportValueType": reportValueType,
-						    	"locationName": locationName,
-						    	"indicatorName": indicatorName,
-						    	"indicatorClass": indicatorClass,
-						        "popupContent": 'Location: '+locationName+'<br /> '+indicatorName+': '+reportValue
-						    }
-					};
-					geojsonPointLayer.addData(geojsonPointFeature);
-				}
-				else{
-					//TODO get rid of this
-					//missing fosa data location coordinates
-					$('.nav-table td[data-location-code="'+f.properties.fosaid+'"]').append('*');
-				}
+				$('.js-map-table-value.js-selected-value[data-location-code="'+f.properties.fosaid+'"]').each(function(index, mapLocation){					
+					fosaDataLocations.push(f.properties.fosaid+'');
+										
+					var locationName = $(mapLocation).data('location-names');						
+					var indicatorName = $(mapLocation).data('indicator-names');
+					
+					var mapValue = $(mapLocation).children('div.report-value');
+					var rawValue = $(mapValue).data('report-value-raw');			
+					var reportValue = $(mapValue).data('report-value');
+					var reportValueType = $(mapValue).data('report-value-type');				
+					
+					if(f.geometry){
+						//create point geojson feature
+						var geojsonPointFeature = {
+								"id": f.properties.fosaid,
+							    "type": f.type,    
+							    "geometry": {
+							        "type": f.geometry.type,
+							        "coordinates": f.geometry.coordinates
+							    },
+							    "properties": {
+							    	"rawValue": rawValue,
+							    	"reportValue": reportValue,
+							    	"reportValueType": reportValueType,
+							    	"locationName": locationName,
+							    	"indicatorName": indicatorName,
+							        "popupContent": 'Location: '+locationName+'<br /> '+indicatorName+': '+reportValue
+							    }
+						};
+						geojsonPointLayer.addData(geojsonPointFeature);
+					}
+					else{
+						//missing fosa coordinates
+						$('.nav-table td[data-location-code="'+f.properties.fosaid+'"]').append('&#185;');
+					}				
+				});								
 			});
 			
 			for(var i = 0 ; i < dataLocations.length; i++){
 				var dataLocation = dataLocations[i];
 				if(fosaDataLocations.indexOf(dataLocation) < 0){
-					//missing fosa data location
-					$('.nav-table td[data-location-code="'+dataLocation+'"]').append('*');
+					//missing fosa facility
+					$('.nav-table td[data-location-code="'+dataLocation+'"]').append('&#178;');
 				}
 			}									
 		});
-	}				
+	}
 	
 	function dataLocationPointToLayer(feature, latlng) {
 		
@@ -167,7 +166,6 @@
 					reportValueIcon.options.labelClassName += ' report-value-marker-true'
 				else
 					reportValueIcon.options.labelClassName += ' report-value-marker-false'
-				reportValueIcon.options.labelFontSize = '20px'
 				break;				
 			case '${ValueType.STRING}':
 				reportValueIcon.options.labelClassName += ' report-value-marker-string'
@@ -178,10 +176,8 @@
 			case '${ValueType.NUMBER}':
 				rawValue = parseFloat(rawValue);				
 				var maxRawValue = getMaxRawValue();
-				if(rawValue/maxRawValue < 0.5)
-					reportValueIcon.options.labelFontSize = rawValueFontSize + 'px'
-				else{
-					rawValueFontSize = parseInt((rawValue/maxRawValue)*25)+10; //min: 10px max: 35px
+				if(rawValue/maxRawValue > 0.5){
+					rawValueFontSize = parseInt((rawValue/maxRawValue)*17)+17; //min: 17px max: 35px
 					reportValueIcon.options.labelFontSize = rawValueFontSize + 'px'
 				}				
 				reportValueIcon.options.labelClassName += ' report-value-marker-number'
@@ -204,7 +200,7 @@
 	
 	function getMaxRawValue(){
 		var maxRawValue = 0;
-		$('div.js-map-location').each(function(){	        
+		$('div.js-map-table-value.js-selected-value').each(function(){	        
 			var valueType = $(this).children('div.report-value').data('report-value-type');
 			if(valueType == '${ValueType.NUMBER}'){
 				var value = $(this).children('div.report-value').data('report-value-raw');

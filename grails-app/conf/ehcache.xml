@@ -126,13 +126,6 @@
     		timeToIdleSeconds="86400"
     />
     
-	<!-- short term cache for json values, to speed up survey save -->
-    <cache name="jsonValueCache"
-    		maxElementsInMemory="100"
-    		timeToLiveSeconds="0"
-    		timeToIdleSeconds="10"
-    />
-    
     <!-- short term cache for survey entered values, to speed up survey save -->
     <cache name="org.chai.kevin.survey.validation.FormEnteredValue"
     		maxElementsInMemory="1000"

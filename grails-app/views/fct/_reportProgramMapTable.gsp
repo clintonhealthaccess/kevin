@@ -3,30 +3,13 @@
 		<tbody>
 			<tr class='parent'>
 				<td>
-					<g:if test="${currentLocation.parent != null}">
-						<%
-							parentLocationLinkParams = [:]
-							parentLocationLinkParams.putAll linkParams
-							parentLocationLinkParams['location'] = currentLocation.parent?.id+""
-						%>
-						<a class="level-up left" href="${createLink(controller: controllerName, action: 'view', params: parentLocationLinkParams)}">
-						<g:message code="report.view.label" args="${[i18n(field: currentLocation.parent.names)]}"/></a>		  
-					</g:if>
-					<g:i18n field="${currentLocation.names}" />					
+					<div class="left"><g:render template="/templates/reportLocationParent"/></div>
+					<g:i18n field="${currentLocation.names}" />
 				</td>
 				<g:if test="${reportIndicators != null && !reportIndicators.empty}">
 					<g:each in="${reportIndicators}" var="indicator" status="i">
-						<td class="${i == reportIndicators.size()-1 ? 'indicator-worst': i == 0 ? 'indicator-best': 'indicator-middle'}">
-							<g:if test="${currentIndicators.contains(indicator)}"><g:i18n field="${indicator.names}" /></g:if>
-							<g:else>
-								<%
-									indicatorLinkParams = [:]
-									indicatorLinkParams.putAll linkParams
-									indicatorLinkParams['indicators'] = indicator.id+""
-								%>
-								<a href="${createLink(controller: controllerName, action: 'view', params: indicatorLinkParams)}">
-								<g:i18n field="${indicator.names}" /></a>
-							</g:else>
+						<td>
+							<g:i18n field="${indicator.names}" />
 							<g:render template="/templates/help_tooltip" 
 								model="[names: i18n(field: indicator.names), descriptions: i18n(field: indicator.descriptions)]" />
 						</td>
@@ -46,7 +29,7 @@
 								locationLinkParams.putAll linkParams
 								locationLinkParams['location'] = location.id+""
 							%>
-							<a href="${createLink(controller: controllerName, action: 'view',  params: locationLinkParams)}">
+							<a href="${createLink(controller: controllerName, action: actionName,  params: locationLinkParams)}">
 							<g:i18n field="${location.names}" /></a>
 						</g:else>
 					</td>
@@ -55,22 +38,27 @@
 							<g:if test="${viewSkipLevels != null && viewSkipLevels.contains(currentLocation.level)}"><td></td></g:if>
 							<g:else>
 								<td>
-									<g:set var="reportValue" value="${reportTable.getReportValue(location, indicator)}"/>
-									<g:if test="${reportValue != null && reportValue.numberValue > 0}">
-										<div class="js-map-location" data-location-code="${location.code}" data-location-names="${i18n(field: location.names)}" 
-											data-indicator-code="${indicator.code}" data-indicator-names="${i18n(field:indicator.names)}"
+									<g:set var="reportMapValue" value="${reportTable.getMapReportValue(location, indicator)}"/>
+									<div class="js-map-table-value ${reportMapValue != null && !reportMapValue.isNull() && reportMapValue.numberValue > 0 ? 'js-selected-value':''}"
+											data-location-code="${location.code}" 
+											data-location-names="${i18n(field: location.names)}" 
+											data-indicator-code="${indicator.code}" 
+											data-indicator-names="${i18n(field:indicator.names)}"
 											data-indicator-class="${i == reportIndicators.size()-1 ? 'indicator-worst': i == 0 ? 'indicator-best': 'indicator-middle'}">
-											<g:mapReportValue value="${reportTable.getMapReportValue(location, indicator)}" type="${indicator.getType()}" format="${indicator.getFormat()}"/>
+										<div class="report-value-number">
+											<g:reportMapValue 
+															value="${reportTable.getMapReportValue(location, indicator)}"
+															type="${indicator.type}"
+															format="${indicator.numberFormat}"/>
 										</div>
-									</g:if>
-									<g:elseif test="${reportValue != null && reportValue.numberValue == 0}">
-										<div>
-											<g:mapReportValue value="${reportTable.getMapReportValue(location, indicator)}" type="${indicator.getType()}" format="${indicator.getFormat()}"/>
-										</div>
-									</g:elseif>
-									<g:else>
-										<div class="report-value report-value-na" data-report-value="${message(code:'report.value.na')}"><g:message code="report.value.na"/></div>
-									</g:else>
+										<g:if test="${!location.collectsData()}">
+											<div class="report-value-percentage hidden">
+												<g:reportPercentage value="${reportTable.getMapReportPercentage(location, indicator)}" 
+																type="${indicator.type}" 
+																format="${indicator.percentageFormat}"/>
+											</div>
+										</g:if>
+									</div>
 								</td>
 							</g:else>
 						</g:each>
@@ -83,5 +71,6 @@
 		</tbody>
 	</table>
 	<!-- TODO nav-table.sass & message.properties -->
-	<p style="margin-top:10px">* Denotes location missing map information.</p>
+	<p style="font-size:11px; margin-top:10px;">&#185; Denotes missing FOSA coordinates.</p>
+	<p style="font-size:11px; margin-top:10px;">&#178; Denotes missing FOSA facility.</p>
 </div>

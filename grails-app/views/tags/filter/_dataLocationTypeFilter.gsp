@@ -4,13 +4,18 @@
 		newLinkParams.putAll linkParams
 		newLinkParams.remove 'dataLocationTypes'
 	%>
-	<g:form name="report-filters" method="get" url="[controller:controllerName, action:actionName, params: newLinkParams]">
-			
+	<g:form name="report-filters" method="get" url="[controller:controllerName, action:actionName, params: newLinkParams]">			
 		<span class="js_dropdown dropdown">
 			<a class="datalocation js_dropdown-link nice-button with-highlight" href="#">
-				<g:message code="filter.datalocationtype.label"/>
+				<g:if test="${currentLocationTypes != null && !currentLocationTypes.empty}">
+					<g:each in="${currentLocationTypes}" var="currentLocationType" status="i">					
+							<g:if test="${i < currentLocationTypes.size() && i < 3}">
+								<g:i18n field="${currentLocationType.names}"/><g:if test="${i < currentLocationTypes.size()-1 && i < 2}">, </g:if>
+							</g:if>
+					</g:each><g:if test="${currentLocationTypes.size() > 3}">...</g:if>
+				</g:if>
 			</a>
-			<g:if test="${dataLocationTypes != null && !dataLocationTypes.isEmpty()}">
+			<g:if test="${dataLocationTypes != null && !dataLocationTypes.empty}">
 				<div class="js_dropdown-list dropdown-list push-top-10" id="js_location-type-filter">
 					<ul>
 						<li>
@@ -22,7 +27,7 @@
 									${currentLocationTypes != null && !currentLocationTypes.empty && currentLocationTypes.contains(type)?'checked="checked"':''}/>
 									<label for="${type.id}"><g:i18n field="${type.names}"/></label>								
 								</li>
-							</g:each>	        
+							</g:each>
 						<li>
 						<button id="js_data-location-type-submit" type="submit"><g:message code="filter.datalocationtype.filter"/></button></li>
 					</ul>

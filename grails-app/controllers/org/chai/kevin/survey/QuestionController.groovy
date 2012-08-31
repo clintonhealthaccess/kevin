@@ -55,6 +55,7 @@ class QuestionController extends AbstractController {
 			survey: survey,
 			entities: questions,
 			entityCount: surveyService.countSurveyQuestions(params['q'], survey),
+			entityClass: getEntityClass(),
 			code: 'survey.question.label',
 			search: true
 		])
