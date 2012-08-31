@@ -16,6 +16,7 @@ import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.LocationSorter;
 import org.chai.kevin.dashboard.DashboardTarget;
+import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.Location;
@@ -38,31 +39,6 @@ public class ReportService {
 	private LanguageService languageService;
 	private SessionFactory sessionFactory;
 	private Set<String> skipLevels;
-	
-	public <T extends CalculationLocation> Map<Location, List<T>> getParents(List<T> locations, LocationLevel level) {									
-		
-		Map<Location, List<T>> locationMap = new HashMap<Location, List<T>>();
-		
-		for (T location : locations){			
-			Location parentLocation = locationService.getParentOfLevel(location, level);
-			if(!locationMap.containsKey(parentLocation)) locationMap.put(parentLocation, new ArrayList<T>());
-			locationMap.get(parentLocation).add(location);
-		}
-				
-		//sort location map keys
-		List<Location> sortedLocations = new ArrayList<Location>(locationMap.keySet());
-		Collections.sort(sortedLocations, LocationSorter.BY_NAME(languageService.getCurrentLanguage()));
-		
-		//sort location map values
-		Map<Location, List<T>> sortedLocationsMap = new LinkedHashMap<Location, List<T>>();		
-		for (Location location : sortedLocations){
-			List<T> sortedList = locationMap.get(location);
-			Collections.sort(sortedList, LocationSorter.BY_NAME(languageService.getCurrentLanguage()));
-			sortedLocationsMap.put(location, sortedList);
-		}
-		
-		return sortedLocationsMap;
-	}
 	
 	public ReportProgram getRootProgram() {
 		ReportProgram program = (ReportProgram)sessionFactory.getCurrentSession().createCriteria(ReportProgram.class)
@@ -93,6 +69,11 @@ public class ReportService {
 		
 		if (hasTargets && collectedPrograms != null) collectedPrograms.add(program);
 		return hasTargets;
+	}
+	
+	public List getReportTargets(Data<?> data) {
+		
+		return null;
 	}
 	
 	// TODO check this

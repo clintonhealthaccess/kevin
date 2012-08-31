@@ -44,6 +44,9 @@ import org.chai.kevin.Importable;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.reports.AbstractReportTarget;
+import org.chai.kevin.reports.ReportEntity;
+import org.chai.kevin.reports.ReportProgram;
+import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.StoredValue;
 import org.hibernate.annotations.Cache;
@@ -52,14 +55,15 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity(name = "DsrTarget")
 @Table(name = "dhsst_dsr_target", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DsrTarget extends AbstractReportTarget implements Exportable, Importable {
+public class DsrTarget extends ReportEntity implements ReportTarget, Exportable, Importable {
 	
 	private Long id;
 	private Data<StoredValue> data; //this can be either a calculation or a data element
 	private DsrTargetCategory category;
 	private String format;
 	private Boolean average; //this can either be an average (true) or sum (null or false)
-	
+	private ReportProgram program;
+
 	@Id
 	@GeneratedValue
 	public Long getId() {
@@ -114,7 +118,17 @@ public class DsrTarget extends AbstractReportTarget implements Exportable, Impor
 	public Boolean getAverage() {
 		return average;
 	}
+	
 	public void setAverage(Boolean average) {
 		this.average = average;
-	}	
+	}
+	
+	@ManyToOne(targetEntity=ReportProgram.class)
+	public ReportProgram getProgram() {
+		return program;
+	}
+
+	public void setProgram(ReportProgram program) {
+		this.program = program;
+	}
 }

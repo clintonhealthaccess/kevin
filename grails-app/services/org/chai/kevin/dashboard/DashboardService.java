@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.chai.kevin.LanguageService;
 import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -50,10 +49,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class DashboardService {
 
-//	private Log log = LogFactory.getLog(DashboardService.class);
-	
 	private ReportService reportService;
-	private LanguageService languageService;
 	private SessionFactory sessionFactory;
 	private Set<String> locationSkipLevels;
 	private DashboardValueService dashboardPercentageService;	
@@ -206,7 +202,4 @@ public class DashboardService {
 		this.reportService = reportService;
 	}
 	
-	public void setLanguageService(LanguageService languageService) {
-		this.languageService = languageService;
-	}
 }

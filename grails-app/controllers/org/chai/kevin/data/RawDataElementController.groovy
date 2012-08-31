@@ -187,8 +187,10 @@ class RawDataElementController extends AbstractEntityController {
 			Set<Data<?>> referencingData = dataService.getReferencingData(rawDataElement)
 
 			render (view: '/entity/data/explainRawDataElement',  model: [
-				rawDataElement: rawDataElement, 
+				rawDataElement: rawDataElement,
+				targets: [], 
 				surveyElements: surveyElementMap, 
+				planningElements: [],
 				referencingData: referencingData
 			])
 		}

@@ -1,10 +1,6 @@
 package org.chai.kevin
 
 import org.apache.shiro.crypto.hash.Sha256Hash
-import org.chai.kevin.cost.CostRampUp
-import org.chai.kevin.cost.CostRampUpYear
-import org.chai.kevin.cost.CostTarget
-import org.chai.kevin.cost.CostTarget.CostType
 import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.Enum
@@ -707,60 +703,6 @@ public class Initializer {
 		}
 	}
 
-	static def createCost() {
-		if (!CostRampUp.count()) {
-			// Cost
-			new CostRampUp(names:j(["en":"Constant"]), descriptions:j([:]), code:"CONST", years: [
-						1: new CostRampUpYear(year: 1, value: 0.2),
-						2: new CostRampUpYear(year: 2, value: 0.2),
-						3: new CostRampUpYear(year: 3, value: 0.2),
-						4: new CostRampUpYear(year: 4, value: 0.2),
-						5: new CostRampUpYear(year: 5, value: 0.2)
-					]).save(failOnError: true);
-		}
-
-		if (!ReportProgram.count()) {
-			def ga = ReportProgram.findByCode("Geographical Access")
-
-			new CostTarget(
-					names:j(["en":"Annual Internet Access Cost"]), code:"Internet Cost", descriptions:j(["en":"Annual Internet Access Cost"]),
-					program: ga,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
-					costType: CostType.OPERATION,
-					costRampUp: CostRampUp.findByCode("CONST"),
-					typeCodeString: "District Hospital,Health Center"
-					).save(failOnError: true)
-
-			new CostTarget(
-					names:j(["en":"Connecting Centers to the Internet"]), code:"Connecting Centers", descriptions:j(["en":"Connecting Facilities to the Internet"]),
-					program: ga,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
-					costType: CostType.INVESTMENT,
-					costRampUp: CostRampUp.findByCode("CONST"),
-					typeCodeString: "District Hospital,Health Center"
-					).save(failOnError: true)
-
-			new CostTarget(
-					names:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]), code:"New Phones CHW", descriptions:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]),
-					program: ga,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
-					costType: CostType.INVESTMENT,
-					costRampUp: CostRampUp.findByCode("CONST"),
-					typeCodeString: "District Hospital,Health Center"
-					).save(failOnError: true)
-
-			def hrh = ReportProgram.findByCode("Human Resources for Health")
-
-			new CostTarget(
-					names:j(["en":"Facility Staff Training"]), code:"Facility Staff Training", descriptions:j(["en":"Facility Staff Training"]),
-					program: hrh,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
-					costType: CostType.INVESTMENT,
-					costRampUp: CostRampUp.findByCode("CONST")
-					).save(failOnError: true)
-		}
-	}
-	
 	static def createDashboard() {
 		if (!DashboardProgram.count()) {
 

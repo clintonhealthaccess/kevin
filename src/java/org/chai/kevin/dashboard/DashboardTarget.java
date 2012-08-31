@@ -28,6 +28,7 @@ package org.chai.kevin.dashboard;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -42,6 +43,7 @@ import org.chai.kevin.Exportable;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.util.Utils;
@@ -51,11 +53,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity(name="DashboardTarget")
 @Table(name="dhsst_dashboard_target", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DashboardTarget extends DashboardEntity implements ReportTarget, Exportable {
+public class DashboardTarget extends ReportEntity implements DashboardEntity, ReportTarget, Exportable {
 
 	private Long id;
 	private Calculation<?> calculation;
 	private ReportProgram program;
+	protected Integer weight;
 	
 	@Id
 	@GeneratedValue
@@ -118,6 +121,13 @@ public class DashboardTarget extends DashboardEntity implements ReportTarget, Ex
 	@Override
 	public String toExportString() {
 		return "[" + Utils.formatExportCode(getCode()) + "]";
+	}
+	@Basic
+	public Integer getWeight() {
+		return weight;
+	}
+	public void setWeight(Integer weight) {
+		this.weight = weight;
 	}
 
 }

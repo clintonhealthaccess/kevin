@@ -1,3 +1,5 @@
+<%@page import="org.chai.kevin.util.Utils"%>
+
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -23,22 +25,22 @@
     	</script>
 
 		<div class="main">
-			<ul class="tab-navigation horizontal">
+			<ul class="tab-subnav horizontal">
 				<li>
 					<a class="js_tab-selector selected" href="#" data-type="reports" data-id="${rawDataElement.id}">Used in reports</a>
 				</li>
 				<li>
 					<a class="js_tab-selector" href="#" data-type="survey" data-id="${rawDataElement.id}">Used in survey</a>
 				</li>
-				<li>
+				<!-- li>
 					<a class="js_tab-selector" href="#" data-type="planning" data-id="${rawDataElement.id}">Used in planning</a>
-				</li>
+				</li -->
 				<li>
 					<a class="js_tab-selector" href="#" data-type="data" data-id="${rawDataElement.id}">Used in data</a>
 				</li>
 			</ul>
 		</div>
-		
+
 		<div class="js_tab-${rawDataElement.id}" id="js_tab-reports-${rawDataElement.id}">
 		
 		</div>
@@ -58,7 +60,7 @@
 						<g:each in="${surveyElements}" status="i" var="surveyElement"> 
 							<g:set var="question" value="${surveyElement.key.surveyQuestion}" /> 
 							<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-								<td>${question.section.program.survey.period.startDate} &harr; ${question.section.program.survey.period.endDate}</td>
+								<td>${Utils.formatDate(question.section.program.survey.period.startDate)} &harr; ${Utils.formatDate(question.section.program.survey.period.endDate)}</td>
 								<td>${i18n(field:question.section.program.survey.names)}</td>
 								<td><g:stripHtml field="${i18n(field: question.names)}" chars="100"/></a></td>
 								<td>${surveyElement.value}</td>
@@ -74,15 +76,13 @@
 			</g:else>
 		</div>
 		
-		<div class="js_tab-${rawDataElement.id} hidden" id="js_tab-planning-${rawDataElement.id}">
-		
-		</div>
 		
 		<div class="js_tab-${rawDataElement.id} hidden" id="js_tab-data-${rawDataElement.id}">
 			<g:if test="${!referencingData.isEmpty()}">
 				<g:render template="/entity/data/referencingDataList" model="[referencingData: referencingData]"/>
 			</g:if>
 		</div>
+		
 		
 	</body>
 </html>
