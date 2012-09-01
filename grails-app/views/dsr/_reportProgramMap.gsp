@@ -165,7 +165,7 @@
 					reportValueIcon.options.labelClassName += ' report-value-marker-true'
 				else
 					reportValueIcon.options.labelClassName += ' report-value-marker-false'
-				break;				
+				break;
 			case '${ValueType.STRING}':
 				reportValueIcon.options.labelClassName += ' report-value-marker-string'
 				break;				

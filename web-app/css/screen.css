@@ -1360,13 +1360,11 @@ textarea.login-field { width: 400px; height: 50px; text-align: left; }
 .map_legend li .indicator-worst { background: #e41a1c; }
 
 /* line 167, ../../src/stylesheets/partials/_nav-table.sass */
-.map { font-size: 17px; height: 500px; margin: 10px auto 0px; width: 948px; }
-/* line 173, ../../src/stylesheets/partials/_nav-table.sass */
-.map .report-value-marker-true { color: #258cd5; font-size: 25px; font-weight: bold; }
-/* line 177, ../../src/stylesheets/partials/_nav-table.sass */
-.map .report-value-marker-false { color: #e41a1c; font-size: 20px; opacity: 0.5; }
-/* line 181, ../../src/stylesheets/partials/_nav-table.sass */
-.map .report-value-marker-number, .map .report-value-marker-string, .map .report-value-marker-text { opacity: 0.5; }
+.map { font-size: 17px; font-weight: bold; height: 500px; margin: 10px auto 0px; width: 948px; }
+/* line 174, ../../src/stylesheets/partials/_nav-table.sass */
+.map .report-value-marker-true { color: #258cd5; font-size: 25px; font-weight: bold; opacity: 1; }
+/* line 179, ../../src/stylesheets/partials/_nav-table.sass */
+.map .report-value-marker-false { color: #e41a1c; font-size: 20px; font-weight: normal; opacity: 0.5; }
 /* line 185, ../../src/stylesheets/partials/_nav-table.sass */
 .map .report-value-marker-na { color: darkgray; opacity: 0.5; }
 /* line 189, ../../src/stylesheets/partials/_nav-table.sass */
