@@ -32,7 +32,7 @@ abstract class FctIntegrationTests extends IntegrationTests {
 			names: [:],
 			code: code,
 			target: target,
-			sum: sum
+			data: sum
 		).save(failOnError: true)
 		target.targetOptions << targetOption
 		target.save(failOnError: true)
@@ -45,7 +45,7 @@ abstract class FctIntegrationTests extends IntegrationTests {
 			order: order,
 			code: code,
 			target: target,		
-			sum: sum
+			data: sum
 		).save(failOnError: true)		
 		target.targetOptions << targetOption
 		target.save(failOnError: true)

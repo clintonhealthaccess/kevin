@@ -30,5 +30,4 @@ package org.chai.kevin.reports
 
 constraints = {
 	code (nullable: false, blank: false, unique: true)
-	
 }

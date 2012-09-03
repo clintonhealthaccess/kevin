@@ -30,20 +30,15 @@ package org.chai.kevin.dashboard;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.reports.ReportEntity;
+import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.util.Utils;
@@ -51,32 +46,16 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="DashboardTarget")
-@Table(name="dhsst_dashboard_target", uniqueConstraints={@UniqueConstraint(columnNames="code")})
+@Table(name="dhsst_dashboard_target")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DashboardTarget extends ReportEntity implements DashboardEntity, ReportTarget, Exportable {
+public class DashboardTarget extends AbstractReportTarget implements DashboardEntity, ReportTarget, Exportable {
 
-	private Long id;
-	private Calculation<?> calculation;
 	private ReportProgram program;
 	protected Integer weight;
 	
-	@Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
-	}	
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	@ManyToOne(targetEntity=Calculation.class, optional=false, fetch=FetchType.LAZY)
-	@JoinColumn(nullable=false)
+	@Transient
 	public Calculation<?> getCalculation() {
-		return calculation;
-	}
-	
-	public void setCalculation(Calculation<?> calculation) {
-		this.calculation = calculation;
+		return (Calculation<?>)getData();
 	}
 
 	@ManyToOne(targetEntity=ReportProgram.class)

@@ -10,6 +10,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.UserType;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 class FunctionalSpec extends GebSpec {
 

@@ -29,10 +29,10 @@ class EntityExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = SurveyIntegrationTests.newSurvey(j(["en":"survey"]), period)
-		def program = SurveyIntegrationTests.newSurveyProgram(j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = SurveyIntegrationTests.newSurveySection(j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = SurveyIntegrationTests.newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = SurveyIntegrationTests.newSurvey(CODE(10), j(["en":"survey"]), period)
+		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = SurveyIntegrationTests.newSurveySection(CODE(12), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = SurveyIntegrationTests.newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))		
@@ -52,10 +52,10 @@ class EntityExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = SurveyIntegrationTests.newSurvey(j(["en":"survey"]), period)
-		def program = SurveyIntegrationTests.newSurveyProgram(j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = SurveyIntegrationTests.newSurveySection(j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = SurveyIntegrationTests.newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = SurveyIntegrationTests.newSurvey(CODE(10), j(["en":"survey"]), period)
+		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = SurveyIntegrationTests.newSurveySection(CODE(12), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = SurveyIntegrationTests.newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))		
@@ -73,10 +73,10 @@ class EntityExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = SurveyIntegrationTests.newSurvey(j(["en":"survey"]), period)
-		def program = SurveyIntegrationTests.newSurveyProgram(j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = SurveyIntegrationTests.newSurveySection(j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = SurveyIntegrationTests.newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = SurveyIntegrationTests.newSurvey(CODE(10), j(["en":"survey"]), period)
+		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = SurveyIntegrationTests.newSurveySection(CODE(12), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = SurveyIntegrationTests.newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))
@@ -134,7 +134,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		
 		then:
 		surveyQuestionHeaders.equals(["code", "names", "order", "section", "typeCodeString", "descriptions"])
-		dashboardTargetHeaders.equals(["code", "names", "order", "calculation", "program", "weight", "descriptions"])
+		dashboardTargetHeaders.equals(["code", "names", "order", "program", "weight", "data", "descriptions"])
 	}	
 	
 	

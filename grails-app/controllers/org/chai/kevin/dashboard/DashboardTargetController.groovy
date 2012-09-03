@@ -74,8 +74,8 @@ class DashboardTargetController extends AbstractEntityController {
 	}
 	
 	def bindParams(def entity) {
-		bindData(entity, params, [exclude:'calculation.id'])
-		if (params.int('calculation.id') != null) entity.calculation = dataService.getData(params.int('calculation.id'), Calculation.class)
+		bindData(entity, params, [exclude:'data.id'])
+		if (params.int('data.id') != null) entity.data = dataService.getData(params.int('data.id'), Calculation.class)
 		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967

@@ -289,7 +289,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "delete normalized data element with associated expression throws exception"() {
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(1):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
 		
 		dataService.delete(rawDataElement)
 		
@@ -313,7 +313,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "get referencing normalized data element"() {
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(1):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
 		
 		then:
 		dataService.getReferencingNormalizedDataElements(rawDataElement).equals([normalizedDataElement])

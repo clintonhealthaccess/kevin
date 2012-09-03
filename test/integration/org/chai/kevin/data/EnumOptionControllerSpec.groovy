@@ -48,9 +48,9 @@ class EnumOptionControllerSpec extends IntegrationTests {
 	def "search and list option"(){
 		setup:
 		def enume = newEnume(CODE("the code one"), "My Enum one", "Enum one for test one");
-		def option2 = newEnumOption(enume, v("\"absent\""), o("en":1, "fr":2))
-		def option3 = newEnumOption(enume, v("\"options 3\""), o("en":3, "fr":3))
-		def option1 = newEnumOption(enume, v("\"testion\""), o("en":2, "fr":1))
+		def option2 = newEnumOption(enume, "\"absent\"", o("en":1, "fr":2))
+		def option3 = newEnumOption(enume, "\"options 3\"", o("en":3, "fr":3))
+		def option1 = newEnumOption(enume, "\"testion\"", o("en":2, "fr":1))
 		
 		enumOptionController = new EnumOptionController()
 		
@@ -80,8 +80,8 @@ class EnumOptionControllerSpec extends IntegrationTests {
 	def "delete enum option and list"() {
 		setup:
 		def enume = newEnume(CODE("the code one"), "My Enum one", "Enum one for test one");
-		def option2 = newEnumOption(enume, v("\"absent\""), o("en":1, "fr":2))
-		def option1 = newEnumOption(enume, v("\"testion\""), o("en":2, "fr":1))
+		def option2 = newEnumOption(enume, "\"absent\"", o("en":1, "fr":2))
+		def option1 = newEnumOption(enume, "\"testion\"", o("en":2, "fr":1))
 		
 		enumOptionController = new EnumOptionController()
 		

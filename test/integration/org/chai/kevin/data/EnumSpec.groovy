@@ -49,8 +49,8 @@ class EnumSpec extends IntegrationTests {
 	def "test enum option ordering"() {
 		setup:
 		def enume = newEnume(CODE(1))
-		def option1 = newEnumOption(enume, v("\"test\""), o("en":2, "fr":1))
-		def option2 = newEnumOption(enume, v("\"absent\""), o("en":1, "fr":2))
+		def option1 = newEnumOption(enume, "\"test\"", o("en":2, "fr":1))
+		def option2 = newEnumOption(enume, "\"absent\"", o("en":1, "fr":2))
 		
 		when:
 		def enumefromdb = Enum.findByCode(CODE(1))

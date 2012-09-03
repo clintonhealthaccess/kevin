@@ -82,41 +82,41 @@ abstract class IntegrationTests extends IntegrationSpec {
 	def springcacheService
 	def sessionFactory
 	
-	static final String CODE (def number) { return "CODE"+number }
+	public static final String CODE (def number) { return "CODE"+number }
 	
-	static final Type INVALID_TYPE = new Type("invalid_type")
+	public static final Type INVALID_TYPE = new Type("invalid_type")
 	
-	static final String HEALTH_CENTER_GROUP = "Health Center"
-	static final String DISTRICT_HOSPITAL_GROUP = "District Hospital"
+	public static final String HEALTH_CENTER_GROUP = "Health Center"
+	public static final String DISTRICT_HOSPITAL_GROUP = "District Hospital"
 	
-	static final String NATIONAL = "National"
-	static final String PROVINCE = "Province"
-	static final String DISTRICT = "District"
-	static final String SECTOR = "Sector"
+	public static final String NATIONAL = "National"
+	public static final String PROVINCE = "Province"
+	public static final String DISTRICT = "District"
+	public static final String SECTOR = "Sector"
 	
-	static final String RWANDA = "Rwanda"
-	static final String KIGALI_CITY = "Kigali City"
-	static final String NORTH = "North"
-	static final String BURERA = "Burera"
-	static final String BUTARO = "Butaro DH"
-	static final String KIVUYE = "Kivuye HC"
+	public static final String RWANDA = "Rwanda"
+	public static final String KIGALI_CITY = "Kigali City"
+	public static final String NORTH = "North"
+	public static final String BURERA = "Burera"
+	public static final String BUTARO = "Butaro DH"
+	public static final String KIVUYE = "Kivuye HC"
 	
-	static final Date mar01 = getDate( 2005, 3, 1 );
-	static final Date mar31 = getDate( 2005, 3, 31 );
+	public static final Date mar01 = getDate( 2005, 3, 1 );
+	public static final Date mar31 = getDate( 2005, 3, 31 );
 	
-	static String ROOT = "Root"
+	public static String ROOT = "Root"
 	
-	static String PROGRAM1 = "Program1"
-	static String TARGET1 = "Target 1"
-	static String TARGET2 = "Target 2"
+	public static String PROGRAM1 = "Program1"
+	public static String TARGET1 = "Target 1"
+	public static String TARGET2 = "Target 2"
 	
-	static String PROGRAM2 = "Program2"
-	static String TARGET3 = "Target 3"
+	public static String PROGRAM2 = "Program2"
+	public static String TARGET3 = "Target 3"
 	
-	static String PROGRAM3 = "Program3"
-	static String TARGET4 = "Target 4"
+	public static String PROGRAM3 = "Program3"
+	public static String TARGET4 = "Target 4"
 	
-	static String CATEGORY1 = "Category1"
+	public static String CATEGORY1 = "Category1"
 	
 	// TODO get rid of this
 	def static inc = 0;
@@ -293,11 +293,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newNormalizedDataElement(def code, Type type, def expressionMap) {
-		return newNormalizedDataElement([:], code, type, expressionMap, [:])
+		return newNormalizedDataElement(j([:]), code, type, expressionMap, [:])
 	}
 	
 	static def newNormalizedDataElement(def code, Type type, def expressionMap, Map params) {
-		return newNormalizedDataElement([:], code, type, expressionMap, params)
+		return newNormalizedDataElement(j([:]), code, type, expressionMap, params)
 	}
 	
 	static NormalizedDataElementValue newNormalizedDataElementValue(def normalizedDataElement, def location, def period, def status, def value) {

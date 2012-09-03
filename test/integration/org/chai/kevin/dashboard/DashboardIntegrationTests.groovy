@@ -54,12 +54,12 @@ abstract class DashboardIntegrationTests extends IntegrationTests {
 	}
 	
 	static def newDashboardTarget(def code, def calculation, def program, def weight) {
-		def dashboardTarget = new DashboardTarget(code: code, calculation: calculation, program: program, weight: weight).save(failOnError: true)
+		def dashboardTarget = new DashboardTarget(code: code, data: calculation, program: program, weight: weight).save(failOnError: true)
 		return dashboardTarget
 	}
 	
 	static def newDashboardTarget(def code, def calculation, def program, def weight, def order) {
-		def dashboardTarget = new DashboardTarget(code: code, calculation: calculation, program: program, weight: weight, order: order).save(failOnError: true)
+		def dashboardTarget = new DashboardTarget(code: code, data: calculation, program: program, weight: weight, order: order).save(failOnError: true)
 		return dashboardTarget
 	}
 	

@@ -32,7 +32,7 @@
 				<td>
 					<g:i18n field="${targetOption.target.names}"/>
 				</td>
-				<td>${targetOption.sum.code}</td>
+				<td>${targetOption.data.code}</td>
 				<td>${targetOption.order}</td>
 			</tr>
 		</g:each>
