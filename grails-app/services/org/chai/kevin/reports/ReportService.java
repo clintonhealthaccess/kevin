@@ -71,9 +71,10 @@ public class ReportService {
 		return hasTargets;
 	}
 	
-	public List getReportTargets(Data<?> data) {
-		
-		return null;
+	public List<AbstractReportTarget> getReportTargets(Data<?> data) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AbstractReportTarget.class);
+		criteria.add(Restrictions.eq("data", data));
+		return (List<AbstractReportTarget>)criteria.list();
 	}
 	
 	// TODO check this

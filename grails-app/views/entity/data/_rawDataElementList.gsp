@@ -1,5 +1,4 @@
-<div class="main">
-  <table class="listing">
+<table class="listing">
   	<thead>
   		<tr>
   			<th/>
@@ -29,14 +28,14 @@
   					</ul>
   				</td>
   				<td>${rawDataElement.id}</td> 
-  				<td>${rawDataElement.code}</td>  				
   				<td class="data-element-explainer" data-data="${rawDataElement.id}">
   					<a class="cluetip"
-  						href="${createLink(controller:'rawDataElement', action:'getExplainer', params:[id: rawDataElement.id])}"
+  						href="${createLink(controller:'data', action:'getExplainer', params:[id: rawDataElement.id])}"
 					 	rel="${createLink(controller: 'data', action:'getDescription', params:[id: rawDataElement.id])}">
-  						<g:i18n field="${rawDataElement.names}" />
+  						${rawDataElement.code}
   					</a>
   				</td>
+  				<td><g:i18n field="${rawDataElement.names}" /></td>  				
   				<td><g:toHtml value="${rawDataElement.type.getDisplayedValue(2, 2)}"/></td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${rawDataElement.lastValueChanged}"/></td>
   				<td>
@@ -71,8 +70,7 @@
   			</tr>
   		</g:each>
   	</tbody>
-  </table>
-</div>
+</table>
 
 <script type="text/javascript">
 	

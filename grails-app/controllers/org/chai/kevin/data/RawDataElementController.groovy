@@ -173,28 +173,4 @@ class RawDataElementController extends AbstractEntityController {
 		])
 	}
 
-	def getExplainer = {
-		def rawDataElement = RawDataElement.get(params.int('id'))
-
-		if (rawDataElement != null) {
-			List<Period> periods = Period.list([cache: true]);
-			Set<SurveyElement> surveyElements = surveyService.getSurveyElements(rawDataElement, null);
-
-			Map<SurveyElement, Integer> surveyElementMap = new HashMap<SurveyElement,Integer>();
-			for(SurveyElement surveyElement: surveyElements) {
-				surveyElementMap.put(surveyElement, surveyService.getNumberOfApplicableDataLocationTypes(surveyElement));
-			}
-			
-			Set<Data<?>> referencingData = dataService.getReferencingData(rawDataElement)
-
-			render (view: '/entity/data/explainRawDataElement',  model: [
-				rawDataElement: rawDataElement,
-				targets: [], 
-				surveyElements: surveyElementMap, 
-				planningElements: [],
-				referencingData: referencingData
-			])
-		}
-	}
-
 }

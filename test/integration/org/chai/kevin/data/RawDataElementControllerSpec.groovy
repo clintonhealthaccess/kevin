@@ -251,20 +251,6 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		rawDataElementController.modelAndView.model.entityCount == 1
 	}
 
-	def "get data element explainer"() {
-		setup:
-		rawDataElementController = new RawDataElementController()
-		
-		when:
-		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
-		rawDataElementController.params.id = dataElement.id+''
-		rawDataElementController.getExplainer()
-
-		then:
-		rawDataElementController.modelAndView.model.rawDataElement.equals(dataElement)
-//		rawDataElementController.modelAndView.model.periodValues.isEmpty()
-	}
-	
 	def "delete data element with survey checkbox and no attached elements"() {
 		setup:
 		setupLocationTree()

@@ -4,7 +4,7 @@
 function explanationClick(element, prefix, onSuccess){
 	if ($(element).find('a').size() == 0) return;
 	
-	if ($(element).hasClass('me-open')) {
+	if ($(element).parents('tr').hasClass('me-open')) {
 		toClose = true
 	}
 	else {
@@ -31,7 +31,7 @@ function explanationClick(element, prefix, onSuccess){
 				}
 			});
 		}
-		$(element).addClass('me-open');
+		$(element).parents('tr').addClass('me-open');
 	}
 }
 

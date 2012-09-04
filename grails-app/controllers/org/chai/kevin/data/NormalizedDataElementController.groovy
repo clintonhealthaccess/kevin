@@ -146,22 +146,5 @@ class NormalizedDataElementController extends AbstractEntityController {
 			targetURI: getTargetURI()
 		])
 	}
-	
-	def getExplainer = {
-		def normalizedDataElement = NormalizedDataElement.get(params.int('id'))
-
-		if (normalizedDataElement != null) {
-			def periods = Period.list([cache: true])
-			def valuesWithError = [:]
-			periods.each { valuesWithError.put(it, valueService.getNumberOfValues(normalizedDataElement, Status.ERROR, it)) }
-			def referencingData = dataService.getReferencingData(normalizedDataElement)
-
-			render (view: '/entity/data/explainNormalizedDataElement',  model: [
-				normalizedDataElement: normalizedDataElement, 
-				referencingData: referencingData,
-				valuesWithError: valuesWithError
-			])
-		}
-	}
 
 }

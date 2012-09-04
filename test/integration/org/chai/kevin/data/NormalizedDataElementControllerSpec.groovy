@@ -183,23 +183,4 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		NormalizedDataElement.list()[0].expressionMap.equals( [(period1.id+''):[(type1.code):'123'], (period2.id+''):[(type1.code):'456']] )
 	}
 	
-	def "get explainer"() {
-		setup:
-		setupLocationTree()
-		def period1 = newPeriod()
-		def period2 = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
-		newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period1, Status.ERROR, v("1"))
-		newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period2, Status.VALID, v("1"))
-		normalizedDataElementController = new NormalizedDataElementController()
-		
-		when:
-		normalizedDataElementController.params.id = normalizedDataElement.id
-		normalizedDataElementController.getExplainer()
-		
-		then:
-//		normalizedDataElementController.modelAndView.model.values == 2
-		normalizedDataElementController.modelAndView.model.valuesWithError[period1] == 1
-		normalizedDataElementController.modelAndView.model.valuesWithError[period2] == 0
-	}
 }

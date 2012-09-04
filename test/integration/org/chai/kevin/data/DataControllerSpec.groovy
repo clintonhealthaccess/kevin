@@ -1,10 +1,12 @@
 package org.chai.kevin.data;
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.dsr.DsrIntegrationTests;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.task.CalculateTask;
 import org.chai.kevin.task.Task;
 import org.chai.kevin.task.Task.TaskStatus;
+import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.Status;
 import org.chai.kevin.value.Value;
@@ -30,18 +32,41 @@ class DataControllerSpec extends IntegrationTests {
 
 	def "get data element description"() {
 		setup:
+		setupLocationTree()
+		def period = newPeriod()
 		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), v("1"))
 
 		when:
 		dataController = new DataController()
 		dataController.params.id = dataElement.id+""
 		def model = dataController.getDescription()
+		def jsonResult = JSONUtils.getMapFromJSON(dataController.response.contentAsString)
 
 		then:
-		dataController.response.contentAsString.contains("success")
-		dataController.response.contentAsString.contains("number")
+		jsonResult.html.contains("1 values")
+		jsonResult.result == 'success'
 	}
 
+	def "get data element description for normalized data element with error"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		newNormalizedDataElementValue(dataElement, DataLocation.findByCode(BUTARO), period, Status.ERROR, Value.NULL_INSTANCE())
+		
+		when:
+		dataController = new DataController()
+		dataController.params.id = dataElement.id+""
+		def model = dataController.getDescription()
+		def jsonResult = JSONUtils.getMapFromJSON(dataController.response.contentAsString)
+
+		then:
+		jsonResult.html.contains('with error: <span class="bold">1 values</span>')
+		jsonResult.result == 'success'
+	}
+
+	
 	def "get data element values - 404 when no data"() {
 		setup:
 		dataController = new DataController()
@@ -275,4 +300,38 @@ class DataControllerSpec extends IntegrationTests {
 		dataController.modelAndView.model.entities.equals([dataElementValue1])
 	}
 
+	def "get explainer shows referencing data"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id]]))
+		dataController = new DataController()
+		
+		when:
+		dataController.params.id = dataElement.id
+		dataController.getExplainer()
+		
+		then:
+		s(dataController.modelAndView.model.referencingData) == s([normalizedDataElement])
+	}
+	
+	def "get explainer shows referencing targets"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
+		def program = newReportProgram(CODE(1))
+		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(1), 1);
+		def target = DsrIntegrationTests.newDsrTarget(CODE(1), dataElement, program, category)
+		dataController = new DataController()
+		
+		when:
+		dataController.params.id = dataElement.id
+		dataController.getExplainer()
+		
+		then:
+		s(dataController.modelAndView.model.reportTargets) == s([target])
+	}
+	
 }

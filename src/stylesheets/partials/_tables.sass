@@ -232,16 +232,21 @@
  
 .explanation-row
   border: none
-  padding: 0 10px !important
   & > td
     padding: 0
     border: none
     
-.explanation-cell 
+.me-open
+  background: $filler
+    
+.explanation-cell
   table
     margin-bottom: 0px
-  .tab-navigation, .tab-subnav
+  .tab-navigation
     margin-bottom: -15px
+  .tab-subnav
+    border-top: 1px solid $filler
+    margin: 0
   .tab-subnav li a
     line-height: 0.4
   .listing td:first-child

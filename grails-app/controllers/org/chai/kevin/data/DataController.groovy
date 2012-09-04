@@ -6,6 +6,7 @@ import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.task.CalculateTask;
 import org.chai.kevin.task.Task.TaskStatus;
 import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.Status;
 import org.chai.kevin.value.Value;
 import org.codehaus.groovy.grails.commons.ApplicationHolder;
 
@@ -16,6 +17,9 @@ class DataController extends AbstractController {
 	def valueService
 	def refreshValueService
 	
+	def reportService
+	def surveyService
+	
 	def getDescription = {
 		def data = dataService.getData(params.int('id'), Data.class)
 
@@ -23,15 +27,48 @@ class DataController extends AbstractController {
 			render(contentType:"text/json") { result = 'error' }
 		}
 		else {
+			def periods = Period.list()
+			
 			def periodValues = [:]
-			for (Period period : Period.list()) {
-				periodValues.put(period, valueService.getNumberOfValues(data, period));
-			}
+			def valuesWithError = [:]
+			
+			periods.each { periodValues.put(it, valueService.getNumberOfValues(data, it)) }
+			if (data instanceof NormalizedDataElement) periods.each { valuesWithError.put(it, valueService.getNumberOfValues(data, Status.ERROR, it)) }
 
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: '/entity/data/dataDescription', model: [data: data, periodValues: periodValues])
+				html = g.render (template: '/entity/data/dataDescription', model: [data: data, periodValues: periodValues, valuesWithError: valuesWithError])
 			}
+		}
+	}
+	
+	def getExplainer = {
+		def data = dataService.getData(params.int('id'), Data.class)
+
+		if (data == null) {
+			response.sendError(404)
+		}
+		else {
+			def periods = Period.list([cache: true])
+			def referencingData = dataService.getReferencingData(data)
+			
+			def surveyElementMap = [:]
+			if (data instanceof RawDataElement) {
+				def surveyElements = surveyService.getSurveyElements(data, null);
+			
+				surveyElements.each { surveyElement ->
+					surveyElementMap.put(surveyElement, surveyService.getNumberOfApplicableDataLocationTypes(surveyElement));
+				}
+			}
+			
+			def reportTargets = reportService.getReportTargets(data)
+			
+			render (view: '/entity/data/explanation/explainData',  model: [
+				dataElement: data,
+				surveyElements: surveyElementMap,
+				referencingData: referencingData,
+				reportTargets: reportTargets
+			])
 		}
 	}
 	

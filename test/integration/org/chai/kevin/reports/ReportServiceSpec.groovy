@@ -5,6 +5,7 @@ import org.chai.kevin.dashboard.DashboardIntegrationTests;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.dsr.DsrIntegrationTests;
 import org.chai.kevin.dsr.DsrTarget;
+import org.chai.kevin.fct.FctIntegrationTests;
 import org.chai.kevin.location.LocationLevel;
 
 class ReportServiceSpec extends ReportIntegrationTests {
@@ -58,6 +59,33 @@ class ReportServiceSpec extends ReportIntegrationTests {
 		then:
 		collectedPrograms.equals([ReportProgram.findByCode(PROGRAM1), ReportProgram.findByCode(ROOT)])
 		collectedTargets.equals([target])
+	}
+	
+	def "get report targets"() {
+		setup:
+		def sum = newSum("1", CODE(2))
+		def program = newReportProgram(CODE(1))
+		
+		when:
+		def dashboardProgram = DashboardIntegrationTests.newDashboardProgram(CODE(1), program)
+		def dashboardTarget = DashboardIntegrationTests.newDashboardTarget(CODE(1), sum, program, 1)
+		
+		then:
+		reportService.getReportTargets(sum) == [dashboardTarget]
+		
+		when:
+		def dsrCategory = DsrIntegrationTests.newDsrTargetCategory(CODE(1), 1)
+		def dsrTarget = DsrIntegrationTests.newDsrTarget(CODE(1), sum, program, dsrCategory)
+		
+		then:
+		reportService.getReportTargets(sum) == [dashboardTarget, dsrTarget]
+		
+		when:
+		def fctTarget = FctIntegrationTests.newFctTarget(CODE(1), program)
+		def fctTargetOption = FctIntegrationTests.newFctTargetOption(CODE(1), fctTarget, sum)
+		
+		then:
+		reportService.getReportTargets(sum) == [dashboardTarget, dsrTarget, fctTargetOption]
 	}
 	
 }

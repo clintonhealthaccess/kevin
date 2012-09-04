@@ -27,7 +27,7 @@ abstract class FctIntegrationTests extends IntegrationTests {
 		return target
 	}
 
-	def newFctTargetOption(def code, def target, def sum) {
+	static def newFctTargetOption(def code, def target, def sum) {
 		def targetOption = new FctTargetOption(
 			names: [:],
 			code: code,
@@ -39,7 +39,7 @@ abstract class FctIntegrationTests extends IntegrationTests {
 		return targetOption
 	}
 		
-	def newFctTargetOption(def code, def order, def target, def sum) {
+	static def newFctTargetOption(def code, def order, def target, def sum) {
 		def targetOption = new FctTargetOption(
 			names: [:],
 			order: order,
