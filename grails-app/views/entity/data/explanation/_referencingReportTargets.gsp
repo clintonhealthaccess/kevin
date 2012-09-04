@@ -20,6 +20,6 @@
 </g:if>
 <g:else>
 	<div class="explanation-empty">
-		No referencing report targets.
+		<g:message code="data.referencingtarget.none"/>
 	</div>
 </g:else>

@@ -20,6 +20,6 @@
 </g:if>
 <g:else>
 	<div class="explanation-empty">
-		No referencing data.
+		<g:message code="data.referencingdata.none"/>
 	</div>
 </g:else>
