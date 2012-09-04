@@ -22,7 +22,7 @@
     		});
     	</script>
 
-		<g:render template="/entity/data/explanation/${dataElement.class.simpleName}" model="${model}"/>
+		<g:render template="/entity/data/explanation/explain${dataElement.class.simpleName}" model="${model}"/>
 		
 	</body>
 </html>
