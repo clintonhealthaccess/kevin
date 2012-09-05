@@ -34,6 +34,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import net.sf.ehcache.hibernate.HibernateUtil;
+
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
@@ -44,6 +46,8 @@ import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.HibernateProxyHelper;
 
 @Entity(name="DashboardTarget")
 @Table(name="dhsst_dashboard_target")
@@ -55,7 +59,12 @@ public class DashboardTarget extends AbstractReportTarget implements DashboardEn
 	
 	@Transient
 	public Calculation<?> getCalculation() {
-		return (Calculation<?>)getData();
+		if (getData() instanceof HibernateProxy) {
+			return Calculation.class.cast(((HibernateProxy) getData()).getHibernateLazyInitializer().getImplementation());  
+		}
+		else {
+			return Calculation.class.cast(getData());
+		}
 	}
 
 	@ManyToOne(targetEntity=ReportProgram.class)
