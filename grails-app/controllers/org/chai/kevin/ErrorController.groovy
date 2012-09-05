@@ -17,6 +17,6 @@ class ErrorController {
 			html g.renderException(exception: exception)
 		}
 		
-		render(view: '/error')
+		render (view: 'error')
 	}
 }
