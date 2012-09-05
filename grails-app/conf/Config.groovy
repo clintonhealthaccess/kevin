@@ -232,6 +232,7 @@ site.languages=["en","fr","rw"]
 site.fallback.language="en"
 site.entity.list.max=40
 site.period=0
+site.admin.email="admin@dhsst.org"
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
 site.datalocationtype.checked=["District Hospital","Health Center"]
