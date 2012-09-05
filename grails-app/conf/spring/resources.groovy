@@ -30,6 +30,7 @@ import org.chai.kevin.ExpressionService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.RefreshValueService
 import org.chai.kevin.dashboard.DashboardService
+import org.chai.kevin.ExceptionHandler;
 import org.chai.kevin.JaqlService
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationService;
@@ -69,7 +70,12 @@ Set<String> surveyExportSkipLevels = config.survey.export.skip.levels
 String dsrGroupLevel= config.dsr.group.level
 
 beans = {
-		
+	
+	 exceptionHandler(ExceptionHandler){
+        // this is required so that calls to super work
+        exceptionMappings = ['java.lang.Exception': '/error'] 
+    }
+	
 	validationService(ValidationService){
 		jaqlService = ref("jaqlService")		
 	}

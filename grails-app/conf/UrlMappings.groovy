@@ -63,6 +63,7 @@ class UrlMappings {
 		// homepage in home controller
 		"/"(controller:"home", action:"index")
 		"404"(view:'/404')
-		"500"(controller:"error", action:"internalError")
+		"500"(view:'/error')
+//		"500"(controller:"error", action:"internalError")
 	}
 }
