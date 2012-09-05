@@ -13,12 +13,16 @@ class ErrorController {
 			def fromEmail = ConfigurationHolder.config.site.from.email;
 			def exception = request.exception
 			
-			sendMail {
-				multipart true
-				to adminEmail
-				from fromEmail
-				subject "Unhandled exception in the production environment"
-				html g.renderException(exception: exception)
+			try {
+				sendMail {
+					multipart true
+					to adminEmail
+					from fromEmail
+					subject "Unhandled exception in the production environment"
+					html g.renderException(exception: exception)
+				}
+			} catch (Exception e) {
+				log.error("could not send email after exception", e)
 			}
 			
 			render (view: 'error')

@@ -110,7 +110,7 @@ grails.project.dependency.resolution = {
 		compile ":shiro:1.1.5"
 		compile ":springcache:1.3.1"
 		compile ":compass-sass:0.7"
-		compile ":google-analytics:1.0"
+		compile ":google-analytics:2.0"
 		compile ":quartz:1.0-RC2"
 		compile ":constraints:0.8.0"
 		compile ":cached-resources:1.0"
@@ -120,7 +120,7 @@ grails.project.dependency.resolution = {
 		compile ":mail:1.0"
 		compile ":build-info-tag:0.1"
 		compile ":yui-minify-resources:0.1.5"
-		compile ":rabbitmq:1.0.0.RC1"
+		compile ":rabbitmq:1.0.0.RC2"
 		
 		test ":geb:0.7.2"
 		test ":spock:0.6"
