@@ -6,12 +6,14 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Exportable;
+import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.proxy.HibernateProxy;
 
 @Entity(name = "FctTargetOption")
 @Table(name = "dhsst_fct_target_option")
@@ -29,7 +31,12 @@ public class FctTargetOption extends AbstractReportTarget implements Exportable 
 	
 	@Transient
 	public Sum getSum() {
-		return (Sum)getData();		
+		if (getData() instanceof HibernateProxy) {
+			return Sum.class.cast(((HibernateProxy) getData()).getHibernateLazyInitializer().getImplementation());  
+		}
+		else {
+			return Sum.class.cast(getData());
+		}
 	}
 	
 	@ManyToOne(targetEntity=FctTarget.class)
