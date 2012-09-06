@@ -36,6 +36,8 @@ import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.dsr.DsrIntegrationTests;
+import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
@@ -100,7 +102,21 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.getData(normalizedDataElement.id, RawDataElement.class) == null
 		
 	}
-	
+
+	def "get data from DSR"() {
+		setup:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def program = newReportProgram(CODE(1))
+		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(1), 1)
+		def dsrTarget = DsrIntegrationTests.newDsrTarget(CODE(1), rawDataElement, program, category)
+		
+		when:
+		dsrTarget = DsrTarget.findByCode(CODE(1))
+		
+		then:
+		dataService.getData(dsrTarget.getData().id, Calculation.class) == null 
+	}
+		
 	def "get data element by code"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
