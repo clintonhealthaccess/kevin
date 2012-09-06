@@ -38,6 +38,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Importable;
+import org.chai.kevin.data.Data;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.reports.ReportProgram;
@@ -45,6 +46,7 @@ import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.proxy.HibernateProxy;
 
 @Entity(name = "DsrTarget")
 @Table(name = "dhsst_dsr_target")
@@ -56,6 +58,18 @@ public class DsrTarget extends AbstractReportTarget implements ReportTarget, Exp
 	private Boolean average; //this can either be an average (true) or sum (null or false)
 	private ReportProgram program;
 
+	
+	@Override
+	@Transient
+	public Data<?> getData() {
+		if (super.getData() instanceof HibernateProxy) {
+			return Data.class.cast(((HibernateProxy) super.getData()).getHibernateLazyInitializer().getImplementation());  
+		}
+		else {
+			return Data.class.cast(super.getData());
+		}
+	}
+	
 	@Transient
 	public Type getType() {
 		return getData().getType();
