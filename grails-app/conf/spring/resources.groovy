@@ -73,7 +73,9 @@ beans = {
 	
 	 exceptionHandler(ExceptionHandler){
         // this is required so that calls to super work
-        exceptionMappings = ['java.lang.Exception': '/error'] 
+        exceptionMappings = ['java.lang.Exception': '/error']
+		mailService = ref("mailService")
+		grailsApplication = ref("grailsApplication") 
     }
 	
 	validationService(ValidationService){
