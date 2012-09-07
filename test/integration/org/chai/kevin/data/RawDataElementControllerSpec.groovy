@@ -126,10 +126,28 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		rawDataElementController.saveWithoutTokenCheck()
 
 		then:
-		//		rawDataElementController.response.contentAsString.contains("success")
 		(Type.TYPE_BOOL()).equals(dataElement.type)
 	}
 
+	def "can save data element if it still has values and type does not change" () {
+		setup:
+		setupLocationTree()
+		rawDataElementController = new RawDataElementController()
+		def dataLocation = DataLocation.findByCode(BUTARO)
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		newRawDataElementValue(dataElement, period, dataLocation, Value.NULL_INSTANCE())
+		
+		when:
+		rawDataElementController.params.id = dataElement.id
+		rawDataElementController.params.code = dataElement.code
+		rawDataElementController.params['type.jsonValue'] = Type.TYPE_NUMBER().getJsonValue()
+		rawDataElementController.saveWithoutTokenCheck()
+
+		then:
+		rawDataElementController.response.redirectedUrl.equals(rawDataElementController.getTargetURI())
+		dataElement.type.equals(Type.TYPE_NUMBER())
+	}
 	
 	def "not changing data element type does not delete survey entered values"() {
 		setup:

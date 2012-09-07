@@ -34,4 +34,5 @@ constraints = {
 	type(nullable: false, validator: {val, obj -> 
 		return val.isValid();
 	})
+	source(nullable: true)
 }

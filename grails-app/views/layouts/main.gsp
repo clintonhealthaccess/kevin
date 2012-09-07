@@ -123,6 +123,7 @@
 	  						<li><a class="${controllerName=='rawDataElement'?'active':''}" href="${createLink(controller: 'rawDataElement', action:'list')}"><g:message code="rawdataelement.label"/></a></li>
 	  						<li><a class="${controllerName=='normalizedDataElement'?'active':''}" href="${createLink(controller: 'normalizedDataElement', action:'list')}"><g:message code="normalizeddataelement.label"/></a></li>
 	  						<li><a class="${controllerName=='calculation'?'active':''}" href="${createLink(controller: 'calculation', action:'list')}"><g:message code="calculation.label"/></a></li>
+	  						<li><a class="${controllerName=='source'?'active':''}" href="${createLink(controller: 'source', action:'list')}"><g:message code="source.label"/></a></li>
 	  						<li><a class="${controllerName=='enum'?'active':''}" href="${createLink(controller: 'enum', action:'list')}"><g:message code="enum.label"/></a></li>
 	  						<li><a class="${controllerName=='period'?'active':''}" href="${createLink(controller: 'period', action:'list')}"><g:message code="period.label"/></a></li>
 	  						<li><a class="${controllerName=='reportProgram'?'active':''}" href="${createLink(controller: 'reportProgram', action:'list')}"><g:message code="reports.program.label"/></a></li>

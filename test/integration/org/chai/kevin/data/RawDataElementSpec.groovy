@@ -62,4 +62,11 @@ class RawDataElementSpec extends IntegrationTests {
 		RawDataElement.count() == 1
 	}
 	
+	def "source can be null"() {
+		when:
+		new RawDataElement(code: CODE(1), type: Type.TYPE_NUMBER()).save(failOnError: true)
+		
+		then:
+		RawDataElement.count() == 1
+	}
 }
