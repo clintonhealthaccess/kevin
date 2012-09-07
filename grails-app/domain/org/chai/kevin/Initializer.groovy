@@ -8,6 +8,7 @@ import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.ExpressionMap
 import org.chai.kevin.data.NormalizedDataElement
 import org.chai.kevin.data.RawDataElement
+import org.chai.kevin.data.Source;
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type
 import org.chai.kevin.dsr.DsrTarget
@@ -245,10 +246,14 @@ public class Initializer {
 			primaryFunctionOp2.save(failOnError: true, flush:true)
 		}
 
+		if (!Source.count()) {
+			def source = new Source(names:j(['en':'DHSST']), code: 'dhsst').save(failOnError: true)
+		}
+		
 		if (!RawDataElement.count()) {
 			// Data Elements
 			def dataElement10 = new RawDataElement(names:j(["en":"Element 10"]), descriptions:j([:]), code:"CODE10", type: Type.TYPE_ENUM (Enum.findByCode('ENUM2').code))
-			def dataElement1 = new RawDataElement(names:j(["en":"Element 1"]), descriptions:j([:]), code:"CODE1", type: Type.TYPE_NUMBER())
+			def dataElement1 = new RawDataElement(names:j(["en":"Element 1"]), descriptions:j([:]), code:"CODE1", type: Type.TYPE_NUMBER(), source: Source.findByCode('dhsst'))
 			def dataElement2 = new RawDataElement(names:j(["en":"Element 2"]), descriptions:j([:]), code:"CODE2", type: Type.TYPE_NUMBER())
 			def dataElement3 = new RawDataElement(names:j(["en":"Element 3"]), descriptions:j([:]), code:"CODE3", type: Type.TYPE_ENUM (Enum.findByCode('ENUM1').code))
 			def dataElement4 = new RawDataElement(names:j(["en":"Element 4"]), descriptions:j([:]), code:"CODE4", type: Type.TYPE_BOOL())

@@ -36,6 +36,7 @@ import org.chai.kevin.IntegrationTests;
 import org.hibernate.exception.ConstraintViolationException;
 
 class EnumControllerSpec extends IntegrationTests {
+	
 	def enumController
 	
 	//TODO grails 2.0.0 bug needs to be fixed in order for these to validate
@@ -62,6 +63,7 @@ class EnumControllerSpec extends IntegrationTests {
 		when:
 		enumController.params.sort="code"
 		enumController.list()
+		
 		then:
 		enumController.modelAndView != null
 		enumController.modelAndView.model.entities.equals([enumeOne,enumeThree,enumeTwo])
@@ -72,12 +74,11 @@ class EnumControllerSpec extends IntegrationTests {
 		enumController.params.q="kap"
 		enumController.params.sort="code"
 		enumController.search()
+		
 		then:
 		enumController.modelAndView != null
 		enumController.modelAndView.model.entities.equals([enumeOne,enumeTwo])
 		enumController.modelAndView.model.entityCount== 2
-		
 	}
-
 
 }
