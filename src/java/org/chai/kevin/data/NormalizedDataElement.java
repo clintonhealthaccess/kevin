@@ -2,6 +2,7 @@ package org.chai.kevin.data;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Period;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.NormalizedDataElementValue;
 
@@ -23,6 +25,7 @@ public class NormalizedDataElement extends DataElement<NormalizedDataElementValu
 
 	// json text example : {"1":{"DH":"$1 + $2"}, "2":{"HC":"$1 + $2 + $3"}}
 	private ExpressionMap expressionMap = new ExpressionMap();
+	private SourceMap sourceMap = new SourceMap();
 	private Date refreshed;
 	
 	@AttributeOverrides({
@@ -34,6 +37,17 @@ public class NormalizedDataElement extends DataElement<NormalizedDataElementValu
 	
 	public void setExpressionMap(ExpressionMap expressionMap) {
 		this.expressionMap = expressionMap;
+	}
+	
+	@AttributeOverrides({
+		@AttributeOverride(name="jsonText", column=@Column(name="sourceMap", nullable=false))
+	})
+	public SourceMap getSourceMap() {
+		return sourceMap;
+	}
+	
+	public void setSourceMap(SourceMap sourceMap) {
+		this.sourceMap = sourceMap;
 	}
 	
 	@Column(nullable=true, columnDefinition="datetime")
@@ -79,4 +93,26 @@ public class NormalizedDataElement extends DataElement<NormalizedDataElementValu
 		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 
+	@Transient
+	@Override
+	public Set<String> getSources(Period period, DataLocationType type) {
+		Set<String> result = new HashSet<String>();
+		if (sourceMap.containsKey(period.getId()+"") && sourceMap.get(period.getId()+"").containsKey(type.getCode())) {
+			result.addAll(sourceMap.get(period.getId()+"").get(type.getCode()));
+		}
+		return result;
+	}
+	
+	@Transient
+	@Override
+	public Set<String> getSources() {
+		Set<String> result = new HashSet<String>();
+		for (Map<String, List<String>> map : sourceMap.values()) {
+			for (List<String> sources : map.values()) {
+				result.addAll(sources);
+			}
+		}
+		return result;
+	}
+	
 }

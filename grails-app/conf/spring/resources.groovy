@@ -94,6 +94,7 @@ beans = {
 	refreshValueService(RefreshValueService) {
 		expressionService = ref("expressionService")
 		valueService = ref("valueService")
+		locationService = ref("locationService")
 		sessionFactory = ref("sessionFactory")
 		dataService = ref("dataService")
 		periodService = ref("periodService")

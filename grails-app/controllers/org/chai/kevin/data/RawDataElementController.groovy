@@ -71,12 +71,7 @@ class RawDataElementController extends AbstractEntityController {
 	}
 
 	def getModel(def entity) {
-		return [
-			rawDataElement: entity,
-			hasValues: entity.id != null && valueService.getNumberOfValues(entity) != 0,
-			enumes: Enum.list(),
-			code: getLabel()
-		]
+		return [rawDataElement: entity, sources: Source.list()]
 	}
 
 	def getEntityClass(){
@@ -131,11 +126,12 @@ class RawDataElementController extends AbstractEntityController {
 
 	def bindParams(def entity) {
 		bindData(entity, params, [exclude:'type.jsonValue'])
+
+		if (entity.type == null) entity.type = new Type()
+		params['oldType'] = new Type(entity.type.jsonValue)
 		
 		// we assign the new type only if there are no associated values
 		if (entity.id == null || valueService.getNumberOfValues(entity) == 0) {
-			if (entity.type == null) entity.type = new Type()
-			params['oldType'] = new Type(entity.type.jsonValue)
 			bindData(entity, params, [include:'type.jsonValue'])
 		}
 				

@@ -34,31 +34,30 @@ import org.chai.kevin.AbstractEntityController
  * @author Jean Kahigiso M.
  *
  */
-class EnumController extends AbstractEntityController {
-	def enumService
+class SourceController extends AbstractEntityController {
 
 	def getEntity(def id){
-		return Enum.get(id)
+		return Source.get(id)
 	}
 	
 	def createEntity(){  
-		return new Enum();
+		return new Source();
 	}
 	
 	def getLabel() {
-		'enum.label'
+		'source.label'
 	}
 	
 	def getTemplate() {
-		return "/entity/data/createEnum"
+		return "/entity/data/createSource"
 	}
 	
 	def getModel(def entity) {
-		[enumeration: entity]
+		[source: entity]
 	}
 
 	def getEntityClass(){
-		return Enum.class;
+		return Source.class;
 	}
 	
 	def bindParams(def entity) {
@@ -71,28 +70,14 @@ class EnumController extends AbstractEntityController {
 	
 	def list = {
 		adaptParamsForList()
-		def enums = org.chai.kevin.data.Enum.list(params);
+		def sources = Source.list(params);
 		
 		render (view: '/entity/list', model:[
-			entities: enums,
-			template: "data/enumList",
-			entityCount: Enum.count(),
+			entities: sources,
+			template: "data/sourceList",
+			entityCount: Source.count(),
 			code: getLabel(),
 			entityClass: getEntityClass()
-		])
-	}
-	
-	def search = {
-		adaptParamsForList()
-		def enums = enumService.searchEnum(params["q"],params);
-		
-		render (view: '/entity/list', model:[
-			entities: enums,
-			template: "data/enumList",
-			entityCount: enumService.countEnum(params['q']),
-			entityClass: getEntityClass(),
-			q:params['q'],
-			code: getLabel()			
 		])
 	}
 	

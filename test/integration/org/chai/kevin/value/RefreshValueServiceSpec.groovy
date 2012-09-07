@@ -693,4 +693,53 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		NormalizedDataElementValue.list()[3].value.isNull()
 	}
 	
+	def "test refresh normalized data elements sets source"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def source = newSource("source");
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER(), source);
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id, (HEALTH_CENTER_GROUP):"1"]]))
+		
+		when:
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new TestProgress());
+		
+		then:
+		s(NormalizedDataElement.list()[0].getSources(period, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP))) == s([source.code])
+		s(NormalizedDataElement.list()[0].getSources(period, DataLocationType.findByCode(HEALTH_CENTER_GROUP))) == s([])
+	}
+	
+	def "test refresh normalized data elements sets unique source"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def source = newSource("source");
+		def rawDataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER(), source);
+		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER(), source);
+		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement1.id + "+ \$"+rawDataElement2.id, (HEALTH_CENTER_GROUP):"1"]]))
+		
+		when:
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new TestProgress());
+		
+		then:
+		s(NormalizedDataElement.list()[0].getSources(period, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP))) == s([source.code])
+		NormalizedDataElement.list()[0].getSources(period, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)).size() == 1
+		s(NormalizedDataElement.list()[0].getSources(period, DataLocationType.findByCode(HEALTH_CENTER_GROUP))) == s([])
+	}
+	
+	def "test refresh calculation sets source"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def source = newSource("source");
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER(), source);
+		def sum = newSum("\$"+rawDataElement.id, CODE(2))
+		
+		when:
+		refreshValueService.refreshCalculation(sum, new TestProgress());
+		
+		then:
+		s(Sum.list()[0].getSources(period, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP))) == s([source.code])
+		s(Sum.list()[0].getSources(period, DataLocationType.findByCode(HEALTH_CENTER_GROUP))) == s([source.code])
+	}
 }
