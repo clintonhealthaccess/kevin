@@ -100,15 +100,23 @@ class UserController extends AbstractEntityController {
 		super.save()
 	}
 	
+	def getSuccessfulLoginMap(def users) {
+		return users.collectEntries {
+			[ it, LoginLog.findAllByUserAndSuccess(it, true) ]	
+		}
+	}
+	
 	def list = {
 		adaptParamsForList()
 		
 		List<User> users = User.list(params);
-
+		def loginLogs = getSuccessfulLoginMap(users)
+		
 		render (view: '/entity/list', model:[
 			template:"user/userList",
 			entities: users,
 			entityCount: User.count(),
+			loginLogs: loginLogs,
 			code: getLabel(),
 		])
 	}
@@ -117,12 +125,14 @@ class UserController extends AbstractEntityController {
 		adaptParamsForList()
 		
 		List<User> users = userService.searchUser(params['q'], params);
-
+		def loginLogs = getSuccessfulLoginMap(users)
+		
 		render (view: '/entity/list', model:[
 			template:"user/userList",
 			entities: users,
 			entityCount: userService.countUser(params['q']),
 			entityClass: getEntityClass(),
+			loginLogs: loginLogs,
 			code: getLabel(),
 			search: true
 		])

@@ -3,6 +3,7 @@ package org.chai.kevin.security
 import javax.servlet.ServletRequest;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
@@ -29,6 +30,45 @@ class AuthControllerSpec extends IntegrationTests {
 		
 		then:
 		authController.response.redirectedUrl == '/user/list' 	
+	}
+	
+	def "login logs get created after succesful signin"() {
+		setup:
+		authController = new AuthController()
+		def user = newUser('test@test.com', new Sha256Hash('1234').toString(), true, true)
+		setupSecurityManager(user)
+		
+		when:
+		authController.params.username = 'test@test.com'
+		authController.params.password = '1234'
+		authController.params.targetUri = '/user/list'
+		authController.signIn()
+		
+		then:
+		authController.response.redirectedUrl == '/user/list'
+		LoginLog.count() == 1
+		LoginLog.list()[0].user.equals user
+		LoginLog.list()[0].username.equals 'test@test.com'
+		LoginLog.list()[0].success == true
+	}
+
+	def "login logs get created after unsuccesful signin and wrong username"() {
+		setup:
+		authController = new AuthController()
+		def subject = [login: { token -> throw new AuthenticationException() }] as Subject
+		SecurityUtils.metaClass.static.getSubject = { subject }
+		
+		when:
+		authController.params.username = 'test@test.com'
+		authController.params.password = '123'
+		authController.params.targetUri = '/user/list'
+		authController.signIn()
+		
+		then:
+		LoginLog.count() == 1
+		LoginLog.list()[0].user.equals null
+		LoginLog.list()[0].username.equals 'test@test.com'
+		LoginLog.list()[0].success == false
 	}
 	
 	def "users that have default language set get redirected to correct page after signin"() {

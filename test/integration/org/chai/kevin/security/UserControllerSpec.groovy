@@ -199,6 +199,8 @@ class UserControllerSpec extends IntegrationTests{
 		def dataLocation = DataLocation.findByCode(KIVUYE);
 		def user = newUser("user",UUID.randomUUID().toString());
 		def surveyUser = newSurveyUser("surveyUser",UUID.randomUUID().toString(),dataLocation.id);
+		new LoginLog(user: user, success: true, username: user.username, loginDate: new Date()).save()
+		new LoginLog(user: user, success: false, username: user.username, loginDate: new Date()).save()
 		userController = new UserController()
 		
 		when:
@@ -207,12 +209,15 @@ class UserControllerSpec extends IntegrationTests{
 		
 		then:
 		userController.modelAndView.model.entities.equals([surveyUser])
+		userController.modelAndView.model.loginLogs[surveyUser].size() == 0
 		
 		when:
 		userController.list()
 		
 		then:
 		userController.modelAndView.model.entities.equals([user,surveyUser])
+		userController.modelAndView.model.loginLogs[user].size() == 1
+		userController.modelAndView.model.loginLogs[surveyUser].size() == 0
 	}
 	
 }
