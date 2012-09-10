@@ -112,7 +112,8 @@ body
       border-left: 1px solid $primary_light
     &:last-child
       border-right: 1px solid $primary_dark
-    &:hover .submenu
+      
+    &:hover > .submenu
       display: block
       
   a
@@ -135,11 +136,12 @@ body
     padding: 12px 22px
 
   .submenu
+    width: 180px
     background: $primary
     border: 1px solid $primary_dark
     display: none
     opacity: 0.93
-    padding: 5px 0 10px
+    padding: 0px
     position: absolute
     top: 41px
     z-index: 30
@@ -154,8 +156,19 @@ body
       white-space: nowrap
       &:hover, &:focus
         background: $primary_dark
-
-
+        
+    > li:hover > .sub-submenu > .submenu
+      display: block
+        
+  .sub-submenu
+    position: relative
+    
+    .submenu
+      top: -28px
+      left: 180px
+      +border-bottom-radius(0)
+      +border-right-radius
+      
 // Logout navigation
 #logout
   position: absolute
