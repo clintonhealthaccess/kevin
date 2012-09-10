@@ -1,10 +1,22 @@
 <%@ page import="org.chai.kevin.data.Enum" %>
+<%@ page import="org.chai.kevin.data.Source" %>
 <%@ page import="org.chai.kevin.data.Type.ValueType" %>
 <%@ page import="org.chai.kevin.util.Utils"%>
 
 <div class="row">
 	<span class="type"><g:message code="entity.type.label"/>:</span>
 	<g:toHtml value="${data.type.getDisplayedValue(2, null)}"/>
+</div>
+
+<div class="row">
+	<span class="type"><g:message code="source.label"/>:</span>
+	<g:each in="${data.sources}" var="sourceCode" status="i">
+		<g:set var="source" value="${Source.findByCode(sourceCode)}"/>
+		<g:if test="${source}">
+			<g:i18n field="${source.names}"/>
+			<g:if test="${i < data.sources.size() - 1}">,</g:if>
+		</g:if>
+	</g:each>
 </div>
 
 <g:each in="${periodValues}" status="i" var="periodValue">

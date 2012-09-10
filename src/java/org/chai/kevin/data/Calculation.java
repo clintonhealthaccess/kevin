@@ -28,10 +28,15 @@ package org.chai.kevin.data;
   * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
   
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
@@ -46,10 +51,12 @@ import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.security.User;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionService.StatusValuePair;
 import org.chai.kevin.value.Value;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
 
 @Entity(name="Calculation")
 @Table(name="dhsst_data_calculation")
@@ -60,6 +67,7 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 	
 	private String expression;
 	private Date refreshed;
+	private SourceMap sourceMap = new SourceMap();
 	
 	// extract partial expressions from the calculation
 	@Transient
@@ -84,6 +92,17 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 			result = getType().getValue(value);
 		}
 		return result;
+	}
+	
+	@AttributeOverrides({
+		@AttributeOverride(name="jsonText", column=@Column(name="sourceMap", nullable=false))
+	})
+	public SourceMap getSourceMap() {
+		return sourceMap;
+	}
+	
+	public void setSourceMap(SourceMap sourceMap) {
+		this.sourceMap = sourceMap;
 	}
 	
 	@Lob
@@ -112,6 +131,27 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 		this.refreshed = refreshed;
 	}
 	
+	@Transient
 	@Override
-	public abstract String toString();
+	public Set<String> getSources(Period period, DataLocationType type) {
+		Set<String> result = new HashSet<String>();
+		if (sourceMap.containsKey(period.getId()+"") && sourceMap.get(period.getId()+"").containsKey(type.getCode())) {
+			result.addAll(sourceMap.get(period.getId()+"").get(type.getCode()));
+		}
+		return result;
+	}
+	
+	@Transient
+	@Override
+	public Set<String> getSources() {
+		Set<String> result = new HashSet<String>();
+		for (Map<String, List<String>> map : sourceMap.values()) {
+			for (List<String> sources : map.values()) {
+				result.addAll(sources);
+			}
+		}
+		return result;
+	}
+	
+	
 }

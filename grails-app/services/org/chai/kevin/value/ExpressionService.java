@@ -247,7 +247,7 @@ public class ExpressionService {
 	}
 
     public static Set<String> getVariables(String expression) {
-    	Set<String> placeholders = null;
+    	Set<String> placeholders = new HashSet<String>();
         if ( expression != null ) {
         	placeholders = new HashSet<String>();
             final Matcher matcher = Pattern.compile("\\$\\d+").matcher( expression );

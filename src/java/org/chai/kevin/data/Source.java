@@ -1,9 +1,5 @@
 package org.chai.kevin.data;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -12,30 +8,18 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.value.DataValue;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@Entity(name="Data")
-@Table(name="dhsst_data", uniqueConstraints={@UniqueConstraint(columnNames="code")})
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-@Inheritance(strategy=InheritanceType.JOINED)
-abstract public class Data<T extends DataValue> {
-	
+@Entity(name="Source")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Table(name="dhsst_data_source")
+public class Source {
+
 	private Long id;
-	private Date timestamp = new Date();
-	private Date lastValueChanged = new Date();
-	
 	private String code;
 	private Translation names = new Translation();
 	private Translation descriptions = new Translation();
@@ -45,21 +29,11 @@ abstract public class Data<T extends DataValue> {
 	public Long getId() {
 		return id;
 	}
-
+	
 	public void setId(Long id) {
 		this.id = id;
 	}
 	
-	@Column(nullable=false, columnDefinition="datetime")
-	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
-	public Date getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
-	}
-
 	@Embedded
 	@AttributeOverrides({
 		@AttributeOverride(name="jsonText", column=@Column(name="jsonNames", nullable=false))
@@ -74,12 +48,12 @@ abstract public class Data<T extends DataValue> {
 
 	@Embedded
 	@AttributeOverrides({
-        @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
+		@AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
 	})
 	public Translation getDescriptions() {
 		return descriptions;
 	}
-
+	
 	public void setDescriptions(Translation descriptions) {
 		this.descriptions = descriptions;
 	}
@@ -93,28 +67,6 @@ abstract public class Data<T extends DataValue> {
 		this.code = code;
 	}
 
-	@Column(nullable=true, columnDefinition="datetime")
-	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
-	public Date getLastValueChanged() {
-		return lastValueChanged;
-	}
-	
-	public void setLastValueChanged(Date lastValueChanged) {
-		this.lastValueChanged = lastValueChanged;
-	}
-	
-	@Transient
-	public abstract Type getType();
-	
-	@Transient
-	public abstract Class<T> getValueClass();	
-	
-	@Transient
-	public abstract Set<String> getSources(Period period, DataLocationType type);
-	
-	@Transient
-	public abstract Set<String> getSources();
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -129,9 +81,9 @@ abstract public class Data<T extends DataValue> {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof Data))
+		if (!(obj instanceof Source))
 			return false;
-		Data<?> other = (Data<?>) obj;
+		Source other = (Source) obj;
 		if (code == null) {
 			if (other.code != null)
 				return false;
@@ -139,5 +91,5 @@ abstract public class Data<T extends DataValue> {
 			return false;
 		return true;
 	}
-
+	
 }

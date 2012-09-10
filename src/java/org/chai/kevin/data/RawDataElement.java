@@ -28,11 +28,17 @@ package org.chai.kevin.data;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue;
 
@@ -41,6 +47,7 @@ import org.chai.kevin.value.RawDataElementValue;
 public class RawDataElement extends DataElement<RawDataElementValue> {
 
 	private String info;
+	private Source source;
 	
 	@Basic
 	public String getInfo() {
@@ -50,7 +57,16 @@ public class RawDataElement extends DataElement<RawDataElementValue> {
 	public void setInfo(String info) {
 		this.info = info;
 	}
+	
+	@ManyToOne(targetEntity=Source.class)
+	public Source getSource() {
+		return source;
+	}
 
+	public void setSource(Source source) {
+		this.source = source;
+	}
+	
 	@Override
 	@Transient
 	public Class<RawDataElementValue> getValueClass() {
@@ -67,4 +83,17 @@ public class RawDataElement extends DataElement<RawDataElementValue> {
 		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 
+	@Transient
+	@Override
+	public Set<String> getSources(Period period, DataLocationType type) {
+		return getSources();
+	}
+	
+	@Transient
+	public Set<String> getSources() {
+		Set<String> result = new HashSet<String>();
+		if (source != null) result.add(source.getCode());
+		return result;
+	}
+	
 }

@@ -49,6 +49,7 @@ import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.ExpressionMap;
 import org.chai.kevin.data.NormalizedDataElement;
+import org.chai.kevin.data.Source;
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
 import org.chai.kevin.exports.CalculationExport
@@ -274,12 +275,24 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return newRawDataElement(j([:]), code, type)
 	}
 	
-	static RawDataElement newRawDataElement(def names, def code, def type) {
-		return newRawDataElement(names, code, type, null)
+	static RawDataElement newRawDataElement(def code, def type, Source source) {
+		return newRawDataElement(j([:]), code, type, null, source)
 	}
 	
-	static RawDataElement newRawDataElement(def names, def code, def type, def info) {
-		return new RawDataElement(names: names, code: code, type: type, info: info).save(failOnError: true, flush:true)
+	static RawDataElement newRawDataElement(def names, def code, def type, String info) {
+		return newRawDataElement(names, code, type, info, null)
+	}
+	
+	static RawDataElement newRawDataElement(def names, def code, def type) {
+		return newRawDataElement(names, code, type, null, null)
+	}
+	
+	static RawDataElement newRawDataElement(def names, def code, def type, def info, def source) {
+		return new RawDataElement(names: names, code: code, type: type, info: info, source: source).save(failOnError: true, flush:true)
+	}
+	
+	static Source newSource(def code) {
+		return new Source(code: code).save(failOnError: true, flush: true)
 	}
 
 	static def newNormalizedDataElement(def names, def code, def type, def expressionMap, Map params) {
