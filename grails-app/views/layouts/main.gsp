@@ -117,35 +117,72 @@
 				<!-- Admin -->
 				<shiro:hasPermission permission="menu:admin">
 					<g:set var="isAdmin" value="${org.chai.kevin.AbstractEntityController.class.isAssignableFrom(controllerClass)}" />					
-	  				<li><a class="${controllerName!=null && isAdmin?'active':''}" href="#"  onclick="return false;">
-	  								<g:message code="header.navigation.administration"/></a>
+	  				<li>
+	  					<a class="${controllerName!=null && isAdmin?'active':''}" href="#"  onclick="return false;">
+	  						<g:message code="header.navigation.administration"/>
+	  					</a>
 	  					<ul class="submenu">
-	  						<li><a class="${controllerName=='rawDataElement'?'active':''}" href="${createLink(controller: 'rawDataElement', action:'list')}"><g:message code="rawdataelement.label"/></a></li>
-	  						<li><a class="${controllerName=='normalizedDataElement'?'active':''}" href="${createLink(controller: 'normalizedDataElement', action:'list')}"><g:message code="normalizeddataelement.label"/></a></li>
-	  						<li><a class="${controllerName=='calculation'?'active':''}" href="${createLink(controller: 'calculation', action:'list')}"><g:message code="calculation.label"/></a></li>
-	  						<li><a class="${controllerName=='source'?'active':''}" href="${createLink(controller: 'source', action:'list')}"><g:message code="source.label"/></a></li>
-	  						<li><a class="${controllerName=='enum'?'active':''}" href="${createLink(controller: 'enum', action:'list')}"><g:message code="enum.label"/></a></li>
+	  						<li>
+	  							<a href="#" onclick="return false;">
+	  								<g:message code="header.navigation.admin.data"/>
+	  							</a>
+	  							<div class="sub-submenu">
+		  							<ul class="submenu">
+		  								<li><a class="${controllerName=='source'?'active':''}" href="${createLink(controller: 'source', action:'list')}"><g:message code="source.label"/></a></li>
+		  								<li><a class="${controllerName=='enum'?'active':''}" href="${createLink(controller: 'enum', action:'list')}"><g:message code="enum.label"/></a></li>
+		  								<li><a class="${controllerName=='rawDataElement'?'active':''}" href="${createLink(controller: 'rawDataElement', action:'list')}"><g:message code="rawdataelement.label"/></a></li>
+		  								<li><a class="${controllerName=='normalizedDataElement'?'active':''}" href="${createLink(controller: 'normalizedDataElement', action:'list')}"><g:message code="normalizeddataelement.label"/></a></li>
+		  								<li><a class="${controllerName=='calculation'?'active':''}" href="${createLink(controller: 'calculation', action:'list')}"><g:message code="calculation.label"/></a></li>
+		  								<li><a class="${controllerName=='expression'?'active':''}" href="${createLink(controller: 'expression', action:'test')}"><g:message code="expression.test.label"/></a></li>
+		  							</ul>
+	  							</div>
+	  						</li>
 	  						<li><a class="${controllerName=='period'?'active':''}" href="${createLink(controller: 'period', action:'list')}"><g:message code="period.label"/></a></li>
-	  						<li><a class="${controllerName=='reportProgram'?'active':''}" href="${createLink(controller: 'reportProgram', action:'list')}"><g:message code="reports.program.label"/></a></li>
-	  						<li><a class="${controllerName=='dashboardProgram'?'active':''}" href="${createLink(controller: 'dashboardProgram', action:'list')}"><g:message code="dashboard.program.label"/></a></li>
-	  						<li><a class="${controllerName=='dashboardTarget'?'active':''}" href="${createLink(controller: 'dashboardTarget', action:'list')}"><g:message code="dashboard.target.label"/></a></li>
-	  						<li><a class="${controllerName=='dsrTarget'?'active':''}" href="${createLink(controller: 'dsrTarget', action:'list')}"><g:message code="dsr.target.label"/></a></li>
-	  						<li><a class="${controllerName=='dsrTargetCategory'?'active':''}" href="${createLink(controller: 'dsrTargetCategory', action:'list')}"><g:message code="dsr.category.label"/></a></li>
-	  						<li><a class="${controllerName=='fctTarget'?'active':''}" href="${createLink(controller: 'fctTarget', action:'list')}"><g:message code="fct.target.label"/></a></li>
-	  						<li><a class="${controllerName=='fctTargetOption'?'active':''}" href="${createLink(controller: 'fctTargetOption', action:'list')}"><g:message code="fct.targetoption.label"/></a></li>
+	  						<li>
+	  							<a href="#" onclick="return false;">
+	  								<g:message code="header.navigation.admin.reports"/>
+	  							</a>
+	  							<div class="sub-submenu">
+	  								<ul class="submenu">
+				  						<li><a class="${controllerName=='reportProgram'?'active':''}" href="${createLink(controller: 'reportProgram', action:'list')}"><g:message code="reports.program.label"/></a></li>
+				  						<li><a class="${controllerName=='dashboardProgram'?'active':''}" href="${createLink(controller: 'dashboardProgram', action:'list')}"><g:message code="dashboard.program.label"/></a></li>
+				  						<li><a class="${controllerName=='dashboardTarget'?'active':''}" href="${createLink(controller: 'dashboardTarget', action:'list')}"><g:message code="dashboard.target.label"/></a></li>
+				  						<li><a class="${controllerName=='dsrTarget'?'active':''}" href="${createLink(controller: 'dsrTarget', action:'list')}"><g:message code="dsr.target.label"/></a></li>
+				  						<li><a class="${controllerName=='dsrTargetCategory'?'active':''}" href="${createLink(controller: 'dsrTargetCategory', action:'list')}"><g:message code="dsr.category.label"/></a></li>
+				  						<li><a class="${controllerName=='fctTarget'?'active':''}" href="${createLink(controller: 'fctTarget', action:'list')}"><g:message code="fct.target.label"/></a></li>
+				  						<li><a class="${controllerName=='fctTargetOption'?'active':''}" href="${createLink(controller: 'fctTargetOption', action:'list')}"><g:message code="fct.targetoption.label"/></a></li>
+				  					</ul>
+				  				</div>
+				  			</li>
 	  						<li><a class="${controllerName=='survey'?'active':''}" href="${createLink(controller: 'survey', action:'list')}"><g:message code="survey.label"/></a></li>
 	  						<li><a class="${controllerName=='planning'?'active':''}" href="${createLink(controller: 'planning', action:'list')}"><g:message code="planning.label"/></a></li>
-	  						<li><a class="${controllerName=='location'?'active':''}" href="${createLink(controller: 'location', action:'list')}"><g:message code="location.label"/></a></li>
-	  						<li><a class="${controllerName=='locationLevel'?'active':''}" href="${createLink(controller: 'locationLevel', action:'list')}"><g:message code="locationlevel.label"/></a></li>
-	  						<li><a class="${controllerName=='dataLocation'?'active':''}" href="${createLink(controller: 'dataLocation', action:'list')}"><g:message code="datalocation.label"/></a></li>
-	  						<li><a class="${controllerName=='dataLocationType'?'active':''}" href="${createLink(controller: 'dataLocationType', action:'list')}"><g:message code="datalocationtype.label"/></a></li>
+	  						<li>
+	  							<a href="#" onclick="return false;">
+	  								<g:message code="header.navigation.admin.location"/>
+	  							</a>
+	  							<div class="sub-submenu">
+	  								<ul class="submenu">
+	  									<li><a class="${controllerName=='location'?'active':''}" href="${createLink(controller: 'location', action:'list')}"><g:message code="location.label"/></a></li>
+				  						<li><a class="${controllerName=='locationLevel'?'active':''}" href="${createLink(controller: 'locationLevel', action:'list')}"><g:message code="locationlevel.label"/></a></li>
+				  						<li><a class="${controllerName=='dataLocation'?'active':''}" href="${createLink(controller: 'dataLocation', action:'list')}"><g:message code="datalocation.label"/></a></li>
+				  						<li><a class="${controllerName=='dataLocationType'?'active':''}" href="${createLink(controller: 'dataLocationType', action:'list')}"><g:message code="datalocationtype.label"/></a></li>
+	  								</ul>
+	  							</div>
+	  						</li>
 	  						<li><a class="${controllerName=='user'?'active':''}" href="${createLink(controller: 'user', action:'list')}"><g:message code="user.label"/></a></li>
-							<li><a class="${controllerName=='expression'?'active':''}" href="${createLink(controller: 'expression', action:'test')}"><g:message code="expression.test.label"/></a></li>
-							<li><a class="" href="${createLink(controller: 'task', action:'taskForm', params: [class: 'GeneralImportTask'])}"><g:message code="import.general.data.label" /></a></li>
-							<li><a class="" href="${createLink(controller: 'task', action:'taskForm', params: [class: 'NominativeImportTask'])}"><g:message code="import.nominative.data.label" /></a></li>
-							<li><a class="${controllerName=='dataElementExport'?'active':''}" href="${createLink(controller: 'dataElementExport', action:'list')}"><g:message code="dataelement.export.label" /></a></li>
-							<li><a class="${controllerName=='calculationExport'?'active':''}" href="${createLink(controller: 'calculationExport', action:'list')}"><g:message code="calculation.export.label" /></a></li>								  					
-															  					
+							<li>
+	  							<a href="#" onclick="return false;">
+	  								<g:message code="header.navigation.admin.transfer"/>
+	  							</a>
+	  							<div class="sub-submenu">
+	  								<ul class="submenu">
+										<li><a class="" href="${createLink(controller: 'task', action:'taskForm', params: [class: 'GeneralImportTask'])}"><g:message code="import.general.data.label" /></a></li>
+										<li><a class="" href="${createLink(controller: 'task', action:'taskForm', params: [class: 'NominativeImportTask'])}"><g:message code="import.nominative.data.label" /></a></li>
+										<li><a class="${controllerName=='dataElementExport'?'active':''}" href="${createLink(controller: 'dataElementExport', action:'list')}"><g:message code="dataelement.export.label" /></a></li>
+										<li><a class="${controllerName=='calculationExport'?'active':''}" href="${createLink(controller: 'calculationExport', action:'list')}"><g:message code="calculation.export.label" /></a></li>
+									</ul>
+								</div>
+							</li>								  					
 	  					</ul>
 	  				</li>
 	  			</shiro:hasPermission>
@@ -175,26 +212,6 @@
 		</div>
 	</div>
 
-	<r:script>
-		//Styling the main menu
-		$('#main-menu > li').hover(
-			function () {
-				//show its submenu
-				if (!$('ul', this).hasClass('open')) {
-					$('ul', this).addClass('open');
-					$('ul', this).show();
-				}
-			}, 
-			function () {
-				var self = this;
-				//hide its submenu
-				$('ul', this).slideUp(10, function(){
-					$('ul', self).removeClass('open');
-				});	
-			}
-		);
-	</r:script>
-	
 	<r:layoutResources/>
 </body>
 </html>
