@@ -3,9 +3,7 @@ package org.chai.kevin.security
 import org.chai.kevin.util.Utils;
 
 class Role {
-	
-	
-	
+
     String name
 	String permissionString
 	

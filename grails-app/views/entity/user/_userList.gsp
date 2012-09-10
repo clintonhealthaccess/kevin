@@ -9,6 +9,7 @@
 				<th><g:message code="user.roles.label"/></th>
 				<g:sortableColumn property="confirmed" params="[q:q]" title="${message(code: 'user.confirmed.label')}" />
 				<g:sortableColumn property="active" params="[q:q]" title="${message(code: 'user.active.label')}" />
+				<th><g:message code="user.successfullogins.label"/></th>
 				<th><g:message code="entity.list.manage.label"/></th>
 			</tr>
 		</thead>
@@ -31,6 +32,7 @@
 	  				<td>${user.roles}</td>
 	  				<td>${user.confirmed?'\u2713':''}</td>
 	  				<td>${user.active?'\u2713':''}</td>
+	  				<td>${loginLogs[user].size()}</td>
 	  				<td>
 	  					<g:if test="${user.canActivate()}">
 	  						<a href="${createLinkWithTargetURI(controller:'auth', action:'activate', params:[id:user.id])}">activate</a>

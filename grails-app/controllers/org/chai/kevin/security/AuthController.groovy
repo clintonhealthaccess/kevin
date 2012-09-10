@@ -163,7 +163,9 @@ class AuthController {
             authToken.rememberMe = true
         }
         
-        try{
+		def user = User.findByUsername(params.username)
+		LoginLog loginLog = new LoginLog(user: user, username: params.username, loginDate: new Date()) 
+        try {
             // Perform the actual login. An AuthenticationException
             // will be thrown if the username is unrecognised or the
             // password is incorrect.
@@ -186,6 +188,11 @@ class AuthController {
 			def language = User.findByUuid(SecurityUtils.subject.principal, [cache: true]).defaultLanguage
 			if (language) redirectURI = replaceParam(redirectURI, 'lang', language)
 			
+			// log the login
+			loginLog.success = true
+			if (log.isDebugEnabled()) log.debug "Logging login by user: "+loginLog.username+", log: "+loginLog
+			loginLog.save(failOnError: true)
+			
             if (log.isInfoEnabled()) log.info "Redirecting to '${redirectURI}'."
             redirect(uri: redirectURI)
         }
@@ -207,6 +214,11 @@ class AuthController {
                 m["targetURI"] = params.targetURI
             }
 
+			// log the login
+			loginLog.success = false
+			if (log.isDebugEnabled()) log.debug "Logging login by user: "+loginLog.username+", log: "+loginLog
+			loginLog.save(failOnError: true)
+			
             // Now redirect back to the login page.
             redirect(action: "login", params: m)
         }
