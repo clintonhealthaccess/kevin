@@ -164,7 +164,7 @@ class AuthController {
         }
         
 		def user = User.findByUsername(params.username)
-		LoginLog loginLog = new LoginLog(user: user, username: params.username, loginDate: new Date()) 
+		LoginLog loginLog = new LoginLog(user: user, username: params.username, loginDate: new Date(), ipAddress: request.remoteAddr) 
         try {
             // Perform the actual login. An AuthenticationException
             // will be thrown if the username is unrecognised or the
