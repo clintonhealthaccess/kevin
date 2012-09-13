@@ -23,7 +23,7 @@ class ExpressionController {
 		if (cmd.hasErrors()) {
 			def exception = null
 
-			if (cmd.errors.hasFieldErrors("expression")) {
+			if (cmd.errors.hasFieldErrors("expression") && cmd.expression != null) {
 				try {
 					expressionService.expressionIsValid(cmd.expression, DataElement.class)
 				} catch (IllegalArgumentException e) {
@@ -83,7 +83,7 @@ class ExpressionTestCommand {
 	Set<String> typeCodes
 	
 	static constraints = {
-		expression (blank: false, expressionValid: true)
+		expression (blank: false, expressionValid: true, nullable: false)
 		type (blank: false, nullable: false, validator: {val, obj ->
 			return val.isValid();
 		})

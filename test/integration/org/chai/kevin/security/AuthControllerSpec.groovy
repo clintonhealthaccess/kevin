@@ -15,6 +15,32 @@ class AuthControllerSpec extends IntegrationTests {
 
 	def authController
 	
+	def "login redirects to login page when logged in"() {
+		setup:
+		authController = new AuthController()
+		def user = newUser('test@test.com', new Sha256Hash('1234').toString(), true, true)
+		setupSecurityManager(user)
+		
+		when:
+		authController.params.targetUri = '/user/list'
+		authController.login()
+		
+		then:
+		authController.response.redirectedUrl == '/user/list'
+	}
+	
+	def "sign in redirects to login page when no credentials specified"() {
+		setup:
+		authController = new AuthController()
+		def subject = [login: { token -> throw new AuthenticationException() }] as Subject
+		SecurityUtils.metaClass.static.getSubject = { subject }
+		
+		when:
+		authController.signIn()
+		
+		then:
+		authController.response.redirectedUrl == '/auth/login?targetURI=%2F'
+	}
 	
 	def "users get redirected to correct page after signin"() {
 		setup:

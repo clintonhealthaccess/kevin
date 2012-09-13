@@ -11,6 +11,8 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class AuthController {
 	
+	static allowedMethods = [signIn: 'POST', sendRegistration: 'POST', setPassword: 'POST']
+	
 	def languageService
     def shiroSecurityManager
 
@@ -150,7 +152,10 @@ class AuthController {
 	}
 	
 	def login = {
-		return [ username: params.username, rememberMe: (params.rememberMe != null), targetURI: getTargetURI() ]
+		if (SecurityUtils.subject.principal) redirect(uri: targetURI)
+		else {
+			return [ username: params.username, rememberMe: (params.rememberMe != null), targetURI: getTargetURI() ]
+		}
 	}
 
     def signIn = {
@@ -163,65 +168,70 @@ class AuthController {
             authToken.rememberMe = true
         }
         
-		def user = User.findByUsername(params.username)
-		LoginLog loginLog = new LoginLog(user: user, username: params.username, loginDate: new Date()) 
-        try {
-            // Perform the actual login. An AuthenticationException
-            // will be thrown if the username is unrecognised or the
-            // password is incorrect.
-            SecurityUtils.subject.login(authToken)
-			
-			// If a controller redirected to this page, redirect back
-			// to it. Otherwise redirect to the root URI.
-			String targetURI = getTargetURI()
-			
-			// Handle requests saved by Shiro filters.
-			def savedRequest = WebUtils.getSavedRequest(request)
-			if (savedRequest) {
-				targetURI = savedRequest.requestURI - request.contextPath
-				if (savedRequest.queryString) targetURI = targetURI + '?' + savedRequest.queryString
-			}
-			
-			// append the user preferred language
-			def redirectURI = targetURI
-			
-			def language = User.findByUuid(SecurityUtils.subject.principal, [cache: true]).defaultLanguage
-			if (language) redirectURI = replaceParam(redirectURI, 'lang', language)
-			
-			// log the login
-			loginLog.success = true
-			if (log.isDebugEnabled()) log.debug "Logging login by user: "+loginLog.username+", log: "+loginLog
-			loginLog.save(failOnError: true)
-			
-            if (log.isInfoEnabled()) log.info "Redirecting to '${redirectURI}'."
-            redirect(uri: redirectURI)
-        }
-        catch (AuthenticationException ex){
-            // Authentication failed, so display the appropriate message
-            // on the login page.
-            if (log.isInfoEnabled()) log.info "Authentication failure for user '${params.username}'."
-            flash.message = message(code: "login.failed")
-
-            // Keep the username and "remember me" setting so that the
-            // user doesn't have to enter them again.
-            def m = [ username: params.username ]
-            if (params.rememberMe) {
-                m["rememberMe"] = true
-            }
-
-            // Remember the target URI too.
-            if (params.targetURI) {
-                m["targetURI"] = params.targetURI
-            }
-
-			// log the login
-			loginLog.success = false
-			if (log.isDebugEnabled()) log.debug "Logging login by user: "+loginLog.username+", log: "+loginLog
-			loginLog.save(failOnError: true)
-			
-            // Now redirect back to the login page.
-            redirect(action: "login", params: m)
-        }
+		if (params.username == null) {
+			redirect(action: "login", params: [targetURI: targetURI])
+		}
+		else {
+			def user = User.findByUsername(params.username)
+			LoginLog loginLog = new LoginLog(user: user, username: params.username, loginDate: new Date()) 
+	        try {
+	            // Perform the actual login. An AuthenticationException
+	            // will be thrown if the username is unrecognised or the
+	            // password is incorrect.
+	            SecurityUtils.subject.login(authToken)
+				
+				// If a controller redirected to this page, redirect back
+				// to it. Otherwise redirect to the root URI.
+				String targetURI = getTargetURI()
+				
+				// Handle requests saved by Shiro filters.
+				def savedRequest = WebUtils.getSavedRequest(request)
+				if (savedRequest) {
+					targetURI = savedRequest.requestURI - request.contextPath
+					if (savedRequest.queryString) targetURI = targetURI + '?' + savedRequest.queryString
+				}
+				
+				// append the user preferred language
+				def redirectURI = targetURI
+				
+				def language = User.findByUuid(SecurityUtils.subject.principal, [cache: true]).defaultLanguage
+				if (language) redirectURI = replaceParam(redirectURI, 'lang', language)
+				
+				// log the login
+				loginLog.success = true
+				if (log.isDebugEnabled()) log.debug "Logging login by user: "+loginLog.username+", log: "+loginLog
+				loginLog.save(failOnError: true)
+				
+	            if (log.isInfoEnabled()) log.info "Redirecting to '${redirectURI}'."
+	            redirect(uri: redirectURI)
+	        }
+	        catch (AuthenticationException ex){
+	            // Authentication failed, so display the appropriate message
+	            // on the login page.
+	            if (log.isInfoEnabled()) log.info "Authentication failure for user '${params.username}'."
+	            flash.message = message(code: "login.failed")
+	
+	            // Keep the username and "remember me" setting so that the
+	            // user doesn't have to enter them again.
+	            def m = [ username: params.username ]
+	            if (params.rememberMe) {
+	                m["rememberMe"] = true
+	            }
+	
+	            // Remember the target URI too.
+	            if (params.targetURI) {
+	                m["targetURI"] = params.targetURI
+	            }
+	
+				// log the login
+				loginLog.success = false
+				if (log.isDebugEnabled()) log.debug "Logging login by user: "+loginLog.username+", log: "+loginLog
+				loginLog.save(failOnError: true)
+				
+	            // Now redirect back to the login page.
+	            redirect(action: "login", params: m)
+	        }
+		}
     }
 
 	def replaceParam(def uriToReplace, def paramToReplace, def newValue) {
