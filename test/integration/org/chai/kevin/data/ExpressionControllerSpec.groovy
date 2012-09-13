@@ -38,4 +38,15 @@ class ExpressionControllerSpec extends IntegrationTests {
 		expressionController.modelAndView.model.entities.size() == 1
 	}
 	
+	def "test values with nothing"() {
+		setup:
+		expressionController = new ExpressionController()
+		
+		when:
+		expressionController.doTest()
+		
+		then:
+		expressionController.modelAndView.model.cmd != null
+	}
+	
 }
