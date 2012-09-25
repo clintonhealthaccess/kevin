@@ -1,12 +1,13 @@
-package org.chai.kevin.task;
+package org.chai.task;
 
 import java.util.Map;
-import org.chai.kevin.task.Task.TaskStatus;
+import org.chai.task.Task.TaskStatus;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.chai.kevin.exports.CalculationExport;
 import org.chai.kevin.exports.DataElementExport;
 import org.chai.kevin.exports.DataExport;
+import org.chai.kevin.security.User;
 
 class DataExportTask extends Task {
 
@@ -27,6 +28,7 @@ class DataExportTask extends Task {
 		Task.withTransaction {
 			def export = getExport()
 			if (export != null) {
+				def user = User.findByUuid(principal)
 				def language = user.defaultLanguage != null ? user.defaultLanguage : languageService.fallbackLanguage
 				
 				if (export instanceof DataElementExport) csvFile = dataElementExportService.exportData(export, language) 

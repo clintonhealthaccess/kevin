@@ -1,4 +1,4 @@
-package org.chai.kevin.task
+package org.chai.task
 
 import grails.validation.ValidationException
 
@@ -16,8 +16,10 @@ import org.chai.kevin.location.DataLocationType
 import org.chai.kevin.location.Location
 import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.security.User
-import org.chai.kevin.task.Task.TaskStatus
+import org.chai.task.Task;
+import org.chai.task.Task.TaskStatus
 import org.chai.kevin.value.NormalizedDataElementValue
+import org.chai.task.DataExportTask;
 
 class DataExportTaskSpec extends IntegrationTests {
 
@@ -102,7 +104,7 @@ class DataExportTaskSpec extends IntegrationTests {
 			new HashSet([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]), 
 			new HashSet([sum]))
 		
-		def task = new DataExportTask(user: user, status: TaskStatus.NEW, exportId: dataExport.id).save(failOnError: true, flush: true)
+		def task = new DataExportTask(principal: user.uuid, status: TaskStatus.NEW, exportId: dataExport.id).save(failOnError: true, flush: true)
 		FileUtils.deleteDirectory(task.folder)
 		
 		when:
@@ -127,7 +129,7 @@ class DataExportTaskSpec extends IntegrationTests {
 			new HashSet([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]),
 			new HashSet([newRawDataElement(CODE(1), Type.TYPE_NUMBER())]))
 		
-		def task = new DataExportTask(user: user, status: TaskStatus.NEW, exportId: dataExport.id).save(failOnError: true, flush: true)
+		def task = new DataExportTask(principal: user.uuid, status: TaskStatus.NEW, exportId: dataExport.id).save(failOnError: true, flush: true)
 		FileUtils.deleteDirectory(task.folder)
 		
 		when:

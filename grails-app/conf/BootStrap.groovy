@@ -46,8 +46,8 @@ import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.security.User;
-import org.chai.kevin.task.Task;
-import org.chai.kevin.task.Task.TaskStatus;
+import org.chai.task.Task;
+import org.chai.task.Task.TaskStatus;
 import org.chai.kevin.value.RawDataElementValue;
 import org.springframework.amqp.rabbit.core.ChannelCallback;
 

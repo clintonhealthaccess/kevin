@@ -42,7 +42,7 @@ import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.task.Progress;
+import org.chai.task.Progress;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.RawDataElementValue;
