@@ -129,7 +129,9 @@ environments {
 		// grails.resources.cdn.url = "http://static.mydomain.com/"
 		// grails.resources.work.dir="/static/directory/"
 		grails.resources.processing.enabled = true
-		grails.gsp.reload.enable = true
+		
+		//NEVER COMMIT THIS !!!
+		//grails.gsp.reload.enable = true
 	}
 	development {
 		grails.resources.cdn.enabled = false
