@@ -15,6 +15,9 @@
 		
 		<g:render template="/templates/typeEditor" model="[bean: rawDataElement, name: 'type.jsonValue']"/>
 
+		<g:selectFromList name="source.id" label="${message(code:'rawdataelement.source.label')}" bean="${rawDataElement}" field="source" optionKey="id" multiple="false"
+			from="${sources}" value="${rawDataElement.source?.id}" values="${sources.collect{i18n(field:it.names) + '['+it.code+']'}}" />
+		
 		<g:input name="info" label="${message(code:'rawdataelement.info.label')}" bean="${rawDataElement}" field="info"/>
 		
 		<g:if test="${rawDataElement.id != null}">

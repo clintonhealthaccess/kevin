@@ -233,6 +233,7 @@ site.languages=["en","fr","rw"]
 site.fallback.language="en"
 site.entity.list.max=40
 site.period=0
+site.admin.email="admin@dhsst.org"
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
 site.datalocationtype.checked=["District Hospital","Health Center"]
@@ -244,7 +245,6 @@ dashboard.skip.levels=[]
 dsr.skip.levels=[]
 dsr.view.map.skip.levels=["National", "Province"]
 fct.skip.levels=[]
-cost.skip.levels=[]
 
 survey.skip.levels=["Sector"]
 survey.submit.skip.levels=["National", "Province"]

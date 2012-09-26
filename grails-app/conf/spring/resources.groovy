@@ -29,12 +29,11 @@
 import org.chai.kevin.ExpressionService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.RefreshValueService
-import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
+import org.chai.kevin.ExceptionHandler;
 import org.chai.kevin.JaqlService
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationService;
-import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardValueService
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.data.DataService;
@@ -65,14 +64,20 @@ Set<String> dashboardSkipLevels = config.dashboard.skip.levels
 Set<String> dsrSkipLevels = config.dsr.skip.levels
 Set<String> dsrViewMapSkipLevels = config.dsr.view.map.skip.levels
 Set<String> fctSkipLevels = config.fct.skip.levels
-Set<String> costSkipLevels = config.cost.skip.levels
 Set<String> surveySkipLevels = config.survey.skip.levels
 Set<String> surveySubmitSkipLevels = config.survey.submit.skip.levels
 Set<String> surveyExportSkipLevels = config.survey.export.skip.levels
 String dsrGroupLevel= config.dsr.group.level
 
 beans = {
-		
+	
+	 exceptionHandler(ExceptionHandler){
+        // this is required so that calls to super work
+        exceptionMappings = ['java.lang.Exception': '/error']
+		mailService = ref("mailService")
+		grailsApplication = ref("grailsApplication") 
+    }
+	
 	validationService(ValidationService){
 		jaqlService = ref("jaqlService")		
 	}
@@ -84,12 +89,12 @@ beans = {
 	
 	jaqlService(JaqlService) { bean ->
 		bean.singleton = true
-		jaqlService = ref("jaqlService")
 	}
 	
 	refreshValueService(RefreshValueService) {
 		expressionService = ref("expressionService")
 		valueService = ref("valueService")
+		locationService = ref("locationService")
 		sessionFactory = ref("sessionFactory")
 		dataService = ref("dataService")
 		periodService = ref("periodService")
@@ -142,7 +147,6 @@ beans = {
 	
 	dashboardService(DashboardService) {
 		reportService = ref("reportService")
-		languageService = ref("languageService")
 		sessionFactory = ref("sessionFactory")
 		dashboardPercentageService = ref("dashboardPercentageService")
 		locationSkipLevels = dashboardSkipLevels
@@ -160,14 +164,6 @@ beans = {
 		reportService = ref("reportService")
 		valueService = ref("valueService")
 		locationSkipLevels = fctSkipLevels
-	}
-	
-	costTableService(CostTableService) {
-		reportService = ref("reportService")
-		costService = ref("costService")
-		locationService = ref("locationService")
-		valueService = ref("valueService")
-		skipLevels = costSkipLevels
 	}
 	
 	valueService(ValueService) {

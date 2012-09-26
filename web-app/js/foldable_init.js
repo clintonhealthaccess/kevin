@@ -3,6 +3,7 @@ $(document).ready(function(){
 	 * foldables
 	 */
 	$('.js_foldable .js_foldable-toggle').click(function(event) {
+		$(this).toggleClass('toggled');
 		$(this).parents('.js_foldable').first().children('.js_foldable-container').toggle();
 		$(this).parents('.js_foldable').first().next('.js_foldable-container').toggle();
 		$(this).parents('.js_foldable').first().children('td').first().toggleClass('toggled');

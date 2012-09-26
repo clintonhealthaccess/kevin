@@ -223,7 +223,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def planning = newPlanning(period, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
-		def planningOutput = newPlanningOutput(planning, dataElement, planning)
+		def planningOutput = newPlanningOutput(planning, dataElement, '[_]')
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
 		
 		when:
@@ -251,7 +251,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def planning = newPlanning(period, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
-		def planningOutput = newPlanningOutput(planning, dataElement, planning)
+		def planningOutput = newPlanningOutput(planning, dataElement, '[_]')
 		
 		when:
 		def column1 = newPlanningOutputColumn(planningOutput, '[_]', 2).save(failOnError:true)

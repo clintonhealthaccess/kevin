@@ -31,18 +31,18 @@
 									<g:set var="value" value="${fctTable.getTableReportValue(location, targetOption)}"/>									
 									<g:if test="${value != null && value.getValue() != null && !value.getValue().isNull() && value.getAverage() != null && !value.getAverage().isNull()}">											
 										
-										<!-- report value number --><g:set var="reportValue" value="${g.reportValue(value: fctTable.getTableReportValue(location, targetOption).getValue(), type: targetOption.type, format: targetOption.numberFormat)}"/>											
-										<!-- report value number 0-1 --><g:set var="reportAverage" value="${fctTable.getTableReportValue(location, targetOption).getAverage().numberValue.round(2)}"/>
-										<!-- report value percentage 0%-100% --><g:set var="reportPercentage" value="${g.reportPercentage(value: fctTable.getTableReportValue(location, targetOption).getAverage(), type: targetOption.type, format: targetOption.percentageFormat)}"/>
+										<!-- report value number --><g:set var="barValue" value="${g.reportBarValue(value: fctTable.getTableReportValue(location, targetOption).getValue(), type: targetOption.type, format: targetOption.numberFormat)}"/>											
+										<!-- report value number 0-1 --><g:set var="barAverage" value="${fctTable.getTableReportValue(location, targetOption).getAverage().numberValue.round(2)}"/>
+										<!-- report value percentage 0%-100% --><g:set var="barPercentage" value="${g.reportBarPercentage(value: fctTable.getTableReportValue(location, targetOption).getAverage(), type: targetOption.type, format: targetOption.percentageFormat)}"/>
 										<!-- total data locations --><g:set var="totalDataLocations" value="${fctTable.getTableReportValue(location, targetOption).getNumberOfDataLocations()}"/>
 										
 										<!-- stacked bar -->
 										<div class="js_bar_vertical bar-vertical tooltip ${i == 0 ? 'indicator-worst': i == fctTable.targetOptions.size()-1 ? 'indicator-best': 'indicator-middle'}"
-											data-percentage="${reportPercentage}"
-											title="${reportTooltip(average: reportPercentage, value: reportValue, totalLocations: totalDataLocations)}"
-											style="height: ${reportPercentage};">
-											<g:if test="${reportAverage > 0.06}">
-												<span data-average="${reportAverage}" data-percentage="${reportPercentage}">${reportValue}</span>
+											data-percentage="${barPercentage}"
+											title="${reportBarTooltip(percentage: barPercentage, value: barValue, totalLocations: totalDataLocations)}"
+											style="height: ${barPercentage};">
+											<g:if test="${barAverage > 0.06}">
+												<span data-average="${barAverage}" data-percentage="${barPercentage}">${barValue}</span>
 											</g:if>
 										</div>
 									</g:if>

@@ -1,5 +1,4 @@
-<div class="main">
-  <table class="listing">
+<table class="listing">
   	<thead>
   		<tr>
   			<th/>
@@ -31,9 +30,15 @@
   					</ul>
   				</td>
   				<td>${calculation.id}</td>
-  				<td>${calculation.code}</td>  				
+  				<td class="calculation-explainer" data-data="${calculation.id}">
+  					<a class="cluetip"
+  						href="${createLink(controller:'data', action:'getExplainer', params:[id: calculation.id])}"
+					 	rel="${createLink(controller: 'data', action:'getDescription', params:[id: calculation.id])}">
+  						${calculation.code}
+  					</a>
+  				</td>	
   				<td><g:message code="${calculation.class.simpleName.toLowerCase()}.label"/></td>
-  				<td data-data="${calculation.id}"><g:i18n field="${calculation.names}" /></td>  				
+  				<td><g:i18n field="${calculation.names}" /></td>  				
   				<td>${calculation.expression}</td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${calculation.refreshed}"/></td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${calculation.lastValueChanged}"/></td>
@@ -62,7 +67,23 @@
   					</div>
   				</td>
   			</tr>
+  			<tr class="explanation-row">
+  				<td colspan="9">
+  					<div class="explanation-cell" id="explanation-${calculation.id}"></div>
+  				</td>
+  			</tr>
   		</g:each>
   	</tbody>
-  </table>
-</div>
+</table>
+
+<script type="text/javascript">
+	
+	$(document).ready(function() {
+		$('.calculation-explainer').bind('click', function() {
+			var calculation = $(this).data('data');
+			explanationClick(this, calculation, function(){});
+			return false;
+		});
+	});
+	
+</script>

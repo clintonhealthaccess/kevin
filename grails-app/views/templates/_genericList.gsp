@@ -2,28 +2,26 @@
 	<div>
 		<div class="heading1-bar">
 	     	<g:message code="default.list.label" args="[entityName]" />
-	     	<g:if test="${!search}">
-		     	<span class="right">
-					<g:if test="${!addTemplate}">
-		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'create')+(request.queryString==null?'':'&'+request.queryString)}">
-		  					<g:message code="default.new.label" args="[entityName]"/>
-		  				</a>
-		  			</g:if>
-		  			<g:else>
-		  				<g:render template="${addTemplate}"/>
-		  			</g:else>
-		  			&nbsp;
-		  			<a href="${createLinkWithTargetURI(controller: controllerName, action:'exporter')+(request.queryString==null?'':'&'+request.queryString)}">
-	  					<g:message code="default.export.label" />
+	     	<span class="right">
+				<g:if test="${!addTemplate}">
+	  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'create')+(request.queryString==null?'':'&'+request.queryString)}">
+	  					<g:message code="default.new.label" args="[entityName]"/>
 	  				</a>
-	  				&nbsp;
-	  				<g:if test="${entityClass != null}">
-		  				<a href="${createLinkWithTargetURI(controller: 'task', action:'taskForm', params:[class: 'EntityImportTask', entityClass: entityClass.name])+(request.queryString==null?'':'&'+request.queryString)}">
-		  					<g:message code="default.import.label" />
-		  				</a>
-	  				</g:if>
-		     	</span>
-	     	</g:if>
+	  			</g:if>
+	  			<g:else>
+	  				<g:render template="${addTemplate}"/>
+	  			</g:else>
+	  			&nbsp;
+	  			<a href="${createLinkWithTargetURI(controller: controllerName, action:'exporter')+(request.queryString==null?'':'&'+request.queryString)}">
+  					<g:message code="default.export.label" />
+  				</a>
+  				&nbsp;
+  				<g:if test="${entityClass != null}">
+	  				<a href="${createLinkWithTargetURI(controller: 'task', action:'taskForm', params:[class: 'EntityImportTask', entityClass: entityClass.name])+(request.queryString==null?'':'&'+request.queryString)}">
+	  					<g:message code="default.import.label" />
+	  				</a>
+  				</g:if>
+	     	</span>
 		</div>
 		
 		<!-- Template goes here -->

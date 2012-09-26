@@ -1,16 +1,32 @@
+<%@ page import="org.chai.kevin.dashboard.DashboardTarget" %>
 <r:require module="foldable" />
 <li class="${current?.id == program?.id ? 'current':''} js_foldable foldable">	
 	<% def programLinkParams = new HashMap(linkParams) %>
 	<% programLinkParams['program'] = program.id+"" %>
 	<% linkParams = programLinkParams %>	
-	<g:if test="${program.children != null && !program.children.empty && !programTree.disjoint(program.children)}">
+	<g:if test="${selectedTargetClass == DashboardTarget.class}">
+		<g:if test="${program.children != null && !program.children.empty && !programTree.disjoint(program.children)}">
 		<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a>
+		</g:if>
+		<a class="dropdown-link js_dropdown-link parameter" data-type="program"
+				data-location="${program.id}"
+				href="${createLink(controller:controller, action:action, params:linkParams)}">
+				<g:i18n field="${program.names}"/>
+		</a>
 	</g:if>
-	<a class="dropdown-link js_dropdown-link parameter" data-type="program"
-			data-location="${program.id}"
-			href="${createLink(controller:controller, action:action, params:linkParams)}">
+	<g:else>
+		<g:if test="${program.children != null && !program.children.empty && !programTree.disjoint(program.children)}">
+			<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a>
 			<g:i18n field="${program.names}"/>
-	</a>
+		</g:if>
+		<g:else>
+			<a class="dropdown-link js_dropdown-link parameter" data-type="program"
+					data-location="${program.id}"
+					href="${createLink(controller:controller, action:action, params:linkParams)}">
+					<g:i18n field="${program.names}"/>
+			</a>
+		</g:else>
+	</g:else>	
 	<g:if test="${program.children != null || !program.children.empty}">					
 		<g:each in="${program.children}" var="child">
 			<g:if test="${programTree.contains(child)}">

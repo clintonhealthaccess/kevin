@@ -82,6 +82,7 @@ class ReportProgramController extends AbstractEntityController{
 		render (view: '/entity/list', model:[
 			entities: programs,
 			entityCount: dataService.countData(ReportProgram.class, params['q'], []),
+			entityClass: getEntityClass(),
 			template: "reports/programList",
 			code: getLabel(),
 			search: true

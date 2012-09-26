@@ -6,7 +6,11 @@
 		</td>
 		<g:each in="${dsrTable.targets}" var="target">
 			<td>
-				<g:reportValue value="${dsrTable.getTableReportValue(location, target)}" type="${target.data.type}" format="${target.format}"/>						
+				<g:reportValue
+					tooltip="${i18n(field: target.names)}"
+					value="${dsrTable.getTableReportValue(location, target)}" 
+					type="${target.data.type}" 
+					format="${target.format}"/>	
 			</td>
 		</g:each>
 	</tr>
@@ -21,7 +25,11 @@
 			<g:each in="${dsrTable.targets}" var="target">
 				<td>
 					<g:if test="${dsrTable.getTableReportValue(location, target) != null}">
-						<g:reportValue value="${dsrTable.getTableReportValue(location, target)}" type="${target.type}" format="${target.format}"/>
+						<g:reportValue
+							tooltip="${i18n(field: target.names)}"
+							value="${dsrTable.getTableReportValue(location, target)}" 
+							type="${target.type}" 
+							format="${target.format}"/>
 					</g:if>
 				</td>
 			</g:each>

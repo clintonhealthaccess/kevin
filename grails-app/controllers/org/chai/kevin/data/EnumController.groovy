@@ -28,9 +28,7 @@
 package org.chai.kevin.data
 
 
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.data.Enum as Enum;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.chai.kevin.AbstractEntityController
 
 /**
  * @author Jean Kahigiso M.
@@ -73,7 +71,7 @@ class EnumController extends AbstractEntityController {
 	
 	def list = {
 		adaptParamsForList()
-		List<Enum> enums = Enum.list(params);
+		def enums = org.chai.kevin.data.Enum.list(params);
 		
 		render (view: '/entity/list', model:[
 			entities: enums,
@@ -82,16 +80,17 @@ class EnumController extends AbstractEntityController {
 			code: getLabel(),
 			entityClass: getEntityClass()
 		])
-		
 	}
+	
 	def search = {
 		adaptParamsForList()
-		List<Enum> enums = enumService.searchEnum(params["q"],params);
+		def enums = enumService.searchEnum(params["q"],params);
 		
 		render (view: '/entity/list', model:[
 			entities: enums,
 			template: "data/enumList",
 			entityCount: enumService.countEnum(params['q']),
+			entityClass: getEntityClass(),
 			q:params['q'],
 			code: getLabel()			
 		])

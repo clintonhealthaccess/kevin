@@ -28,52 +28,43 @@ package org.chai.kevin.dashboard;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import javax.persistence.Basic;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
+
+import net.sf.ehcache.hibernate.HibernateUtil;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.HibernateProxyHelper;
 
 @Entity(name="DashboardTarget")
-@Table(name="dhsst_dashboard_target", uniqueConstraints={@UniqueConstraint(columnNames="code")})
+@Table(name="dhsst_dashboard_target")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DashboardTarget extends DashboardEntity implements ReportTarget, Exportable {
+public class DashboardTarget extends AbstractReportTarget implements DashboardEntity, ReportTarget, Exportable {
 
-	private Long id;
-	private Calculation<?> calculation;
 	private ReportProgram program;
+	protected Integer weight;
 	
-	@Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
-	}	
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	@ManyToOne(targetEntity=Calculation.class, optional=false, fetch=FetchType.LAZY)
-	@JoinColumn(nullable=false)
+	@Transient
 	public Calculation<?> getCalculation() {
-		return calculation;
-	}
-	
-	public void setCalculation(Calculation<?> calculation) {
-		this.calculation = calculation;
+		if (getData() instanceof HibernateProxy) {
+			return Calculation.class.cast(((HibernateProxy) getData()).getHibernateLazyInitializer().getImplementation());  
+		}
+		else {
+			return Calculation.class.cast(getData());
+		}
 	}
 
 	@ManyToOne(targetEntity=ReportProgram.class)
@@ -118,6 +109,13 @@ public class DashboardTarget extends DashboardEntity implements ReportTarget, Ex
 	@Override
 	public String toExportString() {
 		return "[" + Utils.formatExportCode(getCode()) + "]";
+	}
+	@Basic
+	public Integer getWeight() {
+		return weight;
+	}
+	public void setWeight(Integer weight) {
+		this.weight = weight;
 	}
 
 }

@@ -1,10 +1,6 @@
 package org.chai.kevin
 
 import org.apache.shiro.crypto.hash.Sha256Hash
-import org.chai.kevin.cost.CostRampUp
-import org.chai.kevin.cost.CostRampUpYear
-import org.chai.kevin.cost.CostTarget
-import org.chai.kevin.cost.CostTarget.CostType
 import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.Enum
@@ -12,6 +8,7 @@ import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.ExpressionMap
 import org.chai.kevin.data.NormalizedDataElement
 import org.chai.kevin.data.RawDataElement
+import org.chai.kevin.data.Source;
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type
 import org.chai.kevin.dsr.DsrTarget
@@ -27,7 +24,6 @@ import org.chai.kevin.location.DataLocation
 import org.chai.kevin.location.DataLocationType
 import org.chai.kevin.location.Location
 import org.chai.kevin.location.LocationLevel
-import org.chai.kevin.maps.MapsTarget
 import org.chai.kevin.planning.Planning
 import org.chai.kevin.planning.PlanningCost
 import org.chai.kevin.planning.PlanningOutput
@@ -66,7 +62,6 @@ public class Initializer {
 		reportAllReadonly.addToPermissions("menu:reports")
 		reportAllReadonly.addToPermissions("dashboard:*")
 		reportAllReadonly.addToPermissions("dsr:*")
-		reportAllReadonly.addToPermissions("maps:*")
 		reportAllReadonly.addToPermissions("cost:*")
 		reportAllReadonly.addToPermissions("fct:*")
 		reportAllReadonly.save()
@@ -251,10 +246,14 @@ public class Initializer {
 			primaryFunctionOp2.save(failOnError: true, flush:true)
 		}
 
+		if (!Source.count()) {
+			def source = new Source(names:j(['en':'DHSST']), code: 'dhsst').save(failOnError: true)
+		}
+		
 		if (!RawDataElement.count()) {
 			// Data Elements
 			def dataElement10 = new RawDataElement(names:j(["en":"Element 10"]), descriptions:j([:]), code:"CODE10", type: Type.TYPE_ENUM (Enum.findByCode('ENUM2').code))
-			def dataElement1 = new RawDataElement(names:j(["en":"Element 1"]), descriptions:j([:]), code:"CODE1", type: Type.TYPE_NUMBER())
+			def dataElement1 = new RawDataElement(names:j(["en":"Element 1"]), descriptions:j([:]), code:"CODE1", type: Type.TYPE_NUMBER(), source: Source.findByCode('dhsst'))
 			def dataElement2 = new RawDataElement(names:j(["en":"Element 2"]), descriptions:j([:]), code:"CODE2", type: Type.TYPE_NUMBER())
 			def dataElement3 = new RawDataElement(names:j(["en":"Element 3"]), descriptions:j([:]), code:"CODE3", type: Type.TYPE_ENUM (Enum.findByCode('ENUM1').code))
 			def dataElement4 = new RawDataElement(names:j(["en":"Element 4"]), descriptions:j([:]), code:"CODE4", type: Type.TYPE_BOOL())
@@ -699,68 +698,6 @@ public class Initializer {
 		}
 	}
 
-	static def createMaps() {
-		if (!MapsTarget.count()) {
-			def calculation1 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Element 1").id, code: "Maps sum 1", timestamp:new Date())
-			calculation1.save(failOnError:true)
-			new MapsTarget(names:j(["en":"Map Target 3"]), descriptions:j([:]), code:"TARGET3", calculation: calculation1).save(failOnError: true, flush:true)
-		}
-	}
-
-	static def createCost() {
-		if (!CostRampUp.count()) {
-			// Cost
-			new CostRampUp(names:j(["en":"Constant"]), descriptions:j([:]), code:"CONST", years: [
-						1: new CostRampUpYear(year: 1, value: 0.2),
-						2: new CostRampUpYear(year: 2, value: 0.2),
-						3: new CostRampUpYear(year: 3, value: 0.2),
-						4: new CostRampUpYear(year: 4, value: 0.2),
-						5: new CostRampUpYear(year: 5, value: 0.2)
-					]).save(failOnError: true);
-		}
-
-		if (!ReportProgram.count()) {
-			def ga = ReportProgram.findByCode("Geographical Access")
-
-			new CostTarget(
-					names:j(["en":"Annual Internet Access Cost"]), code:"Internet Cost", descriptions:j(["en":"Annual Internet Access Cost"]),
-					program: ga,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
-					costType: CostType.OPERATION,
-					costRampUp: CostRampUp.findByCode("CONST"),
-					typeCodeString: "District Hospital,Health Center"
-					).save(failOnError: true)
-
-			new CostTarget(
-					names:j(["en":"Connecting Centers to the Internet"]), code:"Connecting Centers", descriptions:j(["en":"Connecting Facilities to the Internet"]),
-					program: ga,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
-					costType: CostType.INVESTMENT,
-					costRampUp: CostRampUp.findByCode("CONST"),
-					typeCodeString: "District Hospital,Health Center"
-					).save(failOnError: true)
-
-			new CostTarget(
-					names:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]), code:"New Phones CHW", descriptions:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]),
-					program: ga,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
-					costType: CostType.INVESTMENT,
-					costRampUp: CostRampUp.findByCode("CONST"),
-					typeCodeString: "District Hospital,Health Center"
-					).save(failOnError: true)
-
-			def hrh = ReportProgram.findByCode("Human Resources for Health")
-
-			new CostTarget(
-					names:j(["en":"Facility Staff Training"]), code:"Facility Staff Training", descriptions:j(["en":"Facility Staff Training"]),
-					program: hrh,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
-					costType: CostType.INVESTMENT,
-					costRampUp: CostRampUp.findByCode("CONST")
-					).save(failOnError: true)
-		}
-	}
-	
 	static def createDashboard() {
 		if (!DashboardProgram.count()) {
 
@@ -780,7 +717,7 @@ public class Initializer {
 
 			def nursea1 = new DashboardTarget(
 					names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
-					calculation: calculation1, program: staffing,
+					data: calculation1, program: staffing,
 					weight: 1, order: 1).save(failOnError: true, flush:true)
 
 			def calculation2 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Constant 20").id, code:"Ratio constant 20", timestamp:new Date())
@@ -788,7 +725,7 @@ public class Initializer {
 
 			def nursea2 = new DashboardTarget(
 					names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
-					calculation: calculation2,  program: staffing,
+					data: calculation2,  program: staffing,
 					weight: 1, order: 2).save(failOnError: true, flush:true)
 
 			def calculation3 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Element 1").id, code:"Ratio 1", timestamp:new Date())
@@ -796,7 +733,7 @@ public class Initializer {
 
 			def target1 = new DashboardTarget(
 					names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
-					calculation: calculation3,  program: staffing,
+					data: calculation3,  program: staffing,
 					weight: 1, order: 3).save(failOnError: true, flush:true)
 
 			def calculation4 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Element 2").id, code:"Ratio 2", timestamp:new Date())
@@ -804,7 +741,7 @@ public class Initializer {
 
 			def missexpr = new DashboardTarget(
 					names:j(["en":"Missing Expression"]), code:"MISSING EXPRESSION", descriptions:j(["en":"Missing Expression"]),
-					calculation: calculation4,  program: staffing,
+					data: calculation4,  program: staffing,
 					weight: 1, order: 4).save(failOnError: true, flush:true)
 
 			def calculation5 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Ratio 3", timestamp:new Date())
@@ -812,7 +749,7 @@ public class Initializer {
 
 			def missdata = new DashboardTarget(
 					names:j(["en":"Missing Data"]), code:"MISSING DATA", descriptions:j(["en":"Missing Data"]),
-					calculation: calculation5,  program: staffing,
+					data: calculation5,  program: staffing,
 					weight: 1, order: 5).save(failOnError: true, flush:true)
 
 			def calculation6 = new Sum(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Ratio 4", timestamp:new Date())
@@ -820,7 +757,7 @@ public class Initializer {
 
 			def enume = new DashboardTarget(
 					names:j(["en":"Enum"]), code:"ENUM", descriptions:j(["en":"Enum"]),
-					calculation: calculation6, program: staffing,
+					data: calculation6, program: staffing,
 					weight: 1, order: 6).save(failOnError: true, flush:true)
 
 			nursea1.save(failOnError: true)
@@ -1034,7 +971,7 @@ public class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]), 
 				code:"TARGET OPTION 1",
-				sum: sumOne
+				data: sumOne
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption2 = new FctTargetOption(
@@ -1042,7 +979,7 @@ public class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]),
 				code:"TARGET OPTION 2",
-				sum: sumZero
+				data: sumZero
 			).save(failOnError:true)
 			
 			fctTarget1.targetOptions << [fctTargetOption1, fctTargetOption2]
@@ -1059,7 +996,7 @@ public class Initializer {
 				target: fctTarget2,
 				descriptions:j([:]),
 				code:"TARGET OPTION 3",
-				sum: sumZero
+				data: sumZero
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption4 = new FctTargetOption(
@@ -1067,7 +1004,7 @@ public class Initializer {
 				target: fctTarget2,
 				descriptions:j([:]),
 				code:"TARGET OPTION 4",
-				sum: sumOne
+				data: sumOne
 			).save(failOnError:true)
 			
 			fctTarget2.targetOptions << [fctTargetOption3, fctTargetOption4]
@@ -1085,7 +1022,7 @@ public class Initializer {
 				target: fctTarget3,
 				descriptions:j([:]),
 				code:"TARGET OPTION 5",
-				sum: sumMixHC
+				data: sumMixHC
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption6 = new FctTargetOption(
@@ -1093,7 +1030,7 @@ public class Initializer {
 				target: fctTarget3,
 				descriptions:j([:]),
 				code:"TARGET OPTION 6",
-				sum: sumMixDH
+				data: sumMixDH
 			).save(failOnError:true)
 			
 			fctTarget3.targetOptions << [fctTargetOption5, fctTargetOption6]
@@ -1111,7 +1048,7 @@ public class Initializer {
 				target: fctTarget4,
 				descriptions:j([:]),
 				code:"TARGET OPTION 7",
-				sum: sumMixHC
+				data: sumMixHC
 			).save(failOnError:true)
 			
 			fctTarget4.targetOptions << [fctTargetOption7]
@@ -1300,7 +1237,6 @@ public class Initializer {
 		).save(failOnError: true)
 	}
 	
-	
 	static def createDataElementExport(){
 		if(!DataElementExport.count()){
 			def dh = DataLocationType.findByCode("District Hospital")
@@ -1322,7 +1258,6 @@ public class Initializer {
 			def est = Location.findByCode("East");
 			def south = Location.findByCode("South");
 			
-			
 			def exporterThree = new DataElementExport(
 				descriptions: j(["en":"Exporter Raw Data Element Three"]),
 				date: new Date(),
@@ -1330,7 +1265,7 @@ public class Initializer {
 				locations:[south,dataLocationTwo],
 				dataElements:[dMap,dEtwo,dEthree,nData,dEfive,dEsix],
 				periods: [periodOne,periodTwo]
-				).save(failOnError: true)
+			).save(failOnError: true)
 			
 			def exporterTwo = new DataElementExport(
 				descriptions: j(["en":"Exporter Raw Data Element Two"]),
@@ -1339,7 +1274,7 @@ public class Initializer {
 				locations:[south,burera],
 				dataElements:[dEtwo,dEthree,dMap],
 				periods: [periodOne]
-				).save(failOnError: true)
+			).save(failOnError: true)
 				
 			def exporterOne = new DataElementExport(
 				descriptions: j(["en":"Exporter Raw Data Element One"]),
@@ -1348,7 +1283,7 @@ public class Initializer {
 				typeCodeString:"District Hospital,Health Center",
 				dataElements:[dMap,dEtwo,dEthree,dEfour,dEfive,dEsix],
 				periods: [periodOne,periodTwo]
-				).save(failOnError: true)
+			).save(failOnError: true)
 				
 			def exporterFour = new DataElementExport(
 				descriptions: j(["en":"Exporter Raw Data Element Four"]),
@@ -1357,10 +1292,7 @@ public class Initializer {
 				locations:[est,dataLocationOne],
 				dataElements:[dMap,dEtwo,dEfour,dEfive,dEsix],
 				periods: [periodOne,periodTwo]
-				).save(failOnError: true)
-			
-			
-				
+			).save(failOnError: true)
 		}
 	}
 	
@@ -1374,14 +1306,13 @@ public class Initializer {
 			def dEtwo = Sum.findByCode("Ratio constant 20");
 			def dEthree = Sum.findByCode("Ratio constant 10");
 			def dEfour = Sum.findByCode("Ratio 1");
-			def dEfive = Sum.findByCode("Maps sum 1");
+			def dEfive = Sum.findByCode("Ratio 2");
 		
 			def dataLocationOne = DataLocation.findByCode("327");
 			def dataLocationTwo = DataLocation.findByCode("322");
 			def burera = Location.findByCode("0404");
 			def est = Location.findByCode("East");
 			def south = Location.findByCode("South");
-			
 			
 			def exporterThree = new CalculationExport(
 				descriptions: j(["en":"Exporter Calculation Three"]),
@@ -1390,7 +1321,7 @@ public class Initializer {
 				locations:[south,dataLocationTwo],
 				calculations:[dEtwo,dEthree,dEfive],
 				periods: [periodOne,periodTwo]
-				).save(failOnError: true)
+			).save(failOnError: true, flush: true)
 			
 			def exporterTwo = new CalculationExport(
 				descriptions: j(["en":"Exporter Calculation Two"]),
@@ -1399,7 +1330,7 @@ public class Initializer {
 				locations:[south,burera],
 				calculations:[dEtwo,dEthree],
 				periods: [periodOne]
-				).save(failOnError: true)
+			).save(failOnError: true)
 				
 			def exporterOne = new CalculationExport(
 				descriptions: j(["en":"Exporter Calculation One"]),
@@ -1408,7 +1339,7 @@ public class Initializer {
 				typeCodeString:"District Hospital,Health Center",
 				calculations:[dEtwo,dEthree,dEfour,dEfive],
 				periods: [periodOne,periodTwo]
-				).save(failOnError: true)
+			).save(failOnError: true)
 				
 			def exporterFour = new CalculationExport(
 				descriptions: j(["en":"Exporter Calculation Four"]),
@@ -1417,7 +1348,7 @@ public class Initializer {
 				locations:[est,dataLocationOne],
 				calculations:[dEtwo,dEfour,dEfive],
 				periods: [periodOne,periodTwo]
-				).save(failOnError: true)
+			).save(failOnError: true, flush: true)
 		}
 	}
 		

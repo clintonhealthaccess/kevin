@@ -1,6 +1,8 @@
 package org.chai.kevin.data;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -17,7 +19,9 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.DataValue;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -104,6 +108,12 @@ abstract public class Data<T extends DataValue> {
 	
 	@Transient
 	public abstract Class<T> getValueClass();	
+	
+	@Transient
+	public abstract Set<String> getSources(Period period, DataLocationType type);
+	
+	@Transient
+	public abstract Set<String> getSources();
 	
 	@Override
 	public int hashCode() {

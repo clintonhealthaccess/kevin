@@ -23,22 +23,22 @@ class LocationSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 
-//	def "location cannot be null"() {
-//		setup:
-//		setupLocationTree()
-//		
-//		when:
-//		new DataLocation(names:j([:]), code: CODE(1), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
-//		
-//		then:
-//		DataLocation.count() == 3
-//		
-//		when:
-//		new DataLocation(names:j([:]), code: CODE(2), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP)).save(failOnError: true)
-//		
-//		then:
-//		thrown ValidationException
-//	}
+	def "root location"() {
+		setup:
+		def level = newLocationLevel(CODE(1), 1)
+		
+		when:
+		new Location(code: CODE(1), level: level).save(failOnError: true)
+		
+		then:
+		Location.count() == 1
+		
+		when:
+		new Location(code: CODE(2), level: level).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
 	
 	def "code cannot be null"() {
 		setup:

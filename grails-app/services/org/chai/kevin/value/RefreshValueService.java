@@ -11,10 +11,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.PeriodService;
 import org.chai.kevin.data.Calculation;
@@ -23,6 +25,8 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.data.SourceMap;
+import org.chai.kevin.json.JSONMap;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -45,6 +49,7 @@ public class RefreshValueService {
 	private final static Log log = LogFactory.getLog(RefreshValueService.class);
 	
 	private PeriodService periodService;
+	private LocationService locationService;
 	private DataService dataService;
 	private SessionFactory sessionFactory;
 	private PlatformTransactionManager transactionManager;
@@ -223,12 +228,61 @@ public class RefreshValueService {
 					progress.incrementProgress();
 				}
 				
+				updateSources(newNormalizedDataElement);
 				newNormalizedDataElement.setRefreshed(new Date());
 				dataService.save(newNormalizedDataElement);
 			}
 		});
 		
 		sessionFactory.getCurrentSession().clear();
+	}
+	
+	private void updateSources(Data<?> data) {
+		Map<String, Map<String, List<String>>> originalSourceMap = new HashMap<String, Map<String, List<String>>>();
+		for (Period period : periodService.listPeriods()) {
+			if (!originalSourceMap.containsKey(period.getId()+"")) {
+				originalSourceMap.put(period.getId()+"", new HashMap<String, List<String>>());
+			}
+			
+			Map<String, List<String>> jsonMap = new HashMap<String, List<String>>(originalSourceMap.get(period.getId()+""));
+			for (DataLocationType type : locationService.listTypes()) {
+				List<Data<?>> dependencies = new ArrayList<Data<?>>();
+				if (data instanceof NormalizedDataElement) {
+					NormalizedDataElement normalizedDataElement = (NormalizedDataElement)data;
+					Map<String, ? extends Data> dependenciesMap = expressionService.getDataInExpression(normalizedDataElement.getExpression(period, type.getCode()), Data.class);
+					dependencies.addAll((Collection<Data<?>>)dependenciesMap.values());
+				}
+				else if (data instanceof Calculation) {
+					Calculation calculation = (Calculation)data;
+					Map<String, ? extends Data> dependenciesMap = expressionService.getDataInExpression(calculation.getExpression(), Data.class);
+					dependencies.addAll((Collection<Data<?>>)dependenciesMap.values());
+				}
+				
+				for (Data<?> dependency : dependencies) {
+					if (!jsonMap.containsKey(type.getCode())) {
+						jsonMap.put(type.getCode(), new ArrayList<String>());
+					}
+					jsonMap.get(type.getCode()).addAll(dependency.getSources(period, type));
+				}
+			}
+			
+			originalSourceMap.put(period.getId()+"", jsonMap);
+		}
+		
+		SourceMap sourceMap = new SourceMap();
+		for (Entry<String, Map<String, List<String>>> entry : originalSourceMap.entrySet()) {
+			sourceMap.put(entry.getKey(), entry.getValue());
+		}
+		
+		
+		if (data instanceof NormalizedDataElement) {
+			NormalizedDataElement normalizedDataElement = (NormalizedDataElement)data;
+			normalizedDataElement.setSourceMap(sourceMap);
+		}
+		else if (data instanceof Calculation) {
+			Calculation calculation = (Calculation)data;
+			calculation.setSourceMap(sourceMap);
+		}
 	}
 	
 	private void collectOrderedDependencies(Data data, Collection<Data> dependencies, Class<? extends Data> clazz) {
@@ -385,6 +439,7 @@ public class RefreshValueService {
 					progress.incrementProgress();
 				}
 				
+				updateSources(newCalculation);
 				newCalculation.setRefreshed(new Date());
 				dataService.save(newCalculation);
 			}
@@ -429,6 +484,10 @@ public class RefreshValueService {
 	
 	public void setDataService(DataService dataService) {
 		this.dataService = dataService;
+	}
+	
+	public void setLocationService(LocationService locationService) {
+		this.locationService = locationService;
 	}
 	
 	public void setTransactionManager(PlatformTransactionManager transactionManager) {

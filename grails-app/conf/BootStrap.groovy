@@ -39,9 +39,6 @@ import grails.util.GrailsUtil;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.chai.kevin.cost.CostRampUp;
-import org.chai.kevin.cost.CostTarget;
-import org.chai.kevin.cost.CostTarget.CostType;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardProgram;
 import org.chai.kevin.data.Calculation;
@@ -96,7 +93,6 @@ class BootStrap {
 				reportAllReadonly.addToPermissions("dashboard:*")
 				reportAllReadonly.addToPermissions("dsr:*")
 				reportAllReadonly.addToPermissions("maps:*")
-				reportAllReadonly.addToPermissions("cost:*")
 				reportAllReadonly.addToPermissions("fct:*")
 				reportAllReadonly.save()
 			}
@@ -134,10 +130,8 @@ class BootStrap {
 			Initializer.createUsers();
 			Initializer.createDataElementsAndExpressions();
 			Initializer.createDashboard();
-			Initializer.createCost();
 			Initializer.createDsr();
 			Initializer.createFct();
-			Initializer.createMaps();
 			Initializer.createQuestionaire();
 			Initializer.createPlanning();
 			Initializer.createDataElementExport();

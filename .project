@@ -83,6 +83,11 @@
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/shiro-1.1.5/src/groovy</locationURI>
 	        </link>
 	        <link>
+	                <name>.plugin-src-rest-client-builder-1.0.2-src-groovy</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/rest-client-builder-1.0.2/src/groovy</locationURI>
+	        </link>
+	        <link>
 	                <name>.plugin-src-resources-1.2-RC1-grails-app-conf</name>
 	                <type>2</type>
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.2-RC1/grails-app/conf</locationURI>
@@ -113,9 +118,24 @@
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.2-RC1/src/groovy</locationURI>
 	        </link>
 	        <link>
-	                <name>.plugin-src-rabbitmq-1.0.0.RC1-src-groovy</name>
+	                <name>.plugin-src-release-2.0.3-src-java</name>
 	                <type>2</type>
-	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/rabbitmq-1.0.0.RC1/src/groovy</locationURI>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/release-2.0.3/src/java</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-release-2.0.3-src-groovy</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/release-2.0.3/src/groovy</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-rabbitmq-1.0.0.RC2-grails-app-conf</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/rabbitmq-1.0.0.RC2/grails-app/conf</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-rabbitmq-1.0.0.RC2-src-groovy</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/rabbitmq-1.0.0.RC2/src/groovy</locationURI>
 	        </link>
 	        <link>
 	                <name>.plugin-src-quartz-1.0-RC2-grails-app-conf</name>
@@ -188,9 +208,14 @@
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/jquery-1.7.1/src/groovy</locationURI>
 	        </link>
 	        <link>
-	                <name>.plugin-src-google-analytics-1.0-grails-app-taglib</name>
+	                <name>.plugin-src-hibernate-2.1.0-grails-app-i18n</name>
 	                <type>2</type>
-	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/google-analytics-1.0/grails-app/taglib</locationURI>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/hibernate-2.1.0/grails-app/i18n</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-google-analytics-2.0-grails-app-taglib</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/google-analytics-2.0/grails-app/taglib</locationURI>
 	        </link>
 	        <link>
 	                <name>.plugin-src-constraints-0.8.0-grails-app-i18n</name>

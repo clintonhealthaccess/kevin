@@ -29,6 +29,7 @@ package org.chai.kevin.dashboard;
 
 import java.util.Comparator;
 
+import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
 
 /**
@@ -47,7 +48,7 @@ public class DashboardEntitySorter {
 				else if(entity1.isTarget() && !entity2.isTarget()) 
 					return 1;
 				else
-					return entity1.compareTo(entity2);				
+					return entity1.compareTo((Orderable<Integer>)entity2);				
 			}
 		};
 	}

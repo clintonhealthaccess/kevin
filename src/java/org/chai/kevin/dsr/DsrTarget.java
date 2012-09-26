@@ -32,57 +32,49 @@ package org.chai.kevin.dsr;
  */
 import javax.persistence.Basic;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Importable;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.reports.AbstractReportTarget;
+import org.chai.kevin.reports.ReportProgram;
+import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.StoredValue;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.proxy.HibernateProxy;
 
 @Entity(name = "DsrTarget")
-@Table(name = "dhsst_dsr_target", uniqueConstraints={@UniqueConstraint(columnNames="code")})
+@Table(name = "dhsst_dsr_target")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DsrTarget extends AbstractReportTarget implements Exportable, Importable {
+public class DsrTarget extends AbstractReportTarget implements ReportTarget, Exportable, Importable {
 	
-	private Long id;
-	private Data<StoredValue> data; //this can be either a calculation or a data element
 	private DsrTargetCategory category;
 	private String format;
 	private Boolean average; //this can either be an average (true) or sum (null or false)
+	private ReportProgram program;
+
 	
-	@Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
-	}	
-	public void setId(Long id) {
-		this.id = id;
-	}	
+	@Override
+	@Transient
+	public Data<?> getData() {
+		if (super.getData() instanceof HibernateProxy) {
+			return Data.class.cast(((HibernateProxy) super.getData()).getHibernateLazyInitializer().getImplementation());  
+		}
+		else {
+			return Data.class.cast(super.getData());
+		}
+	}
 	
 	@Transient
 	public Type getType() {
 		return getData().getType();
 	}
 	
-	@ManyToOne(targetEntity=Data.class, optional=false)
-	public Data<StoredValue> getData() {
-		return data;
-	}
-
-	public void setData(Data<StoredValue> data) {
-		this.data = data;
-	}	
-
 	@ManyToOne(targetEntity=DsrTargetCategory.class)
 	public DsrTargetCategory getCategory() {
 		return category;
@@ -114,7 +106,17 @@ public class DsrTarget extends AbstractReportTarget implements Exportable, Impor
 	public Boolean getAverage() {
 		return average;
 	}
+	
 	public void setAverage(Boolean average) {
 		this.average = average;
-	}	
+	}
+	
+	@ManyToOne(targetEntity=ReportProgram.class)
+	public ReportProgram getProgram() {
+		return program;
+	}
+
+	public void setProgram(ReportProgram program) {
+		this.program = program;
+	}
 }

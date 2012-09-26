@@ -33,6 +33,12 @@ package org.chai.kevin.location
  */
 constraints ={
 	level (nullable: false)
-	// TODO validate that there are no loops, i.e the graph must be a DAG
-//	parent ()
+	parent(nullable: true, validator: { val, obj ->
+		if (val == null) {
+			def roots = Location.findAllByParentIsNull()
+			return roots.empty || roots.equals([obj])
+		}
+		// TODO validate that there are no loops, i.e the graph must be a DAG
+		return true
+	})
 }

@@ -16,7 +16,7 @@ public class FctTargetOptionControllerSpec extends FctIntegrationTests {
 		when:
 		fctTargetOptionController.params.code = CODE(2)
 		fctTargetOptionController.params['target.id'] = target.id+""
-		fctTargetOptionController.params['sum.id'] = sum.id+""
+		fctTargetOptionController.params['data.id'] = sum.id+""
 		fctTargetOptionController.saveWithoutTokenCheck()
 		
 		then:

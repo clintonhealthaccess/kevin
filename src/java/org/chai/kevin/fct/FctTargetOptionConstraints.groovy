@@ -2,7 +2,7 @@ package org.chai.kevin.fct
 
 constraints = {
 	code (nullable: false, blank: false, unique: true)
-	sum (nullable: false)
+	data (nullable: false)
 	target (nullable: false)
 }
 

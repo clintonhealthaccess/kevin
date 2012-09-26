@@ -71,12 +71,7 @@ class RawDataElementController extends AbstractEntityController {
 	}
 
 	def getModel(def entity) {
-		return [
-			rawDataElement: entity,
-			hasValues: entity.id != null && valueService.getNumberOfValues(entity) != 0,
-			enumes: Enum.list(),
-			code: getLabel()
-		]
+		return [rawDataElement: entity, sources: Source.list()]
 	}
 
 	def getEntityClass(){
@@ -131,11 +126,12 @@ class RawDataElementController extends AbstractEntityController {
 
 	def bindParams(def entity) {
 		bindData(entity, params, [exclude:'type.jsonValue'])
+
+		if (entity.type == null) entity.type = new Type()
+		params['oldType'] = new Type(entity.type.jsonValue)
 		
 		// we assign the new type only if there are no associated values
 		if (entity.id == null || valueService.getNumberOfValues(entity) == 0) {
-			if (entity.type == null) entity.type = new Type()
-			params['oldType'] = new Type(entity.type.jsonValue)
 			bindData(entity, params, [include:'type.jsonValue'])
 		}
 				
@@ -155,6 +151,7 @@ class RawDataElementController extends AbstractEntityController {
 			template: "data/rawDataElementList",
 			code: getLabel(),
 			entityCount: dataService.countData(RawDataElement.class, params['q'], []),
+			entityClass: getEntityClass(),
 			search: true
 		])
 	}
@@ -170,31 +167,6 @@ class RawDataElementController extends AbstractEntityController {
 			entityCount: RawDataElement.count(),
 			entityClass: getEntityClass()
 		])
-	}
-
-	def getExplainer = {
-		def rawDataElement = RawDataElement.get(params.int('id'))
-
-		if (rawDataElement != null) {
-			List<Period> periods = Period.list([cache: true]);
-			Set<SurveyElement> surveyElements = surveyService.getSurveyElements(rawDataElement, null);
-
-			Map<Period, Long> periodValues = new HashMap<Period,Integer>();
-			for(Period period : periods) {
-				periodValues.put(period, valueService.getNumberOfValues(rawDataElement, period));
-			}
-
-			Map<SurveyElement, Integer> surveyElementMap = new HashMap<SurveyElement,Integer>();
-			for(SurveyElement surveyElement: surveyElements) {
-				surveyElementMap.put(surveyElement, surveyService.getNumberOfApplicableDataLocationTypes(surveyElement));
-			}
-			
-			Set<Data<?>> referencingData = dataService.getReferencingData(rawDataElement)
-
-			render (view: '/entity/data/explainRawDataElement',  model: [
-				rawDataElement: rawDataElement, surveyElements: surveyElementMap, periodValues: periodValues, referencingData: referencingData
-			])
-		}
 	}
 
 }

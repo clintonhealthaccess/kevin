@@ -15,6 +15,7 @@ import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -27,6 +28,7 @@ import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
+import org.hibernate.proxy.HibernateProxyHelper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,26 +74,22 @@ public class DsrService {
 			return new DsrTable(valueMap, calculationLocations, targets, targetCategories);
 		
 		for (DsrTarget target : targets) {
-			Calculation calculation = dataService.getData(target.getData().getId(), Calculation.class);
-			if(calculation != null){
+			if (target.getData() instanceof Calculation) {
 				for(CalculationLocation calculationLocation : calculationLocations){
 					if(!valueMap.containsKey(calculationLocation))
 						valueMap.put(calculationLocation, new HashMap<DsrTarget, Value>());	
-					valueMap.get(calculationLocation).put(target, getDsrValue(target, calculation, calculationLocation, period, types));
+					valueMap.get(calculationLocation).put(target, getDsrValue(target, (Calculation)target.getData(), calculationLocation, period, types));
 				}
 			}
-			else{
-				DataElement dataElement = dataService.getData(target.getData().getId(), DataElement.class);
-				if(dataElement != null){
-					for(CalculationLocation calculationLocation : calculationLocations){
-						if(calculationLocation instanceof DataLocation){
-							DataLocation dataLocation = (DataLocation) calculationLocation;
-							if(!valueMap.containsKey(calculationLocation))
-								valueMap.put(calculationLocation, new HashMap<DsrTarget, Value>());	
-							valueMap.get(calculationLocation).put(target, getDsrValue(dataElement, dataLocation, period));	
-						}
-					}	
-				}				
+			else if (target.getData() instanceof DataElement) {
+				for(CalculationLocation calculationLocation : calculationLocations){
+					if(calculationLocation instanceof DataLocation){
+						DataLocation dataLocation = (DataLocation) calculationLocation;
+						if(!valueMap.containsKey(calculationLocation))
+							valueMap.put(calculationLocation, new HashMap<DsrTarget, Value>());	
+						valueMap.get(calculationLocation).put(target, getDsrValue((DataElement)target.getData(), dataLocation, period));	
+					}
+				}	
 			}
 		}					
 		

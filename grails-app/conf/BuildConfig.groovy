@@ -57,7 +57,7 @@ grails.project.dependency.resolution = {
         // from public Maven repositories
 		mavenLocal()
 		mavenCentral()	
-		mavenRepo "http://m2repo.spockframework.org/snapshots"
+//		mavenRepo "http://m2repo.spockframework.org/snapshots"
 //		mavenRepo "http://snapshots.repository.codehaus.org"
 //		mavenRepo "http://repository.codehaus.org"
 //		mavenRepo "http://www.intalio.org/public/maven2/"
@@ -89,10 +89,11 @@ grails.project.dependency.resolution = {
 		
         runtime 'mysql:mysql-connector-java:5.1.13'
 		
-		test "org.codehaus.geb:geb-spock:0.7.1"
-		test("org.seleniumhq.selenium:selenium-firefox-driver:2.20.0")
-		test("org.seleniumhq.selenium:selenium-chrome-driver:2.20.0")
-		test("org.seleniumhq.selenium:selenium-htmlunit-driver:2.20.0") {
+		test "org.codehaus.geb:geb-spock:0.7.2"
+		test("org.seleniumhq.selenium:selenium-support:2.25.0")
+		test("org.seleniumhq.selenium:selenium-firefox-driver:2.25.0")
+		test("org.seleniumhq.selenium:selenium-chrome-driver:2.25.0")
+		test("org.seleniumhq.selenium:selenium-htmlunit-driver:2.25.0") {
 			excludes "xml-apis"
 		}
 		
@@ -107,9 +108,9 @@ grails.project.dependency.resolution = {
 		compile ":jquery:1.7.1"
 		compile ":resources:1.2-RC1"
 		compile ":shiro:1.1.5"
-		compile ":springcache:1.3.3"
+		compile ":springcache:1.3.1"
 		compile ":compass-sass:0.7"
-		compile ":google-analytics:1.0"
+		compile ":google-analytics:2.0"
 		compile ":quartz:1.0-RC2"
 		compile ":constraints:0.8.0"
 		compile ":cached-resources:1.0"
@@ -119,9 +120,9 @@ grails.project.dependency.resolution = {
 		compile ":mail:1.0"
 		compile ":build-info-tag:0.1"
 		compile ":yui-minify-resources:0.1.5"
-		compile ":rabbitmq:1.0.0.RC1"
+		compile ":rabbitmq:1.0.0.RC2"
 		
-		test ":geb:0.7.1"
+		test ":geb:0.7.2"
 		test ":spock:0.6"
 	}
 

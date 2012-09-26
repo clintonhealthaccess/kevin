@@ -28,68 +28,21 @@ package org.chai.kevin.dashboard;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import javax.persistence.Basic;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
-
+import org.chai.kevin.Orderable;
 import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.reports.ReportProgram;
 
-@MappedSuperclass
-public abstract class DashboardEntity extends ReportEntity {
+public interface DashboardEntity extends Comparable<Orderable<Integer>> {
 	
-	protected Integer weight;
+	public Integer getWeight();
 	
-	@Basic
-	public Integer getWeight() {
-		return weight;
-	}
+	public ReportProgram getReportProgram();
 	
-	public void setWeight(Integer weight) {
-		this.weight = weight;
-	}
+	public <T> T visit(DashboardVisitor<T> visitor, CalculationLocation location, Period period);
 	
-	@Transient
-	public abstract ReportProgram getReportProgram();
+	public boolean hasChildren();
 	
-	public abstract <T> T visit(DashboardVisitor<T> visitor, CalculationLocation location, Period period);
-	
-	@Transient
-	public abstract boolean hasChildren();
-	
-	@Transient
-	public abstract boolean isTarget();
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof DashboardEntity))
-			return false;
-		DashboardEntity other = (DashboardEntity) obj;
-		if (code == null) {
-			if (other.code != null)
-				return false;
-		} else if (!code.equals(other.code))
-			return false;
-		return true;
-	}
-	
-	@Override
-	public String toString() {
-		return "DashboardEntity[getId()=" + getId() + ", getCode()=" + getCode() + "]";
-	}	
+	public boolean isTarget();	
 
 }

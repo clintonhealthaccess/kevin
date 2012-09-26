@@ -6,9 +6,10 @@
 		</td>
 		<g:each in="${fctTable.targetOptions}" var="targetOption">
 			<td>
-				<div>
-					<g:reportValue value="${fctTable.getTableReportValue(location, targetOption).getValue()}" type="${targetOption.sum.type}"/>
-				</div>					
+				<g:reportValue
+					tooltip="${i18n(field: targetOption.names)}"
+					value="${fctTable.getTableReportValue(location, targetOption).getValue()}" 
+					type="${targetOption.sum.type}"/>					
 			</td>
 		</g:each>
 	</tr>
@@ -24,14 +25,24 @@
 				<td>
 					<g:if test="${fctTable.getTableReportValue(location, targetOption) != null}">
 						<div class="report-value-number">
-							<g:reportValue value="${fctTable.getTableReportValue(location, targetOption).getValue()}" type="${targetOption.type}" format="${targetOption.numberFormat}"/>
+							<g:reportValue
+								tooltip="${i18n(field: targetOption.names)}" 
+								value="${fctTable.getTableReportValue(location, targetOption).getValue()}" 
+								type="${targetOption.type}" 
+								format="${targetOption.numberFormat}"/>
 						</div>
 						<div class="report-value-percentage hidden">
-							<g:reportPercentage value="${fctTable.getTableReportValue(location, targetOption).getAverage()}" type="${targetOption.type}" format="${targetOption.percentageFormat}"/>
+							<g:reportPercentage
+								tooltip="${i18n(field: targetOption.names)}"
+								value="${fctTable.getTableReportValue(location, targetOption).getAverage()}" 
+								type="${targetOption.type}" 
+								format="${targetOption.percentageFormat}"/>
 						</div>
 					</g:if>
 					<g:else>
-						<div class="report-value-na"><g:message code="report.value.na"/></div>
+						<span class="tooltip" original-title="${i18n(field: targetOption.names)}">
+							<div class="report-value-na"><g:message code="report.value.na"/></div>
+						</span>
 					</g:else>
 				</td>
 			</g:each>

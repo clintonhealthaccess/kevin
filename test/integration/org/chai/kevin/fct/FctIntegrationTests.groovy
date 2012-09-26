@@ -27,25 +27,25 @@ abstract class FctIntegrationTests extends IntegrationTests {
 		return target
 	}
 
-	def newFctTargetOption(def code, def target, def sum) {
+	static def newFctTargetOption(def code, def target, def sum) {
 		def targetOption = new FctTargetOption(
 			names: [:],
 			code: code,
 			target: target,
-			sum: sum
+			data: sum
 		).save(failOnError: true)
 		target.targetOptions << targetOption
 		target.save(failOnError: true)
 		return targetOption
 	}
 		
-	def newFctTargetOption(def code, def order, def target, def sum) {
+	static def newFctTargetOption(def code, def order, def target, def sum) {
 		def targetOption = new FctTargetOption(
 			names: [:],
 			order: order,
 			code: code,
 			target: target,		
-			sum: sum
+			data: sum
 		).save(failOnError: true)		
 		target.targetOptions << targetOption
 		target.save(failOnError: true)

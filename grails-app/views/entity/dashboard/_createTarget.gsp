@@ -15,9 +15,9 @@
 		<g:selectFromList name="program.id" label="${message(code:'dashboard.target.program.label')}" bean="${entity}" field="program" optionKey="id" multiple="false"
 			from="${programs}" value="${entity.program?.id}" values="${programs.collect{i18n(field:it.names)}}" />
 		
-		<g:selectFromList name="calculation.id" label="${message(code:'dashboard.target.calculation.label')}" bean="${entity}" field="calculation" optionKey="id" multiple="false"
+		<g:selectFromList name="data.id" label="${message(code:'dashboard.target.calculation.label')}" bean="${entity}" field="data" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[classes:['Sum', 'Aggregation']])}"
-			from="${calculations}" value="${entity?.calculation?.id}" values="${calculations.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+			from="${calculations}" value="${entity?.data?.id}" values="${calculations.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 				
 		<g:input name="weight" label="${message(code:'dashboard.target.weight.label')}" bean="${entity}" field="weight"/>
 		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${entity}" field="order"/>

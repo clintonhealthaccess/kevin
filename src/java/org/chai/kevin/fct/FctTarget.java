@@ -32,20 +32,21 @@ package org.chai.kevin.fct;
  */
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
-import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.reports.AbstractReportTarget;
+import org.chai.kevin.reports.ReportEntity;
+import org.chai.kevin.reports.ReportProgram;
+import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -53,11 +54,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity(name = "FctTarget")
 @Table(name = "dhsst_fct_target", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class FctTarget extends AbstractReportTarget implements Exportable {
+public class FctTarget extends ReportEntity implements ReportTarget, Exportable {
 	
 	private Long id;
 	private List<FctTargetOption> targetOptions = new ArrayList<FctTargetOption>();
-	
+	private ReportProgram program;
+
 	@Id
 	@GeneratedValue
 	public Long getId() {
@@ -90,6 +92,16 @@ public class FctTarget extends AbstractReportTarget implements Exportable {
 	@Override
 	public String toExportString() {
 		return "[" + Utils.formatExportCode(getCode()) + "]";
+	}
+	
+	
+	@ManyToOne(targetEntity=ReportProgram.class)
+	public ReportProgram getProgram() {
+		return program;
+	}
+
+	public void setProgram(ReportProgram program) {
+		this.program = program;
 	}
 
 }

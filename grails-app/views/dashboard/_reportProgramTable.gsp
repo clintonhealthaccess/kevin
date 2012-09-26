@@ -18,8 +18,10 @@
 				<g:set var="percentageValue" />
 				<td>
 					<g:if test="${!entity.isTarget()}">
-						<a href="${createLink(controller:'dashboard', action:'view',
-						params:[period: currentPeriod.id, program: entity.program.id, location: currentLocation.id, dashboardEntity: entity.id])}">
+					 	<% def childProgramLinkParams = new HashMap(params) %>
+						<% childProgramLinkParams['program'] = entity.program.id+"" %>
+						<% childProgramLinkParams['dashboardEntity'] = entity.id+"" %>										
+						<a href="${createLink(controller: controllerName, action: actionName, params: childProgramLinkParams)}">
 							<g:i18n field="${entity.program.names}" />
 						</a>
 						&nbsp;

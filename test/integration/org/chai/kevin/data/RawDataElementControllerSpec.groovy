@@ -126,10 +126,28 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		rawDataElementController.saveWithoutTokenCheck()
 
 		then:
-		//		rawDataElementController.response.contentAsString.contains("success")
 		(Type.TYPE_BOOL()).equals(dataElement.type)
 	}
 
+	def "can save data element if it still has values and type does not change" () {
+		setup:
+		setupLocationTree()
+		rawDataElementController = new RawDataElementController()
+		def dataLocation = DataLocation.findByCode(BUTARO)
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		newRawDataElementValue(dataElement, period, dataLocation, Value.NULL_INSTANCE())
+		
+		when:
+		rawDataElementController.params.id = dataElement.id
+		rawDataElementController.params.code = dataElement.code
+		rawDataElementController.params['type.jsonValue'] = Type.TYPE_NUMBER().getJsonValue()
+		rawDataElementController.saveWithoutTokenCheck()
+
+		then:
+		rawDataElementController.response.redirectedUrl.equals(rawDataElementController.getTargetURI())
+		dataElement.type.equals(Type.TYPE_NUMBER())
+	}
 	
 	def "not changing data element type does not delete survey entered values"() {
 		setup:
@@ -251,20 +269,6 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		rawDataElementController.modelAndView.model.entityCount == 1
 	}
 
-	def "get data element explainer"() {
-		setup:
-		rawDataElementController = new RawDataElementController()
-		
-		when:
-		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
-		rawDataElementController.params.id = dataElement.id+''
-		rawDataElementController.getExplainer()
-
-		then:
-		rawDataElementController.modelAndView.model.rawDataElement.equals(dataElement)
-		rawDataElementController.modelAndView.model.periodValues.isEmpty()
-	}
-	
 	def "delete data element with survey checkbox and no attached elements"() {
 		setup:
 		setupLocationTree()

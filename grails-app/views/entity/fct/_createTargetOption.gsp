@@ -12,9 +12,9 @@
 		<g:selectFromList name="target.id" label="${message(code:'fct.targetoption.target.label')}" bean="${targetOption}" field="target" optionKey="id" multiple="false"
 			from="${targets}" value="${targetOption.target?.id}" values="${targets.collect{i18n(field:it.names)}}" />
 
-		<g:selectFromList name="sum.id" label="${message(code:'fct.targetoption.sum.label')}" bean="${targetOption}" field="sum" optionKey="id" multiple="false"
+		<g:selectFromList name="data.id" label="${message(code:'fct.targetoption.sum.label')}" bean="${targetOption}" field="data" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'Sum'])}"
-			from="${sums}" value="${targetOption.sum?.id}" values="${sums.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+			from="${sums}" value="${targetOption.data?.id}" values="${sums.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 		
 		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${targetOption}" field="order"/>
 		

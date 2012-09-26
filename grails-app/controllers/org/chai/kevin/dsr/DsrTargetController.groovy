@@ -87,7 +87,6 @@ class DsrTargetController extends AbstractEntityController {
 
 	def bindParams(def entity) {
 		bindData(entity, params, [exclude:'data.id'])
-//		if (params.int('dataElement.id')) entity.dataElement = dataService.getData(params.int('dataElement.id'), DataElement.class)
 		if (params.int('data.id')) entity.data = dataService.getData(params.int('data.id'), Data.class)
 		
 		// FIXME GRAILS-6967 makes this necessary
@@ -104,6 +103,7 @@ class DsrTargetController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: targets,
 			entityCount: dataService.countData(DsrTarget.class, params['q'], []),
+			entityClass: getEntityClass(),
 			template: "dsr/targetList",
 			code: getLabel(),
 			search: true

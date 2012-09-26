@@ -23,7 +23,7 @@ class ExpressionController {
 		if (cmd.hasErrors()) {
 			def exception = null
 
-			if (cmd.errors.hasFieldErrors("expression")) {
+			if (cmd.errors.hasFieldErrors("expression") && cmd.expression != null) {
 				try {
 					expressionService.expressionIsValid(cmd.expression, DataElement.class)
 				} catch (IllegalArgumentException e) {
@@ -35,8 +35,10 @@ class ExpressionController {
 		}
 		else {
 			def period = Period.get(cmd.periodId)
-			def dataLocationTypes = new HashSet( cmd.typeCodes.collect { DataLocationType.findByCode(it) } )
+			def dataLocationTypes = new HashSet( cmd.typeCodes.collect { DataLocationType.findByCode(it) } ) - null
 			def locations = locationService.getRootLocation().collectDataLocations(null, dataLocationTypes)
+			
+			if (log.isDebugEnabled()) log.debug("calculating expression "+cmd.expression+", for period "+period+" and data location types "+dataLocationTypes+", number of locations: "+locations.size())
 			
 			NormalizedDataElement dataElement = new NormalizedDataElement()
 			dataElement.type = cmd.type
@@ -78,17 +80,10 @@ class ExpressionTestCommand {
 	String expression
 	Type type
 	Long periodId
-	String typeCodeString
-	
-	Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
-	}
-	void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
-	}
+	Set<String> typeCodes
 	
 	static constraints = {
-		expression (blank: false, expressionValid: true)
+		expression (blank: false, expressionValid: true, nullable: false)
 		type (blank: false, nullable: false, validator: {val, obj ->
 			return val.isValid();
 		})

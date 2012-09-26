@@ -70,7 +70,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		dashboardTargetController.params['id'] = target.id
 		dashboardTargetController.params['weight'] = 1
 		dashboardTargetController.params['code'] = "NEW"
-		dashboardTargetController.params['calculation.id'] = ratio.id+""
+		dashboardTargetController.params['data.id'] = ratio.id+""
 		dashboardTargetController.saveWithoutTokenCheck()
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
@@ -96,7 +96,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		dashboardTargetController.params['id'] = target.id
 		dashboardTargetController.params['weight'] = 1
 		dashboardTargetController.params['code'] = "NEW"
-		dashboardTargetController.params['calculation.id'] = ratio.id+""
+		dashboardTargetController.params['data.id'] = ratio.id+""
 		dashboardTargetController.saveWithoutTokenCheck()
 		def newTarget = DashboardTarget.findByCode("NEW")
 		

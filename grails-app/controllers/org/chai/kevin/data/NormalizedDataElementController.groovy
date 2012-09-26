@@ -126,6 +126,7 @@ class NormalizedDataElementController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: normalizedDataElements,
 			entityCount: dataService.countData(NormalizedDataElement.class, params['q'], []),
+			entityClass: getEntityClass(),
 			template: "data/normalizedDataElementList",
 			code: getLabel(),
 			search: true
@@ -144,24 +145,6 @@ class NormalizedDataElementController extends AbstractEntityController {
 			entityClass: getEntityClass(),
 			targetURI: getTargetURI()
 		])
-	}
-	
-	def getExplainer = {
-		def normalizedDataElement = NormalizedDataElement.get(params.int('id'))
-
-		if (normalizedDataElement != null) {
-			def periods = Period.list([cache: true])
-			def valuesWithError = [:]
-			periods.each { valuesWithError.put(it, valueService.getNumberOfValues(normalizedDataElement, Status.ERROR, it)) }
-			def referencingData = dataService.getReferencingData(normalizedDataElement)
-
-			render (view: '/entity/data/explainNormalizedDataElement',  model: [
-				normalizedDataElement: normalizedDataElement, 
-				referencingData: referencingData,
-				values: valueService.getNumberOfValues(normalizedDataElement),
-				valuesWithError: valuesWithError
-			])
-		}
 	}
 
 }

@@ -26,10 +26,14 @@
   		           	</ul>
   				</td>
   				<td>${normalizedDataElement.id}</td>
-  				<td>${normalizedDataElement.code}</td>  				
   				<td class="data-element-explainer" data-data="${normalizedDataElement.id}">
-  					<a href="${createLink(controller:'normalizedDataElement', action:'getExplainer', params:[id: normalizedDataElement.id])}"><g:i18n field="${normalizedDataElement.names}"/></a>
+  					<a class="cluetip"
+  						href="${createLink(controller:'data', action:'getExplainer', params:[id: normalizedDataElement.id])}"
+  						rel="${createLink(controller: 'data', action:'getDescription', params:[id: normalizedDataElement.id])}">
+  						${normalizedDataElement.code}
+  					</a>
   				</td>
+  				<td><g:i18n field="${normalizedDataElement.names}"/></td>
   				<td><g:toHtml value="${normalizedDataElement.type.getDisplayedValue(2, 2)}"/></td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${normalizedDataElement.refreshed}"/></td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${normalizedDataElement.lastValueChanged}"/></td>
@@ -64,7 +68,7 @@
   				</td>
   			</tr>
   			<tr class="explanation-row">
-  				<td colspan="8">
+  				<td colspan="9">
   					<div class="explanation-cell" id="explanation-${normalizedDataElement.id}"></div>
   				</td>
   			</tr>

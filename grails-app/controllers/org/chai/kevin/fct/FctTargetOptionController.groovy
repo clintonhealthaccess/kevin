@@ -6,6 +6,7 @@ package org.chai.kevin.fct;
 
 import grails.plugin.springcache.annotations.CacheFlush;
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.data.Data;
 
 class FctTargetOptionController extends AbstractEntityController {
 
@@ -55,13 +56,12 @@ class FctTargetOptionController extends AbstractEntityController {
 
 	def bindParams(def entity) {
 		entity.properties = params
-
+		if (params.int('data.id')) entity.data = dataService.getData(params.int('data.id'), Data.class)
+		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
-		
-		return[entity:entity]
 	}
 	
 	@CacheFlush("fctCache")
@@ -87,6 +87,7 @@ class FctTargetOptionController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: targetOptions,
 			entityCount: dataService.countData(FctTargetOption.class, params['q'], []),
+			entityClass: getEntityClass(),
 			template: "fct/targetOptionList",
 			code: getLabel(),
 			search: true

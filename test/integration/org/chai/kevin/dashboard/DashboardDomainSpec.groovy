@@ -42,13 +42,13 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 		when:
 		def calculation = newSum("1", CODE(3))
 		def program = newReportProgram(CODE(2))
-		new DashboardTarget(code: CODE(1), program: program, calculation: calculation, weight: 1).save(failOnError: true)
+		new DashboardTarget(code: CODE(1), program: program, data: calculation, weight: 1).save(failOnError: true)
 		
 		then:
 		DashboardTarget.count() == 1
 		
 		when:
-		new DashboardTarget(code: CODE(4), program: program, calculation: calculation).save(failOnError: true)
+		new DashboardTarget(code: CODE(4), program: program, data: calculation).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -58,7 +58,7 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 		when:
 		def calculation = newSum("1", CODE(3))
 		def program = newReportProgram(CODE(2))
-		new DashboardTarget(code: CODE(1), program: program, calculation: calculation, weight: 1).save(failOnError: true)
+		new DashboardTarget(code: CODE(1), program: program, data: calculation, weight: 1).save(failOnError: true)
 		
 		then:
 		DashboardTarget.count() == 1
@@ -138,7 +138,7 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	
 	def "target calculation cannot be a sum"() {
 		when:
-		new DashboardTarget(code: PROGRAM1, calculation: newSum("1", CODE(1))).save(failOnError: true)
+		new DashboardTarget(code: PROGRAM1, data: newSum("1", CODE(1))).save(failOnError: true)
 		
 		then:
 		thrown ValidationException

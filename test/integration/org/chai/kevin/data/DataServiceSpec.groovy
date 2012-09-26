@@ -36,6 +36,8 @@ import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.dsr.DsrIntegrationTests;
+import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
@@ -100,7 +102,21 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.getData(normalizedDataElement.id, RawDataElement.class) == null
 		
 	}
-	
+
+	def "get data from DSR"() {
+		setup:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def program = newReportProgram(CODE(1))
+		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(1), 1)
+		def dsrTarget = DsrIntegrationTests.newDsrTarget(CODE(1), rawDataElement, program, category)
+		
+		when:
+		dsrTarget = DsrTarget.findByCode(CODE(1))
+		
+		then:
+		dataService.getData(dsrTarget.getData().id, Calculation.class) == null 
+	}
+		
 	def "get data element by code"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
@@ -289,7 +305,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "delete normalized data element with associated expression throws exception"() {
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(1):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
 		
 		dataService.delete(rawDataElement)
 		
@@ -313,7 +329,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "get referencing normalized data element"() {
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(1):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
 		
 		then:
 		dataService.getReferencingNormalizedDataElements(rawDataElement).equals([normalizedDataElement])

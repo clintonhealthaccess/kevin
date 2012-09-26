@@ -1,55 +1,42 @@
 package org.chai.kevin.fct;
 
-import javax.persistence.Basic;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
+import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.reports.ReportEntity;
+import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.proxy.HibernateProxy;
 
 @Entity(name = "FctTargetOption")
-@Table(name = "dhsst_fct_target_option", uniqueConstraints={@UniqueConstraint(columnNames="code")})
+@Table(name = "dhsst_fct_target_option")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class FctTargetOption extends ReportEntity implements Exportable {
+public class FctTargetOption extends AbstractReportTarget implements Exportable {
 
-	private Long id;	
-	private Sum sum;
 	private FctTarget target;	
 	private String numberFormat = "#";
 	private String percentageFormat = "#%";
-	
-	@Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
-	}
-	
-	public void setId(Long id) {
-		this.id = id;
-	}
 	
 	@Transient
 	public Type getType() {
 		return getSum().getType();
 	}
 	
-	@ManyToOne(targetEntity=Sum.class)
+	@Transient
 	public Sum getSum() {
-		return sum;		
-	}
-	
-	public void setSum(Sum sum){
-		this.sum = sum;
+		if (getData() instanceof HibernateProxy) {
+			return Sum.class.cast(((HibernateProxy) getData()).getHibernateLazyInitializer().getImplementation());  
+		}
+		else {
+			return Sum.class.cast(getData());
+		}
 	}
 	
 	@ManyToOne(targetEntity=FctTarget.class)

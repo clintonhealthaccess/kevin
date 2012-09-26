@@ -102,6 +102,7 @@ class DsrTargetCategoryController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: categories,
 			entityCount: dataService.countData(DsrTargetCategory.class, params['q'], []),
+			entityClass: getEntityClass(),
 			template: "dsr/targetCategoryList",
 			code: getLabel(),
 			search: true

@@ -6,7 +6,7 @@
 		</p>
 	</g:if>
 	<div id="map" class="map"></div>
-	<!-- TODO move this to a map_init.js file -->
+	<!-- TODO update and move this to a map_init.js file -->
 	<r:script>
 	var map = L.map('map').setView([-1.951069, lng=30.06134], 10);
 	L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
@@ -34,6 +34,7 @@
 				var polygonCoordinates = []
 				var coordinates = []
 				var latlonRegex = /\[(\-|\d|\.)*,(\-|\d|\.)*\]/g;
+				//TODO if coordinates == null
 				$(f.properties.coordinates.match(latlonRegex)).each(function(){
 					var coordinate = this;
 					coordinate = this.replace(/(\[|\])/g,"");
