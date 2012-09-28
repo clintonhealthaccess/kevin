@@ -1,11 +1,17 @@
-package org.chai.kevin.task
+package org.chai.task
 
 import grails.validation.ValidationException;
 
 import org.apache.commons.io.FileUtils;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.task.Task.TaskStatus;
+import org.chai.task.Task;
+import org.chai.task.Task.TaskStatus;
+import org.chai.task.EntityImportTask;
+import org.chai.task.FileType;
+import org.chai.task.GeneralImportTask;
+import org.chai.task.ImportTask;
+import org.chai.task.NominativeImportTask;
 import org.codehaus.groovy.grails.plugins.testing.GrailsMockMultipartFile;
 
 class ImportTaskSpec extends IntegrationTests {

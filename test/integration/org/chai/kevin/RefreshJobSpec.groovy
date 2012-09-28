@@ -1,8 +1,8 @@
 package org.chai.kevin
 
 import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.task.Task;
-import org.chai.kevin.task.Task.TaskStatus;
+import org.chai.task.Task;
+import org.chai.task.Task.TaskStatus;
 
 class RefreshJobSpec extends IntegrationTests {
 

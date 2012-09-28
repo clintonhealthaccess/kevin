@@ -28,9 +28,9 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.task.Progress;
-import org.chai.kevin.task.RefreshAllTask;
-import org.chai.kevin.task.Task.TaskStatus;
+import org.chai.task.Progress;
+import org.chai.task.RefreshAllTask;
+import org.chai.task.Task.TaskStatus;
 import org.quartz.InterruptableJob
 import org.quartz.JobExecutionContext
 

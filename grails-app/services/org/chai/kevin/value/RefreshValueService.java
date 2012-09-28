@@ -30,7 +30,7 @@ import org.chai.kevin.json.JSONMap;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.task.Progress;
+import org.chai.task.Progress;
 import org.hibernate.Criteria;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
