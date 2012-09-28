@@ -1,4 +1,4 @@
-package org.chai.kevin.task
+package org.chai.task
 
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.imports.DataImporter;

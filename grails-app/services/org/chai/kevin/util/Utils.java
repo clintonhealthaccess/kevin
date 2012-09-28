@@ -171,7 +171,7 @@ public class Utils {
 		return "";
 	}
 	
-	//TODO get rid of this
+//	TODO get rid of this
 	public static File getZipFile(File file, String filename) throws IOException {		
 		List<File> files = new ArrayList<File>();
 		files.add(file);
@@ -179,7 +179,6 @@ public class Utils {
 	}
 	
 	public static File getZipFile(List<File> files, String filename) throws IOException {		
-		
 		File zipFile = File.createTempFile(filename, ZIP_FILE_EXTENSION);
 
 		ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile));

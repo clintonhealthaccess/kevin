@@ -59,7 +59,7 @@ import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
-import org.chai.kevin.task.Progress;
+import org.chai.task.Progress;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.AggregationPartialValue;
