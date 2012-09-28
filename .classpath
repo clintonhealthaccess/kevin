@@ -28,12 +28,15 @@
 <classpathentry kind="src" path=".plugin-src-shiro-1.1.5-grails-app-taglib"/>
 <classpathentry kind="src" path=".plugin-src-shiro-1.1.5-src-java"/>
 <classpathentry kind="src" path=".plugin-src-shiro-1.1.5-src-groovy"/>
+<classpathentry kind="src" path=".plugin-src-rest-client-builder-1.0.2-src-groovy"/>
 <classpathentry kind="src" path=".plugin-src-resources-1.2-RC1-grails-app-conf"/>
 <classpathentry kind="src" path=".plugin-src-resources-1.2-RC1-grails-app-i18n"/>
 <classpathentry kind="src" path=".plugin-src-resources-1.2-RC1-grails-app-resourceMappers"/>
 <classpathentry kind="src" path=".plugin-src-resources-1.2-RC1-grails-app-taglib"/>
 <classpathentry kind="src" path=".plugin-src-resources-1.2-RC1-src-java"/>
 <classpathentry kind="src" path=".plugin-src-resources-1.2-RC1-src-groovy"/>
+<classpathentry kind="src" path=".plugin-src-release-2.0.3-src-java"/>
+<classpathentry kind="src" path=".plugin-src-release-2.0.3-src-groovy"/>
 <classpathentry kind="src" path=".plugin-src-rabbitmq-1.0.0.RC2-grails-app-conf"/>
 <classpathentry kind="src" path=".plugin-src-rabbitmq-1.0.0.RC2-src-groovy"/>
 <classpathentry kind="src" path=".plugin-src-quartz-1.0-RC2-grails-app-conf"/>

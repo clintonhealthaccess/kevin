@@ -1,4 +1,4 @@
-<%@ page import="org.chai.kevin.task.Task.TaskStatus" %>
+<%@ page import="org.chai.task.Task.TaskStatus" %>
 
 <div class="main">
   <table class="listing">

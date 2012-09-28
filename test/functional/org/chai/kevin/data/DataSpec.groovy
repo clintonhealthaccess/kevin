@@ -9,7 +9,7 @@ import geb.spock.GebSpec;
 @Stepwise
 class DataSpec extends FunctionalSpec {
 
-	def "user list page"() {
+	def "source list page"() {
 		given:
 		login()
 		
@@ -79,6 +79,41 @@ class DataSpec extends FunctionalSpec {
 		
 		then:
 		at RawDataElementListPage
+	}
+	
+	def "enum list page"() {
+		given:
+		login()
+		
+		when:
+		to EnumListPage
+		
+		then:
+		at EnumListPage
+	}
+	
+	def "enum edit page"() {
+		given:
+		login()
+		
+		when:
+		to EnumEditPage
+		
+		then:
+		at EnumEditPage
+	}
+	
+	def "create enum"() {
+		given:
+		login()
+		to EnumEditPage
+				
+		when:
+		code = 'enum'
+		save.click()
+		
+		then:
+		at EnumListPage
 	}
 	
 }

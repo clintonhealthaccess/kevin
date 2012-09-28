@@ -113,6 +113,11 @@
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/shiro-1.1.5/src/groovy</locationURI>
 	        </link>
 	        <link>
+	                <name>.plugin-src-rest-client-builder-1.0.2-src-groovy</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/rest-client-builder-1.0.2/src/groovy</locationURI>
+	        </link>
+	        <link>
 	                <name>.plugin-src-resources-1.2-RC1-grails-app-conf</name>
 	                <type>2</type>
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.2-RC1/grails-app/conf</locationURI>
@@ -141,6 +146,16 @@
 	                <name>.plugin-src-resources-1.2-RC1-src-groovy</name>
 	                <type>2</type>
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.2-RC1/src/groovy</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-release-2.0.3-src-java</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/release-2.0.3/src/java</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-release-2.0.3-src-groovy</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/release-2.0.3/src/groovy</locationURI>
 	        </link>
 	        <link>
 	                <name>.plugin-src-rabbitmq-1.0.0.RC2-grails-app-conf</name>
