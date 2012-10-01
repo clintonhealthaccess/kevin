@@ -8,6 +8,7 @@ import geb.spock.GebSpec;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.chai.kevin.security.LoginLog;
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.UserType;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
@@ -16,6 +17,7 @@ class FunctionalSpec extends GebSpec {
 
 	def cleanup() {
 		logout()
+		LoginLog.executeUpdate("delete LoginLog")
 		User.executeUpdate("delete User")
 	}
 	

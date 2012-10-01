@@ -1,10 +1,11 @@
 package org.chai.kevin.data
 
+import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.Period;
 import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.task.CalculateTask;
-import org.chai.kevin.task.Task.TaskStatus;
+import org.chai.task.CalculateTask;
+import org.chai.task.Task.TaskStatus;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Status;
 import org.chai.kevin.value.Value;
@@ -149,7 +150,7 @@ class DataController extends AbstractController {
 					task.dataId = reference.id
 					
 					task.status = TaskStatus.NEW
-					task.user = currentUser
+					task.principal = SecurityUtils.subject.principal
 					task.added = new Date()
 					
 					// we check if the task is unique

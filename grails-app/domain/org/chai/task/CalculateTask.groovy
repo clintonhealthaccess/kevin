@@ -1,6 +1,6 @@
-package org.chai.kevin.task
+package org.chai.task
 
-import org.chai.kevin.task.Task.TaskStatus;
+import org.chai.task.Task.TaskStatus;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.NormalizedDataElement;

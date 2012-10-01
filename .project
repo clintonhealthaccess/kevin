@@ -38,6 +38,36 @@
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/webxml-1.4.1/src/groovy</locationURI>
 	        </link>
 	        <link>
+	                <name>.plugin-src-tasks-0.3-CHAI-grails-app-controllers</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/tasks-0.3-CHAI/grails-app/controllers</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-tasks-0.3-CHAI-grails-app-domain</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/tasks-0.3-CHAI/grails-app/domain</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-tasks-0.3-CHAI-grails-app-i18n</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/tasks-0.3-CHAI/grails-app/i18n</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-tasks-0.3-CHAI-grails-app-jobs</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/tasks-0.3-CHAI/grails-app/jobs</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-tasks-0.3-CHAI-grails-app-services</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/tasks-0.3-CHAI/grails-app/services</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-tasks-0.3-CHAI-src-java</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/tasks-0.3-CHAI/src/java</locationURI>
+	        </link>
+	        <link>
 	                <name>.plugin-src-svn-1.0.2-src-groovy</name>
 	                <type>2</type>
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/svn-1.0.2/src/groovy</locationURI>
