@@ -77,6 +77,5 @@
 			$('div.current-data-element').find('input.data-element-name').val($.trim($(this).text()));
 			$('div.current-data-element').find('input.data-element-id').val($(this).data('code'));
 		});
-		getRichTextContent();	 
 	});					
 </script>

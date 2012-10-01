@@ -53,6 +53,5 @@
 			$('#data-element-id').val($(this).data('code'));
 			$('#data-element-name').val($.trim($(this).text()));
 		});
-		getRichTextContent();	 
 	});					
 </script>

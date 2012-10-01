@@ -35,8 +35,3 @@
 	</g:form>
 	<div class="clear"></div>
 </div>
-<script type="text/javascript">
-	$(document).ready(function() {
-		getRichTextContent();
-	});		
-</script>
