@@ -21,19 +21,19 @@
 		%>
 		<shiro:hasPermission permission="menu:reports">
 			<g:render template="landingPageItem" model="[
-				title: message(code: 'landingpage.reports.label'), image: 'reports.png', 
+				title: message(code: 'landingpage.reports.label'), image: 'reports.png', text: message(code: 'landingpage.reports.text'),
 				class: size, link: createLink(controller: 'dashboard', action: 'view')]"/>
 		</shiro:hasPermission>
 		
 		<shiro:hasPermission permission="menu:survey">
 			<g:render template="landingPageItem" model="[
-				title: message(code: 'landingpage.survey.label'), image: 'survey.png', 
+				title: message(code: 'landingpage.survey.label'), image: 'survey.png', text: message(code: 'landingpage.survey.text'),
 				class: size, link: createLink(controller: 'editSurvey', action: 'view')]"/>
 		</shiro:hasPermission>
 		
 		<shiro:hasPermission permission="menu:planning">
 			<g:render template="landingPageItem" model="[
-				title: message(code: 'landingpage.planning.label'), image: 'planning.png', 
+				title: message(code: 'landingpage.planning.label'), image: 'planning.png', text: message(code: 'landingpage.planning.text'),
 				class: size, link: createLink(controller: 'editPlanning', action: 'view')]"/>
 		</shiro:hasPermission>
 		
@@ -41,7 +41,7 @@
 			<!-- deactivated for now -->
 			<shiro:hasPermission permission="menu:admin">
 				<g:render template="landingPageItem" model="[
-					title: message(code: 'landingpage.admin.label'), image: 'admin.png', 
+					title: message(code: 'landingpage.admin.label'), image: 'admin.png', text: message(code: 'landingpage.admin.text'),
 					class: size, link: createLink(controller: 'admin', action: 'view')]"/>
 			</shiro:hasPermission>
 		</g:if>
