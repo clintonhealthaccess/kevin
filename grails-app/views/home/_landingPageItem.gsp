@@ -7,5 +7,9 @@
 		<span class="splash-box-image">
 			<img width="240" height="180" src="${resource(dir:'images',file: image)}"/>
 		</span>
+		
+		<span class="splash-box-explanation">
+			${text}
+		</span>
 	</a>
 </div>
