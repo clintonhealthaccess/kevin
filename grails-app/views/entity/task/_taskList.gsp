@@ -1,4 +1,5 @@
 <%@ page import="org.chai.task.Task.TaskStatus" %>
+<%@ page import="org.chai.kevin.security.User" %>
 
 <div class="main">
   <table class="listing">
@@ -28,7 +29,7 @@
   						</li>
   					</ul>
   				</td>
-  				<td>${task.user==null?'-':task.user.username}</td>  				
+  				<td>${User.findByUuid(task.principal)?.username}</td>  				
   				<td>${task.class.simpleName}</td>
   				<td>${task.information}</td>
   				<td>${task.sentToQueue}</td>

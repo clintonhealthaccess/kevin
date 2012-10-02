@@ -1,4 +1,4 @@
-package org.chai.task
+package org.chai.kevin.task
 
 import grails.validation.ValidationException;
 

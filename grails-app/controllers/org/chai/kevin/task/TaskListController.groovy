@@ -1,15 +1,17 @@
-package org.chai.task
+package org.chai.kevin.task
 
 import org.chai.kevin.AbstractController;
+import org.chai.task.Task
+import org.chai.task.TaskController;
 
-class TaskController extends AbstractController {
+class TaskListController extends AbstractController {
 
 	/**
 	* Lists all tasks currently saved in the database
 	*/
    def list = {
 	   adaptParamsForList()
-	   
+	   	   
 	   def tasks = Task.list(params)
 	   
 	   render (view: '/entity/task/list', model:[
