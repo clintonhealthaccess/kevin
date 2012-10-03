@@ -3,13 +3,16 @@
 
 	<a name="element-${element.id}-${suffix}"></a>
 
-	<g:if test="${lastValue!=null}">
-		<g:set var="tooltipValue" value="${formatNumber(number: lastValue?.numberValue, format:'#')}"/>
-	</g:if>
-
-	<input size="0" type="text" ${tooltipValue!=null?'title="'+tooltipValue+'"':''}
+	<input size="0" type="text"
 		onkeydown="return (event.ctrlKey || event.altKey || (47<event.keyCode && event.keyCode<58 && event.shiftKey==false) || (95<event.keyCode && event.keyCode<106) || (event.keyCode==8) || (event.keyCode==9) || (event.keyCode>34 && event.keyCode<40) || (event.keyCode==46) )"
-		value="${formatNumber(number: value?.numberValue, format:'#')}" name="elements[${element.id}].value${suffix}" class="${tooltipValue!=null?'tooltip':''} idle-field input ${!readonly?'loading-disabled':''}" disabled="disabled"/>
+		value="${formatNumber(number: value?.numberValue, format:'#')}" name="elements[${element.id}].value${suffix}" class="idle-field input ${!readonly?'loading-disabled':''}" disabled="disabled"/>
+		
+	<g:if test="${lastValue!=null && !lastValue.null}">
+		<g:set var="tooltipValue" value="${formatNumber(number: lastValue?.numberValue, format:'#')}"/>
+		
+		<g:render template="/templates/help_tooltip" model="[names: tooltipValue]" />
+	</g:if>
+		
 
 	<g:render template="/survey/element/hints"/>
 

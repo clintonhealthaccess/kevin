@@ -6,12 +6,8 @@
 <div id="element-${element.id}-${suffix}" class="element element-enum ${validatable?.isSkipped(suffix)?'skipped':''} ${(validatable==null || validatable?.isValid(suffix))?'':'errors'}" data-element="${element.id}" data-suffix="${suffix}">
 	<a name="element-${element.id}-${suffix}"></a>
    	<g:if test="${!print}">
-	   	<g:if test="${lastValue!=null}">
-			<g:set var="option" value="${enume?.getOptionForValue(lastValue.enumValue)}"/>
-			<g:set var="tooltipValue" value="${option!=null?i18n(field: option.names):lastValue.enumValue}"/>
-		</g:if>
 
-		<select class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="elements[${element.id}].value${suffix}" disabled="disabled" data-enum="${enume.id}">
+		<select class="input ${!readonly?'loading-disabled':''}" name="elements[${element.id}].value${suffix}" disabled="disabled" data-enum="${enume.id}">
 			<option value=""><g:message code="survey.element.enum.select.label"/></option>
 		
 			<g:eachOption enum="${enume}" var="option">
@@ -20,6 +16,13 @@
 				</option>
 			</g:eachOption>
 		</select>
+
+	   	<g:if test="${lastValue!=null && !lastValue.null}">
+			<g:set var="option" value="${enume?.getOptionForValue(lastValue.enumValue)}"/>
+			<g:set var="tooltipValue" value="${option!=null?i18n(field: option.names):lastValue.enumValue}"/>
+			
+			<g:render template="/templates/help_tooltip" model="[names: tooltipValue]" />
+		</g:if>
 
 		<div class="option-description-container">		
 			<g:eachOption enum="${enume}" var="option">

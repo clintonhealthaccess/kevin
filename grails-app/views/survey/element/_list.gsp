@@ -22,6 +22,21 @@
 		]"/>
 	</g:if>
 	<g:else>
+	
+		<g:if test="${lastValue!=null && !lastValue.null && lastValue.listValue.size() != 0}">
+			<div class="element-list-copy ${value?.listValue?.size()?'hidden':''}">
+				<g:if test="${lastValue.listValue.size() == 1}">
+					<g:message code="dataentry.list.copy.message.one"/>
+				</g:if>
+				<g:else>
+					<g:message code="dataentry.list.copy.message.more" args="[lastValue.listValue.size()]"/>
+				</g:else>
+				<a href="${createLinkWithTargetURI(controller: 'editSurvey', action: 'copyData', params: [element: element.id, location: location.id])}">
+					<g:message code="dataentry.list.copy.link"/>
+				</a>
+			</div>
+		</g:if>
+	
 		<g:each in="${value?.listValue}" var="item" status="i">
 			<li class="element-list-row adv-form-row ${!validatable?.isTreeValid(suffix+'['+i+']')?'row-errors':''}" data-index="${i}">
 				<ul class="adv-form-actions horizontal right">
