@@ -29,6 +29,9 @@ public class SurveyEnteredProgram extends EnteredEntity {
 	private Boolean invalid;
 	private Boolean closed;
 	
+	private Integer totalQuestions = 0;
+	private Integer completedQuestions = 0;
+	
 	public SurveyEnteredProgram() {}
 	
 	public SurveyEnteredProgram(SurveyProgram program, DataLocation dataLocation, Boolean invalid, Boolean complete, Boolean closed) {
@@ -68,6 +71,24 @@ public class SurveyEnteredProgram extends EnteredEntity {
 	
 	public void setDataLocation(DataLocation dataLocation) {
 		this.dataLocation = dataLocation;
+	}
+	
+	@Basic
+	public Integer getTotalQuestions() {
+		return totalQuestions;
+	}
+	
+	public void setTotalQuestions(Integer totalQuestions) {
+		this.totalQuestions = totalQuestions;
+	}
+	
+	@Basic
+	public Integer getCompletedQuestions() {
+		return completedQuestions;
+	}
+	
+	public void setCompletedQuestions(Integer completedQuestions) {
+		this.completedQuestions = completedQuestions;
 	}
 	
 	@Basic

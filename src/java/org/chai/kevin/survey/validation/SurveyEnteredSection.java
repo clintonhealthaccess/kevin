@@ -27,6 +27,9 @@ public class SurveyEnteredSection extends EnteredEntity {
 	private Boolean invalid;
 	private Boolean complete;
 	
+	private Integer totalQuestions;
+	private Integer completedQuestions;
+	
 	public SurveyEnteredSection() {}
 	
 	public SurveyEnteredSection(SurveySection section, DataLocation dataLocation, Boolean invalid, Boolean complete) {
@@ -65,6 +68,24 @@ public class SurveyEnteredSection extends EnteredEntity {
 	
 	public void setDataLocation(DataLocation dataLocation) {
 		this.dataLocation = dataLocation;
+	}
+	
+	@Basic
+	public Integer getTotalQuestions() {
+		return totalQuestions;
+	}
+	
+	public void setTotalQuestions(Integer totalQuestions) {
+		this.totalQuestions = totalQuestions;
+	}
+	
+	@Basic
+	public Integer getCompletedQuestions() {
+		return completedQuestions;
+	}
+	
+	public void setCompletedQuestions(Integer completedQuestions) {
+		this.completedQuestions = completedQuestions;
 	}
 	
 	@Basic

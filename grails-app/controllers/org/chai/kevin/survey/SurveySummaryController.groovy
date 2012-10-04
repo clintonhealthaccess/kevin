@@ -1,6 +1,7 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractController;
+import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
@@ -85,8 +86,30 @@ class SurveySummaryController extends AbstractController {
 			summaryPage: summaryPage
 		])
 	}
+
+	def refresh = {
+		if (log.isDebugEnabled()) log.debug("survey.refresh, params:"+params)
+
+		CalculationLocation location = locationService.getCalculationLocation(params.int('location'), CalculationLocation.class)
+		Survey survey = Survey.get(params.int('survey'))
+		
+		if (location instanceof DataLocation) {
+			surveyPageService.refresh(location, survey,
+				(params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete')),
+				(params.boolean('reset')==null?false:params.boolean('reset'))
+			);
+		
+			redirect (controller: 'editSurvey', action: "surveyPage", params: [location: location.id, survey: survey.id])
+		}
+		else {
+			// TODO create task to refresh and redirect to targetUri
+			
+		}
+	
+	}
 	
 	def submitAll = {
+		// TODO this should be a task
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
 
 		SurveyProgram program = SurveyProgram.get(params.int('program'))
@@ -99,6 +122,7 @@ class SurveySummaryController extends AbstractController {
 		
 		boolean success = false
 		if (submitLocation != null && dataLocationTypes != null && (survey != null || program != null)) {
+			// TODO create task with that stuff
 			success = surveyPageService.submitAll(submitLocation, dataLocationTypes, survey, program);
 		}
 

@@ -551,7 +551,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		when:
-		surveyPageService.refreshSectionForDataLocation(DataLocation.findByCode(KIVUYE), section)
+		surveyPageService.refreshSectionForDataLocation(DataLocation.findByCode(KIVUYE), section, false)
 		
 		then:
 		FormEnteredValue.count() == 0
@@ -559,7 +559,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		SurveyEnteredSection.count() == 1
 	}
 	
-	def "test refresh erases old values"() {
+	def "test refresh with reset flag erases old values"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -571,10 +571,28 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("1"))
-		surveyPageService.refreshSectionForDataLocation(DataLocation.findByCode(KIVUYE), section)
+		surveyPageService.refreshSectionForDataLocation(DataLocation.findByCode(KIVUYE), section, true)
 		
 		then:
 		FormEnteredValue.list()[0].value.equals(Value.NULL_INSTANCE())
+	}
+	
+	def "test refresh without reset flag keeps old values"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		
+		when:
+		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("1"))
+		surveyPageService.refreshSectionForDataLocation(DataLocation.findByCode(KIVUYE), section, false)
+		
+		then:
+		FormEnteredValue.list()[0].value.equals(v("1"))
 	}
 	
 	def "test refresh erases unused entered values"() {
@@ -592,7 +610,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		newFormEnteredValue(element1, period, DataLocation.findByCode(BUTARO), v("1"))
 		newSurveyEnteredSection(section, period, DataLocation.findByCode(BUTARO), false, true)
 		newSurveyEnteredProgram(program, period, DataLocation.findByCode(BUTARO), false, true, false)
-		surveyPageService.refreshSurveyForDataLocation(DataLocation.findByCode(BUTARO), survey, false)
+		surveyPageService.refreshSurveyForDataLocation(DataLocation.findByCode(BUTARO), survey, false, false)
 		sessionFactory.currentSession.flush()
 		
 		then:

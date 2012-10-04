@@ -9,13 +9,14 @@
 		
 			<a class="item ${surveyPage.program?.id == program.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'programPage', params:[location: surveyPage.location.id, program:program.id])}">
 				<span><g:i18n field="${program.names}" /></span>
-				
 				<span class="item-status">
 					<span class="program-status-complete program-status ${enteredProgram.displayedStatus!='complete'?'hidden':''}"></span>
 					<span class="program-status-invalid  program-status ${enteredProgram.displayedStatus!='invalid'?'hidden':''}"></span>
 					<span class="program-status-incomplete program-status ${enteredProgram.displayedStatus!='incomplete'?'hidden':''}"></span>
 					<span class="program-status-closed program-status ${enteredProgram.displayedStatus!='closed'?'hidden':''}"></span>
 				</span>
+				
+				<div>${enteredProgram.completedQuestions}/${enteredProgram.totalQuestions}</div>
 			</a>
 			<ul class="js_foldable-container foldable-container">
 				<g:each in="${surveyPage.getSections(program)}" var="section">
@@ -29,6 +30,8 @@
 								<span class="section-status-invalid section-status ${enteredSection.displayedStatus!='invalid'?'hidden':''}"></span>
 								<span class="section-status-incomplete section-status ${enteredSection.displayedStatus!='incomplete'?'hidden':''}"></span>
 							</span>
+							
+							<div>${enteredSection.completedQuestions}/${enteredSection.totalQuestions}</div>
 						</a>
 					</li>
 				</g:each>

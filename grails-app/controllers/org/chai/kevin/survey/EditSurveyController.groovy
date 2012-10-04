@@ -128,17 +128,6 @@ class EditSurveyController extends AbstractController {
 		}
 	}
 
-	def refresh = {
-		if (log.isDebugEnabled()) log.debug("survey.refresh, params:"+params)
-
-		CalculationLocation location = locationService.getCalculationLocation(params.int('location'), CalculationLocation.class)
-		Survey survey = Survey.get(params.int('survey'))
-		
-		surveyPageService.refresh(location, survey, params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete'));
-
-		redirect (action: "surveyPage", params: [location: location.id, survey: survey.id])
-	}
-
 	def reopen = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
 

@@ -266,7 +266,7 @@ public class SurveyPageService {
 	}
 	
 	@Transactional(readOnly = false)
-	public void refresh(CalculationLocation location, final Survey survey, final boolean closeIfComplete) {
+	public void refresh(CalculationLocation location, final Survey survey, final boolean closeIfComplete, final boolean reset) {
 		List<DataLocation> dataLocations = location.collectDataLocations(null, null);
 		
 		for (final DataLocation dataLocation : dataLocations) {
@@ -276,7 +276,7 @@ public class SurveyPageService {
 			getTransactionTemplate().execute(new TransactionCallbackWithoutResult() {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
-					refreshSurveyForDataLocation(dataLocation, survey, closeIfComplete);
+					refreshSurveyForDataLocation(dataLocation, survey, closeIfComplete, reset);
 				}
 			});
 			sessionFactory.getCurrentSession().clear();
@@ -284,22 +284,22 @@ public class SurveyPageService {
 	}
 	
 	@Transactional(readOnly = false)
-	public void refreshSurveyForDataLocation(DataLocation dataLocation, Survey survey, boolean closeIfComplete) {
+	public void refreshSurveyForDataLocation(DataLocation dataLocation, Survey survey, boolean closeIfComplete, boolean reset) {
 		if (log.isDebugEnabled()) log.debug("refreshSurveyForDataLocation(dataLocation="+dataLocation+", survey="+survey+", closeIfComplete="+closeIfComplete+")");
 //		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		Set<SurveyProgram> validPrograms = new HashSet<SurveyProgram>(survey.getPrograms(dataLocation.getType()));
 		for (SurveyProgram program : survey.getPrograms()) {
-			if (validPrograms.contains(program)) refreshProgramForDataLocation(dataLocation, program, closeIfComplete);
+			if (validPrograms.contains(program)) refreshProgramForDataLocation(dataLocation, program, closeIfComplete, reset);
 			else deleteSurveyEnteredProgram(program, dataLocation);
 		}
 	}
 	
-	private void refreshProgramForDataLocation(DataLocation dataLocation, SurveyProgram program, boolean closeIfComplete) {
+	private void refreshProgramForDataLocation(DataLocation dataLocation, SurveyProgram program, boolean closeIfComplete, boolean reset) {
 		Set<SurveySection> validSections = new HashSet<SurveySection>(program.getSections(dataLocation.getType()));
 		for (SurveySection section : program.getSections()) {
-			if (validSections.contains(section)) refreshSectionForDataLocation(dataLocation, section);
+			if (validSections.contains(section)) refreshSectionForDataLocation(dataLocation, section, reset);
 			else deleteSurveyEnteredSection(section, dataLocation);
 		}
 		
@@ -310,13 +310,13 @@ public class SurveyPageService {
 	}
 	
 	@Transactional(readOnly = false)
-	public void refreshSectionForDataLocation(DataLocation dataLocation, SurveySection section) {
+	public void refreshSectionForDataLocation(DataLocation dataLocation, SurveySection section, boolean reset) {
 //		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		Set<SurveyQuestion> validQuestions = new HashSet<SurveyQuestion>(section.getQuestions(dataLocation.getType()));
 		for (SurveyQuestion question : section.getQuestions()) {
-			if (validQuestions.contains(question)) refreshQuestionForDataLocation(dataLocation, question);
+			if (validQuestions.contains(question)) refreshQuestionForDataLocation(dataLocation, question, reset);
 			else deleteSurveyEnteredQuestion(question, dataLocation);
 		}
 		SurveyEnteredSection enteredSection = getSurveyEnteredSection(dataLocation, section);
@@ -324,10 +324,10 @@ public class SurveyPageService {
 		surveyValueService.save(enteredSection);
 	}
 	
-	private void refreshQuestionForDataLocation(DataLocation dataLocation, SurveyQuestion question) {
+	private void refreshQuestionForDataLocation(DataLocation dataLocation, SurveyQuestion question, boolean reset) {
 		Set<FormElement> validElements = new HashSet<FormElement>(question.getSurveyElements(dataLocation.getType()));
 		for (SurveyElement element : question.getSurveyElements()) {
-			if (validElements.contains(element)) refreshElementForDataLocation(dataLocation, element);
+			if (validElements.contains(element)) refreshElementForDataLocation(dataLocation, element, reset);
 			else deleteSurveyEnteredValue(element, dataLocation);
 		}
 		
@@ -336,14 +336,18 @@ public class SurveyPageService {
 		surveyValueService.save(enteredQuestion);
 	}
 	
-	private void refreshElementForDataLocation(DataLocation dataLocation, SurveyElement element) {
+	private void refreshElementForDataLocation(DataLocation dataLocation, SurveyElement element, boolean reset) {
 		Survey survey = element.getSurvey();
 		
 		FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(dataLocation, element);
 		// TODO this value should be evicted at some point
 		RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), dataLocation, survey.getPeriod());
-		if (rawDataElementValue != null) enteredValue.setValue(rawDataElementValue.getValue());
-		else enteredValue.setValue(Value.NULL_INSTANCE());
+		
+		if (reset) {
+			if (rawDataElementValue != null) enteredValue.setValue(rawDataElementValue.getValue());
+			else enteredValue.setValue(Value.NULL_INSTANCE());
+		}
+		
 		if (survey.getLastPeriod() != null) {
 			// TODO this value should be evicted at some point
 			RawDataElementValue lastDataValue = valueService.getDataElementValue(element.getDataElement(), dataLocation, survey.getLastPeriod());
@@ -524,11 +528,22 @@ public class SurveyPageService {
 	private void setProgramStatus(SurveyEnteredProgram program, DataLocation dataLocation) {
 		Boolean complete = true;
 		Boolean invalid = false;
+		
+		Integer completedQuestions = 0;
+		Integer totalQuestions = 0;
+		
 		for (SurveySection section : program.getProgram().getSections(dataLocation.getType())) {
 			SurveyEnteredSection enteredSection = getSurveyEnteredSection(dataLocation, section);
 			if (!enteredSection.isComplete()) complete = false;
 			if (enteredSection.isInvalid()) invalid = true;
+			
+			totalQuestions += enteredSection.getTotalQuestions();
+			completedQuestions += enteredSection.getCompletedQuestions();
 		}
+		
+		program.setCompletedQuestions(completedQuestions);
+		program.setTotalQuestions(totalQuestions);
+		
 		program.setComplete(complete);
 		program.setInvalid(invalid);
 	}
@@ -536,11 +551,24 @@ public class SurveyPageService {
 	private void setSectionStatus(SurveyEnteredSection section, DataLocation dataLocation) {
 		Boolean complete = true;
 		Boolean invalid = false;
-		for (SurveyQuestion question : section.getSection().getQuestions(dataLocation.getType())) {
+	
+		List<SurveyQuestion> questions = section.getSection().getQuestions(dataLocation.getType());
+		Integer completedQuestions = 0;
+		
+		for (SurveyQuestion question : questions) {
 			SurveyEnteredQuestion enteredQuestion = surveyValueService.getOrCreateSurveyEnteredQuestion(dataLocation, question);
 			if (!enteredQuestion.isComplete() && !enteredQuestion.isSkipped()) complete = false;
 			if (enteredQuestion.isInvalid() && !enteredQuestion.isSkipped()) invalid = true;
+			
+			if (	enteredQuestion.isComplete() 
+					&& (!enteredQuestion.isInvalid() || enteredQuestion.isSkipped())) {
+				completedQuestions++;
+			}
 		}
+		
+		section.setTotalQuestions(questions.size());
+		section.setCompletedQuestions(completedQuestions);
+		
 		section.setInvalid(invalid);
 		section.setComplete(complete);
 	}
