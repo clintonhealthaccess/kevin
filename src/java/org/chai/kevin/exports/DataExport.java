@@ -70,13 +70,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Inheritance(strategy=InheritanceType.JOINED)
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public abstract class DataExport {
+	
 	private Long id;
 	private Translation descriptions = new Translation();
 	private Date date;
 	private String typeCodeString;
 	private Set<CalculationLocation> locations = new HashSet<CalculationLocation>();
 	private Set<Period> periods = new HashSet<Period>();
-	
 	
 	@Id
 	@GeneratedValue
@@ -119,7 +119,7 @@ public abstract class DataExport {
 		this.typeCodeString = typeCodeString;
 	}
 	
-	@ManyToMany(targetEntity=CalculationLocation.class, fetch=FetchType.LAZY, cascade={CascadeType.ALL})
+	@ManyToMany(targetEntity=CalculationLocation.class, fetch=FetchType.LAZY)
 	@JoinTable(name="dhsst_export_locations",
 		joinColumns=@JoinColumn(name="exporter"),
 		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","locations"})
@@ -141,7 +141,7 @@ public abstract class DataExport {
 		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
 	}
 	
-	@ManyToMany(targetEntity=Period.class, fetch=FetchType.LAZY, cascade={CascadeType.ALL})
+	@ManyToMany(targetEntity=Period.class, fetch=FetchType.LAZY)
 	@JoinTable(name="dhsst_export_periods",
 		joinColumns=@JoinColumn(name="exporter"),
 		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","periods"})

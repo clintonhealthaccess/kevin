@@ -55,7 +55,7 @@ public class CalculationExport extends DataExport {
 	
 	private Set<Calculation<CalculationPartialValue>> calculations = new HashSet<Calculation<CalculationPartialValue>>();
 
-	@ManyToMany(targetEntity=Calculation.class, fetch=FetchType.LAZY, cascade={CascadeType.ALL})
+	@ManyToMany(targetEntity=Calculation.class, fetch=FetchType.LAZY)
 	@JoinTable(name="dhsst_export_calculation_data",
 		joinColumns=@JoinColumn(name="exporter"),
 		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","calculations"})
@@ -74,4 +74,5 @@ public class CalculationExport extends DataExport {
 		return "CalculationExport [getId()=" + getId() + ", getDescriptions()="
 				+ getDescriptions() + ", getDate()=" + getDate() + "]";
 	}
+	
 }

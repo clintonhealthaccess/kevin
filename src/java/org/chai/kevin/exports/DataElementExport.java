@@ -52,9 +52,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name="dhsst_export_data_element")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DataElementExport extends DataExport {
+	
 	private Set<DataElement<DataValue>> dataElements = new HashSet<DataElement<DataValue>>();
 
-	@ManyToMany(targetEntity=DataElement.class, fetch=FetchType.LAZY, cascade={CascadeType.ALL})
+	@ManyToMany(targetEntity=DataElement.class, fetch=FetchType.LAZY)
 	@JoinTable(name="dhsst_export_data_element_data",
 		joinColumns=@JoinColumn(name="exporter"),
 		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","dataElements"})
@@ -72,6 +73,5 @@ public class DataElementExport extends DataExport {
 		return "DataElementExport [getId()=" + getId() + ", getDescriptions()="
 				+ getDescriptions() + ", getDate()=" + getDate() + "]";
 	}
-	
 
 }
