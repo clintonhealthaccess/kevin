@@ -169,11 +169,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newDataElementExport(def descriptions,def periods, def locationType, def locations, def dataElements){
-		return new DataElementExport(descriptions:descriptions,periods:periods,typeCodeString:locationType,locations:locations,dataElements:dataElements,date:new Date()).save(failOnError: true);
+		return new DataElementExport(descriptions:descriptions,periods:periods,typeCodeString:Utils.unsplit(locationType, DataLocationType.DEFAULT_CODE_DELIMITER),locations:locations,dataElements:dataElements,date:new Date()).save(failOnError: true);
 	}
 	
 	static def newCalculationExport(def descriptions,def periods, def locationType, def locations, def calculations){
-		return new CalculationExport(descriptions:descriptions,periods:periods,typeCodeString:locationType,locations:locations,calculations:calculations,date:new Date()).save(failOnError: true);
+		return new CalculationExport(descriptions:descriptions,periods:periods,typeCodeString:Utils.unsplit(locationType, DataLocationType.DEFAULT_CODE_DELIMITER),locations:locations,calculations:calculations,date:new Date()).save(failOnError: true);
 	}
 		
 	static def newDataLocation(def code, def location, def type) {
