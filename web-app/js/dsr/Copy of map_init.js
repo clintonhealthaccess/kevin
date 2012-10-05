@@ -1,7 +1,5 @@
 var map;
-var mapLayers;
-
-function mapTheMap(){
+function theMap(){
 	<!-- the map -->
 	var baseLayer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
 		maxZoom: 18,
@@ -10,8 +8,7 @@ function mapTheMap(){
 				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a> &mdash; ' +
 				'Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>'
 	});
-	var baseLayers = [baseLayer]
-	mapLayers = baseLayers.concat(mapLayers)
+	var mapLayers = [baseLayer]
 	map = L.map('map', {
 		center: [-1.951069, lng=30.06134],
 		zoom: 9,
@@ -52,21 +49,24 @@ function createGeoJsonPolygonFeature(feature, polygonCoordinates){
 		    },
 		    "properties": {
 		    	//TODO switch to neutral polygon color and fillColor
-		    	//"#7FCDBB" = blue/green
-		    	//"#99D8C9" = blue/purple
 		        "style": {
-					color: "#696969",
-		        	weight: 5,
-		        	fillColor: "#7FCDBB",
-		            fillOpacity: 0.5
+					color: "#7FCDBB",			//"#99D8C9",
+		        	weight: 4,
+		        	fillColor: "#7FCDBB",		//"#99D8C9",
+		            fillOpacity: 0.5 //0.4		//0.4
 		        }
 		    }
 	};
 	return geoJsonPolygonFeature;
 }
 
-//TODO split this for dsr and fct?
-function createGeoJsonPointFeature(feature, locationName, indicatorName, indicatorClass, rawValue, reportValue, reportValueType, reportValueIcon){
+function onEachFeature(feature, layer) {
+    if (feature.properties && feature.properties.popupContent) {
+        layer.bindPopup(feature.properties.popupContent);
+	}
+}
+
+function createGeoJsonPointFeature(feature, locationName, indicatorName, rawValue, reportValue, reportValueType, reportValueIcon){
 	//create geojson point feature
 	var geoJsonPointFeature = {
 			"id": feature.properties.fosaid,
@@ -82,14 +82,15 @@ function createGeoJsonPointFeature(feature, locationName, indicatorName, indicat
 		    	"reportValueIcon": reportValueIcon,
 		    	"locationName": locationName,
 		    	"indicatorName": indicatorName,
-		    	"indicatorClass": indicatorClass
-		        //"popupContent": 'Location: '+locationName+'<br /> '+indicatorName+': '+reportValue
+		        "popupContent": 'Location: '+locationName+'<br /> '+indicatorName+': '+reportValue
 		    }
 	};
 	return geoJsonPointFeature;
 }
 
-function dsrDataLocationValuePointToLayer(feature, latlng) {
+function dataLocationPointToLayer(feature, latlng) {
+	
+	//the heart and soul of the map
 	
 	var rawValue = feature.properties.rawValue;
 	var reportValue = feature.properties.reportValue;
@@ -143,7 +144,6 @@ function dsrDataLocationValuePointToLayer(feature, latlng) {
 	geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
    	return geojsonMarker;		
 }
-
 function getMaxRawValue(){
 	var maxRawValue = 0;
 	$('div.js-map-table-value.js-selected-value').each(function(){	        
@@ -154,56 +154,10 @@ function getMaxRawValue(){
 	return (maxRawValue > 0 ? maxRawValue : 1);
 }
 
-function fctDataLocationValuePointToLayer(feature, latlng) {
-	
-	var rawValue = feature.properties.rawValue;
-	var reportValue = feature.properties.reportValue;
-	var indicatorClass = feature.properties.indicatorClass;
-	
-	var geojsonMarkerOptions = {
-	    radius: 8,
-	    fillColor: mapMarkerColors[indicatorClass],
-	    color: mapMarkerColors[indicatorClass],
-	    weight: 1,
-	    opacity: 1,
-	    fillOpacity: 0.75
-	};
-	geojsonMarker = L.circleMarker(latlng, geojsonMarkerOptions);
-   	return geojsonMarker;		
-	}
-
-function fctDataLocationInfoPointToLayer(feature, latlng) {
-	
-	var locationName = feature.properties.locationName;
-		
-	var reportValueIcon = feature.properties.reportValueIcon;
-	var rawValueFontSize = null;
-	var geojsonMarkerOptions = null;
-	var geojsonMarker = null;
-	
-	reportValueIcon = new L.Icon.Label.Default({					
-			iconUrl: reportValueIcon,
-			iconSize: new L.Point(20, 20),
-			hideIcon: true,
-			labelText: locationName+'',
-			labelFontSize: '10px',
-			labelAnchor: new L.Point(0, 0),
-			wrapperAnchor: new L.Point(-10, 10),
-			//TODO change class name?
-			labelClassName: 'report-value-marker',
-			shadowUrl: null
-	});
-	
-	geojsonMarkerOptions = {icon: reportValueIcon};
-	geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
-   	return geojsonMarker;
-	}
-
 function missingFosaCoordinates(fosaid){
 	//fosa coordinates missing
 	$('.nav-table td[data-location-code="'+fosaid+'"]').append('&#185;');
 }
-
 function missingFosaLocations(fosaLocations, locations){
 	//fosa locations missing
 	for(var i = 0 ; i < locations.length; i++){
@@ -214,23 +168,3 @@ function missingFosaLocations(fosaLocations, locations){
 		}
 	}
 }
-
-//add data to a data point
-//function onEachFeature(feature, layer){
-//	layer.options.geometry = feature.geometry;
-//}
-//add popup to a data point
-//function onEachFeature(feature, layer) {
-//	if (feature.properties && feature.properties.popupContent) {
-//	  layer.bindPopup(feature.properties.popupContent);
-//	}
-//}
-//add events to a data point
-//function onEachDataLocationValueFeature(feature, layer) {
-//	layer.on("mouseover", function (e) {
-//		layer.openPopup();
-//	});
-//	layer.on("mouseout", function (e) {
-//	    map.closePopup();
-//	});
-//}
