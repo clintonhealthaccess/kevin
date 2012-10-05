@@ -169,7 +169,13 @@ modules = {
 		
 		resource url: '/js/jquery/leafleticon/jquery.leaflet-icon-label.js'
 		resource url: '/js/jquery/leafleticon/jquery.leaflet-icon-label.css'
-	}	
+	}
+	
+	map {
+		dependsOn 'jquery,leaflet'
+		
+		resource url: '/js/map_init.js'
+	}
 	
 	// Start resources for pages
 	list {
@@ -185,11 +191,11 @@ modules = {
 	}
 
 	dsr {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,leaflet'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,map'
 	}
 
 	fct {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,valuefilter,leaflet'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,valuefilter,map'
 	}
 	
 	dashboard {

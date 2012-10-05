@@ -35,7 +35,7 @@
 					</td>
 					<g:if test="${reportIndicators != null && !reportIndicators.empty}">
 						<g:each in="${reportIndicators}" var="indicator" status="i">
-							<g:if test="${viewSkipLevels != null && viewSkipLevels.contains(currentLocation.level)}"><td></td></g:if>
+							<g:if test="${mapSkipLevels != null && mapSkipLevels.contains(currentLocation.level)}"><td></td></g:if>
 							<g:else>
 								<td>
 									<g:set var="reportMapValue" value="${reportTable.getMapReportValue(location, indicator)}"/>

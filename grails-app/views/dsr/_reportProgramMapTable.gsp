@@ -46,7 +46,7 @@
 					</td>
 					<g:if test="${reportIndicators != null && !reportIndicators.empty}">
 						<g:each in="${reportIndicators}" var="indicator">
-							<g:if test="${viewSkipLevels != null && viewSkipLevels.contains(currentLocation.level)}"><td></td></g:if>
+							<g:if test="${mapSkipLevels != null && mapSkipLevels.contains(currentLocation.level)}"><td></td></g:if>
 							<g:else>
 								<td class="${currentIndicators.contains(indicator) ? 'selected' : ''}">
 									<div class="js-map-table-value ${currentIndicators.contains(indicator) ? 'js-selected-value' : ''}"
@@ -70,6 +70,6 @@
 		</tbody>
 	</table>
 	<!-- TODO nav-table.sass & message.properties -->
-	<p style="font-size:11px; margin-top:10px;">&#185; Denotes missing FOSA coordinates.</p>
-	<p style="font-size:11px; margin-top:10px;">&#178; Denotes missing FOSA facility.</p>
+	<p style="font-size:11px; margin-top:10px;">&#185; Denotes FOSA coordinates missing.</p>
+	<p style="font-size:11px; margin-top:10px;">&#178; Denotes FOSA facility missing.</p>
 </div>

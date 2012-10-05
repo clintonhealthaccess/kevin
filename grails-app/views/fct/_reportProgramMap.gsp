@@ -1,317 +1,115 @@
 <%@ page import="org.chai.kevin.data.Type.ValueType" %>
 <div class='map-wrap'>	
-	<div id="map" class="map"></div>
-	<!-- TODO move this to a map_init.js file -->
+	<div id="map" class="map" />
+	
 	<r:script>
-	
-	<!-- the map -->
-	var baseLayer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
-		maxZoom: 18,
-		//TODO move this to message.properties?
-		attribution: 'Map Data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Contributors &mdash; ' +
-				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a> &mdash; ' +
-				'Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>'
-	}).addTo(map);
-	
-	<!-- locations -->
-	var locationLayer = L.geoJson(null, {		
-		style: function (feature) {
-			return feature.properties && feature.properties.style;
-		}
-	}).addTo(map);
-			
-	<!-- data locations -->
-	var dataLocationLayer = L.geoJson(null, {
-		pointToLayer: dataLocationPointToLayer, 
-		onEachFeature: onEachDataLocationFeature
-	}).addTo(map);
-	
-	addLocationLayerData(locationLayer, dataLocationLayer);
-
-	function addLocationLayerData(locationLayer){
-		<!-- Locations -->
-		var locationUrl = "http://geocommons.com/datasets/265901/features.json?filter[code][][equals]=${currentLocation.code}";		
-		jQuery.getJSON(locationUrl, function(data){		
-		
-			jQuery.each(data.features, function(i,f){
-				
-				//TODO get rid of this and use f.geometry.coordinates
-					
-				//create polygon coordinates
-				var polygonCoordinates = []
-				var coordinates = []
-				var latlonRegex = /\[(\-|\d|\.)*,(\-|\d|\.)*\]/g;
-	});
-		
-	<!-- location layer -->
 	var locationLayer = L.geoJson(null, {
-		onEachFeature: onEachFeature,		
-		style: function (feature) {
+		style: function (feature){
 			return feature.properties && feature.properties.style;
 		}
-	});			
-	var dataLocationValueLayer = null
-	var dataLocationInfoLayer = null	
-	var mapLayers = []
-	
-	<!-- location polygons -->
-	if(${currentLocation.children != null && !currentLocation.children.empty}){
-	    //var locationCodes = "${reportLocations.collect{it.code}.join('|')}";
-	    var locationUrl = 
-	    	"http://geocommons.com/datasets/265901/features.json?filter[code][][in]=${reportLocations.collect{it.code}.join('|')}";
-	    addLocationLayerData(locationUrl, locationLayer, dataLocationValueLayer, dataLocationInfoLayer);	    
-	    mapLayers = [baseLayer, locationLayer]
-	}
-	<!-- location polygon + data location markers -->
-	else{
-		//var locationCode = "${currentLocation.code}";
-		var locationUrl = 
-			"http://geocommons.com/datasets/265901/features.json?filter[code][][equals]=${currentLocation.code}";		
-		addLocationLayerData(locationUrl, locationLayer, dataLocationValueLayer, dataLocationInfoLayer);		
-		<!-- data location value layer -->
-		dataLocationValueLayer = L.geoJson(null, {
-			pointToLayer: dataLocationValuePointToLayer, 
-			onEachFeature: onEachDataLocationValueFeature
-		});		
-		<!-- data location info layer --> 
-		dataLocationInfoLayer = L.geoJson(null, {
-			pointToLayer: dataLocationInfoPointToLayer, 
-			onEachFeature: onEachFeature
-		});		
-		mapLayers = [baseLayer, locationLayer, dataLocationInfoLayer, dataLocationValueLayer]							
-	}
-
-	var map = L.map('map', {
-		center: [-1.951069, lng=30.06134],
-		zoom: 9,
-		layers: mapLayers
 	});
+	var locationValueLayer = null
+	var locationInfoLayer = null
+	var dataLocationValueLayer = null
+	var dataLocationInfoLayer = null
 	
-	if(dataLocationValueLayer != null && dataLocationInfoLayer != null){
+	if(${currentLocation.getLocationChildren(locationSkipLevels) != null && 
+		!currentLocation.getLocationChildren(locationSkipLevels).empty}){
+		locationValueLayer = L.geoJson(null, {
+			pointToLayer: fctDataLocationValuePointToLayer
+		});
+		locationInfoLayer = L.geoJson(null, {
+			pointToLayer: fctDataLocationValuePointToLayer
+		});
+		
+		//TODO mapLocations returns an array of layers
+		mapLocations(locationLayer, true, false);
+	    mapLayers = [locationLayer, locationValueLayer, locationInfoLayer]
+	    mapTheMap();
+	}
+	else{
+		dataLocationValueLayer = L.geoJson(null, {
+			pointToLayer: fctDataLocationValuePointToLayer
+		});
+		dataLocationInfoLayer = L.geoJson(null, {
+			pointToLayer: fctDataLocationInfoPointToLayer
+		});
+		
+		//TODO mapLocations returns an array of layers
+		mapLocations(locationLayer, false, true);
+		mapLayers = [locationLayer, dataLocationValueLayer, dataLocationInfoLayer]
+		mapTheMap();
+		
 		var overlays = {
+			//TODO message.properties
 			"Facilities": dataLocationInfoLayer
 		};
 		L.control.layers(null, overlays).addTo(map);
 	}
 
-	function addLocationLayerData(locationUrl, locationLayer, dataLocationValueLayer, dataLocationInfoLayer){
-		<!-- Locations -->		
-		jQuery.getJSON(locationUrl, function(data){				
+	function mapLocations(locationLayer, mapLocationValues, mapDataLocationValues){
+		var locationUrl = null;
+		if(mapDataLocationValues){
+			var location = "${currentLocation.code}";
+			locationUrl = "http://geocommons.com/datasets/265901/features.json?filter[code][][equals]="+location;
+		}
+		else{
+			var locations = "${reportLocations.collect{it.code}.join('|')}";
+			locationUrl = "http://geocommons.com/datasets/265901/features.json?filter[code][][in]="+locations;
+		}
+		jQuery.getJSON(locationUrl, function(data){
+			//TODO check data != null		
 			jQuery.each(data.features, function(i,f){
-				
-				//TODO get rid of this and use f.geometry.coordinates					
-				//create polygon coordinates
-				var polygonCoordinates = []
-				var coordinates = []
-				var latlonRegex = /\[(\-|\d|\.)*,(\-|\d|\.)*\]/g;				
-				//TODO if coordinates == null
-				$(f.properties.coordinates.match(latlonRegex)).each(function(){
-					var coordinate = this;
-					coordinate = this.replace(/(\[|\])/g,"");
-					var lat = parseFloat(coordinate.split(',')[0]);
-					var lon = parseFloat(coordinate.split(',')[1]);
-					coordinates.push([lat, lon]);					
-				});
-				polygonCoordinates.push(coordinates);
-				
-				//create polygon geojson feature
-				var geojsonPolygonFeature = {
-						"id": f.properties.code,
-					    "type": f.type,    
-					    "geometry": {
-					        "type": f.properties.featuretype,
-					        "coordinates": polygonCoordinates
-					    },
-					    "properties": {
-					        "style": {
-								color: mapPolygonColors[i % mapPolygonColors.length],		//"#7FCDBB",	//"#99D8C9",
-					        	weight: 4,
-					        	fillColor: mapPolygonColors[i % mapPolygonColors.length],	//"#7FCDBB",	//"#99D8C9",
-					            fillOpacity: 0.5,											//0.4
-					            clickable: false					            
-					        },
-					    }
-				};
+				var polygonCoordinates = createPolygonCoordinates(f);
+				var geojsonPolygonFeature = createGeoJsonPolygonFeature(f, polygonCoordinates);
 				locationLayer.addData(geojsonPolygonFeature);							
 			});
+			map.fitBounds(locationLayer.getBounds());
 			
-			if(dataLocationValueLayer != null && dataLocationInfoLayer != null){
-				addDataLocationLayerData(dataLocationValueLayer, dataLocationInfoLayer);
+			if(mapLocationValues){
+				//TODO map location values
 			}
-			
-			<!-- map.fitBounds(...) start -->
-			var currentLocationUrl = 
-				"http://geocommons.com/datasets/265901/features.json?filter[code][][in]=${currentLocation.code}";		
-			jQuery.getJSON(currentLocationUrl, function(data){
-				jQuery.each(data.features, function(i,f){
-					
-					//TODO get rid of this and use f.geometry.coordinates					
-					//create polygon coordinates
-					var polygonCoordinates = []
-					var coordinates = []
-					var latlonRegex = /\[(\-|\d|\.)*,(\-|\d|\.)*\]/g;				
-					//TODO if coordinates == null
-					$(f.properties.coordinates.match(latlonRegex)).each(function(){
-						var coordinate = this;
-						coordinate = this.replace(/(\[|\])/g,"");
-						var lat = parseFloat(coordinate.split(',')[0]);
-						var lon = parseFloat(coordinate.split(',')[1]);
-						coordinates.push([lat, lon]);					
-					});
-					polygonCoordinates.push(coordinates);
-					
-					//create polygon geojson feature
-					var geojsonPolygonFeature = {
-							"id": f.properties.code,
-						    "type": f.type,    
-						    "geometry": {
-						        "type": f.properties.featuretype,
-						        "coordinates": polygonCoordinates
-						    },
-						    "properties": {
-						        "style": {
-									color: mapPolygonColors[i % mapPolygonColors.length],		//"#7FCDBB",	//"#99D8C9",
-						        	weight: 4,
-						        	fillColor: mapPolygonColors[i % mapPolygonColors.length],	//"#7FCDBB",	//"#99D8C9",
-						            fillOpacity: 0.5,											//0.4
-						            clickable: false					            
-						        },
-						    }
-					};
-					var geojsonPolygon = L.geoJson(geojsonPolygonFeature);
-					var latLngCenter = geojsonPolygon.getBounds().getCenter();
-					map.setView(latLngCenter, 9);
-					//map.fitBounds(latLngBounds);
-				});
-			
-			});
-			<!-- map.fitBounds(...) end -->
-			
+			if(mapDataLocationValues){
+				//TODO mapLocations returns an array of layers
+				mapDataLocations();
+			}
 		});
 	}
 	
-	function addDataLocationLayerData(dataLocationValueLayer, dataLocationInfoLayer){
-		<!-- Data Location codes + FOSA ids -->
-	    //var fosaIds = "${reportLocations.collect{it.code}.join('|')}";		
-		var dataLocationUrl = 
-			"http://geocommons.com/datasets/262585/features.json?filter[fosaid][][in]=${reportLocations.collect{it.code}.join('|')}";
+	function mapDataLocations(){
+		var fosaLocations = [];
+		var dataLocations = "${reportLocations.collect{it.code}.join('|')}";
+	    var dataLocationUrl = "http://geocommons.com/datasets/262585/features.json?filter[fosaid][][in]="+dataLocations;
 		jQuery.getJSON(dataLocationUrl, function(data){
-			
-			if(locationLayer.whatever){
-			}
-			
-			var fosaDataLocations = []
-			
-			jQuery.each(data.features, function(i,f){
-				
+			//TODO check data != null
+			jQuery.each(data.features, function(i,f){	
 				$('.js-map-table-value.js-selected-value[data-location-code="'+f.properties.fosaid+'"]').each(function(index, mapTableValue){					
-					fosaDataLocations.push(f.properties.fosaid+'');
-										
+					fosaLocations.push(f.properties.fosaid);
 					var locationName = $(mapTableValue).data('location-names');						
 					var indicatorName = $(mapTableValue).data('indicator-names');
 					var indicatorClass = $(mapTableValue).data('indicator-class');
-					
 					var mapValue = $(mapTableValue).children('div.report-value-number').children('div.report-value');
 					var rawValue = $(mapValue).data('report-value-raw');
 					var reportValue = $(mapValue).data('report-value');
-					var reportValueType = $(mapValue).data('report-value-type');				
-					
-					if(f.geometry){
+					var reportValueType = $(mapValue).data('report-value-type');
+					var reportValueIcon = "${resource(dir:'images',file:'/maps/report-value-null.png')}";
+					if(!f.geometry){
+						//fosa coordinates missing
+						missingFosaCoordinates(f.properties.fosaid);
+					}
+					else{
 						//create point geojson feature
-						var geojsonPointFeature = {
-								"id": f.properties.fosaid,
-							    "type": f.type,    
-							    "geometry": {
-							        "type": f.geometry.type,
-							        "coordinates": f.geometry.coordinates
-							    },
-							    "properties": {
-							    	"rawValue": rawValue,
-							    	"reportValue": reportValue,
-							    	"reportValueType": reportValueType,
-							    	"locationName": locationName,
-							    	"indicatorName": indicatorName,
-							    	"indicatorClass": indicatorClass,
-							        "popupContent": 'Location: '+locationName+'<br /> '+indicatorName+': '+reportValue
-							    }
-						};
+						var geojsonPointFeature = 
+							createGeoJsonPointFeature(f, locationName, indicatorName, indicatorClass, rawValue, reportValue, reportValueType, reportValueIcon);
 						dataLocationValueLayer.addData(geojsonPointFeature);
 						dataLocationInfoLayer.addData(geojsonPointFeature);
 					}
-					else{
-						//missing fosa coordinates
-						$('.nav-table td[data-location-code="'+f.properties.fosaid+'"]').append('&#185;');
-					}
 				});								
 			});						
-			
-			for(var i = 0 ; i < dataLocations.length; i++){
-				var dataLocation = dataLocations[i];
-				if(fosaDataLocations.indexOf(dataLocation) < 0){
-					//missing fosa facility
-					$('.nav-table td[data-location-code="'+dataLocation+'"]').append('&#178;');
-				}
-			}									
+			//fosa locations missing
+			var dhsstLocations = ${reportLocations.collect{it.code}};
+			missingFosaLocations(fosaLocations, dhsstLocations);									
 		});
-	}
-	
-	function dataLocationValuePointToLayer(feature, latlng) {		
-		var rawValue = feature.properties.rawValue;
-		var reportValue = feature.properties.reportValue;
-		var indicatorClass = feature.properties.indicatorClass;
-		var geojsonMarkerOptions = {
-		    radius: 8,
-		    fillColor: mapMarkerColors[indicatorClass],
-		    color: mapMarkerColors[indicatorClass],
-		    weight: 1,
-		    opacity: 1,
-		    fillOpacity: 0.75
-		};
-		var geojsonMarker = L.circleMarker(latlng, geojsonMarkerOptions);		
-       	return geojsonMarker;
-   	}
-	
-	function dataLocationInfoPointToLayer(feature, latlng) {
-		var locationName = feature.properties.locationName;
-			
-		var reportValueIcon = null;
-		var rawValueFontSize = null;
-		//var labelClassName = null;		
-		var geojsonMarkerOptions = null;
-		var geojsonMarker = null;
-		
-		reportValueIcon = new L.Icon.Label.Default({					
-				iconUrl: "${resource(dir:'images',file:'/maps/report-value-null.png')}",
-				iconSize: new L.Point(20, 20),
-				hideIcon: true,
-				labelText: locationName+'',
-				labelFontSize: '10px',
-				labelAnchor: new L.Point(0, 0),
-				wrapperAnchor: new L.Point(-10, 10),
-				labelClassName: 'report-value-marker',
-				shadowUrl: null
-		});
-		
-		geojsonMarkerOptions = {icon: reportValueIcon};
-		geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
-       	return geojsonMarker;
-   	}
-	
-	function onEachFeature(feature, layer){
-		layer.options.geometry = feature.geometry;
-	}
-			
-	function onEachDataLocationValueFeature(feature, layer) {
-	    if (feature.properties && feature.properties.popupContent) {
-	        layer.bindPopup(feature.properties.popupContent);	        	        
-	        layer.on("mouseover", function (e) {
-	        	layer.openPopup();
-            });
-	        layer.on("mouseout", function (e) {
-                map.closePopup();
-            });
-    	}
-    	layer.options.geometry = feature.geometry;
 	}
 	</r:script>
 </div>

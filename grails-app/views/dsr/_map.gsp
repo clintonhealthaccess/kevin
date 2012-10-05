@@ -6,7 +6,8 @@
 		<g:reportCategoryFilter linkParams="${params}" exclude="${['indicators']}"/>
 	</div>
 	<g:render template="/maps/colors"/>
-	<g:render template="/dsr/reportProgramMap" model="[linkParams:params]"/>
+	<g:render template="/dsr/reportProgramMap" 
+	model="[linkParams:params, reportTable: dsrTable, reportLocations: dsrTable.locations, reportIndicators: dsrTable.targets]"/>
 	<g:render template="/dsr/reportProgramMapTable" 
 		model="[linkParams:params, reportTable: dsrTable, reportLocations: dsrTable.locations, reportIndicators: dsrTable.targets]"/>
-</li
+</li>

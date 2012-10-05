@@ -87,7 +87,7 @@ class FctController extends AbstractController {
 		Set<FctTargetOption> fctIndicators = getFctIndicators(fctTarget, program)
 		
 		ReportType reportType = getReportType()
-		def viewSkipLevels = []
+		def mapSkipLevels = []
 		
 		def locationSkipLevels = fctService.getSkipLocationLevels()
 		def locationTree = location.collectLocationTreeWithData(locationSkipLevels, dataLocationTypes, false).asList()
@@ -119,7 +119,7 @@ class FctController extends AbstractController {
 				currentLocationTypes: dataLocationTypes,		
 				locationSkipLevels: locationSkipLevels,
 				currentView: reportType,
-				viewSkipLevels: viewSkipLevels
+				mapSkipLevels: mapSkipLevels
 			]
 		}
 	}		
