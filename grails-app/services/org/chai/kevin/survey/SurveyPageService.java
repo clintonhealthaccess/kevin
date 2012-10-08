@@ -269,13 +269,14 @@ public class SurveyPageService {
 		if (progress != null) progress.setMaximum(Integer.valueOf(dataLocations.size()).longValue());
 		
 		for (final DataLocation dataLocation : dataLocations) {
-//			survey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
-//			dataLocation = (DataLocation)sessionFactory.getCurrentSession().get(DataLocation.class, dataLocation.getId());
-
+			
 			getTransactionTemplate().execute(new TransactionCallbackWithoutResult() {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
-					refreshSurveyForDataLocation(dataLocation, survey, closeIfComplete, reset);
+					Survey surveyToUpdate = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
+					DataLocation dataLocationToUpdate = (DataLocation)sessionFactory.getCurrentSession().get(DataLocation.class, dataLocation.getId());
+
+					refreshSurveyForDataLocation(dataLocationToUpdate, surveyToUpdate, closeIfComplete, reset);
 				}
 			});
 			sessionFactory.getCurrentSession().clear();
@@ -544,8 +545,12 @@ public class SurveyPageService {
 			if (!enteredSection.isComplete()) complete = false;
 			if (enteredSection.isInvalid()) invalid = true;
 			
-			totalQuestions += enteredSection.getTotalQuestions();
-			completedQuestions += enteredSection.getCompletedQuestions();
+			if (enteredSection.getTotalQuestions() != null) {
+				totalQuestions += enteredSection.getTotalQuestions();
+			}
+			if (enteredSection.getCompletedQuestions() != null) {
+				completedQuestions += enteredSection.getCompletedQuestions();
+			}
 		}
 		
 		program.setCompletedQuestions(completedQuestions);
