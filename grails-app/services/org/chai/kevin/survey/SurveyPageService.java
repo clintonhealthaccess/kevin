@@ -31,7 +31,6 @@ package org.chai.kevin.survey;
  *
  */
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -55,20 +54,18 @@ import org.chai.kevin.form.FormValidationService.ValidatableLocator;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.survey.SurveyElement.SurveyElementCalculator;
 import org.chai.kevin.survey.SurveyElement.SurveyElementSubmitter;
 import org.chai.kevin.survey.SurveyQuestion.QuestionType;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
-import org.chai.kevin.survey.validation.SurveyLog;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
+import org.chai.task.Progress;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.hibernate.SessionFactory;
@@ -266,8 +263,10 @@ public class SurveyPageService {
 	}
 	
 	@Transactional(readOnly = false)
-	public void refresh(CalculationLocation location, final Survey survey, final boolean closeIfComplete, final boolean reset) {
+	public void refresh(CalculationLocation location, final Survey survey, final boolean closeIfComplete, final boolean reset, Progress progress) {
 		List<DataLocation> dataLocations = location.collectDataLocations(null, null);
+		
+		if (progress != null) progress.setMaximum(Integer.valueOf(dataLocations.size()).longValue());
 		
 		for (final DataLocation dataLocation : dataLocations) {
 //			survey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
@@ -280,6 +279,8 @@ public class SurveyPageService {
 				}
 			});
 			sessionFactory.getCurrentSession().clear();
+			
+			if (progress != null) progress.incrementProgress();
 		}
 	}
 	
@@ -292,7 +293,7 @@ public class SurveyPageService {
 		Set<SurveyProgram> validPrograms = new HashSet<SurveyProgram>(survey.getPrograms(dataLocation.getType()));
 		for (SurveyProgram program : survey.getPrograms()) {
 			if (validPrograms.contains(program)) refreshProgramForDataLocation(dataLocation, program, closeIfComplete, reset);
-			else deleteSurveyEnteredProgram(program, dataLocation);
+			else if (reset) deleteSurveyEnteredProgram(program, dataLocation);
 		}
 	}
 	
@@ -300,12 +301,12 @@ public class SurveyPageService {
 		Set<SurveySection> validSections = new HashSet<SurveySection>(program.getSections(dataLocation.getType()));
 		for (SurveySection section : program.getSections()) {
 			if (validSections.contains(section)) refreshSectionForDataLocation(dataLocation, section, reset);
-			else deleteSurveyEnteredSection(section, dataLocation);
+			else if (reset) deleteSurveyEnteredSection(section, dataLocation);
 		}
 		
 		SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program);
 		setProgramStatus(enteredProgram, dataLocation);
-		if (closeIfComplete && enteredProgram.isComplete() && !enteredProgram.isInvalid()) enteredProgram.setClosed(true); 
+		if (closeIfComplete && enteredProgram.isComplete() && !enteredProgram.isInvalid()) enteredProgram.setClosed(true);
 		surveyValueService.save(enteredProgram);
 	}
 	
@@ -317,7 +318,7 @@ public class SurveyPageService {
 		Set<SurveyQuestion> validQuestions = new HashSet<SurveyQuestion>(section.getQuestions(dataLocation.getType()));
 		for (SurveyQuestion question : section.getQuestions()) {
 			if (validQuestions.contains(question)) refreshQuestionForDataLocation(dataLocation, question, reset);
-			else deleteSurveyEnteredQuestion(question, dataLocation);
+			else if (reset) deleteSurveyEnteredQuestion(question, dataLocation);
 		}
 		SurveyEnteredSection enteredSection = getSurveyEnteredSection(dataLocation, section);
 		setSectionStatus(enteredSection, dataLocation);
@@ -328,7 +329,7 @@ public class SurveyPageService {
 		Set<FormElement> validElements = new HashSet<FormElement>(question.getSurveyElements(dataLocation.getType()));
 		for (SurveyElement element : question.getSurveyElements()) {
 			if (validElements.contains(element)) refreshElementForDataLocation(dataLocation, element, reset);
-			else deleteSurveyEnteredValue(element, dataLocation);
+			else if (reset) deleteSurveyEnteredValue(element, dataLocation);
 		}
 		
 		SurveyEnteredQuestion enteredQuestion = surveyValueService.getOrCreateSurveyEnteredQuestion(dataLocation, question);
@@ -389,6 +390,7 @@ public class SurveyPageService {
 				// here, a write lock is acquired on the FormEnteredValue that will be kept
 				// till the end of the transaction, if in READ_COMMITTED isolation mode, a timeout
 				// is likely to occur because the transaction is quite long
+				SurveyService.setUserAndTimestamp(enteredValue);
 				formElementService.save(enteredValue);
 				affectedElements.put(element, enteredValue);
 				
@@ -483,15 +485,19 @@ public class SurveyPageService {
 		
 		// fifth we save all the values
 		for (FormEnteredValue formEnteredValue : affectedElements.values()) {
+			SurveyService.setUserAndTimestamp(formEnteredValue);
 			formElementService.save(formEnteredValue);
 		}
 		for (SurveyEnteredQuestion surveyEnteredQuestion : affectedQuestions.values()) {
+			SurveyService.setUserAndTimestamp(surveyEnteredQuestion);
 			surveyValueService.save(surveyEnteredQuestion);
 		}
 		for (SurveyEnteredSection surveyEnteredSection : affectedSections.values()) {
+			SurveyService.setUserAndTimestamp(surveyEnteredSection);
 			surveyValueService.save(surveyEnteredSection);
 		}
 		for (SurveyEnteredProgram surveyEnteredProgram : affectedPrograms.values()) {
+			SurveyService.setUserAndTimestamp(surveyEnteredProgram);
 			surveyValueService.save(surveyEnteredProgram);
 		}
 		
@@ -519,6 +525,7 @@ public class SurveyPageService {
 					enteredValueForElementInQuestion.getValue().setJsonObject(enteredValueForElementInQuestion.getType().getValue(false).getJsonObject());
 				}
 				
+				SurveyService.setUserAndTimestamp(enteredValueForElementInQuestion);
 				formElementService.save(enteredValueForElementInQuestion);
 				affectedElements.put(elementInQuestion, enteredValueForElementInQuestion);
 			}
@@ -649,6 +656,7 @@ public class SurveyPageService {
 				// close the program
 				SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, surveyProgram);
 				enteredProgram.setClosed(true);
+				SurveyService.setUserAndTimestamp(enteredProgram);
 				surveyValueService.save(enteredProgram);
 		
 				// log the event
@@ -669,6 +677,7 @@ public class SurveyPageService {
 	public void reopen(DataLocation dataLocation, SurveyProgram program) {
 		SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program); 
 		enteredProgram.setClosed(false);
+		SurveyService.setUserAndTimestamp(enteredProgram);
 		surveyValueService.save(enteredProgram);
 	}
 	
@@ -676,7 +685,6 @@ public class SurveyPageService {
 		SurveyEnteredProgram enteredProgram = surveyValueService.getSurveyEnteredProgram(surveyProgram, dataLocation);
 		if (enteredProgram == null) {
 			enteredProgram = new SurveyEnteredProgram(surveyProgram, dataLocation, false, false, false);
-//			setProgramStatus(enteredProgram, dataLocation);
 			surveyValueService.save(enteredProgram);
 		}
 		return enteredProgram;
@@ -686,7 +694,6 @@ public class SurveyPageService {
 		SurveyEnteredSection enteredSection = surveyValueService.getSurveyEnteredSection(surveySection, dataLocation);
 		if (enteredSection == null) {
 			enteredSection = new SurveyEnteredSection(surveySection, dataLocation, false, false);
-//			setSectionStatus(enteredSection, dataLocation);
 			surveyValueService.save(enteredSection);
 		}
 		return enteredSection;

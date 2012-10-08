@@ -27,8 +27,8 @@ class SurveyValueService {
 	
 	void save(SurveyEnteredProgram surveyEnteredProgram) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredProgram=${surveyEnteredProgram}})")
-		surveyEnteredProgram.setUserUuid(SecurityUtils.subject.principal)
-		surveyEnteredProgram.setTimestamp(new Date());
+//		surveyEnteredProgram.setUserUuid(SecurityUtils.subject.principal)
+//		surveyEnteredProgram.setTimestamp(new Date());
 		surveyEnteredProgram.save();
 	}
 
@@ -45,8 +45,8 @@ class SurveyValueService {
 	
 	void save(SurveyEnteredQuestion surveyEnteredQuestion) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredQuestion=${surveyEnteredQuestion}})")
-		surveyEnteredQuestion.setUserUuid(SecurityUtils.subject.principal)
-		surveyEnteredQuestion.setTimestamp(new Date());
+//		surveyEnteredQuestion.setUserUuid(SecurityUtils.subject.principal)
+//		surveyEnteredQuestion.setTimestamp(new Date());
 		surveyEnteredQuestion.save();
 	}
 	
@@ -56,8 +56,8 @@ class SurveyValueService {
 	
 	void save(SurveyEnteredSection surveyEnteredSection) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredSection=${surveyEnteredSection}})")
-		surveyEnteredSection.setUserUuid(SecurityUtils.subject.principal)
-		surveyEnteredSection.setTimestamp(new Date());
+//		surveyEnteredSection.setUserUuid(SecurityUtils.subject.principal)
+//		surveyEnteredSection.setTimestamp(new Date());
 		surveyEnteredSection.save();
 	}
 	

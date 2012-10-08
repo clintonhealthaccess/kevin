@@ -90,22 +90,16 @@ class SurveySummaryController extends AbstractController {
 	def refresh = {
 		if (log.isDebugEnabled()) log.debug("survey.refresh, params:"+params)
 
-		CalculationLocation location = locationService.getCalculationLocation(params.int('location'), CalculationLocation.class)
+		DataLocation location = locationService.getCalculationLocation(params.int('location'), DataLocation.class)
 		Survey survey = Survey.get(params.int('survey'))
 		
-		if (location instanceof DataLocation) {
-			surveyPageService.refresh(location, survey,
-				(params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete')),
-				(params.boolean('reset')==null?false:params.boolean('reset'))
-			);
-		
-			redirect (controller: 'editSurvey', action: "surveyPage", params: [location: location.id, survey: survey.id])
-		}
-		else {
-			// TODO create task to refresh and redirect to targetUri
-			
-		}
+		surveyPageService.refresh(location, survey,
+			(params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete')),
+			(params.boolean('reset')==null?false:params.boolean('reset')), 
+			null, getCurrentUser()
+		);
 	
+		redirect (controller: 'editSurvey', action: "surveyPage", params: [location: location.id, survey: survey.id])
 	}
 	
 	def submitAll = {

@@ -29,8 +29,8 @@ public class SurveyEnteredProgram extends EnteredEntity {
 	private Boolean invalid;
 	private Boolean closed;
 	
-	private Integer totalQuestions = 0;
-	private Integer completedQuestions = 0;
+	private Integer totalQuestions;
+	private Integer completedQuestions;
 	
 	public SurveyEnteredProgram() {}
 	

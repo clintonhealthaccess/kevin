@@ -16,7 +16,7 @@
 					<span class="program-status-closed program-status ${enteredProgram.displayedStatus!='closed'?'hidden':''}"></span>
 				</span>
 				
-				<div>${enteredProgram.completedQuestions}/${enteredProgram.totalQuestions}</div>
+				<div class="hidden">${enteredProgram.completedQuestions}/${enteredProgram.totalQuestions}</div>
 			</a>
 			<ul class="js_foldable-container foldable-container">
 				<g:each in="${surveyPage.getSections(program)}" var="section">
@@ -31,7 +31,7 @@
 								<span class="section-status-incomplete section-status ${enteredSection.displayedStatus!='incomplete'?'hidden':''}"></span>
 							</span>
 							
-							<div>${enteredSection.completedQuestions}/${enteredSection.totalQuestions}</div>
+							<div class="hidden">${enteredSection.completedQuestions}/${enteredSection.totalQuestions}</div>
 						</a>
 					</li>
 				</g:each>

@@ -12,6 +12,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.form.EnteredEntity;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.security.User;
 import org.chai.kevin.survey.SurveySection;
 import org.hibernate.annotations.NaturalId;
 

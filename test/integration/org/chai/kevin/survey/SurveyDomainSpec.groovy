@@ -11,7 +11,6 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
-import org.chai.kevin.survey.validation.SurveyLog;
 import org.chai.kevin.location.DataLocation;
 	
 class SurveyDomainSpec extends SurveyIntegrationTests {
@@ -127,22 +126,6 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		then:
 		SurveyElement.list()[0].validationRules.size() == 2
 		FormValidationRule.count() == 2
-	}
-	
-	def "save surveylog"() {
-		setup:
-		setupLocationTree()
-		def period = newPeriod()
-		def survey = newSurvey(CODE(1), period)
-		newSurveyProgram(CODE(2), survey, 2, [(DISTRICT_HOSPITAL_GROUP)])
-		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def type = DataLocationType.findByCode(HEALTH_CENTER_GROUP)
-		
-		
-		when:
-		new SurveyLog(event: "test", dataLocation: DataLocation.findByCode(KIVUYE), timestamp: new Date(), survey: survey, program: program).save(failOnError: true)		
-		then:
-		SurveyLog.count() == 1
 	}
 	
 }

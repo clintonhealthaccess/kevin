@@ -27,12 +27,14 @@
  */
 package org.chai.kevin.survey
 
+import java.util.Date;
 import java.util.List
 import java.util.Map
 import java.util.Set
 
 import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.math.NumberUtils
+import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.location.DataLocationType
 import org.chai.kevin.util.Utils
@@ -55,6 +57,11 @@ class SurveyService {
 	def locationService
 	def sessionFactory
 
+	static void setUserAndTimestamp(def enteredValue) {
+		enteredValue.setUserUuid(SecurityUtils.getSubject().getPrincipal())
+		enteredValue.setTimestamp(new Date())
+	}
+	
 	SurveyQuestion getSurveyQuestion(Long id) {
 		// TODO test this with Grails 2.0
 		return sessionFactory.currentSession.get(SurveyQuestion.class, id)
