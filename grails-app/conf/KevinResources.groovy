@@ -177,7 +177,7 @@ modules = {
 	}
 
 	survey {
-		dependsOn 'core,dataentry'
+		dependsOn 'core,dataentry,tipsy'
 	}
 	
 	planning {

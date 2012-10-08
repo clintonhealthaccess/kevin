@@ -14,6 +14,10 @@
 	<g:if test="${isCheckbox}">
 		<input class="input" type="hidden" value="0" name="elements[${element.id}].value${suffix}"/>
 		<input type="checkbox" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" value="1" name="elements[${element.id}].value${suffix}" ${value?.booleanValue==true?'checked="checked"':''} disabled="disabled"/>
+		
+		<g:if test="${tooltipValue!=null}">
+			<g:render template="/templates/help_tooltip" model="[names: tooltipValue]" />
+		</g:if>
 	</g:if>
 	<g:else>
 		<g:if test="${!print}">
@@ -22,13 +26,17 @@
 				<option value="1" ${value?.booleanValue==true ? 'selected':''}><g:message code="survey.element.bool.yes.label"/></option>
 				<option value="0" ${value?.booleanValue==false ? 'selected':''}><g:message code="survey.element.bool.no.label"/></option>
 			</select>
-	    </g:if>
+			
+			<g:if test="${tooltipValue!=null}">
+				<g:render template="/templates/help_tooltip" model="[names: tooltipValue]" />
+			</g:if>
+		</g:if>
 	    <g:else>
 			<div class="yes-no-element">
 				<input class="input" type="checkbox" value="1" name="option.names" disabled ${value?.booleanValue==true ? 'checked="checked" ':''}/><span><g:message code="survey.element.bool.yes.label"/></span>
 			</div>
 			<div class="yes-no-element">
-			<input class="input" type="checkbox" value="0" name="option.names" disabled ${value?.booleanValue==false ? 'checked="checked" ':''}/><span><g:message code="survey.element.bool.no.label"/></span>
+				<input class="input" type="checkbox" value="0" name="option.names" disabled ${value?.booleanValue==false ? 'checked="checked" ':''}/><span><g:message code="survey.element.bool.no.label"/></span>
 			</div>
 		</g:else>
 	</g:else>

@@ -172,6 +172,17 @@ class EditSurveyController extends AbstractController {
 		}
 	}
 	
+	def copyData = {
+		if (log.isDebugEnabled()) log.debug("survey.copyData, params:"+params)
+		
+		def location = DataLocation.get(params.int('location'))
+		def surveyElement = SurveyElement.get(params.int('element'))
+		
+		surveyPageService.copyData(location, surveyElement)
+		
+		redirect (uri: targetURI)
+	}
+	
 	def saveValue = {
 		if (log.isDebugEnabled()) log.debug("survey.saveValue, params:"+params)
 
