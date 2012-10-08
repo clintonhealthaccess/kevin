@@ -637,5 +637,61 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		then:
 		surveyPage.getOptions(question).equals([option2, option1])
 	}
-			
+	
+	def "test copy data"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		
+		def period1 = newPeriod()
+		def period2 = newPeriod()
+		
+		def survey = newSurvey(CODE(1), period2)
+		survey.lastPeriod = period1
+		survey.save()
+		
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def element = newSurveyElement(question, dataElement)
+		
+		newRawDataElementValue(dataElement, period1, DataLocation.findByCode(KIVUYE), v("1"))
+				
+		when:
+		surveyPageService.copyData(DataLocation.findByCode(KIVUYE), element)
+		
+		then:
+		FormEnteredValue.count() == 1
+		FormEnteredValue.list()[0].value.numberValue == 1d
+	}
+		
+	def "test copy data dows not copy if data already exist"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		
+		def period1 = newPeriod()
+		def period2 = newPeriod()
+		
+		def survey = newSurvey(CODE(1), period2)
+		survey.lastPeriod = period1
+		survey.save()
+		
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def element = newSurveyElement(question, dataElement)
+		
+		newRawDataElementValue(dataElement, period1, DataLocation.findByCode(KIVUYE), v("1"))
+		newFormEnteredValue(element, period2, DataLocation.findByCode(KIVUYE), v("2"))
+		
+		when:
+		surveyPageService.copyData(DataLocation.findByCode(KIVUYE), element)
+		
+		then:
+		FormEnteredValue.count() == 1
+		FormEnteredValue.list()[0].value.numberValue == 2d
+	}
 }

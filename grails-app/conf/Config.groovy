@@ -198,9 +198,7 @@ log4j = {
 		   'org.chai.kevin.value.ValueService'
 		   				   
 	debug  'grails.app',
-		   'org.chai.kevin',
-		   'org.codehaus.groovy.grails.commons',
-		   'org.codehaus.groovy.grails.web.servlet'
+		   'org.chai.kevin'
 		   
 	trace 'org.chai.kevin.service.imports.GeneralDataImporter',
 		   'org.chai.kevin.service.imports.NominativeDataImporter',

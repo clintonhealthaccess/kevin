@@ -653,6 +653,14 @@ public class Initializer {
 					value: v("\"I can not get into the Settings menu at all, when the phone is unlocked there is a blank screen.\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
+					
+			new RawDataElementValue(
+					data: RawDataElement.findByCode("LISTMAP2"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("327"),
+					value: Value.VALUE_LIST([Value.VALUE_MAP(['key0': Value.VALUE_MAP(['key01': Value.VALUE_STRING('text')])])]),
+					timestamp: new Date(),
+					).save(failOnError: true, flush:true)
 		}
 
 

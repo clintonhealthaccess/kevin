@@ -31,7 +31,6 @@ package org.chai.kevin.survey;
  *
  */
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -55,16 +54,13 @@ import org.chai.kevin.form.FormValidationService.ValidatableLocator;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.survey.SurveyElement.SurveyElementCalculator;
 import org.chai.kevin.survey.SurveyElement.SurveyElementSubmitter;
 import org.chai.kevin.survey.SurveyQuestion.QuestionType;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
-import org.chai.kevin.survey.validation.SurveyLog;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
@@ -351,6 +347,20 @@ public class SurveyPageService {
 			else enteredValue.setLastValue(Value.NULL_INSTANCE());
 		}
 		formElementService.save(enteredValue);
+	}
+	
+	public void copyData(DataLocation dataLocation, SurveyElement element) {
+		Survey survey = element.getSurvey(); 
+		
+		FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(dataLocation, element);
+		RawDataElementValue lastDataValue = valueService.getDataElementValue(element.getDataElement(), dataLocation, survey.getLastPeriod());
+		
+		if (lastDataValue != null) {
+			if (enteredValue.getValue().isNull()) {
+				enteredValue.setValue(lastDataValue.getValue());
+				formElementService.save(enteredValue);
+			}
+		}
 	}
 	
 	// returns the list of modified elements/questions/sections/programs (skip, validation, etc..)
