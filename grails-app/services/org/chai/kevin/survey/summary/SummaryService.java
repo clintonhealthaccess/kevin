@@ -2,7 +2,6 @@ package org.chai.kevin.survey.summary;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,6 +16,7 @@ import org.chai.kevin.survey.SurveyQuestion;
 import org.chai.kevin.survey.SurveySection;
 import org.chai.kevin.survey.SurveyValueService;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
+import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.springframework.transaction.annotation.Transactional;
 
 public class SummaryService {
@@ -30,10 +30,9 @@ public class SummaryService {
 		Map<SurveySection, QuestionSummary> questionSummaryMap = new HashMap<SurveySection, QuestionSummary>();
 		
 		for (SurveySection section : sections) {
-			List<SurveyQuestion> questions = section.getQuestions(dataLocation.getType());
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(program.getSurvey(), dataLocation, null, section, true, false, true);
+			SurveyEnteredSection enteredSection = surveyValueService.getSurveyEnteredSection(section, dataLocation);
 			
-			questionSummaryMap.put(section, new QuestionSummary(questions.size(), completedQuestions));
+			questionSummaryMap.put(section, new QuestionSummary(enteredSection.getTotalQuestions(), enteredSection.getCompletedQuestions()));
 		}
 		return new SurveySummaryPage(questionSummaryMap);
 	}	
@@ -46,10 +45,16 @@ public class SummaryService {
 		
 		for (SurveyProgram program : programs) {
 			SurveyEnteredProgram enteredProgram = surveyValueService.getSurveyEnteredProgram(program, dataLocation);
-			List<SurveyQuestion> questions = program.getQuestions(dataLocation.getType());
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(survey, dataLocation, program, null, true, false, true);
 			
-			questionSummaryMap.put(program, new QuestionSummary(questions.size(), completedQuestions));
+			Integer totalQuestions = 0;
+			Integer completedQuestions = 0;
+			
+			if (enteredProgram != null) {
+				totalQuestions = enteredProgram.getTotalQuestions();
+				completedQuestions = enteredProgram.getCompletedQuestions();
+			}
+			
+			questionSummaryMap.put(program, new QuestionSummary(totalQuestions, completedQuestions));
 			enteredProgramMap.put(program, enteredProgram);
 		}
 		
@@ -62,13 +67,13 @@ public class SummaryService {
 		List<DataLocation> dataLocations = location.collectDataLocations(null, types);		
 		
 		Map<DataLocationType, List<SurveyProgram>> programMap = new HashMap<DataLocationType, List<SurveyProgram>>();
-		Map<DataLocationType, List<SurveyQuestion>> questionMap = new HashMap<DataLocationType, List<SurveyQuestion>>();
+//		Map<DataLocationType, List<SurveyQuestion>> questionMap = new HashMap<DataLocationType, List<SurveyQuestion>>();
 
 		Map<DataLocation, QuestionSummary> questionSummaryMap = new HashMap<DataLocation, QuestionSummary>();
 		Map<DataLocation, ProgramSummary> programSummaryMap = new HashMap<DataLocation, ProgramSummary>();		
 		
-		Integer totalQuestions = 0;
-		Integer totalAnsweredQuestions = 0;
+		Integer totalQuestionsLocation = 0;
+		Integer totalAnsweredQuestionsLocation = 0;
 		for (DataLocation dataLocation : dataLocations) {						
 			
 			if (!programMap.containsKey(dataLocation.getType())) {
@@ -76,25 +81,28 @@ public class SummaryService {
 			}
 			Integer submittedPrograms = surveyValueService.getNumberOfSurveyEnteredPrograms(survey, dataLocation, true, null, null);
 			
-			if (!questionMap.containsKey(dataLocation.getType())) {
-				List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
-				for (SurveyProgram program : programMap.get(dataLocation.getType())) {
-					questions.addAll(program.getQuestions(dataLocation.getType()));				
-				}
-				questionMap.put(dataLocation.getType(), questions);
-			}
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(survey, dataLocation, null, null, true, false, true);
+			Integer totalQuestions = 0;
+			Integer completedQuestions = 0;
 			
-			QuestionSummary questionSummary = new QuestionSummary(questionMap.get(dataLocation.getType()).size(), completedQuestions);
+			for (SurveyProgram program : programMap.get(dataLocation.getType())) {
+				SurveyEnteredProgram enteredProgram = surveyValueService.getSurveyEnteredProgram(program, dataLocation);
+				
+				if (enteredProgram != null) {
+					completedQuestions += enteredProgram.getCompletedQuestions();
+					totalQuestions += enteredProgram.getTotalQuestions();
+				}
+			}
+			
+			QuestionSummary questionSummary = new QuestionSummary(totalQuestions, completedQuestions);
 			ProgramSummary programSummary = new ProgramSummary(programMap.get(dataLocation.getType()).size(), submittedPrograms);
 			
 			questionSummaryMap.put(dataLocation, questionSummary);
 			programSummaryMap.put(dataLocation, programSummary);
 			
-			totalQuestions += questionMap.get(dataLocation.getType()).size();
-			totalAnsweredQuestions += completedQuestions;
+			totalQuestionsLocation += totalQuestions;
+			totalAnsweredQuestionsLocation += completedQuestions;
 		}
-		return new SurveySummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), dataLocations, questionSummaryMap, programSummaryMap);
+		return new SurveySummaryPage(new QuestionSummary(totalQuestionsLocation, totalAnsweredQuestionsLocation), dataLocations, questionSummaryMap, programSummaryMap);
 	}
 	
 	@Transactional(readOnly = true)
@@ -106,26 +114,32 @@ public class SummaryService {
 		Map<DataLocation, SurveyEnteredProgram> enteredProgramMap = new HashMap<DataLocation, SurveyEnteredProgram>();
 		Map<DataLocation, QuestionSummary> questionSummaryMap = new HashMap<DataLocation, QuestionSummary>();
 		
-		Integer totalQuestions = 0;
-		Integer totalAnsweredQuestions = 0;
+		Integer totalQuestionsLocation = 0;
+		Integer totalAnsweredQuestionsLocation = 0;
 		for (DataLocation dataLocation : dataLocations) {			
 		
 			if(!program.getTypeCodes().contains(dataLocation.getType().getCode())) continue;
 			programSummaryLocations.add(dataLocation);
 			
 			SurveyEnteredProgram enteredProgram = surveyValueService.getSurveyEnteredProgram(program, dataLocation);
-			List<SurveyQuestion> questions = program.getQuestions(dataLocation.getType());
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(program.getSurvey(), dataLocation, program, null, true, false, true);
 			
-			QuestionSummary questionSummary = new QuestionSummary(questions.size(), completedQuestions);
+			Integer totalQuestions = 0;
+			Integer completedQuestions = 0;
+			
+			if (enteredProgram != null) {
+				totalQuestions = enteredProgram.getTotalQuestions();
+				completedQuestions = enteredProgram.getCompletedQuestions();
+			}
+				
+			QuestionSummary questionSummary = new QuestionSummary(totalQuestions, completedQuestions);
 			
 			enteredProgramMap.put(dataLocation, enteredProgram);
 			questionSummaryMap.put(dataLocation, questionSummary);
 			
-			totalQuestions += questions.size();
-			totalAnsweredQuestions += completedQuestions;
+			totalQuestionsLocation += totalQuestions;
+			totalAnsweredQuestionsLocation += completedQuestions;
 		}
-		return new SurveySummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), programSummaryLocations, questionSummaryMap, enteredProgramMap, true);
+		return new SurveySummaryPage(new QuestionSummary(totalQuestionsLocation, totalAnsweredQuestionsLocation), programSummaryLocations, questionSummaryMap, enteredProgramMap, true);
 	}
 	
 	@Transactional(readOnly = true)
@@ -136,23 +150,30 @@ public class SummaryService {
 		
 		Map<DataLocation, QuestionSummary> questionSummaryMap = new HashMap<DataLocation, QuestionSummary>();
 		
-		Integer totalQuestions = 0;
-		Integer totalAnsweredQuestions = 0;
+		Integer totalQuestionsLocation = 0;
+		Integer totalAnsweredQuestionsLocation = 0;
 		for (DataLocation dataLocation : dataLocations) {
 			
 			if(!section.getTypeCodes().contains(dataLocation.getType().getCode())) continue;			
 			sectionSummaryLocations.add(dataLocation);
 			
-			List<SurveyQuestion> questions = section.getQuestions(dataLocation.getType());
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(section.getSurvey(), dataLocation, null, section, true, false, true);
+			SurveyEnteredSection enteredSection = surveyValueService.getSurveyEnteredSection(section, dataLocation);
 			
-			QuestionSummary questionSummary = new QuestionSummary(questions.size(), completedQuestions);
+			Integer totalQuestions = 0;
+			Integer completedQuestions = 0;
+			
+			if (enteredSection != null) {
+				totalQuestions = enteredSection.getTotalQuestions();
+				completedQuestions = enteredSection.getCompletedQuestions();
+			}
+			
+			QuestionSummary questionSummary = new QuestionSummary(totalQuestions, completedQuestions);
 			questionSummaryMap.put(dataLocation, questionSummary);
 			
-			totalQuestions += questions.size();
-			totalAnsweredQuestions += completedQuestions;
+			totalQuestionsLocation += totalQuestions;
+			totalAnsweredQuestionsLocation += completedQuestions;
 		}
-		return new SurveySummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), sectionSummaryLocations, questionSummaryMap);		
+		return new SurveySummaryPage(new QuestionSummary(totalQuestionsLocation, totalAnsweredQuestionsLocation), sectionSummaryLocations, questionSummaryMap);		
 	}
 	
 	public void setSurveyValueService(SurveyValueService surveyValueService) {

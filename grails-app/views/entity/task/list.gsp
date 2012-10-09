@@ -35,15 +35,8 @@
 						success: function(data, textStatus, jqXHR) {
 							$(data.tasks).each(function(i, element) {
 								var entry = $('#js_task-'+element.id);
-								$(entry).find('.js_progress-bar').progressBar(element.progress * 100,{
-									steps: 0,
-									boxImage: progress['boxImage'],
-									barImage: {
-										0:  progress['barImage_0'],
-										30:  progress['barImage_30'],
-										70:  progress['barImage_70'],
-									}
-								});
+								updateProgressBar($(entry).find('.js_progress-bar'), element.progress * 100);
+								
 								$(entry).find('.js_task-status').html(element.status);
 								if (element.status == 'IN_PROGRESS') $(entry).find('.js_progress-bar').show();
 							});

@@ -29,7 +29,7 @@
   						</li>
   					</ul>
   				</td>
-  				<td>${User.findByUuid(task.principal)?.username}</td>  				
+  				<td>${task.principal!=null?User.findByUuid(task.principal)?.username:''}</td>  				
   				<td>${task.class.simpleName}</td>
   				<td>${task.information}</td>
   				<td>${task.sentToQueue}</td>

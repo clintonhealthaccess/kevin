@@ -82,12 +82,16 @@
 					$.each(data.sections, function(index, section) {
 						$('#section-'+section.id).find('.section-status').addClass('hidden');
 						$('#section-'+section.id).find('.section-status-'+section.status).removeClass('hidden');
+						
+						updateProgressBar($('#section-'+section.id).find('.js_progress-bar').first(), (section.completedQuestions / section.totalQuestions) * 100);
 					});
 					
 					// we go through the programs
 					$.each(data.programs, function(index, program) {
 						$('#program-'+program.id).find('.program-status').addClass('hidden');
 						$('#program-'+program.id).find('.program-status-'+program.status).removeClass('hidden');
+						
+						updateProgressBar($('#program-'+program.id).find('.js_progress-bar').first(), (program.completedQuestions / program.totalQuestions) * 100);
 					});
 					
 					// we go through all the questions

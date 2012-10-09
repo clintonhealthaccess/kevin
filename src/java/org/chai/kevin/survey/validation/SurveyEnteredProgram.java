@@ -15,7 +15,7 @@ import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.SurveyProgram;
 import org.hibernate.annotations.NaturalId;
 
-@Entity(name="SurveyValidProgram")
+@Entity(name="SurveyEnteredProgram")
 @Table(name="dhsst_survey_entered_program", uniqueConstraints=@UniqueConstraint(
 		columnNames={"program", "dataLocation"})
 )
@@ -28,6 +28,9 @@ public class SurveyEnteredProgram extends EnteredEntity {
 	private Boolean complete;
 	private Boolean invalid;
 	private Boolean closed;
+	
+	private Integer totalQuestions;
+	private Integer completedQuestions;
 	
 	public SurveyEnteredProgram() {}
 	
@@ -68,6 +71,24 @@ public class SurveyEnteredProgram extends EnteredEntity {
 	
 	public void setDataLocation(DataLocation dataLocation) {
 		this.dataLocation = dataLocation;
+	}
+	
+	@Basic
+	public Integer getTotalQuestions() {
+		return totalQuestions;
+	}
+	
+	public void setTotalQuestions(Integer totalQuestions) {
+		this.totalQuestions = totalQuestions;
+	}
+	
+	@Basic
+	public Integer getCompletedQuestions() {
+		return completedQuestions;
+	}
+	
+	public void setCompletedQuestions(Integer completedQuestions) {
+		this.completedQuestions = completedQuestions;
 	}
 	
 	@Basic

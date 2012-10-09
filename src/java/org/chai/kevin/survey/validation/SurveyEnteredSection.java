@@ -12,10 +12,11 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.form.EnteredEntity;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.security.User;
 import org.chai.kevin.survey.SurveySection;
 import org.hibernate.annotations.NaturalId;
 
-@Entity(name="SurveyValidSection")
+@Entity(name="SurveyEnteredSection")
 @Table(name="dhsst_survey_entered_section", uniqueConstraints=@UniqueConstraint(
 		columnNames={"section", "dataLocation"})
 )
@@ -26,6 +27,9 @@ public class SurveyEnteredSection extends EnteredEntity {
 	private DataLocation dataLocation;
 	private Boolean invalid;
 	private Boolean complete;
+	
+	private Integer totalQuestions;
+	private Integer completedQuestions;
 	
 	public SurveyEnteredSection() {}
 	
@@ -65,6 +69,24 @@ public class SurveyEnteredSection extends EnteredEntity {
 	
 	public void setDataLocation(DataLocation dataLocation) {
 		this.dataLocation = dataLocation;
+	}
+	
+	@Basic
+	public Integer getTotalQuestions() {
+		return totalQuestions;
+	}
+	
+	public void setTotalQuestions(Integer totalQuestions) {
+		this.totalQuestions = totalQuestions;
+	}
+	
+	@Basic
+	public Integer getCompletedQuestions() {
+		return completedQuestions;
+	}
+	
+	public void setCompletedQuestions(Integer completedQuestions) {
+		this.completedQuestions = completedQuestions;
 	}
 	
 	@Basic

@@ -25,3 +25,15 @@ function progressBar() {
 		});
 	});
 }
+
+function updateProgressBar(element, value) {
+	element.progressBar(value, {
+		steps: 0,
+		boxImage: progress['boxImage'],
+		barImage: {
+			0:  progress['barImage_0'],
+			30:  progress['barImage_30'],
+			70:  progress['barImage_70'],
+		}
+	});
+}
