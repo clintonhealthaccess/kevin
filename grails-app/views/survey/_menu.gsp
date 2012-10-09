@@ -1,4 +1,4 @@
-<r:require module="foldable"/>
+<r:require modules="foldable,progressbar"/>
 
 <ul>
 	<g:each in="${surveyPage.getPrograms()}" var="program">
@@ -9,6 +9,8 @@
 		
 			<a class="item ${surveyPage.program?.id == program.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'programPage', params:[location: surveyPage.location.id, program:program.id])}">
 				<span><g:i18n field="${program.names}" /></span>
+				
+				<span class="item-progress js_progress-bar">${enteredProgram.completedQuestions}/${enteredProgram.totalQuestions}</span>
 				
 				<span class="item-status">
 					<span class="program-status-complete program-status ${enteredProgram.displayedStatus!='complete'?'hidden':''}"></span>
@@ -24,6 +26,9 @@
 					<li id="section-${section.id}">
 						<a class="item ${surveyPage.section?.id == section.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'sectionPage', params:[location: surveyPage.location.id, section:section.id])}">
 							<span><g:i18n field="${section.names}" /></span>
+							
+							<span class="item-progress js_progress-bar">${enteredSection.completedQuestions}/${enteredSection.totalQuestions}</span>
+							
 							<span class="item-status">
 								<span class="section-status-complete section-status ${enteredSection.displayedStatus!='complete'?'hidden':''}"></span>
 								<span class="section-status-invalid section-status ${enteredSection.displayedStatus!='invalid'?'hidden':''}"></span>
@@ -36,3 +41,6 @@
 		</li>
 	</g:each>
 </ul>
+<r:script>
+	${render(template:'/templates/progressImages')}
+</r:script>

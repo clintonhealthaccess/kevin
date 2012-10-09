@@ -51,7 +51,6 @@
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredQuestion" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredSection" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredProgram" />
-		<mapping class="org.chai.kevin.survey.validation.SurveyLog" />
 		
 		<mapping class="org.chai.kevin.planning.Planning" />
 		<mapping class="org.chai.kevin.planning.PlanningType" />

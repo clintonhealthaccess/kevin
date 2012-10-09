@@ -76,28 +76,6 @@ class FormElementServiceSpec extends IntegrationTests {
 		FormEnteredValue.count() == 0
 	}
 	
-	def "saving entered entities saves user and timestamp"() {
-		setup:
-		setupLocationTree()
-		setupSecurityManager(newUser('test', 'uuid'))
-		def period = newPeriod()
-		def element1 = newFormElement(newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
-		
-		when:
-		def formEnteredValue = newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("1"))
-		
-		then:
-		formEnteredValue.userUuid == null
-		formEnteredValue.timestamp == null
-		
-		when:
-		formElementService.save(formEnteredValue)
-		
-		then:
-		formEnteredValue.userUuid == 'uuid'
-		formEnteredValue.timestamp != null
-	}
-	
 	def "test retrieve skip rule - no rule"() {
 		setup:
 		def period = newPeriod()

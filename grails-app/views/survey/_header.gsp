@@ -1,7 +1,7 @@
 <r:require module="dropdown"/>
 
 <div>
-	<div class="filter-bar">
+	<div class="filter-bar  data-entry-menu">
 		<div class="left">
 			<span class="js_dropdown dropdown">
 				<a class="program js_dropdown-link nice-button with-highlight" href="#">
@@ -9,7 +9,7 @@
 						<g:i18n field="${program.names}" />
 					</g:if>
 					<g:else>
-					<g:message code="survey.labels.program.select" />	
+						<g:message code="survey.labels.program.select" />	
 					</g:else>
 				</a>
 				<div class="dropdown-list js_dropdown-list push-top-10">

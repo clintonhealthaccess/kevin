@@ -90,8 +90,8 @@ class FormElementService {
 	
 	void save(FormEnteredValue formEnteredValue) {
 		if (log.isDebugEnabled()) log.debug("save(formEnteredValue=${formEnteredValue}})")
-		formEnteredValue.setUserUuid(SecurityUtils.subject.principal)
-		formEnteredValue.setTimestamp(new Date());
+//		formEnteredValue.setUserUuid(SecurityUtils.subject.principal)
+//		formEnteredValue.setTimestamp(new Date());
 		formEnteredValue.save();
 	}
 	

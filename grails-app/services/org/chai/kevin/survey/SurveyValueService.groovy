@@ -27,8 +27,8 @@ class SurveyValueService {
 	
 	void save(SurveyEnteredProgram surveyEnteredProgram) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredProgram=${surveyEnteredProgram}})")
-		surveyEnteredProgram.setUserUuid(SecurityUtils.subject.principal)
-		surveyEnteredProgram.setTimestamp(new Date());
+//		surveyEnteredProgram.setUserUuid(SecurityUtils.subject.principal)
+//		surveyEnteredProgram.setTimestamp(new Date());
 		surveyEnteredProgram.save();
 	}
 
@@ -45,8 +45,8 @@ class SurveyValueService {
 	
 	void save(SurveyEnteredQuestion surveyEnteredQuestion) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredQuestion=${surveyEnteredQuestion}})")
-		surveyEnteredQuestion.setUserUuid(SecurityUtils.subject.principal)
-		surveyEnteredQuestion.setTimestamp(new Date());
+//		surveyEnteredQuestion.setUserUuid(SecurityUtils.subject.principal)
+//		surveyEnteredQuestion.setTimestamp(new Date());
 		surveyEnteredQuestion.save();
 	}
 	
@@ -56,8 +56,8 @@ class SurveyValueService {
 	
 	void save(SurveyEnteredSection surveyEnteredSection) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredSection=${surveyEnteredSection}})")
-		surveyEnteredSection.setUserUuid(SecurityUtils.subject.principal)
-		surveyEnteredSection.setTimestamp(new Date());
+//		surveyEnteredSection.setUserUuid(SecurityUtils.subject.principal)
+//		surveyEnteredSection.setTimestamp(new Date());
 		surveyEnteredSection.save();
 	}
 	
@@ -80,40 +80,40 @@ class SurveyValueService {
 		c.uniqueResult();
 	}
 	
-	Integer getNumberOfSurveyEnteredQuestions(Survey survey, DataLocation dataLocation, 
-		SurveyProgram program, SurveySection section, Boolean complete, Boolean invalid, Boolean skippedAsComplete) {
-		def c = SurveyEnteredQuestion.createCriteria()
-		c.add(Restrictions.eq("dataLocation", dataLocation))
-		
-		if (complete!=null) {
-			if (skippedAsComplete!=null) {
-				def or = Restrictions.disjunction();
-				or.add(Restrictions.eq("complete", complete))
-				if (!skippedAsComplete) or.add(Restrictions.isEmpty("skippedRules"))
-				else or.add(Restrictions.isNotEmpty("skippedRules"))
-				c.add(or)
-			}
-			else {
-				c.add(Restrictions.eq("complete", complete))
-			}
-		}
-		if (invalid!=null) c.add(Restrictions.eq("invalid", invalid))
-		
-		
-		c.createAlias("question", "sq")
-		.createAlias("sq.section", "ss")
-		.createAlias("ss.program", "so")
-		.add(Restrictions.eq("so.survey", survey))
-		
-		if (section != null) c.add(Restrictions.eq("sq.section", section))
-		if (program != null) c.add(Restrictions.eq("ss.program", program))
-		
-		c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-		c.setProjection(Projections.rowCount())
-		c.setCacheable(false);
-		c.setFlushMode(FlushMode.COMMIT)
-		c.uniqueResult();
-	}
+//	Integer getNumberOfSurveyEnteredQuestions(Survey survey, DataLocation dataLocation, 
+//		SurveyProgram program, SurveySection section, Boolean complete, Boolean invalid, Boolean skippedAsComplete) {
+//		def c = SurveyEnteredQuestion.createCriteria()
+//		c.add(Restrictions.eq("dataLocation", dataLocation))
+//		
+//		if (complete!=null) {
+//			if (skippedAsComplete!=null) {
+//				def or = Restrictions.disjunction();
+//				or.add(Restrictions.eq("complete", complete))
+//				if (!skippedAsComplete) or.add(Restrictions.isEmpty("skippedRules"))
+//				else or.add(Restrictions.isNotEmpty("skippedRules"))
+//				c.add(or)
+//			}
+//			else {
+//				c.add(Restrictions.eq("complete", complete))
+//			}
+//		}
+//		if (invalid!=null) c.add(Restrictions.eq("invalid", invalid))
+//		
+//		
+//		c.createAlias("question", "sq")
+//		.createAlias("sq.section", "ss")
+//		.createAlias("ss.program", "so")
+//		.add(Restrictions.eq("so.survey", survey))
+//		
+//		if (section != null) c.add(Restrictions.eq("sq.section", section))
+//		if (program != null) c.add(Restrictions.eq("ss.program", program))
+//		
+//		c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+//		c.setProjection(Projections.rowCount())
+//		c.setCacheable(false);
+//		c.setFlushMode(FlushMode.COMMIT)
+//		c.uniqueResult();
+//	}
 	
 	SurveyEnteredSection getSurveyEnteredSection(SurveySection surveySection, DataLocation dataLocation) {
 		def c = SurveyEnteredSection.createCriteria()

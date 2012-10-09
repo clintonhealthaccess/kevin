@@ -54,11 +54,19 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	}
 		
 	def static newSurveyEnteredSection(def section, def period, def dataLocation, def invalid, def complete) {
-		return new SurveyEnteredSection(section: section, dataLocation: dataLocation, invalid: invalid, complete: complete).save(failOnError: true)
+		return newSurveyEnteredSection(section, period, dataLocation, invalid, complete, 0, 0)
 	}
-
+	
+	def static newSurveyEnteredSection(def section, def period, def dataLocation, def invalid, def complete, def completedQuestions, def totalQuestions) {
+		return new SurveyEnteredSection(section: section, dataLocation: dataLocation, invalid: invalid, complete: complete, completedQuestions: completedQuestions, totalQuestions: totalQuestions).save(failOnError: true)
+	}
+	
 	def static newSurveyEnteredProgram(def program, def period, def dataLocation, def invalid, def complete, def closed) {
-		return new SurveyEnteredProgram(program: program, dataLocation: dataLocation, invalid: invalid, complete: complete, closed: closed).save(failOnError: true)
+		return newSurveyEnteredProgram(program, period, dataLocation, invalid, complete, closed, 0, 0)
+	}
+	
+	def static newSurveyEnteredProgram(def program, def period, def dataLocation, def invalid, def complete, def closed, def completedQuestions, def totalQuestions) {
+		return new SurveyEnteredProgram(program: program, dataLocation: dataLocation, invalid: invalid, complete: complete, closed: closed, completedQuestions: completedQuestions, totalQuestions: totalQuestions).save(failOnError: true)
 	}
 
 	def static newSurveySkipRule(def code, def survey, def expression, def skippedElements, def skippedQuestions) {
