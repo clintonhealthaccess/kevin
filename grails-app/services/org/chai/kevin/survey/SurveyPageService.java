@@ -273,7 +273,7 @@ public class SurveyPageService {
 			getTransactionTemplate().execute(new TransactionCallbackWithoutResult() {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
-					Survey surveyToUpdate = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
+					Survey surveyToUpdate = (Survey)sessionFactory.getCurrentSession().get(Survey.class, survey.getId());
 					DataLocation dataLocationToUpdate = (DataLocation)sessionFactory.getCurrentSession().get(DataLocation.class, dataLocation.getId());
 
 					refreshSurveyForDataLocation(dataLocationToUpdate, surveyToUpdate, closeIfComplete, reset);

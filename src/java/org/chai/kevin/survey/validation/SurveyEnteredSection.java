@@ -16,7 +16,7 @@ import org.chai.kevin.security.User;
 import org.chai.kevin.survey.SurveySection;
 import org.hibernate.annotations.NaturalId;
 
-@Entity(name="SurveyValidSection")
+@Entity(name="SurveyEnteredSection")
 @Table(name="dhsst_survey_entered_section", uniqueConstraints=@UniqueConstraint(
 		columnNames={"section", "dataLocation"})
 )

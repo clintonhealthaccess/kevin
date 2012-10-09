@@ -93,13 +93,18 @@ class SurveySummaryController extends AbstractController {
 		DataLocation location = locationService.getCalculationLocation(params.int('location'), DataLocation.class)
 		Survey survey = Survey.get(params.int('survey'))
 		
-		surveyPageService.refresh(location, survey,
-			(params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete')),
-			(params.boolean('reset')==null?false:params.boolean('reset')), 
-			null, getCurrentUser()
-		);
-	
-		redirect (controller: 'editSurvey', action: "surveyPage", params: [location: location.id, survey: survey.id])
+		if (survey != null && location != null) {
+			surveyPageService.refresh(location, survey,
+				(params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete')),
+				(params.boolean('reset')==null?false:params.boolean('reset')), 
+				null
+			);
+		
+			redirect (controller: 'editSurvey', action: "surveyPage", params: [location: location.id, survey: survey.id])
+		} 
+		else {
+			response.sendError(404)
+		}
 	}
 	
 	def submitAll = {

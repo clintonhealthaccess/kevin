@@ -15,7 +15,7 @@ import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.SurveyProgram;
 import org.hibernate.annotations.NaturalId;
 
-@Entity(name="SurveyValidProgram")
+@Entity(name="SurveyEnteredProgram")
 @Table(name="dhsst_survey_entered_program", uniqueConstraints=@UniqueConstraint(
 		columnNames={"program", "dataLocation"})
 )

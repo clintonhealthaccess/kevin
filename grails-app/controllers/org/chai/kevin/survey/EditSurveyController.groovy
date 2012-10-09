@@ -197,7 +197,9 @@ class EditSurveyController extends AbstractController {
 					surveyPage.enteredPrograms.each { program, enteredProgram -> 
 						obj (
 							id: program.id,
-							status: enteredProgram.displayedStatus
+							status: enteredProgram.displayedStatus,
+							totalQuestions: enteredProgram.totalQuestions,
+							completedQuestions: enteredProgram.completedQuestions
 						)
 					}
 				}
@@ -208,7 +210,9 @@ class EditSurveyController extends AbstractController {
 							programId: section.program.id,
 							invalid: enteredSection.invalid,
 							complete: enteredSection.complete,
-							status: enteredSection.displayedStatus
+							status: enteredSection.displayedStatus,
+							totalQuestions: enteredSection.totalQuestions,
+							completedQuestions: enteredSection.completedQuestions
 						)
 					}
 				}

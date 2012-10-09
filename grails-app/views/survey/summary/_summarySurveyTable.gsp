@@ -33,7 +33,7 @@
 									</li>
 									<shiro:hasPermission permission="surveySummary:refresh">
 										<li>
-											<a href="${createLink(controller: 'editSurvey', action: 'refresh', params: [survey: currentSurvey.id, location: location.id])}" onclick="return confirm('\${message(code: 'survey.summary.refresh.confirm.message')}');">
+											<a href="${createLink(controller: 'surveySummary', action: 'refresh', params: [survey: currentSurvey.id, location: location.id])}" onclick="return confirm('\${message(code: 'survey.summary.refresh.confirm.message')}');">
 												<g:message code="survey.summary.refreshsurvey.label" />
 											</a>
 										</li>
