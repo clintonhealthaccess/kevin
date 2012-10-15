@@ -98,20 +98,20 @@ class DataService {
 	 * @throws IllegalArgumentException if the data element has values associated to it
 	 * @param element
 	 */
-	public void delete(Data<?> data) {
+	public void delete(Data data) {
 		if (!getReferencingData(data).isEmpty()) throw new IllegalArgumentException("other data are still referencing the element being deleted")
 		if (valueService.getNumberOfValues(data) != 0) throw new IllegalArgumentException("there are still values associated to the element being deleted");
 		else data.delete();
 	}
 	
-	public Set<Data<?>> getReferencingData(Data<?> data) {
+	public Set<Data<?>> getReferencingData(Data data) {
 		def result = []
 		result.addAll(getReferencingNormalizedDataElements(data))
 		result.addAll(getReferencingCalculations(data))
 		return result
 	}
 	
-	public List<NormalizedDataElement> getReferencingNormalizedDataElements(Data<?> data) {
+	public List<NormalizedDataElement> getReferencingNormalizedDataElements(Data data) {
 		def criteria = sessionFactory.currentSession.createCriteria(NormalizedDataElement.class);
 		def list = criteria.add(Restrictions.like("expressionMap.jsonText", "\$"+data.id, MatchMode.ANYWHERE)).list()
 		return list.findAll { result ->
@@ -121,7 +121,7 @@ class DataService {
 		}
 	}
 	
-	public List<Calculation> getReferencingCalculations(Data<?> data) {
+	public List<Calculation> getReferencingCalculations(Data data) {
 		def criteria = sessionFactory.currentSession.createCriteria(Calculation.class);
 		def list = criteria.add(Restrictions.like("expression", "\$"+data.id, MatchMode.ANYWHERE)).list()
 		return list.findAll { result ->

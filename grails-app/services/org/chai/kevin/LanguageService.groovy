@@ -61,6 +61,10 @@ class LanguageService implements ApplicationContextAware {
 		return languages;
 	}
 	
+	Locale getCurrentLocale() {
+		return RequestContextUtils.getLocale(RequestContextHolder.currentRequestAttributes().getRequest());
+	}
+	
 	String getCurrentLanguage() {
 		Locale locale = RequestContextUtils.getLocale(RequestContextHolder.currentRequestAttributes().getRequest());
 		return locale.getLanguage();

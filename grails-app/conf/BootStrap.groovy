@@ -1,7 +1,3 @@
-import java.nio.channels.Channel;
-
-import org.chai.kevin.security.Role;
-
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -32,11 +28,10 @@ import org.chai.kevin.security.Role;
 
 import org.chai.kevin.Initializer;
 import org.chai.kevin.cost.CostRampUpYear;
-
 import java.util.Date;
-
+import java.nio.channels.Channel;
+import org.chai.kevin.security.Role;
 import grails.util.GrailsUtil;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.chai.kevin.dashboard.DashboardTarget;
@@ -126,16 +121,22 @@ class BootStrap {
 			
 			break;
 		case "development":
-			Initializer.createDummyStructure();
+			// TODO review this
 			Initializer.createUsers();
-			Initializer.createDataElementsAndExpressions();
-			Initializer.createDashboard();
-			Initializer.createDsr();
-			Initializer.createFct();
-			Initializer.createQuestionaire();
-			Initializer.createPlanning();
-			Initializer.createDataElementExport();
-			Initializer.createCalculationExport();
+		
+			Initializer.createPeriods();
+			Initializer.createSources();
+			
+//			Initializer.createDummyStructure();
+//			Initializer.createUsers();
+//			Initializer.createDataElementsAndExpressions();
+//			Initializer.createDashboard();
+//			Initializer.createDsr();
+//			Initializer.createFct();
+//			Initializer.createQuestionaire();
+//			Initializer.createPlanning();
+//			Initializer.createDataElementExport();
+//			Initializer.createCalculationExport();
 			
 			break;
 		}

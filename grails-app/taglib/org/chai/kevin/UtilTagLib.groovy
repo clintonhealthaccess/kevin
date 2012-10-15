@@ -65,12 +65,12 @@ class UtilTagLib {
 	}
 	
 	def locales = { attrs, body ->
-		attrs["locales"] = languageService.getAvailableLanguages();
+		attrs["locales"] = languageService.getAvailableLocales();
 		out << render(template:"/tags/util/locales", model: attrs)
 	}
 	
 	def i18n = { attrs, body ->
-		def text = languageService.getText(attrs['field'])
+		def text = attrs['field']
 		out << text 
 	}
 	

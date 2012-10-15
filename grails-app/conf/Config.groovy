@@ -1,8 +1,5 @@
-
-import org.chai.kevin.Period;
-
 /*
-* Copyright (c) 2011, Clinton Health Access Initiative.
+//* Copyright (c) 2011, Clinton Health Access Initiative.
 *
 * All rights reserved.
 *
@@ -129,6 +126,7 @@ environments {
 		// grails.resources.cdn.url = "http://static.mydomain.com/"
 		// grails.resources.work.dir="/static/directory/"
 		grails.resources.processing.enabled = true
+		
 	}
 	development {
 		grails.resources.cdn.enabled = false
@@ -219,16 +217,17 @@ environments {
 	}
 }
 
-//cloudbees.api.url='https://api.cloudbees.com/api'
-//cloudbees.api.key=System.properties['bees.key']
-//cloudbees.api.secret=System.properties['bees.secret']
-
 /**
  * Application specific config
  */
 google.analytics.webPropertyID = "UA-xxxxxx-x"
 
-site.languages=["en","fr","rw"]
+// TODO merge those 2
+site.languages=["en","fr"]
+i18nFields {
+	locales = ["en","fr"]
+}
+
 site.fallback.language="en"
 site.entity.list.max=40
 site.period=0

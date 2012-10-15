@@ -52,60 +52,80 @@ import org.chai.kevin.value.Value
 
 public class Initializer {
 
-	static Date mar01 = getDate( 2005, 3, 1 );
-	static Date mar31 = getDate( 2005, 3, 31 );
-	static Date mar011 = getDate( 2006, 3, 1 );
-	static Date mar311 = getDate( 2006, 3, 31 );
 
+	static def createRoles() {
+		if (Role.count() == 0) {
+			def reportAllReadonly = new Role(name: "report-all-readonly")
+			reportAllReadonly.addToPermissions("menu:reports")
+			reportAllReadonly.addToPermissions("dashboard:*")
+			reportAllReadonly.addToPermissions("dsr:*")
+			reportAllReadonly.addToPermissions("cost:*")
+			reportAllReadonly.addToPermissions("fct:*")
+			reportAllReadonly.save()
+	
+			def surveyAllReadonly = new Role(name: "survey-all-readonly")
+			surveyAllReadonly.addToPermissions("menu:survey")
+			surveyAllReadonly.addToPermissions("summary:*")
+			surveyAllReadonly.addToPermissions("editSurvey:view")
+			surveyAllReadonly.addToPermissions("editSurvey:summaryPage")
+			surveyAllReadonly.addToPermissions("editSurvey:sectionTable")
+			surveyAllReadonly.addToPermissions("editSurvey:programTable")
+			surveyAllReadonly.addToPermissions("editSurvey:surveyPage")
+			surveyAllReadonly.addToPermissions("editSurvey:programPage")
+			surveyAllReadonly.addToPermissions("editSurvey:sectionPage")
+			surveyAllReadonly.addToPermissions("editSurvey:print")
+			surveyAllReadonly.save()
+		}
+	}
+	
 	static def createUsers() {
-		def reportAllReadonly = new Role(name: "report-all-readonly")
-		reportAllReadonly.addToPermissions("menu:reports")
-		reportAllReadonly.addToPermissions("dashboard:*")
-		reportAllReadonly.addToPermissions("dsr:*")
-		reportAllReadonly.addToPermissions("cost:*")
-		reportAllReadonly.addToPermissions("fct:*")
-		reportAllReadonly.save()
-
-		def surveyAllReadonly = new Role(name: "survey-all-readonly")
-		surveyAllReadonly.addToPermissions("menu:survey")
-		surveyAllReadonly.addToPermissions("summary:*")
-		surveyAllReadonly.addToPermissions("editSurvey:view")
-		surveyAllReadonly.addToPermissions("editSurvey:summaryPage")
-		surveyAllReadonly.addToPermissions("editSurvey:sectionTable")
-		surveyAllReadonly.addToPermissions("editSurvey:programTable")
-		surveyAllReadonly.addToPermissions("editSurvey:surveyPage")
-		surveyAllReadonly.addToPermissions("editSurvey:programPage")
-		surveyAllReadonly.addToPermissions("editSurvey:sectionPage")
-		surveyAllReadonly.addToPermissions("editSurvey:print")
-		surveyAllReadonly.save()
-
-		def user = new User(userType: UserType.OTHER,code:"dhsst", username: "dhsst", firstname: "Dhsst", lastname: "Dhsst", email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), active: true, confirmed: true, uuid:'dhsst_uuid', defaultLanguage:'fr', phoneNumber: '+250 11 111 11 11', organisation:'org')
-		user.addToRoles(reportAllReadonly)
-		user.addToRoles(surveyAllReadonly)
-		// access to site
-		user.save(failOnError: true)
+		
+//		def user = new User(userType: UserType.OTHER,code:"dhsst", username: "dhsst", firstname: "Dhsst", lastname: "Dhsst", email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), active: true, confirmed: true, uuid:'dhsst_uuid', defaultLanguage:'fr', phoneNumber: '+250 11 111 11 11', organisation:'org')
+//		user.addToRoles(reportAllReadonly)
+//		user.addToRoles(surveyAllReadonly)
+//		// access to site
+//		user.save(failOnError: true)
 
 		def admin = new User(userType: UserType.OTHER, code:"admin", firstname: "Super", lastname: "Admin", username: "admin", email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), active: true, confirmed: true, uuid:'admin_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
 		admin.addToPermissions("*")
 		admin.save(failOnError: true)
 
-		def butaro = new User(userType: UserType.SURVEY, code:"butaro",username: "butaro", firstname: "butaro", lastname: "butaro", locationId: DataLocation.findByCode("322").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'butaro_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
-		butaro.addToPermissions("editSurvey:view")
-		butaro.addToPermissions("editSurvey:*:"+DataLocation.findByCode("322").id)
-		butaro.addToPermissions("menu:survey")
-		butaro.addToPermissions("menu:reports")
-		butaro.addToPermissions("home:*")
-		butaro.save(failOnError: true)
-		
-		def kivuye = new User(userType: UserType.PLANNING, code:"kivuye",username: "kivuye", firstname: "kivuye", lastname: "kivuye", locationId: DataLocation.findByCode("327").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
-		kivuye.addToPermissions("editPlanning:view")
-		kivuye.addToPermissions("editPlanning:*:"+DataLocation.findByCode("327").id)
-		kivuye.addToPermissions("menu:planning")
-		kivuye.addToPermissions("menu:reports")
-		kivuye.addToPermissions("home:*")
-		kivuye.save(failOnError: true)
+//		def butaro = new User(userType: UserType.SURVEY, code:"butaro",username: "butaro", firstname: "butaro", lastname: "butaro", locationId: DataLocation.findByCode("322").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'butaro_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
+//		butaro.addToPermissions("editSurvey:view")
+//		butaro.addToPermissions("editSurvey:*:"+DataLocation.findByCode("322").id)
+//		butaro.addToPermissions("menu:survey")
+//		butaro.addToPermissions("menu:reports")
+//		butaro.addToPermissions("home:*")
+//		butaro.save(failOnError: true)
+//		
+//		def kivuye = new User(userType: UserType.PLANNING, code:"kivuye",username: "kivuye", firstname: "kivuye", lastname: "kivuye", locationId: DataLocation.findByCode("327").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
+//		kivuye.addToPermissions("editPlanning:view")
+//		kivuye.addToPermissions("editPlanning:*:"+DataLocation.findByCode("327").id)
+//		kivuye.addToPermissions("menu:planning")
+//		kivuye.addToPermissions("menu:reports")
+//		kivuye.addToPermissions("home:*")
+//		kivuye.save(failOnError: true)
+	}
+	
+	static Date mar01 = getDate( 2005, 3, 1 );
+	static Date mar31 = getDate( 2005, 3, 31 );
+	static Date mar011 = getDate( 2006, 3, 1 );
+	static Date mar311 = getDate( 2006, 3, 31 );
+	
+	static def createPeriods() {
+		if (!Period.count()) {
+			// periods
+			new Period(code:"period1", startDate: mar01, endDate: mar31).save(failOnError: true)
+			new Period(code:"period2", startDate: mar011, endDate: mar311).save(failOnError: true)
+		}
 	}
 
+	static def createSources() {
+		if (!Source.count()) {
+			new Source(code:"dhsst", names_en: "DHSST").save(failOnError: true)
+		}
+	}
+	
 	static def createDummyStructure() {
 
 		if (!Period.count()) {
@@ -2054,7 +2074,16 @@ public class Initializer {
 		}
 	}
 	
-
+	public static def setLocaleValueInMap(def object, def map, def fieldName) {
+		def methodName = 'set'+fieldName
+		// TODO replace with CONF variable if this fails
+		def grailsApplication = new User().domainClass.grailsApplication
+		grailsApplication.config.i18nFields.locales.each{ loc ->
+			if(map.get(loc) != null) object."$methodName"(map.get(loc), new Locale(loc))
+			else object."$methodName"("", new Locale(loc))
+		}
+	}
+	
 	public static Date getDate( int year, int month, int day ) {
 		final Calendar calendar = Calendar.getInstance();
 

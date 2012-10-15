@@ -1,44 +1,34 @@
 package org.chai.kevin.data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList
+import java.util.HashMap
+import java.util.List
+import java.util.Map
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.Transient
 
-import org.chai.kevin.Exportable;
-import org.chai.kevin.data.Type.TypeVisitor;
-import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.value.DataValue;
+import org.chai.kevin.Exportable
+import org.chai.kevin.data.Type.TypeVisitor
+import org.chai.kevin.data.Type.ValueType
+import org.chai.kevin.value.DataValue
 
-@Entity(name="DataElement")
-@Table(name="dhsst_data_element")
-@Inheritance(strategy=InheritanceType.JOINED)
 public abstract class DataElement<T extends DataValue> extends Data<T> implements Exportable {
 
-	private Type type;
+	Type type;
 
-	@Embedded
-	@AttributeOverrides({
-		@AttributeOverride(name="jsonValue", column=@Column(name="type", nullable=false))
-	})
-	public Type getType() {
-		return type;
+	static mapping = {
+		table 'dhsst_data_element'
+		tablePerHierarchy false
 	}
 	
-	public void setType(Type type) {
-		this.type = type;
+	static constraints = {
+		type (nullable: false,  validator: {val, obj -> 
+			return val.isValid();
+		})
 	}
-
+	
+	static embedded = ['type']
+	
 	@Transient
 	public List<String> getHeaderPrefixes() {
 		final List<String> prefixes = new ArrayList<String>();

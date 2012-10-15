@@ -42,7 +42,6 @@ import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hibernate.SessionFactory;
 
-
 class RawDataElementController extends AbstractEntityController {
 
 	DataService dataService;

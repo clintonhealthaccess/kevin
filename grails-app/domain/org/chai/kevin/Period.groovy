@@ -13,45 +13,29 @@ import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@Entity(name="Period")
-@Table(name="dhsst_period")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class Period implements Exportable {
+class Period implements Exportable {
 
-	private Long id;
 	// TODO get rid of this
-	private String code;
-	private Date startDate;
-	private Date endDate;
+	String code;
+	Date startDate;
+	Date endDate;
 
-	@Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
+	// deprecated
+	Long id;
+	
+	static mapping = {
+		table 'dhsst_period'
+		cache true
+		startDate sqlType: "datetime"
+		endDate sqlType: "datetime"
 	}
 	
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	@Column(nullable=false, columnDefinition="datetime")
-	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
-	public Date getStartDate() {
-		return startDate;
-	}
-	
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-	
-	@Column(nullable=false, columnDefinition="datetime")
-	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
-	public Date getEndDate() {
-		return endDate;
-	}
-	
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	static constraints =  {
+		code (nullable: false, blank: false, unique: true)
+		startDate(nullable: false, blank: false)
+		endDate(nullable: false, blank: false, validator: { val, obj ->
+			if (obj.startDate && val) return val?.after(obj.startDate)
+		})
 	}
 
 	@Override
@@ -87,14 +71,6 @@ public class Period implements Exportable {
 	@Override
 	public String toExportString() {
 		return "[" + Utils.formatExportCode(getCode()) + "]";
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
 	}
 	
 }

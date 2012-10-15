@@ -1,4 +1,6 @@
-/**
+package org.chai.kevin.data;
+
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -25,15 +27,60 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin
 
+import java.util.HashSet
+import java.util.Set
 
-/**
- * @author Jean Kahigiso M.
- *
- */
-constraints =  {
-	code (nullable: false, blank: false, unique: true)
-    startDate(nullable: false, blank: false)
-	endDate(nullable: false, blank: false, , validator: { val, obj -> return val.after(obj.startDate)})
+import javax.persistence.Entity
+import javax.persistence.Table
+import javax.persistence.Transient
+
+import org.chai.kevin.Period
+import org.chai.kevin.location.DataLocationType
+import org.chai.kevin.util.Utils
+import org.chai.kevin.value.RawDataElementValue
+
+class RawDataElement extends DataElement<RawDataElementValue> {
+
+	String info
+	Source source
+	
+	static mapping = {
+		table 'dhsst_data_raw_element'
+		source column: 'source'
+	}
+	
+	static constraints = {
+		info (nullable: true)
+	}
+	
+	@Override
+	@Transient
+	public Class<RawDataElementValue> getValueClass() {
+		return RawDataElementValue.class;
+	}
+
+	@Override
+	public String toString() {
+		return "RawDataElement[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	}
+
+	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode()) + "]";
+	}
+
+	@Transient
+	@Override
+	public Set<String> getSources(Period period, DataLocationType type) {
+		return getSources();
+	}
+	
+	@Transient
+	public Set<String> getSources() {
+		Set<String> result = new HashSet<String>();
+		if (source != null) result.add(source.getCode());
+		return result;
+	}
+	
 }

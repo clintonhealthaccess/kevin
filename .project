@@ -38,36 +38,6 @@
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/webxml-1.4.1/src/groovy</locationURI>
 	        </link>
 	        <link>
-	                <name>.plugin-src-tasks-0.3-CHAI-grails-app-controllers</name>
-	                <type>2</type>
-	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/tasks-0.3-CHAI/grails-app/controllers</locationURI>
-	        </link>
-	        <link>
-	                <name>.plugin-src-tasks-0.3-CHAI-grails-app-domain</name>
-	                <type>2</type>
-	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/tasks-0.3-CHAI/grails-app/domain</locationURI>
-	        </link>
-	        <link>
-	                <name>.plugin-src-tasks-0.3-CHAI-grails-app-i18n</name>
-	                <type>2</type>
-	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/tasks-0.3-CHAI/grails-app/i18n</locationURI>
-	        </link>
-	        <link>
-	                <name>.plugin-src-tasks-0.3-CHAI-grails-app-jobs</name>
-	                <type>2</type>
-	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/tasks-0.3-CHAI/grails-app/jobs</locationURI>
-	        </link>
-	        <link>
-	                <name>.plugin-src-tasks-0.3-CHAI-grails-app-services</name>
-	                <type>2</type>
-	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/tasks-0.3-CHAI/grails-app/services</locationURI>
-	        </link>
-	        <link>
-	                <name>.plugin-src-tasks-0.3-CHAI-src-java</name>
-	                <type>2</type>
-	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/tasks-0.3-CHAI/src/java</locationURI>
-	        </link>
-	        <link>
 	                <name>.plugin-src-svn-1.0.2-src-groovy</name>
 	                <type>2</type>
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/svn-1.0.2/src/groovy</locationURI>
@@ -158,6 +128,36 @@
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/release-2.0.3/src/groovy</locationURI>
 	        </link>
 	        <link>
+	                <name>.plugin-src-rabbitmq-tasks-0.5.3-SNAPSHOT-grails-app-controllers</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/rabbitmq-tasks-0.5.3-SNAPSHOT/grails-app/controllers</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-rabbitmq-tasks-0.5.3-SNAPSHOT-grails-app-domain</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/rabbitmq-tasks-0.5.3-SNAPSHOT/grails-app/domain</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-rabbitmq-tasks-0.5.3-SNAPSHOT-grails-app-i18n</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/rabbitmq-tasks-0.5.3-SNAPSHOT/grails-app/i18n</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-rabbitmq-tasks-0.5.3-SNAPSHOT-grails-app-jobs</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/rabbitmq-tasks-0.5.3-SNAPSHOT/grails-app/jobs</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-rabbitmq-tasks-0.5.3-SNAPSHOT-grails-app-services</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/rabbitmq-tasks-0.5.3-SNAPSHOT/grails-app/services</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-rabbitmq-tasks-0.5.3-SNAPSHOT-src-java</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/rabbitmq-tasks-0.5.3-SNAPSHOT/src/java</locationURI>
+	        </link>
+	        <link>
 	                <name>.plugin-src-rabbitmq-1.0.0.RC2-grails-app-conf</name>
 	                <type>2</type>
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/rabbitmq-1.0.0.RC2/grails-app/conf</locationURI>
@@ -186,6 +186,41 @@
 	                <name>.plugin-src-quartz-1.0-RC2-src-groovy</name>
 	                <type>2</type>
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/quartz-1.0-RC2/src/groovy</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-platform-core-1.0.M6-grails-app-conf</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/platform-core-1.0.M6/grails-app/conf</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-platform-core-1.0.M6-grails-app-controllers</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/platform-core-1.0.M6/grails-app/controllers</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-platform-core-1.0.M6-grails-app-i18n</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/platform-core-1.0.M6/grails-app/i18n</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-platform-core-1.0.M6-grails-app-taglib</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/platform-core-1.0.M6/grails-app/taglib</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-platform-core-1.0.M6-grails-app-views</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/platform-core-1.0.M6/grails-app/views</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-platform-core-1.0.M6-src-java</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/platform-core-1.0.M6/src/java</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-platform-core-1.0.M6-src-groovy</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/platform-core-1.0.M6/src/groovy</locationURI>
 	        </link>
 	        <link>
 	                <name>.plugin-src-mail-1.0-grails-app-i18n</name>
@@ -238,6 +273,11 @@
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/jquery-1.7.1/src/groovy</locationURI>
 	        </link>
 	        <link>
+	                <name>.plugin-src-i18n-fields-0.6.1-CHAI-src-groovy</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/i18n-fields-0.6.1-CHAI/src/groovy</locationURI>
+	        </link>
+	        <link>
 	                <name>.plugin-src-hibernate-2.1.0-grails-app-i18n</name>
 	                <type>2</type>
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/hibernate-2.1.0/grails-app/i18n</locationURI>
@@ -286,6 +326,26 @@
 	                <name>.plugin-src-compass-sass-0.7-src-groovy</name>
 	                <type>2</type>
 	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/compass-sass-0.7/src/groovy</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-cloud-support-1.0.11-src-groovy</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/cloud-support-1.0.11/src/groovy</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-cloud-foundry-1.2.3-grails-app-taglib</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/cloud-foundry-1.2.3/grails-app/taglib</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-cloud-foundry-1.2.3-src-java</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/cloud-foundry-1.2.3/src/java</locationURI>
+	        </link>
+	        <link>
+	                <name>.plugin-src-cloud-foundry-1.2.3-src-groovy</name>
+	                <type>2</type>
+	                <locationURI>GRAILS_WORKDIR/projects/kevin/plugins/cloud-foundry-1.2.3/src/groovy</locationURI>
 	        </link>
 	        <link>
 	                <name>.plugin-src-cdn-resources-0.2.1-grails-app-i18n</name>
