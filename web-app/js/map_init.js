@@ -27,7 +27,7 @@ function mapTheMap(baseLocationLayer, mapLocationValueLayer, mapDataLocationValu
 	var width = baseLocationLayer.getBounds().getNorthEast().lat-baseLocationLayer.getBounds().getSouthWest().lat;
 	var height = baseLocationLayer.getBounds().getNorthEast().lng-baseLocationLayer.getBounds().getSouthWest().lng;
 	var area = width*height;
-		
+
 	if(mapLocationValueLayer && area > 0.5){
 		map.setView(baseLocationLayer.getBounds().getCenter(), 9);
 	}
@@ -38,12 +38,12 @@ function mapTheMap(baseLocationLayer, mapLocationValueLayer, mapDataLocationValu
 		map.fitBounds(baseLocationLayer.getBounds());
 	}
 	
-	alert("after mapping the map"+
-			" ne bounds:"+baseLocationLayer.getBounds().getNorthEast().lat+" "+baseLocationLayer.getBounds().getNorthEast().lng+
-			" sw bounds:"+baseLocationLayer.getBounds().getSouthWest().lat+" "+baseLocationLayer.getBounds().getSouthWest().lng+
-			" w:"+width+
-			" h:"+height+
-			" area:"+(width*height));
+//	alert("after mapping the map"+
+//		"\nne lat="+baseLocationLayer.getBounds().getNorthEast().lat+
+//		", lng="+baseLocationLayer.getBounds().getNorthEast().lng+
+//		"\nsw lat="+baseLocationLayer.getBounds().getSouthWest().lat+
+//		", lng="+baseLocationLayer.getBounds().getSouthWest().lng+
+//		"\nw: "+width+"\nh: "+height+"\narea: "+(width*height));
 }
 
 function highlightFeature(e) {
