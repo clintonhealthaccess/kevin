@@ -9,9 +9,14 @@
 				<g:if test="${reportIndicators != null && !reportIndicators.empty}">
 					<g:each in="${reportIndicators}" var="indicator" status="i">
 						<td>
-							<g:i18n field="${indicator.names}" />
-							<g:render template="/templates/help_tooltip" 
-								model="[names: i18n(field: indicator.names), descriptions: i18n(field: indicator.descriptions)]" />
+							<div class="js-map-table-indicator" 
+								data-indicator-code="${indicator.code}" 
+								data-indicator-names="${i18n(field:indicator.names)}"
+								data-indicator-class="${i == reportIndicators.size()-1 ? 'indicator-worst': i == 0 ? 'indicator-best': 'indicator-middle'}">
+								<g:i18n field="${indicator.names}" />
+								<g:render template="/templates/help_tooltip" 
+									model="[names: i18n(field: indicator.names), descriptions: i18n(field: indicator.descriptions)]" />
+							</div>
 						</td>
 					</g:each>
 				</g:if>
@@ -39,7 +44,8 @@
 							<g:else>
 								<td>
 									<g:set var="reportMapValue" value="${reportTable.getMapReportValue(location, indicator)}"/>
-									<div class="js-map-table-value ${reportMapValue != null && !reportMapValue.isNull() && reportMapValue.numberValue > 0 ? 'js-selected-value':''}"
+									<div class="js-map-table-value
+											${reportMapValue != null && !reportMapValue.isNull() && reportMapValue.numberValue > 0 ? 'js-selected-value':''}"
 											data-location-code="${location.code}" 
 											data-location-names="${i18n(field: location.names)}" 
 											data-indicator-code="${indicator.code}" 
@@ -47,15 +53,16 @@
 											data-indicator-class="${i == reportIndicators.size()-1 ? 'indicator-worst': i == 0 ? 'indicator-best': 'indicator-middle'}">
 										<div class="report-value-number">
 											<g:reportMapValue 
-															value="${reportTable.getMapReportValue(location, indicator)}"
-															type="${indicator.type}"
-															format="${indicator.numberFormat}"/>
+												value="${reportTable.getMapReportValue(location, indicator)}"
+												type="${indicator.type}"
+												format="${indicator.numberFormat}"/>
 										</div>
 										<g:if test="${!location.collectsData()}">
 											<div class="report-value-percentage hidden">
-												<g:reportPercentage value="${reportTable.getMapReportPercentage(location, indicator)}" 
-																type="${indicator.type}" 
-																format="${indicator.percentageFormat}"/>
+												<g:reportMapPercentage 
+														value="${reportTable.getMapReportPercentage(location, indicator)}" 
+														type="${indicator.type}" 
+														format="${indicator.percentageFormat}"/>
 											</div>
 										</g:if>
 									</div>

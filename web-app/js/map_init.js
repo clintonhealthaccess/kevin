@@ -1,16 +1,15 @@
 var map;
-var mapLayers;
+var mapLayers = [];
 
-function mapTheMap(){
-	<!-- the map -->
-	var baseLayer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
+function createTheMap(baseLocationLayer){
+	var mapBaseLayer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
 		maxZoom: 18,
 		//TODO move this to message.properties?
 		attribution: 'Map Data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Contributors &mdash; ' +
 				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a> &mdash; ' +
 				'Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>'
 	});
-	var baseLayers = [baseLayer]
+	var baseLayers = [mapBaseLayer]
 	mapLayers = baseLayers.concat(mapLayers)
 	map = L.map('map', {
 		center: [-1.951069, lng=30.06134],
@@ -20,9 +19,58 @@ function mapTheMap(){
 		scrollWheelZoom: false
 		//attributionControl: false
 	});
+	//alert("after creating the map ");
 }
 
-function createPolygonCoordinates(feature){
+function mapTheMap(baseLocationLayer, mapLocationValueLayer, mapDataLocationValueLayer){
+	
+	var width = baseLocationLayer.getBounds().getNorthEast().lat-baseLocationLayer.getBounds().getSouthWest().lat;
+	var height = baseLocationLayer.getBounds().getNorthEast().lng-baseLocationLayer.getBounds().getSouthWest().lng;
+	var area = width*height;
+		
+	if(mapLocationValueLayer && area > 0.5){
+		map.setView(baseLocationLayer.getBounds().getCenter(), 9);
+	}
+	else if(mapDataLocationValueLayer){
+		map.fitBounds(baseLocationLayer.getBounds());
+	}
+	else{
+		map.fitBounds(baseLocationLayer.getBounds());
+	}
+	
+	alert("after mapping the map"+
+			" ne bounds:"+baseLocationLayer.getBounds().getNorthEast().lat+" "+baseLocationLayer.getBounds().getNorthEast().lng+
+			" sw bounds:"+baseLocationLayer.getBounds().getSouthWest().lat+" "+baseLocationLayer.getBounds().getSouthWest().lng+
+			" w:"+width+
+			" h:"+height+
+			" area:"+(width*height));
+}
+
+function highlightFeature(e) {
+    var layer = e.target;
+    layer.setStyle({
+        fillOpacity: 1
+    });
+}
+function resetFeature(e) {
+	var layer = e.target;
+	//TODO use resetStyle
+    layer.setStyle({
+		fillOpacity: 0.75
+    });
+}
+//function zoomToFeature(e) {
+//    map.fitBounds(e.target.getBounds());
+//}
+function onEachBaseLocationLayerFeature(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetFeature,
+        //click: zoomToFeature
+    });
+}
+
+function createPolygonCoordinates(feature, createLatLngCoordinates){
 	//create polygon coordinates
 	//TODO get rid of this and use feature.geometry.coordinates
 	var polygonCoordinates = []
@@ -33,56 +81,104 @@ function createPolygonCoordinates(feature){
 			var coordinate = this;
 			coordinate = this.replace(/(\[|\])/g,"");
 			var lat = parseFloat(coordinate.split(',')[0]);
-			var lon = parseFloat(coordinate.split(',')[1]);
-			coordinates.push([lat, lon]);					
+			var lng = parseFloat(coordinate.split(',')[1]);
+			
+			var latLng = null;
+			if(createLatLngCoordinates)
+				latLng = L.latLng(lat, lng);
+			else
+				latLng = [lat, lng];
+			coordinates.push(latLng);					
 		});
 		polygonCoordinates.push(coordinates);	
 	}
 	return polygonCoordinates;
 }
 
+function sortMapByValue(O){
+	//http://stackoverflow.com/questions/4969121/in-javascript-is-there-an-easy-way-to-sort-key-value-pairs-by-the-value-and-re
+	var A= [];
+    for(var p in O){
+        if(O.hasOwnProperty(p)) A.push([p, O[p]]);
+    }
+	A.sort(function(a, b){
+        var a1= a[1];
+        var b1= b[1];
+        return a1-b1;
+    });
+    for(var i= 0, L= A.length; i<L; i++){
+    	A[i]= A[i][0];
+    }
+    //return A;
+    return A.reverse();
+}
+
+function createEastWestOffsetCoordinates(bounds, center){
+	var boundsLat = bounds.lat;
+	var centerLat = center.lat;
+	boundsLat = centerLat+((boundsLat-centerLat)/4);
+	
+	var boundsLng = bounds.lng;
+	var centerLng = center.lng;
+	//boundsLng = centerLng+((boundsLng-centerLng)/4);
+	boundsLng = centerLng;
+	return [boundsLat, boundsLng];
+}
+
+function createNorthSouthOffsetCoordinates(bounds, center){
+	var boundsLat = bounds.lat;
+	var centerLat = center.lat;
+	//boundsLat = centerLat+((boundsLat-centerLat)/4);
+	boundsLat = centerLat;
+	
+	var boundsLng = bounds.lng;
+	var centerLng = center.lng;
+	boundsLng = centerLng+((boundsLng-centerLng)/4);
+	return [boundsLat, boundsLng];
+}
+
 function createGeoJsonPolygonFeature(feature, polygonCoordinates){
 	//create geojson polygon feature
 	var geoJsonPolygonFeature = {
 			"id": feature.properties.code,
-		    "type": feature.type,    
+		    "type": "Feature",    
 		    "geometry": {
-		        "type": feature.properties.featuretype,
+		        "type": "Polygon",
 		        "coordinates": polygonCoordinates
 		    },
 		    "properties": {
-		    	//TODO switch to neutral polygon color and fillColor
-		    	//"#7FCDBB" = blue/green
-		    	//"#99D8C9" = blue/purple
+		    	//color fillColor/color
+		    	//blue/green "#99D8C9"/"#2CA25F"
+		    	//orange "#FDAE6B"/"#E6550D"
+		    	//purple "#BCBDDC"/"#756BB1"
 		        "style": {
-					color: "#696969",
-		        	weight: 5,
-		        	fillColor: "#7FCDBB",
-		            fillOpacity: 0.5
+					color: "#2CA25F",
+		        	weight: 1.5,
+		        	fillColor: "#99D8C9",
+		            fillOpacity: 0.75
 		        }
 		    }
 	};
 	return geoJsonPolygonFeature;
 }
 
-//TODO split this for dsr and fct?
-function createGeoJsonPointFeature(feature, locationName, indicatorName, indicatorClass, rawValue, reportValue, reportValueType, reportValueIcon){
+function createGeoJsonPointFeature(feature){
 	//create geojson point feature
 	var geoJsonPointFeature = {
-			"id": feature.properties.fosaid,
-		    "type": feature.type,    
+			"id": feature.id,
+		    "type": "Feature",    
 		    "geometry": {
-		        "type": feature.geometry.type,
+		        "type": "Point",
 		        "coordinates": feature.geometry.coordinates
 		    },
 		    "properties": {
-		    	"rawValue": rawValue,
-		    	"reportValue": reportValue,
-		    	"reportValueType": reportValueType,
-		    	"reportValueIcon": reportValueIcon,
-		    	"locationName": locationName,
-		    	"indicatorName": indicatorName,
-		    	"indicatorClass": indicatorClass
+		    	"locationName": feature.properties.locationName,
+		    	"indicatorName": feature.properties.indicatorName,
+		    	"indicatorClass": feature.properties.indicatorClass,
+		    	"rawValue": feature.properties.rawValue,
+		    	"reportValue": feature.properties.reportValue,
+		    	"reportValueType": feature.properties.reportValueType,
+		    	"reportValueIcon": feature.properties.reportValueIcon
 		        //"popupContent": 'Location: '+locationName+'<br /> '+indicatorName+': '+reportValue
 		    }
 	};
@@ -144,6 +240,33 @@ function dsrDataLocationValuePointToLayer(feature, latlng) {
    	return geojsonMarker;		
 }
 
+function dsrDataLocationInfoPointToLayer(feature, latlng) {
+	
+	var locationName = feature.properties.locationName;
+		
+	var reportValueIcon = feature.properties.reportValueIcon;
+	var rawValueFontSize = null;
+	var geojsonMarkerOptions = null;
+	var geojsonMarker = null;
+	
+	reportValueIcon = new L.Icon.Label.Default({					
+			iconUrl: reportValueIcon,
+			iconSize: new L.Point(20, 20),
+			hideIcon: true,
+			labelText: locationName+'',
+			labelFontSize: '10px',
+			labelAnchor: new L.Point(0, 0),
+			wrapperAnchor: new L.Point(13, 17),
+			//TODO change class name?
+			labelClassName: 'report-value-marker',
+			shadowUrl: null
+	});
+	
+	geojsonMarkerOptions = {icon: reportValueIcon};
+	geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
+   	return geojsonMarker;
+}
+
 function getMaxRawValue(){
 	var maxRawValue = 0;
 	$('div.js-map-table-value.js-selected-value').each(function(){	        
@@ -154,25 +277,7 @@ function getMaxRawValue(){
 	return (maxRawValue > 0 ? maxRawValue : 1);
 }
 
-function fctDataLocationValuePointToLayer(feature, latlng) {
-	
-	var rawValue = feature.properties.rawValue;
-	var reportValue = feature.properties.reportValue;
-	var indicatorClass = feature.properties.indicatorClass;
-	
-	var geojsonMarkerOptions = {
-	    radius: 8,
-	    fillColor: mapMarkerColors[indicatorClass],
-	    color: mapMarkerColors[indicatorClass],
-	    weight: 1,
-	    opacity: 1,
-	    fillOpacity: 0.75
-	};
-	geojsonMarker = L.circleMarker(latlng, geojsonMarkerOptions);
-   	return geojsonMarker;		
-	}
-
-function fctDataLocationInfoPointToLayer(feature, latlng) {
+function fctBaseLocationInfoPointToLayer(feature, latlng) {
 	
 	var locationName = feature.properties.locationName;
 		
@@ -197,7 +302,103 @@ function fctDataLocationInfoPointToLayer(feature, latlng) {
 	geojsonMarkerOptions = {icon: reportValueIcon};
 	geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
    	return geojsonMarker;
-	}
+}
+
+function fctLocationValuePointToLayer(feature, latlng) {
+	
+	var rawValue = feature.properties.rawValue;
+	var reportValue = feature.properties.reportValue;
+	var indicatorClass = feature.properties.indicatorClass;
+	
+	var rawValueRadius = parseInt(rawValue*20)+10; //min: 10px max: 30px
+	rawValueRadius = rawValueRadius < 10 ? 10 : rawValueRadius;
+	rawValueRadius = rawValueRadius > 30 ? 30 : rawValueRadius;
+	
+	var geojsonMarkerOptions = {
+		radius: rawValueRadius,
+	    fillColor: mapMarkerColors[indicatorClass],
+	    color: mapMarkerColors[indicatorClass],
+	    weight: 1,
+	    opacity: 1,
+	    fillOpacity: 0.75
+	};
+	geojsonMarker = L.circleMarker(latlng, geojsonMarkerOptions);
+   	return geojsonMarker;		
+}
+
+function fctLocationInfoPointToLayer(feature, latlng) {
+	
+	var rawValue = feature.properties.rawValue;
+	var reportValue = feature.properties.reportValue;
+	
+	var reportValueIcon = feature.properties.reportValueIcon;
+	var rawValueFontSize = null;
+	var geojsonMarkerOptions = null;
+	var geojsonMarker = null;
+	
+	reportValueIcon = new L.Icon.Label.Default({					
+			iconUrl: reportValueIcon,
+			iconSize: new L.Point(20, 20),
+			hideIcon: true,
+			labelText: reportValue+'',
+			labelFontSize: '20px',
+			labelAnchor: new L.Point(0, 0),
+			//TODO rawValue < 100, rawValue < 1,000
+			wrapperAnchor: rawValue < 10 ? new L.Point(6, 10) : (rawValue < 100 ? new L.Point(11, 10) : new L.Point(17, 10)),
+			//TODO change class name?
+			labelClassName: 'report-value-marker',
+			shadowUrl: null
+	});
+	
+	geojsonMarkerOptions = {icon: reportValueIcon};
+	geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
+   	return geojsonMarker;
+}
+
+function fctDataLocationValuePointToLayer(feature, latlng) {
+	
+	var rawValue = feature.properties.rawValue;
+	var reportValue = feature.properties.reportValue;
+	var indicatorClass = feature.properties.indicatorClass;
+	
+	var geojsonMarkerOptions = {
+	    radius: 10,
+	    fillColor: mapMarkerColors[indicatorClass],
+	    color: mapMarkerColors[indicatorClass],
+	    weight: 1,
+	    opacity: 1,
+	    fillOpacity: 0.75
+	};
+	geojsonMarker = L.circleMarker(latlng, geojsonMarkerOptions);
+   	return geojsonMarker;		
+}
+
+function fctDataLocationInfoPointToLayer(feature, latlng) {
+	
+	var locationName = feature.properties.locationName;
+		
+	var reportValueIcon = feature.properties.reportValueIcon;
+	var rawValueFontSize = null;
+	var geojsonMarkerOptions = null;
+	var geojsonMarker = null;
+	
+	reportValueIcon = new L.Icon.Label.Default({					
+			iconUrl: reportValueIcon,
+			iconSize: new L.Point(20, 20),
+			hideIcon: true,
+			labelText: locationName+'',
+			labelFontSize: '10px',
+			labelAnchor: new L.Point(0, 0),
+			wrapperAnchor: new L.Point(-12, 7),
+			//TODO change class name?
+			labelClassName: 'report-value-marker',
+			shadowUrl: null
+	});
+	
+	geojsonMarkerOptions = {icon: reportValueIcon};
+	geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
+   	return geojsonMarker;
+}
 
 function missingFosaCoordinates(fosaid){
 	//fosa coordinates missing

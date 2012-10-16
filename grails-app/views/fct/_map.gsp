@@ -4,7 +4,6 @@
 	
 	<div class="selector">
 		<g:reportTargetFilter linkParams="${params}" />
-		<g:reportValueFilter linkParams="${params}"/>
 	</div>
 	
 	<g:render template="/maps/legend" model="[indicators: fctTable.targetOptions]"/>

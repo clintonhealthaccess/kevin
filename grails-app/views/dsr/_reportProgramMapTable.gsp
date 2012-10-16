@@ -54,9 +54,10 @@
 											data-location-names="${i18n(field: location.names)}"
 											data-indicator-code="${indicator.code}" 
 											data-indicator-names="${i18n(field:indicator.names)}">
-										<g:reportMapValue value="${reportTable.getMapReportValue(location, indicator)}" 
-															type="${indicator.getType()}" 
-															format="${indicator.getFormat()}"/>
+										<g:reportMapValue 
+											value="${reportTable.getMapReportValue(location, indicator)}" 
+											type="${indicator.getType()}" 
+											format="${indicator.getFormat()}"/>
 									</div>
 								</td>
 							</g:else>

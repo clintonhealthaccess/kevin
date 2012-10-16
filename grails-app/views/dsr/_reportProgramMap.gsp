@@ -8,68 +8,107 @@
 	<div id="map" class="map" />
 	
 	<r:script>
-	if(${mapSkipLevels != null && 
-		!mapSkipLevels.contains(currentLocation.level)}){
-		var locationLayer = L.geoJson(null, {
+	var baseLocationLayer = null
+	var dataLocationValueLayer = null
+	var dataLocationInfoLayer = null
+	
+	var overlays = []
+	
+	if(${mapSkipLevels != null && !mapSkipLevels.contains(currentLocation.level)}){
+		baseLocationLayer = L.geoJson(null, {
 			style: function (feature){
 				return feature.properties && feature.properties.style;
 			}
 		});
-		var dataLocationValueLayer = L.geoJson(null, {pointToLayer: dsrDataLocationValuePointToLayer});
+		dataLocationValueLayer = L.geoJson(null, {pointToLayer: dsrDataLocationValuePointToLayer});
+		dataLocationInfoLayer = L.geoJson(null, {pointToLayer: dsrDataLocationInfoPointToLayer});
 		
-		//TODO mapLocations returns an array of layers
 		mapLocations();
-		mapLayers = [locationLayer, dataLocationValueLayer];
+		mapLayers = [baseLocationLayer, dataLocationValueLayer, dataLocationInfoLayer];
 	}
 	
-	mapTheMap();
+	createTheMap();
+	overlays["Facilities"] = dataLocationInfoLayer;
+	L.control.layers(null, overlays).addTo(map);
 	
 	function mapLocations(){
 		var locationUrl = "http://geocommons.com/datasets/265901/features.json?filter[code][][equals]=${currentLocation.code}";
 		jQuery.getJSON(locationUrl, function(data){
-			//TODO check data != null
+		
+			//alert("success");
+			//TODO
+			if(data == null){
+				return;
+			}
+			
 			jQuery.each(data.features, function(i,f){
-				var polygonCoordinates = createPolygonCoordinates(f);
+				var polygonCoordinates = createPolygonCoordinates(f, false);
 				var geoJsonPolygonFeature = createGeoJsonPolygonFeature(f, polygonCoordinates);
-				locationLayer.addData(geoJsonPolygonFeature);
+				baseLocationLayer.addData(geoJsonPolygonFeature);
 			});
-			map.fitBounds(locationLayer.getBounds());
+			mapTheMap(baseLocationLayer, false, true);
 			mapDataLocations();
 		});
+		//TODO
+		//.success(function() { alert("second success"); })
+		//.error(function() { alert("error"); })
+		//.complete(function() { alert("complete"); });
 	}
 	
 	function mapDataLocations(){
 		var fosaLocations = [];
-		var fosaIds = "${reportLocations.collect{it.code}.join('|')}";
-		var dataLocationUrl = "http://geocommons.com/datasets/262585/features.json?filter[fosaid][][in]="+fosaIds;
+		var dataLocationUrl = "http://geocommons.com/datasets/262585/features.json?filter[fosaid][][in]=${reportLocations.collect{it.code}.join('|')}";
 		jQuery.getJSON(dataLocationUrl, function(data){
-			//TODO check data != null
+			
+			//alert("success");
+			//TODO
+			if(data == null){
+				return;
+			}
+			
 			jQuery.each(data.features, function(i,f){
-				$('.js-map-table-value.js-selected-value[data-location-code="'+f.properties.fosaid+'"]').each(function(index, mapLocation){
-					fosaLocations.push(f.properties.fosaid);
-					var locationName = $(mapLocation).data('location-names');						
-					var indicatorName = $(mapLocation).data('indicator-names');
-					var mapValue = $(mapLocation).children('div.report-value');
-					var rawValue = $(mapValue).data('report-value-raw');			
-					var reportValue = $(mapValue).data('report-value');
-					var reportValueType = $(mapValue).data('report-value-type');
-					var reportValueIcon = "${resource(dir:'images',file:'/maps/report-value-null.png')}";
+				var fosaid = f.properties.fosaid;
+				$('.js-map-table-value.js-selected-value[data-location-code="'+fosaid+'"]').each(function(index, mapTableValue){
+					var mapValue = $(mapTableValue).children('div.report-value');
+					fosaLocations.push(fosaid+"");					
+					
 					if(!f.geometry){
 						//fosa coordinates missing
 						missingFosaCoordinates(f.properties.fosaid);
 					}
 					else {
-						//create geojson point feature
-						var geojsonPointFeature = 
-							createGeoJsonPointFeature(f, locationName, indicatorName, null, rawValue, reportValue, reportValueType, reportValueIcon);
+					
+						var feature = {
+							"id": fosaid,
+						    "geometry": {
+						        "coordinates": f.geometry.coordinates
+							},
+							"properties":{
+								"locationName": $(mapTableValue).data('location-names'),
+								"indicatorName": $(mapTableValue).data('indicator-names'),
+								//"indicatorClass": $(mapTableValue).data('indicator-class'),
+								//TODO use report table for raw value, report value, and report value type
+								"rawValue": $(mapValue).data('report-value-raw'),
+								"reportValue": $(mapValue).data('report-value'),
+								"reportValueType": $(mapValue).data('report-value-type'),
+								"reportValueIcon": "${resource(dir:'images',file:'/maps/report-value-null.png')}"
+							}
+						};
+						//create point geojson feature
+						var geojsonPointFeature = createGeoJsonPointFeature(feature);
 						dataLocationValueLayer.addData(geojsonPointFeature);
+						dataLocationInfoLayer.addData(geojsonPointFeature);
 					}				
 				});
 			});
 			//fosa locations missing
-			var dhsstLocations = ${reportLocations.collect{it.code}};
+			var dhsstLocations = ("${reportLocations.collect{it.code}.join(';')}").split(';');
 			missingFosaLocations(fosaLocations, dhsstLocations);									
 		});
+		//TODO
+		//.success(function() { alert("second success"); })
+		//.error(function() { alert("error"); })
+		//.complete(function() { alert("complete"); });
 	}
 	</r:script>
 </div>
