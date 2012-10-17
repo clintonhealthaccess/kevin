@@ -159,7 +159,7 @@
 				var center = bounds.getCenter();
 				var multiPolygonCoordinates = [center.lat, center.lng];
 				
-				if(mapTableIndicators.length > 1){
+				if(sortedIndicators.length > 1){
 					if(indicatorClass == "indicator-best"){
 						//TODO figure out why this returns NorthWest bounds
 						var northWest = bounds.getSouthEast();

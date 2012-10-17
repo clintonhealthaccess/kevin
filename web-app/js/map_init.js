@@ -32,6 +32,7 @@ function mapTheMap(baseLocationLayer, mapLocationValueLayer, mapDataLocationValu
 		map.setView(baseLocationLayer.getBounds().getCenter(), 9);
 	}
 	else if(mapDataLocationValueLayer){
+		//TODO add area?
 		map.fitBounds(baseLocationLayer.getBounds());
 	}
 	else{
@@ -310,6 +311,7 @@ function fctLocationValuePointToLayer(feature, latlng) {
 	var reportValue = feature.properties.reportValue;
 	var indicatorClass = feature.properties.indicatorClass;
 	
+	//TODO max: 35px?
 	var rawValueRadius = parseInt(rawValue*20)+10; //min: 10px max: 30px
 	rawValueRadius = rawValueRadius < 10 ? 10 : rawValueRadius;
 	rawValueRadius = rawValueRadius > 30 ? 30 : rawValueRadius;
