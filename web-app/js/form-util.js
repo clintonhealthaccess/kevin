@@ -21,13 +21,3 @@ function getDataElement(callback){
 	});
 }
  
-/**
- * rich text content retrieve
- */
-function getRichTextContent(){
-	$('.rich-textarea-form').bind('click',function(){
-		$('.toggle-entry textarea').each(function(){
-			$(this).val($(this).prev('div').children().html())
-		})
-	});
-}

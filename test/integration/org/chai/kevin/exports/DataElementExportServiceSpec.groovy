@@ -60,7 +60,6 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree();
 		def periods=new HashSet([newPeriod()]);
-		def locationType="Health Center,District Hospital";
 		
 		def typeOne = Type.TYPE_NUMBER();
 		def typeTwo = Type.TYPE_BOOL();
@@ -74,7 +73,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		
 		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
 		
-		def exporter = newDataElementExport(j("en":"Testing Seach One"),periods, locationType, locations, dataElements);
+		def exporter = newDataElementExport(j("en":"Testing Seach One"),periods, [HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP], locations, dataElements);
 		
 		when:
 		def exportedFile = dataElementExportService.exportData(exporter, 'en');
@@ -87,7 +86,6 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree();
 		def periods=new HashSet([newPeriod()]);
-		def locationType="Health Center,District Hospital";
 		def locationTypes = new HashSet(getDataLocationTypes([HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP]));
 		
 		def typeOne = Type.TYPE_NUMBER();
@@ -99,7 +97,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		
 		def dataElements=new HashSet([dataElementOne]);
 		
-		def exporterOne = newDataElementExport(j("en":"Testing Seach One"),periods, locationType, locations, dataElements);
+		def exporterOne = newDataElementExport(j("en":"Testing Seach One"),periods, [HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP], locations, dataElements);
 		when:
 		def dataLocations = locationService.getDataLocationsOfType(locations,locationTypes)
 		def exportedFileOne = dataElementExportService.exportDataElements("Testing",dataLocations,exporterOne.periods,exporterOne.dataElements, 'en');

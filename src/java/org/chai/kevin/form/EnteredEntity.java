@@ -10,7 +10,7 @@ import javax.persistence.Temporal;
 @MappedSuperclass
 public class EnteredEntity {
 
-	private String userUuid;
+	protected String userUuid;
 	private Date timestamp;
 
 	public EnteredEntity() {

@@ -16,10 +16,14 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		def period = newPeriod()
 		def survey = newSurvey(CODE(1), period)
 		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def enteredProgram = newSurveyEnteredProgram(program, period, DataLocation.findByCode(KIVUYE), false, false, false, 0, 2)
 		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def enteredSection = newSurveyEnteredSection(section, period, DataLocation.findByCode(KIVUYE),false, false, 0, 2)
 		def question1 = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def enteredQuestion1 = newSurveyEnteredQuestion(question1, period, DataLocation.findByCode(KIVUYE), false, false)
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		def question2 = newSimpleQuestion(CODE(2), section, 2, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def enteredQuestion2 = newSurveyEnteredQuestion(question2, period, DataLocation.findByCode(KIVUYE), false, false)
 		def element2 = newSurveyElement(question2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()))
 		
 		def summaryPage
@@ -70,7 +74,12 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		summaryPage.locations.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
 		
 		when:
-		newSurveyEnteredQuestion(question1, period, DataLocation.findByCode(KIVUYE), false, true)
+		enteredQuestion1.complete = true
+		enteredQuestion1.save(failOnError: true)
+		enteredSection.completedQuestions = 1
+		enteredSection.save(failOnError: true)
+		enteredProgram.completedQuestions = 1
+		enteredProgram.save(failOnError: true)
 		summaryPage = summaryService.getSurveySummaryPage(Location.findByCode(RWANDA), null, survey)
 		summaryPage.sort(SurveySummaryPage.PROGRESS_SORT, 'asc', 'en')
 		questionSummary = summaryPage.getQuestionSummary(DataLocation.findByCode(KIVUYE))
@@ -131,25 +140,6 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		summaryPage.locations.equals([DataLocation.findByCode(KIVUYE)])
 	}
 		
-	def "test counted questions does not apply to group"() {
-		setup:
-		setupLocationTree()
-		def period = newPeriod()
-		def survey = newSurvey(CODE(1), period)
-		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
-		def question1 = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
-		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
-		
-		when:
-		newSurveyEnteredQuestion(question1, period, DataLocation.findByCode(BUTARO), false, true)
-		def summaryPage = summaryService.getSurveySummaryPage(Location.findByCode(RWANDA), null, survey)
-		def questionSummary = summaryPage.getQuestionSummary(DataLocation.findByCode(BUTARO))
-		
-		then:
-		questionSummary.questions == 0
-		questionSummary.completedQuestions == 1
-	}
 	
 	def "test locations are collected at all levels"() {
 		setupLocationTree()

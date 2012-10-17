@@ -1,16 +1,15 @@
-package org.chai.task
+package org.chai.kevin.task
 
 import org.chai.task.CalculateTask;
-import org.chai.task.TaskController;
+import org.chai.kevin.task.TaskListController;
 
-class TaskControllerSpec {
+class TaskListControllerSpec {
 
-	
 	def "task list"() {
 		setup:
 		setupSecurityManager('uuid')
 		def task = new CalculateTask(dataId: 1, principal: 'uuid', status: TaskStatus.NEW).save(failOnError: true)
-		taskController = new TaskController()
+		taskController = new TaskListController()
 		
 		when:
 		taskController.list()

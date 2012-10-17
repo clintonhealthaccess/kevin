@@ -212,6 +212,10 @@ DataEntry.prototype.listRemoveClick = function(toRemove) {
 		
 		var listSize = $(list).find('> li.element-list-row').size()
 		
+		if (listSize == 0) {
+			$(list).find('.element-list-copy').first().show();
+		}
+		
 		for (index = 0; index < listSize; index++) {
 			var item = $(list).find('> li.element-list-row')[index];
 			var numberOfInputs = $(item).find('.input').size();
@@ -261,6 +265,7 @@ DataEntry.prototype.listAddClick = function(button, callback) {
 
 	this.surveyValueChanged($(list), $(list).find('.js_list-input'), function(dataEntry, data, element) {
 		maximizeRow($(button).prev().prev());
+		$(list).find('.element-list-copy').first().hide();
 		callback(self, data, element);
 	});
 }

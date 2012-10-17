@@ -54,6 +54,8 @@ class UrlMappings {
 		
 		"/exporter/$action/$exporter"(controller:"exporter")
 		
+		"/task/list"(controller:'taskList', action: 'list')
+		
 		"/$controller/$action?"{
 			constraints {
 				// apply constraints here

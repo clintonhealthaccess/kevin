@@ -144,12 +144,24 @@
 
 .element-bool
   float: left
+  
+.element-text .tooltip-help
+  vertical-align: top
+  
+.element-list-copy
+  margin-bottom: 8px
+  
 .question-checkbox
   li
     clear: both
     padding: 5px 10px
   input[type=checkbox]
     margin: 0 5px 0 0
+    
+  .element-bool .tooltip-help
+    margin-left: -5px
+    margin-top: -4px
+    margin-right: 2px
     
 .form-actions
   border-top: 2px solid $filler
@@ -424,7 +436,6 @@ ul.filtered
   
   .element-map-header, .element-map-body
     display: block
-    .element-map-header, .element-map-body
     .element-map-header
       font-size: 11px
     input

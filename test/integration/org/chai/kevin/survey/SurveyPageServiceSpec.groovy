@@ -551,15 +551,136 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		when:
-		surveyPageService.refreshSectionForDataLocation(DataLocation.findByCode(KIVUYE), section)
+		surveyPageService.refreshSectionForDataLocation(DataLocation.findByCode(KIVUYE), section, false)
 		
 		then:
 		FormEnteredValue.count() == 0
 		SurveyEnteredQuestion.count() == 1
 		SurveyEnteredSection.count() == 1
+		SurveyEnteredSection.list()[0].totalQuestions == 1
+		SurveyEnteredSection.list()[0].completedQuestions == 1
 	}
 	
-	def "test refresh erases old values"() {
+	def "test refresh does not set user id and timestamp"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		def element1 = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		
+		when:
+		surveyPageService.refreshSurveyForDataLocation(DataLocation.findByCode(KIVUYE), survey, false, false)
+		
+		then:
+		FormEnteredValue.count() == 1
+		SurveyEnteredQuestion.count() == 1
+		SurveyEnteredSection.count() == 1
+		SurveyEnteredQuestion.list()[0].userUuid == null
+		SurveyEnteredQuestion.list()[0].timestamp == null
+		SurveyEnteredSection.list()[0].userUuid == null
+		SurveyEnteredSection.list()[0].timestamp == null
+		SurveyEnteredProgram.list()[0].userUuid == null
+		SurveyEnteredProgram.list()[0].timestamp == null
+		FormEnteredValue.list()[0].userUuid == null
+		FormEnteredValue.list()[0].timestamp == null
+	}
+		
+	
+	def "test refresh sets correct number of completed questions"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		def element1 = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		
+		when:
+		surveyPageService.refreshSurveyForDataLocation(DataLocation.findByCode(KIVUYE), survey, false, false)
+		
+		then:
+		FormEnteredValue.count() == 1
+		SurveyEnteredQuestion.count() == 1
+		SurveyEnteredSection.count() == 1
+		SurveyEnteredSection.list()[0].totalQuestions == 1
+		SurveyEnteredSection.list()[0].completedQuestions == 0
+		SurveyEnteredProgram.list()[0].totalQuestions == 1
+		SurveyEnteredProgram.list()[0].completedQuestions == 0
+		
+		when:
+		FormEnteredValue.list()[0].delete(flush: true)
+		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), Value.VALUE_NUMBER(1d))
+		surveyPageService.refreshSurveyForDataLocation(DataLocation.findByCode(KIVUYE), survey, false, false)
+		
+		then:
+		FormEnteredValue.count() == 1
+		SurveyEnteredQuestion.count() == 1
+		SurveyEnteredSection.count() == 1
+		SurveyEnteredSection.list()[0].totalQuestions == 1
+		SurveyEnteredSection.list()[0].completedQuestions == 1
+		SurveyEnteredProgram.list()[0].totalQuestions == 1
+		SurveyEnteredProgram.list()[0].completedQuestions == 1
+		
+		when: "invalid"
+		FormEnteredValue.list()[0].delete(flush: true)
+		def enteredValue = newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), Value.VALUE_NUMBER(1d))
+		enteredValue.value.setAttribute("invalid", "1")
+		enteredValue.save(failOnError: true)
+		surveyPageService.refreshSurveyForDataLocation(DataLocation.findByCode(KIVUYE), survey, false, false)
+		
+		then:
+		FormEnteredValue.count() == 1
+		SurveyEnteredQuestion.count() == 1
+		SurveyEnteredSection.count() == 1
+		SurveyEnteredSection.list()[0].totalQuestions == 1
+		SurveyEnteredSection.list()[0].completedQuestions == 0
+		SurveyEnteredProgram.list()[0].totalQuestions == 1
+		SurveyEnteredProgram.list()[0].completedQuestions == 0
+		
+		when: "invalid but skipped value"
+		FormEnteredValue.list()[0].delete(flush: true)
+		enteredValue = newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), Value.VALUE_NUMBER(1d))
+		enteredValue.value.setAttribute("invalid", "1")
+		enteredValue.value.setAttribute("skipped", "2")
+		enteredValue.save(failOnError: true)
+		surveyPageService.refreshSurveyForDataLocation(DataLocation.findByCode(KIVUYE), survey, false, false)
+		
+		then:
+		FormEnteredValue.count() == 1
+		SurveyEnteredQuestion.count() == 1
+		SurveyEnteredSection.count() == 1
+		SurveyEnteredSection.list()[0].totalQuestions == 1
+		SurveyEnteredSection.list()[0].completedQuestions == 1
+		SurveyEnteredProgram.list()[0].totalQuestions == 1
+		SurveyEnteredProgram.list()[0].completedQuestions == 1
+		
+		when: "invalid but skipped question"
+		def skipRule = newSurveySkipRule(CODE(1), survey, "true", [:], [:])
+		FormEnteredValue.list()[0].delete(flush: true)
+		enteredValue = newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), Value.VALUE_NUMBER(1d))
+		enteredValue.save(failOnError: true)
+		def enteredQuestion = SurveyEnteredQuestion.list()[0]
+		enteredQuestion.skipped = s([skipRule])
+		enteredQuestion.save(failOnError: true)
+		surveyPageService.refreshSurveyForDataLocation(DataLocation.findByCode(KIVUYE), survey, false, false)
+		
+		then:
+		FormEnteredValue.count() == 1
+		SurveyEnteredQuestion.count() == 1
+		SurveyEnteredSection.count() == 1
+		SurveyEnteredSection.list()[0].totalQuestions == 1
+		SurveyEnteredSection.list()[0].completedQuestions == 1
+		SurveyEnteredProgram.list()[0].totalQuestions == 1
+		SurveyEnteredProgram.list()[0].completedQuestions == 1
+	}
+	
+	def "test refresh with reset flag erases old values"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -571,13 +692,31 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("1"))
-		surveyPageService.refreshSectionForDataLocation(DataLocation.findByCode(KIVUYE), section)
+		surveyPageService.refreshSectionForDataLocation(DataLocation.findByCode(KIVUYE), section, true)
 		
 		then:
 		FormEnteredValue.list()[0].value.equals(Value.NULL_INSTANCE())
 	}
 	
-	def "test refresh erases unused entered values"() {
+	def "test refresh without reset flag keeps old values"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		
+		when:
+		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("1"))
+		surveyPageService.refreshSectionForDataLocation(DataLocation.findByCode(KIVUYE), section, false)
+		
+		then:
+		FormEnteredValue.list()[0].value.equals(v("1"))
+	}
+	
+	def "test refresh with reset flag erases unused entered values"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -592,7 +731,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		newFormEnteredValue(element1, period, DataLocation.findByCode(BUTARO), v("1"))
 		newSurveyEnteredSection(section, period, DataLocation.findByCode(BUTARO), false, true)
 		newSurveyEnteredProgram(program, period, DataLocation.findByCode(BUTARO), false, true, false)
-		surveyPageService.refreshSurveyForDataLocation(DataLocation.findByCode(BUTARO), survey, false)
+		surveyPageService.refreshSurveyForDataLocation(DataLocation.findByCode(BUTARO), survey, false, true)
 		sessionFactory.currentSession.flush()
 		
 		then:
@@ -600,7 +739,31 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		FormEnteredValue.count() == 0
 		SurveyEnteredSection.count() == 0
 		SurveyEnteredProgram.count() == 0
+	}
+	
+	def "test refresh without reset flag keeps unused entered values"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
+		when:
+		newSurveyEnteredQuestion(question1, period, DataLocation.findByCode(BUTARO), false, true)
+		newFormEnteredValue(element1, period, DataLocation.findByCode(BUTARO), v("1"))
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(BUTARO), false, true)
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(BUTARO), false, true, false)
+		surveyPageService.refreshSurveyForDataLocation(DataLocation.findByCode(BUTARO), survey, false, false)
+		sessionFactory.currentSession.flush()
+		
+		then:
+		SurveyEnteredQuestion.count() == 1
+		FormEnteredValue.count() == 1
+		SurveyEnteredSection.count() == 1
+		SurveyEnteredProgram.count() == 1
 	}
 		
 	def "test program order"() {
@@ -637,5 +800,61 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		then:
 		surveyPage.getOptions(question).equals([option2, option1])
 	}
-			
+	
+	def "test copy data"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		
+		def period1 = newPeriod()
+		def period2 = newPeriod()
+		
+		def survey = newSurvey(CODE(1), period2)
+		survey.lastPeriod = period1
+		survey.save()
+		
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def element = newSurveyElement(question, dataElement)
+		
+		newRawDataElementValue(dataElement, period1, DataLocation.findByCode(KIVUYE), v("1"))
+				
+		when:
+		surveyPageService.copyData(DataLocation.findByCode(KIVUYE), element)
+		
+		then:
+		FormEnteredValue.count() == 1
+		FormEnteredValue.list()[0].value.numberValue == 1d
+	}
+		
+	def "test copy data dows not copy if data already exist"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		
+		def period1 = newPeriod()
+		def period2 = newPeriod()
+		
+		def survey = newSurvey(CODE(1), period2)
+		survey.lastPeriod = period1
+		survey.save()
+		
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def element = newSurveyElement(question, dataElement)
+		
+		newRawDataElementValue(dataElement, period1, DataLocation.findByCode(KIVUYE), v("1"))
+		newFormEnteredValue(element, period2, DataLocation.findByCode(KIVUYE), v("2"))
+		
+		when:
+		surveyPageService.copyData(DataLocation.findByCode(KIVUYE), element)
+		
+		then:
+		FormEnteredValue.count() == 1
+		FormEnteredValue.list()[0].value.numberValue == 2d
+	}
 }

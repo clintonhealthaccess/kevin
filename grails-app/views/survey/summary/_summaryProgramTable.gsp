@@ -11,7 +11,6 @@
 			<th><g:message code="entity.list.manage.label"/></th>
 		</thead>
 		<tbody>
-			<g:set var="programsClosed" value="${true}"/>
 			<g:each in="${summaryPage.locations}" var="location">
 				<g:set var="programClosed" value="${summaryPage.getSurveyEnteredProgram(location)?.closed}" />
 				<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(location)}" />
@@ -41,14 +40,11 @@
 										</li>
 									</shiro:hasPermission>
 									<shiro:hasPermission permission="surveySummary:submitAll">
-										<g:if test="${!programClosed}">
-											<g:set var="programsClosed" value="${false}"/>
-											<li> 
-												<a href="${createLink(controller: 'surveySummary', action: 'submitAll', params: [program: currentProgram.id, location: currentLocation.id, submitLocation: location.id])}">
-													<g:message code="survey.summary.submitprogram.label" />
-												</a>
-											</li>
-										</g:if>
+										<li> 
+											<a href="${createLink(controller: 'surveySummary', action: 'submitAll', params: [program: currentProgram.id, location: currentLocation.id, submitLocation: location.id])}">
+												<g:message code="survey.summary.submitprogram.label" />
+											</a>
+										</li>
 									</shiro:hasPermission>
 								</ul>
 							</div>
@@ -61,19 +57,6 @@
 					</td>
 				</tr>
 			</g:each>
-			<shiro:hasPermission permission="surveySummary:submitAll">
-				<g:if test="${!submitSkipLevels.contains(currentLocation.level) && !programsClosed}">
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td><a
-							href="${createLink(controller: 'surveySummary', action: 'submitAll', params: params << [program: currentProgram?.id, submitLocation: currentLocation.id])}">
-								<g:message code="survey.summary.submitallprogram.label" />
-						</a></td>
-					</tr>
-				</g:if>
-			</shiro:hasPermission>
 		</tbody>
 	</table>
 	<r:script>

@@ -4,12 +4,14 @@
 <div id="element-${element.id}-${suffix}" class="element element-date ${validatable?.isSkipped(suffix)?'skipped':''} ${(validatable==null || validatable?.isValid(suffix))?'':'errors'}" data-element="${element.id}" data-suffix="${suffix}">
 	<a name="element-${element.id}-${suffix}"></a>
 
-	<g:if test="${lastValue!=null}">
+	<input id="date-${element.id}-${suffix}" type="text" value="${Utils.formatDate(value?.dateValue)}" name="elements[${element.id}].value${suffix}" class="idle-field input ${!readonly?'loading-disabled':''}" disabled="disabled"/>
+
+	<g:if test="${lastValue!=null && !lastValue.null}">
 		<g:set var="tooltipValue" value="${Utils.formatDate(lastValue?.dateValue)}" />
+		
+		<g:render template="/templates/help_tooltip" model="[names: tooltipValue]" />
 	</g:if>
-
-	<input id="date-${element.id}-${suffix}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} type="text" value="${Utils.formatDate(value?.dateValue)}" name="elements[${element.id}].value${suffix}" class="${tooltipValue!=null?'tooltip':''} idle-field input ${!readonly?'loading-disabled':''}" disabled="disabled"/>
-
+	
 	<g:render template="/survey/element/hints"/>
 
 	<div class="error-list">
