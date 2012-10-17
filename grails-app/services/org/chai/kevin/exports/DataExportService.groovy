@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LocationService;
+import org.chai.location.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.Translation;

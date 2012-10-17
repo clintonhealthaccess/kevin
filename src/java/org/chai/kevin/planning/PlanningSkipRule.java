@@ -10,7 +10,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.chai.kevin.form.FormCloner;
 import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.form.FormSkipRule;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 
 @Entity(name="PlanningSkipRule")
 @Table(name="dhsst_planning_skip_rule")

@@ -31,27 +31,27 @@
 			timeToLiveSeconds="86400"
     />
     
-   	<cache name="org.chai.kevin.location.CalculationLocation"
+   	<cache name="org.chai.location.CalculationLocation"
 			maxElementsInMemory="5000"
 			timeToLiveSeconds="86400"
     />
     
-    <cache name="org.chai.kevin.location.LocationLevel"
+    <cache name="org.chai.location.LocationLevel"
 			maxElementsInMemory="100"
             timeToLiveSeconds="86400"
     />
     
-    <cache name="org.chai.kevin.location.DataLocationType"
+    <cache name="org.chai.location.DataLocationType"
 			maxElementsInMemory="100"
 			timeToLiveSeconds="86400"
     />
     
-    <cache name="org.chai.kevin.location.Location.children"
+    <cache name="org.chai.location.Location.children"
 			maxElementsInMemory="5000"
 			timeToLiveSeconds="86400"
     />
     
-    <cache name="org.chai.kevin.location.Location.dataLocations"
+    <cache name="org.chai.location.Location.dataLocations"
 			maxElementsInMemory="2000"
 			timeToLiveSeconds="86400"
     />

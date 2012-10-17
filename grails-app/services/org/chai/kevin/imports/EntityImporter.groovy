@@ -18,7 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.exports.EntityHeaderSorter;
 import org.chai.kevin.Importable;
-import org.chai.kevin.LocationService;
+import org.chai.location.LocationService;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.imports.ImporterError;

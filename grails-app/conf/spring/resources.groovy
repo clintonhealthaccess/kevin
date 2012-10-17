@@ -33,7 +33,7 @@ import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.ExceptionHandler;
 import org.chai.kevin.JaqlService
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationService;
+import org.chai.location.LocationService;
 import org.chai.kevin.dashboard.DashboardValueService
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.data.DataService;

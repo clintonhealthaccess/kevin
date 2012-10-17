@@ -1,10 +1,10 @@
 package org.chai.kevin.dsr
 
 import org.chai.kevin.data.Type
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 
@@ -179,7 +179,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]])
 		def category = newDsrTargetCategory(CODE(1), 1)
 		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, program, category)
 		def reportType = Utils.ReportType.TABLE
@@ -206,7 +206,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10"]])
 		def category = newDsrTargetCategory(CODE(1), 1)
 		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, program, category)
 		def reportType = Utils.ReportType.TABLE
@@ -234,7 +234,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]])
 		def category = newDsrTargetCategory(CODE(1), 1)
 		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, program, category)
 		def reportType = Utils.ReportType.TABLE

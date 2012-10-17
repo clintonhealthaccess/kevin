@@ -1,6 +1,6 @@
 package org.chai.kevin.data;
 
-/** 
+/* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -31,12 +31,8 @@ package org.chai.kevin.data;
 import java.util.HashSet
 import java.util.Set
 
-import javax.persistence.Entity
-import javax.persistence.Table
-import javax.persistence.Transient
-
 import org.chai.kevin.Period
-import org.chai.kevin.location.DataLocationType
+import org.chai.location.DataLocationType
 import org.chai.kevin.util.Utils
 import org.chai.kevin.value.RawDataElementValue
 
@@ -52,10 +48,10 @@ class RawDataElement extends DataElement<RawDataElementValue> {
 	
 	static constraints = {
 		info (nullable: true)
+		source (nullable: true)
 	}
 	
 	@Override
-	@Transient
 	public Class<RawDataElementValue> getValueClass() {
 		return RawDataElementValue.class;
 	}
@@ -70,13 +66,11 @@ class RawDataElement extends DataElement<RawDataElementValue> {
 		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 
-	@Transient
 	@Override
 	public Set<String> getSources(Period period, DataLocationType type) {
 		return getSources();
 	}
 	
-	@Transient
 	public Set<String> getSources() {
 		Set<String> result = new HashSet<String>();
 		if (source != null) result.add(source.getCode());

@@ -70,7 +70,9 @@ class UtilTagLib {
 	}
 	
 	def i18n = { attrs, body ->
-		def text = attrs['field']
+		def text
+		if (attrs['field'] instanceof Map) text = attrs['field'].get(languageService.currentLanguage)
+		else text = attrs['field']
 		out << text 
 	}
 	

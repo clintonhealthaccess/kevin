@@ -3,8 +3,8 @@ package org.chai.kevin.planning
 import org.chai.kevin.AbstractController
 import org.chai.kevin.Period
 import org.chai.kevin.data.Type
-import org.chai.kevin.location.DataLocation
-import org.chai.kevin.location.Location
+import org.chai.location.DataLocation
+import org.chai.location.Location
 import org.chai.kevin.planning.PlanningCost.PlanningCostType
 import org.chai.kevin.security.UserType;
 import org.chai.kevin.table.AggregateLine

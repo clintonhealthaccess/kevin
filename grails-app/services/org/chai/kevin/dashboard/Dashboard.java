@@ -35,8 +35,8 @@ import java.util.Map.Entry;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.CalculationLocation;
+import org.chai.location.Location;
 import org.chai.kevin.value.Value;
 
 public class Dashboard {

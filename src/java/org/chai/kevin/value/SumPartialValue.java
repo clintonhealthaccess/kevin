@@ -11,8 +11,8 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Sum;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocationType;
 import org.hibernate.annotations.NaturalId;
 
 @Entity(name="SumPartialValue")

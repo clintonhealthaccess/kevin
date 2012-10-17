@@ -1,6 +1,6 @@
 package org.chai.kevin
 
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 
 class HomeControllerSpec extends IntegrationTests {
 

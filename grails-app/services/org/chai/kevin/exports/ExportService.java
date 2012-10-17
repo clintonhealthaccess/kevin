@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationService;
+import org.chai.location.LocationService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueVisitor;
 import org.chai.kevin.util.Utils;

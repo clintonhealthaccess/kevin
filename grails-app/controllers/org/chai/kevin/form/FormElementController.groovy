@@ -1,6 +1,6 @@
 package org.chai.kevin.form
 
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElement;

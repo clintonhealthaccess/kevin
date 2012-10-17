@@ -7,7 +7,7 @@ class SurveyControllerSpec extends SurveyIntegrationTests {
 	def "create survey with active flag resets active flag on other surveys"() {
 		setup:
 		def period = newPeriod()
-		def survey = newSurvey(CODE(1), j([:]), period, true)
+		def survey = newSurvey(CODE(1), [:], period, true)
 		surveyController = new SurveyController()
 
 		when:
@@ -25,7 +25,7 @@ class SurveyControllerSpec extends SurveyIntegrationTests {
 	def "create survey with active flag does not reset active flag on other survey if survey incomplete"() {
 		setup:
 		def period = newPeriod()
-		def survey = newSurvey(CODE(1), j([:]), period, true)
+		def survey = newSurvey(CODE(1), [:], period, true)
 		surveyController = new SurveyController()
 
 		when:

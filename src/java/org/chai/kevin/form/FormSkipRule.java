@@ -27,7 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Translation;
 import org.chai.kevin.form.FormElement.ElementCalculator;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "FormSkipRule")

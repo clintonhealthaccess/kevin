@@ -28,18 +28,18 @@ package org.chai.kevin
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.chai.kevin.LocationService;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.LocationService;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.fct.FctTarget;
-import org.chai.kevin.location.DataLocation
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.DataLocation
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.AbstractReportTarget;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 
 class FilterTagLib {
 

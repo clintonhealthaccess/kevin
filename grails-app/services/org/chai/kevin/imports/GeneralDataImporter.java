@@ -36,7 +36,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LocationService;
+import org.chai.location.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.PeriodService;
 import org.chai.kevin.data.Data;
@@ -44,7 +44,7 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.RawDataElementValue;

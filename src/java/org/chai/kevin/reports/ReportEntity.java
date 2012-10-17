@@ -28,6 +28,8 @@ package org.chai.kevin.reports;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.Map;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -40,7 +42,7 @@ import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
 
 @MappedSuperclass
-public abstract class ReportEntity extends Orderable<Integer> {
+public abstract class ReportEntity extends Orderable {
 
 	protected Integer order;
 	protected Translation names = new Translation();

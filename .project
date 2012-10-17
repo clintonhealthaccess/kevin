@@ -3,6 +3,7 @@
         <name>kevin</name>
         <comment></comment>
         <projects>
+			<project>chai-locations</project>
         </projects>
         <buildSpec>
                 <buildCommand>

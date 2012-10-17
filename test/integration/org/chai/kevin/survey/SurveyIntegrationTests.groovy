@@ -7,7 +7,7 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormValidationRule;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
@@ -32,7 +32,7 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	}
 	
 	def static newSurveyProgram(def code, def names, def survey, def order, def types) {
-		def program = new SurveyProgram(code: code, names: names, survey: survey, order: order, typeCodeString: Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER)).save(failOnError: true)
+		def program = new SurveyProgram(code: code, names: names, survey: survey, order: order, typeCodeString: Utils.unsplit(types, Utils.DEFAULT_CODE_DELIMITER)).save(failOnError: true)
 		survey.addProgram(program)
 		survey.save(failOnError: true)
 		return program
@@ -43,7 +43,7 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	}
 	
 	def static newSurveySection(def code, def names, def program, def order, def types) {
-		def section = new SurveySection(code: code, names: names, program: program, order: order, typeCodeString: Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER)).save(failOnError: true)
+		def section = new SurveySection(code: code, names: names, program: program, order: order, typeCodeString: Utils.unsplit(types, Utils.DEFAULT_CODE_DELIMITER)).save(failOnError: true)
 		program.addSection(section)
 		program.save(failOnError: true)
 		return section
@@ -77,7 +77,7 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	}
 	
 	def static newSimpleQuestion(def code, def names, def section, def order, def types) {
-		def question = new SurveySimpleQuestion(code: code, names: names, section: section, order: order, typeCodeString: Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER)).save(failOnError: true)
+		def question = new SurveySimpleQuestion(code: code, names: names, section: section, order: order, typeCodeString: Utils.unsplit(types, Utils.DEFAULT_CODE_DELIMITER)).save(failOnError: true)
 		section.addQuestion(question)
 		section.save(failOnError: true, flush: true)		
 		return question
@@ -88,28 +88,28 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	}
 	
 	def static newTableQuestion(def code, def section, def order, def types) {
-		def question = new SurveyTableQuestion(code: code, section: section, order: order, typeCodeString: Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER)).save(failOnError: true)
+		def question = new SurveyTableQuestion(code: code, section: section, order: order, typeCodeString: Utils.unsplit(types, Utils.DEFAULT_CODE_DELIMITER)).save(failOnError: true)
 		section.addQuestion(question)
 		section.save(failOnError: true)
 		return question
 	}
 	
 	def static newTableColumn(def code, def question, def order, def types) {
-		def column = new SurveyTableColumn(code: code, question: question, order: order, typeCodeString: Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER)).save(failOnError: true)
+		def column = new SurveyTableColumn(code: code, question: question, order: order, typeCodeString: Utils.unsplit(types, Utils.DEFAULT_CODE_DELIMITER)).save(failOnError: true)
 		question.addColumn(column)
 		question.save(failOnError: true)
 		return column
 	}
 	
 	def static newTableRow(def code, def question, def order, def types, def elements) {
-		def row = new SurveyTableRow(code: code, question: question, order: order, typeCodeString: Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER), surveyElements: elements).save(failOnError: true)
+		def row = new SurveyTableRow(code: code, question: question, order: order, typeCodeString: Utils.unsplit(types, Utils.DEFAULT_CODE_DELIMITER), surveyElements: elements).save(failOnError: true)
 		question.addRow(row)
 		question.save(failOnError: true)
 		return row
 	}
 	
 	def static newCheckboxQuestion(def code, def section, def order, def types) {
-		def question = new SurveyCheckboxQuestion(code: code, section: section, order: order, typeCodeString: Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER)).save(failOnError: true)
+		def question = new SurveyCheckboxQuestion(code: code, section: section, order: order, typeCodeString: Utils.unsplit(types, Utils.DEFAULT_CODE_DELIMITER)).save(failOnError: true)
 		section.addQuestion(question)
 		section.save(failOnError: true)
 		return question
@@ -120,7 +120,7 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	}
 	
 	def static newCheckboxOption(def code, def question, def order, def types, def element) {
-		def option = new SurveyCheckboxOption(code: code, question: question, order: order, typeCodeString: Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER), surveyElement: element).save(failOnError: true)
+		def option = new SurveyCheckboxOption(code: code, question: question, order: order, typeCodeString: Utils.unsplit(types, Utils.DEFAULT_CODE_DELIMITER), surveyElement: element).save(failOnError: true)
 		question.addOption(option)
 		question.save(failOnError: true)
 		return option

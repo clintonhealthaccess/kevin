@@ -42,7 +42,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Period;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.hibernate.annotations.NaturalId;
 
 @Entity(name="NormalizedDataElementValue")

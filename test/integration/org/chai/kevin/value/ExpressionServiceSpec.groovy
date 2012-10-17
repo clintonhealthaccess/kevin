@@ -10,9 +10,9 @@ import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
@@ -61,7 +61,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def result = null
 		
 		when: "data element is missing"
-		normalizedDataElement = new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$0"]])).save(validate: false)
+		normalizedDataElement = new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$0"]]).save(validate: false)
 		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
 		
 		then:
@@ -69,7 +69,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		result.status == Status.MISSING_DATA_ELEMENT
 		
 		when: "value is missing for data location"
-		normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id]]))
+		normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id]])
 		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
 		
 		then:
@@ -85,7 +85,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		when: "everything is fine"
 		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), v("40"))
-		normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id+" * 2"]]))
+		normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id+" * 2"]])
 		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
 		
 		then:
@@ -94,7 +94,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 			
 		when: "null value"
 		newRawDataElementValue(dataElement, period, DataLocation.findByCode(KIVUYE), Value.NULL_INSTANCE())
-		normalizedDataElement = newNormalizedDataElement(CODE(4), Type.TYPE_NUMBER(), e([(period.id+''):[(HEALTH_CENTER_GROUP):"\$"+dataElement.id]]))
+		normalizedDataElement = newNormalizedDataElement(CODE(4), Type.TYPE_NUMBER(), [(period.id+''):[(HEALTH_CENTER_GROUP):"\$"+dataElement.id]])
 		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period)
 		
 		then:
@@ -107,7 +107,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"if (\$"+dataElement.id+" == \"null\") 1 else 0"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"if (\$"+dataElement.id+" == \"null\") 1 else 0"]])
 		def result
 		
 		when: "value is missing"
@@ -129,7 +129,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["test": Type.TYPE_NUMBER()])), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"if (\$"+dataElement.id+" == \"null\") [] else [{\"test\":1}]"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["test": Type.TYPE_NUMBER()])), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"if (\$"+dataElement.id+" == \"null\") [] else [{\"test\":1}]"]])
 		def result
 		
 		when: "value is missing"
@@ -155,7 +155,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def result = null
 		
 		when: "data element is missing"
-		normalizedDataElement = new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):""]])).save(validate: false)
+		normalizedDataElement = new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):""]]).save(validate: false)
 		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
 		
 		then:
@@ -171,7 +171,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def result = null
 		
 		when:
-		normalizedDataElement = newNormalizedDataElement(CODE(2), type, e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):formula]]))
+		normalizedDataElement = newNormalizedDataElement(CODE(2), type, [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):formula]])
 		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
 		
 		then:
@@ -189,7 +189,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]])
 		def sum = newSum("\$"+normalizedDataElement.id, CODE(2))
 		def result = null
 		refreshNormalizedDataElement()
@@ -256,7 +256,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		def sum = newSum("\$"+normalizedDataElement.id, CODE(2))
 		def result = null
 		refreshNormalizedDataElement()
@@ -300,7 +300,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]])
 		def ratio = newSum("\$"+normalizedDataElement.id, CODE(2))
 		def result = null
 		refreshNormalizedDataElement()
@@ -485,31 +485,31 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		
 		when:
-		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]]))
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]])
 		
 		then:
 		expressionService.hasCircularDependency(normalizedDataElement1) == false
 		
 		when:
-		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id,(HEALTH_CENTER_GROUP):"1"]]))
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id,(HEALTH_CENTER_GROUP):"1"]])
 		
 		then:
 		expressionService.hasCircularDependency(normalizedDataElement2) == false
 		
 		when:
-		def normalizedDataElement3 = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement2.id,(HEALTH_CENTER_GROUP):"1"]]))
+		def normalizedDataElement3 = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement2.id,(HEALTH_CENTER_GROUP):"1"]])
 		
 		then:
 		expressionService.hasCircularDependency(normalizedDataElement3) == false
 		
 		when:
-		normalizedDataElement2.expressionMap = e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement3.id,(HEALTH_CENTER_GROUP):"1"]])
+		normalizedDataElement2.expressionMap = [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement3.id,(HEALTH_CENTER_GROUP):"1"]]
 		
 		then:
 		expressionService.hasCircularDependency(normalizedDataElement3) == true
 		
 		when:
-		normalizedDataElement2.expressionMap = e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id,(HEALTH_CENTER_GROUP):"\$"+normalizedDataElement3.id]])
+		normalizedDataElement2.expressionMap = [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id,(HEALTH_CENTER_GROUP):"\$"+normalizedDataElement3.id]]
 		
 		then:
 		expressionService.hasCircularDependency(normalizedDataElement3) == false
@@ -522,7 +522,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		when:
 		def dataElement = newRawDataElement(CODE(5), Type.TYPE_NUMBER())
-		def normalizedDataElement5 = newNormalizedDataElement(CODE(6), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id,(HEALTH_CENTER_GROUP):"1"]]))
+		def normalizedDataElement5 = newNormalizedDataElement(CODE(6), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id,(HEALTH_CENTER_GROUP):"1"]])
 		
 		then:
 		expressionService.hasCircularDependency(normalizedDataElement5) == false

@@ -30,10 +30,10 @@ package org.chai.kevin.dashboard;
 
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Period;
-import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportProgram;
+import org.chai.location.CalculationLocation;
 
-public interface DashboardEntity extends Comparable<Orderable<Integer>> {
+public interface DashboardEntity extends Comparable<Orderable> {
 	
 	public Integer getWeight();
 	

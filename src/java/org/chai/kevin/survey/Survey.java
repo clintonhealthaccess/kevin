@@ -51,7 +51,7 @@ import javax.persistence.UniqueConstraint;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -176,7 +176,7 @@ public class Survey implements Exportable {
 	public List<SurveyProgram> getPrograms(DataLocationType type) {
 		List<SurveyProgram> result = new ArrayList<SurveyProgram>();
 		for (SurveyProgram surveyProgram : getPrograms()) {
-			if (Utils.split(surveyProgram.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER).contains(type.getCode())) result.add(surveyProgram);
+			if (Utils.split(surveyProgram.getTypeCodeString(), Utils.DEFAULT_CODE_DELIMITER).contains(type.getCode())) result.add(surveyProgram);
 		}
 		return result;
 	}

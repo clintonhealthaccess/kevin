@@ -1,7 +1,7 @@
 package org.chai.kevin.survey
 
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 
 class EditSurveyControllerSpec extends SurveyIntegrationTests {
 

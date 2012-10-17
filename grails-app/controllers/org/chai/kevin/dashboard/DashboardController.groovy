@@ -29,10 +29,10 @@ package org.chai.kevin.dashboard
 */
 
 import org.chai.kevin.AbstractController
-import org.chai.kevin.LocationService
+import org.chai.location.LocationService
 import org.chai.kevin.Period
-import org.chai.kevin.location.DataLocationType
-import org.chai.kevin.location.Location
+import org.chai.location.DataLocationType
+import org.chai.location.Location
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 

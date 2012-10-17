@@ -1,7 +1,7 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 
 class SurveyServiceSpec extends SurveyIntegrationTests {
 
@@ -13,8 +13,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def survey = newSurvey(CODE(1), period)
 		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
 		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(CODE(1), j(["en": "question"]), section, 1, [(HEALTH_CENTER_GROUP)])
-		def question2 = newSimpleQuestion(CODE(2), j(["en": "somethig"]), section, 2, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), ["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(CODE(2), ["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
 		
 		expect:
 		surveyService.getSurveyQuestion(question1.id).equals(question1)
@@ -27,8 +27,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def survey = newSurvey(CODE(1), period)
 		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
 		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(CODE(1), j(["en": "question"]), section, 1, [(HEALTH_CENTER_GROUP)])
-		def question2 = newSimpleQuestion(CODE(2), j(["en": "somethig"]), section, 2, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), ["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(CODE(2), ["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
 		
 		expect:
 		surveyService.searchSurveyQuestions("que", survey).equals([question1])
@@ -41,8 +41,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def survey = newSurvey(CODE(1), period)
 		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
 		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(CODE(1), j(["en": "question"]), section, 1, [(HEALTH_CENTER_GROUP)])
-		def question2 = newSimpleQuestion(CODE(2), j(["en": "somethig"]), section, 2, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(CODE(1), ["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(CODE(2), ["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
 		
 		expect:
 		surveyService.searchSurveyQuestions("", survey, [offset: 0, max:1]).equals([question1])
@@ -124,7 +124,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def dataElement = newRawDataElement(j(["en": "element"]),CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(["en": "element"],CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 
 		def surveyElements = null

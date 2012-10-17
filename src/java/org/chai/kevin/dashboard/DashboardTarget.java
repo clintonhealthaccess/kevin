@@ -39,7 +39,7 @@ import net.sf.ehcache.hibernate.HibernateUtil;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.location.CalculationLocation;
+import org.chai.location.CalculationLocation;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportTarget;

@@ -1,4 +1,4 @@
-package org.chai.kevin.location
+package org.chai.location
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -32,10 +32,10 @@ import java.sql.Types;
 import java.util.Set;
 
 import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType
-import org.chai.kevin.location.Location
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType
+import org.chai.location.Location
+import org.chai.location.LocationLevel;
 
 class LocationServiceSpec extends IntegrationTests {
 

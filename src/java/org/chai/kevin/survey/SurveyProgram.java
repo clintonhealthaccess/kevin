@@ -33,6 +33,7 @@ package org.chai.kevin.survey;
  */
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -55,7 +56,7 @@ import javax.persistence.UniqueConstraint;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -64,7 +65,7 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "SurveyProgram")
 @Table(name = "dhsst_survey_program", uniqueConstraints={@UniqueConstraint(columnNames="code")})
-public class SurveyProgram extends Orderable<Integer> implements Exportable {
+public class SurveyProgram extends Orderable implements Exportable {
 
 	private Long id;
 	private String code;
@@ -83,7 +84,7 @@ public class SurveyProgram extends Orderable<Integer> implements Exportable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
+	
 	@Basic
 	@Column(name="ordering")
 	public Integer getOrder() {
@@ -131,10 +132,10 @@ public class SurveyProgram extends Orderable<Integer> implements Exportable {
 
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
+		return Utils.split(typeCodeString, Utils.DEFAULT_CODE_DELIMITER);
 	}
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
+		this.typeCodeString = Utils.unsplit(typeCodes, Utils.DEFAULT_CODE_DELIMITER);
 	}
 	
 
@@ -160,14 +161,14 @@ public class SurveyProgram extends Orderable<Integer> implements Exportable {
 
 	@Transient
 	public Set<String> getTypeApplicable() {
-		return Utils.split(this.typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
+		return Utils.split(this.typeCodeString, Utils.DEFAULT_CODE_DELIMITER);
 	}
 
 	@Transient
 	public List<SurveySection> getSections(DataLocationType type) {
 		List<SurveySection> result = new ArrayList<SurveySection>();
 		for (SurveySection surveySection : getSections()) {
-			if (Utils.split(surveySection.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER).contains(type.getCode()))
+			if (Utils.split(surveySection.getTypeCodeString(), Utils.DEFAULT_CODE_DELIMITER).contains(type.getCode()))
 				result.add(surveySection);
 		}
 		return result;

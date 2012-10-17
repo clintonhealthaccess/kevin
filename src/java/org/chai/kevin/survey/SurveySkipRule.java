@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import org.chai.kevin.form.FormCloner;
 import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.form.FormSkipRule;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.kevin.survey.SurveyElement.SurveyElementCalculator;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 

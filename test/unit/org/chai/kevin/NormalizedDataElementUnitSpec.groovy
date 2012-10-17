@@ -1,6 +1,6 @@
 package org.chai.kevin;
 
-import org.chai.kevin.data.ExpressionMap;
+import org.chai.kevin.data.Expressions;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.util.JSONUtils;
 
@@ -13,7 +13,7 @@ public class NormalizedDataElementUnitSpec extends UnitSpec {
 		def period1 = new Period(id: 1)
 		def period2 = new Period(id: 2)
 		
-		def normalizedDataElement = new NormalizedDataElement(expressionMap: e([('1'):[('DH'):"1"]]))
+		def normalizedDataElement = new NormalizedDataElement(expressionMap: [('1'):[('DH'):"1"]])
 		
 		then:
 		normalizedDataElement.getExpression(period1, 'DH') == "1"
@@ -22,7 +22,7 @@ public class NormalizedDataElementUnitSpec extends UnitSpec {
 	}
 
 	static e(def map) {
-		return new ExpressionMap(jsonText: JSONUtils.getJSONFromMap(map))
+		return new Expressions(jsonText: JSONUtils.getJSONFromMap(map))
 	}
 	
 }

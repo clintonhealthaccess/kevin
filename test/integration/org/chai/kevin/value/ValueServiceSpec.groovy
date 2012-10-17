@@ -35,9 +35,9 @@ import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.AggregationValue;
 import org.chai.kevin.value.CalculationPartialValue;
@@ -74,7 +74,7 @@ class ValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		
 		when:
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
 		
 		then: "empty value list"
 		valueService.getDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period) == null
@@ -194,7 +194,7 @@ class ValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		when:
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
 		newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.ERROR, v("1"))
 		
 		then:
@@ -263,7 +263,7 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+""):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+""):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		refreshNormalizedDataElement()
 		
 		when:
@@ -279,7 +279,7 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+""):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+""):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		refreshNormalizedDataElement()
 		
 		when:
@@ -296,13 +296,13 @@ class ValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def kivuye = DataLocation.findByCode(KIVUYE)
 		def butaro = DataLocation.findByCode(BUTARO)
-		kivuye.names = j(['en': 'loc1'])
-		butaro.names = j(['en': 'loc2'])
+		kivuye.names = ['en': 'loc1']
+		butaro.names = ['en': 'loc2']
 		kivuye.save(failOnError: true)
 		butaro.save(failOnError: true)
 		
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+""):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+""):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		refreshNormalizedDataElement()
 		
 		when:
@@ -318,7 +318,7 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+""):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+""):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		refreshNormalizedDataElement()
 		
 		when:
@@ -440,7 +440,7 @@ class ValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+""):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+""):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
 		
 		when:
 		def date = rawDataElement.lastValueChanged

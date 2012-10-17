@@ -24,6 +24,20 @@ class CalculationSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 	
+	def "sum code must be unique"() {
+		when:
+		new Sum(code:CODE(1), expression: "1").save(failOnError: true)
+		
+		then:
+		Sum.count() == 1
+		
+		when:
+		new Sum(code:CODE(1), expression: "1").save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
 	def "sum expression does not accept calculations"() {
 		when:
 		def sum = newSum("1", CODE(1))
@@ -111,16 +125,5 @@ class CalculationSpec extends IntegrationTests {
 		then:
 		thrown ValidationException
 	}
-	
-//	def "cannot delete expression with associated calculation"() {
-//		when:
-//		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
-//		def ratio = new Sum(expressions: [HEALTH_CENTER_GROUP: expression], type:Type.TYPE_NUMBER()).save(failOnError: true)
-//		expression.delete(flush: true)
-//		
-//		then:
-//		thrown Exception
-//	}
-	
 	
 }

@@ -11,7 +11,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Period;
-import org.chai.kevin.location.CalculationLocation;
+import org.chai.location.CalculationLocation;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.Utils;

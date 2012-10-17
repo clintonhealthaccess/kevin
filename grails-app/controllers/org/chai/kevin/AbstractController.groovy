@@ -30,9 +30,10 @@ package org.chai.kevin;
 
 import org.apache.commons.lang.math.NumberUtils
 import org.apache.shiro.SecurityUtils
-import org.chai.kevin.location.DataLocationType
-import org.chai.kevin.location.Location
-import org.chai.kevin.location.LocationLevel
+import org.chai.location.DataLocationType
+import org.chai.location.Location
+import org.chai.location.LocationLevel
+import org.chai.location.LocationService;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.security.User;

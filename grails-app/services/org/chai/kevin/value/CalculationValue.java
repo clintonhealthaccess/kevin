@@ -7,8 +7,8 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocationType;
 
 public abstract class CalculationValue<T extends CalculationPartialValue> implements DataValue {
 

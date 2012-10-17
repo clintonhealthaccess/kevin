@@ -29,7 +29,7 @@ package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractEntityController;
 import org.apache.commons.lang.math.NumberUtils;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.util.Utils
 /**
  * @author Jean Kahigiso M.

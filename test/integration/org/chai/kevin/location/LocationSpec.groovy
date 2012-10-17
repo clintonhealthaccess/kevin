@@ -1,4 +1,4 @@
-package org.chai.kevin.location
+package org.chai.location
 
 import grails.validation.ValidationException;
 
@@ -11,13 +11,13 @@ class LocationSpec extends IntegrationTests {
 		setupLocationTree()
 		
 		when:
-		new DataLocation(names:j([:]), code: CODE(1), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
+		new DataLocation(names:[:], code: CODE(1), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
 		
 		then:
 		DataLocation.count() == 3
 		
 		when:
-		new DataLocation(names:j([:]), code: CODE(2), location: Location.findByCode(BURERA)).save(failOnError: true)
+		new DataLocation(names:[:], code: CODE(2), location: Location.findByCode(BURERA)).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -45,13 +45,13 @@ class LocationSpec extends IntegrationTests {
 		setupLocationTree()
 		
 		when:
-		new DataLocation(names:j([:]), code: CODE(1), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
+		new DataLocation(names:[:], code: CODE(1), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
 		
 		then:
 		DataLocation.count() == 3
 		
 		when:
-		new DataLocation(names:j([:]), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
+		new DataLocation(names:[:], type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -62,13 +62,13 @@ class LocationSpec extends IntegrationTests {
 		setupLocationTree()
 		
 		when:
-		new DataLocation(names:j([:]), code: CODE(1), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
+		new DataLocation(names:[:], code: CODE(1), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
 		
 		then:
 		DataLocation.count() == 3
 		
 		when:
-		new DataLocation(names:j([:]), code: "", type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
+		new DataLocation(names:[:], code: "", type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -82,7 +82,7 @@ class LocationSpec extends IntegrationTests {
 		DataLocationType.count() == 1
 		
 		when:
-		new DataLocationType(code: CODE(1)+DataLocationType.DEFAULT_CODE_DELIMITER).save(failOnError: true)
+		new DataLocationType(code: CODE(1)+Utils.DEFAULT_CODE_DELIMITER).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -97,7 +97,7 @@ class LocationSpec extends IntegrationTests {
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
-		def newDataLocation = newDataLocation(j(["en":"BLAH"]), "BLAH", Location.findByCode(NORTH), DataLocationType.findByCode(HEALTH_CENTER_GROUP))
+		def newDataLocation = newDataLocation(["en":"BLAH"], "BLAH", Location.findByCode(NORTH), DataLocationType.findByCode(HEALTH_CENTER_GROUP))
 		
 		when: //with a mix of locations and data locations
 		def children = Location.findByCode(NORTH).getAllChildren(skipLevels, types)
@@ -124,7 +124,7 @@ class LocationSpec extends IntegrationTests {
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
-		def newDataLocation = newDataLocation(j(["en":"BLAH"]), "BLAH", Location.findByCode(NORTH), DataLocationType.findByCode(HEALTH_CENTER_GROUP))
+		def newDataLocation = newDataLocation(["en":"BLAH"], "BLAH", Location.findByCode(NORTH), DataLocationType.findByCode(HEALTH_CENTER_GROUP))
 		
 		when: //with data locations
 		def children = Location.findByCode(NORTH).getChildrenWithData(skipLevels, types, true)

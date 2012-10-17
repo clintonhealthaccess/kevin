@@ -173,7 +173,7 @@ class ImportTaskSpec extends IntegrationTests {
 	def "test execute - EntityImportTask"() {
 		setup:
 		def user = newUser('user', 'uuid')
-		def task = new EntityImportTask(entityClass: 'org.chai.kevin.location.DataLocation', user: user, status: TaskStatus.NEW, encoding: 'UTF-8', delimiter: ',', inputFilename: 'nominativeTestFile.csv.zip').save(failOnError: true)
+		def task = new EntityImportTask(entityClass: 'org.chai.location.DataLocation', user: user, status: TaskStatus.NEW, encoding: 'UTF-8', delimiter: ',', inputFilename: 'nominativeTestFile.csv.zip').save(failOnError: true)
 		FileUtils.deleteDirectory(task.folder)
 		new File(task.folder, task.inputFilename).createNewFile()
 		
@@ -190,7 +190,7 @@ class ImportTaskSpec extends IntegrationTests {
 	def "test execute - EntityImportTask when no file"() {
 		setup:
 		def user = newUser('user', 'uuid')
-		def task = new EntityImportTask(entityClass: 'org.chai.kevin.location.DataLocation', user: user, status: TaskStatus.NEW, encoding: 'UTF-8', delimiter: ',', inputFilename: 'nominativeTestFile.csv.zip').save(failOnError: true)
+		def task = new EntityImportTask(entityClass: 'org.chai.location.DataLocation', user: user, status: TaskStatus.NEW, encoding: 'UTF-8', delimiter: ',', inputFilename: 'nominativeTestFile.csv.zip').save(failOnError: true)
 		
 		when:
 		task.executeTask()
@@ -233,7 +233,7 @@ class ImportTaskSpec extends IntegrationTests {
 	def "test get model and view - EntityImportTask"() {
 		setup:
 		def user = newUser('user', 'uuid')
-		def task = new EntityImportTask(entityClass: 'org.chai.kevin.location.DataLocation', user: user, status: TaskStatus.NEW, encoding: 'UTF-8', delimiter: ',', inputFilename: 'nominativeTestFile.csv.zip').save(failOnError: true)
+		def task = new EntityImportTask(entityClass: 'org.chai.location.DataLocation', user: user, status: TaskStatus.NEW, encoding: 'UTF-8', delimiter: ',', inputFilename: 'nominativeTestFile.csv.zip').save(failOnError: true)
 		
 		expect:
 		task.formModel == [

@@ -45,9 +45,9 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -106,7 +106,7 @@ public class ValueService {
 	private <T extends DataValue> void filterList(List<T> list, String text) {
 		for (String chunk : StringUtils.split(text)) {
 			for (DataValue element : new ArrayList<T>(list)) {
-				if (!Utils.matches(chunk, element.getLocation().getNames().get(languageService.getCurrentLanguage())) 
+				if (!Utils.matches(chunk, element.getLocation().getNamesMap().get(languageService.getCurrentLanguage())) 
 					&&
 					!Utils.matches(chunk, element.getLocation().getCode())) list.remove(element);
 			}

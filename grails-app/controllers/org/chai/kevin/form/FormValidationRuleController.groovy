@@ -28,7 +28,7 @@
 package org.chai.kevin.form
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.location.DataLocationType
+import org.chai.location.DataLocationType
 
 /**
  * @author Jean Kahigiso M.

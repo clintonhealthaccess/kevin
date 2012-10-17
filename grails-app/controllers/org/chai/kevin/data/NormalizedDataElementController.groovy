@@ -30,7 +30,7 @@ package org.chai.kevin.data
 
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.Period
-import org.chai.kevin.location.DataLocationType
+import org.chai.location.DataLocationType
 import org.chai.kevin.planning.PlanningCost
 import org.chai.kevin.value.Status
 
@@ -98,13 +98,8 @@ class NormalizedDataElementController extends AbstractEntityController {
 	def bindParams(def entity) {
 		entity.properties = params
 		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
-		
 		// bind expression map
-		entity.expressionMap = [:]
+		def expressionMap = [:]
 		Period.list([cache: true]).each { period ->
 			def periodMap = [:]
 			DataLocationType.list([cache: true]).each { group ->
@@ -112,10 +107,9 @@ class NormalizedDataElementController extends AbstractEntityController {
 				periodMap[group.code] = expression==null?'':expression
 			}
 			// we bind the expression map last so everything is refreshed
-			entity.expressionMap[period.id+''] = periodMap
+			expressionMap[period.id+''] = periodMap
 		}
-		
-		log.debug(entity.expressionMap)
+		entity.expressionMap = expressionMap
 	}
 	
 	def search = {

@@ -1,9 +1,9 @@
 package org.chai.kevin.dsr
 
 import org.chai.kevin.data.Type
-import org.chai.kevin.location.DataLocationType
-import org.chai.kevin.location.Location
-import org.chai.kevin.location.LocationLevel
+import org.chai.location.DataLocationType
+import org.chai.location.Location
+import org.chai.location.LocationLevel
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.util.Utils
 

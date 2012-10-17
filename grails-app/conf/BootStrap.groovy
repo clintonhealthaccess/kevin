@@ -121,6 +121,11 @@ class BootStrap {
 			
 			break;
 		case "development":
+			Initializer.createLocationLevels()
+			Initializer.createDataLocationTypes()
+			Initializer.createLocations()
+			Initializer.createDataLocations()
+		
 			// TODO review this
 			Initializer.createUsers();
 		

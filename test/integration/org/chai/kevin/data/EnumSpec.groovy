@@ -1,5 +1,7 @@
 package org.chai.kevin.data
 
+import grails.validation.ValidationException;
+
 import java.util.Map;
 
 import org.chai.kevin.IntegrationTests;
@@ -11,18 +13,33 @@ class EnumSpec extends IntegrationTests {
 	def enumService
 	def enumOptionService
 	
-	//TODO grails 2.0.0 bug needs to be fixed in order for these to validate
-	//this will fail grails 2 bug has to be fixed so this can pass
-	//def "enum code has to be unique (this will fail grails bug)"(){
-	//when:
-	//def enumeOne = newEnume(CODE("code"), "My Enum one", "Enum one");
-	//then:
-	//Enum.count()==1
-	//when:
-	//def enumeTwo = newEnume(CODE("code"), "My Enum two", "Enum two");
-	//then:
-	//thrown ConstraintViolationException
-	//}
+	def "enum code has to be unique"() {
+		when:
+		new Enum(code: CODE(1)).save(failOnError: true)
+		
+		then:
+		Enum.count()==1
+		
+		when:
+		new Enum(code: CODE(1)).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "null constraints"() {
+		when:
+		new Enum(code: CODE(1)).save(failOnError: true)
+		
+		then:
+		Enum.count() == 1
+		
+		when:
+		new Enum().save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
 
 	def "get active options work"() {
 		setup:
@@ -46,16 +63,16 @@ class EnumSpec extends IntegrationTests {
 		enume.activeEnumOptions.equals([])
 	}
 	
-	def "test enum option ordering"() {
+	def "deleting enum deletes enum option"() {
 		setup:
 		def enume = newEnume(CODE(1))
-		def option1 = newEnumOption(enume, "\"test\"", o("en":2, "fr":1))
-		def option2 = newEnumOption(enume, "\"absent\"", o("en":1, "fr":2))
-		
+		def option1 = newEnumOption(enume, "\"test\"")
+	
 		when:
-		def enumefromdb = Enum.findByCode(CODE(1))
+		enume.delete(flush: true)
 		
 		then:
-		enumefromdb.enumOptions.equals([option2, option1])
-	}	
+		Enum.count() == 0
+		EnumOption.count() == 0
+	}
 }

@@ -35,17 +35,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Lob;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
-
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Importable;
 import org.chai.kevin.util.JSONUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@MappedSuperclass
 public class JSONMap<T> implements Map<String, T>, Serializable, Exportable, Importable {
+
+	private static final Logger log = LoggerFactory.getLogger(JSONMap.class);
 	
 	private static final long serialVersionUID = 659167226523919292L;
 	private String jsonText = " ";
@@ -54,12 +52,15 @@ public class JSONMap<T> implements Map<String, T>, Serializable, Exportable, Imp
 		// default hibernate constructor
 	}
 	
+	@Deprecated
 	public JSONMap(JSONMap<T> jsonMap) {
 		this.jsonText = jsonMap.jsonText;
 	}
 	
-	@Lob
-	@Column(nullable=false)
+	public JSONMap(String jsonText) {
+		this.jsonText = jsonText;
+	}
+	
 	public String getJsonText() {
 		return jsonText;
 	}
@@ -82,13 +83,11 @@ public class JSONMap<T> implements Map<String, T>, Serializable, Exportable, Imp
 	 * The methods below MODIFY the map
 	 */
 	@Override
-	@Transient
 	public void clear() {
 		setJsonText(" ");
 	}
 	
 	@Override
-	@Transient
 	public T put(String key, T value) {
 		T result = embeddedMap.put(key, value);
 		setJsonText(JSONUtils.getJSONFromMap(embeddedMap));
@@ -96,14 +95,12 @@ public class JSONMap<T> implements Map<String, T>, Serializable, Exportable, Imp
 	}
 
 	@Override
-	@Transient
 	public void putAll(Map<? extends String, ? extends T> m) {
 		embeddedMap.putAll(m);
 		setJsonText(JSONUtils.getJSONFromMap(embeddedMap));
 	}
 
 	@Override
-	@Transient
 	public T remove(Object key) {
 		T value = embeddedMap.remove(key);
 		setJsonText(JSONUtils.getJSONFromMap(embeddedMap));
@@ -114,49 +111,41 @@ public class JSONMap<T> implements Map<String, T>, Serializable, Exportable, Imp
 	 * The methods below are READ-ONLY
 	 */
 	@Override
-	@Transient
 	public boolean containsKey(Object key) {
 		return embeddedMap.containsKey(key);
 	}
 
 	@Override
-	@Transient
 	public boolean containsValue(Object value) {
 		return embeddedMap.containsValue(value);
 	}
 
 	@Override
-	@Transient
 	public Set<java.util.Map.Entry<String, T>> entrySet() {
 		return embeddedMap.entrySet();
 	}
 
 	@Override
-	@Transient
 	public T get(Object key) {
 		return embeddedMap.get(key);
 	}
 
 	@Override
-	@Transient
 	public boolean isEmpty() {
 		return embeddedMap.isEmpty();
 	}
 
 	@Override
-	@Transient
 	public Set<String> keySet() {
 		return embeddedMap.keySet();
 	}
 
 	@Override
-	@Transient
 	public int size() {
 		return embeddedMap.size();
 	}
 
 	@Override
-	@Transient
 	public Collection<T> values() {
 		return embeddedMap.values();
 	}

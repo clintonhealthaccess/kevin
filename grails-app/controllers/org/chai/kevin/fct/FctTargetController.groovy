@@ -35,7 +35,7 @@ import grails.plugin.springcache.annotations.CacheFlush;
 
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.data.Sum
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.Utils
 

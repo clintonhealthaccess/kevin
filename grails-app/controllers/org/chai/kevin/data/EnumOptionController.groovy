@@ -28,13 +28,10 @@
 package org.chai.kevin.data
 
 
-import org.apache.commons.lang.math.NumberUtils;
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.Ordering;
-import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.data.Enum as Enum;
-
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.apache.commons.lang.math.NumberUtils
+import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.LanguageOrderable;
+import org.chai.kevin.Orderable
 
 /**
  * @author Jean Kahigiso M.
@@ -74,13 +71,15 @@ class EnumOptionController extends AbstractEntityController {
 //	}
 
 	def saveEntity(def entity) {
-		entity.enume.addEnumOption(entity)
+		log.debug('saving, order: '+ entity.order +', orderString: '+entity.orderString)
+		
+		entity.enume.addToEnumOptions(entity)
 		entity.save()
 		entity.enume.save()
 	}
 	
 	def deleteEntity(def entity) {
-		entity.enume.enumOptions.remove(entity)
+		entity.enume.removeFromEnumOptions(entity)
 		entity.delete()
 		entity.enume.save()
 	}
@@ -90,8 +89,6 @@ class EnumOptionController extends AbstractEntityController {
 		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 		if (params.order!=null) entity.order = params.order.collectEntries ([:]) { i,val -> [i, NumberUtils.toInt(val)] }
 	}
 	
@@ -103,13 +100,13 @@ class EnumOptionController extends AbstractEntityController {
 			response.sendError(404)
 		}
 		else {
-			List<EnumOption> options = enume.enumOptions;
-			Collections.sort(options, Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
+			def options = enume.enumOptions;
+			options.sort(LanguageOrderable.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
 			
 			def max = Math.min(params['offset']+params['max'], options.size())
 			
 			render (view: '/entity/list', model:[
-				entities: options.subList(params['offset'], max),
+				entities: options.asList().subList(params['offset'], max),
 				template: "data/enumOptionList",
 				entityCount: options.size(),
 				code: getLabel(),
@@ -129,7 +126,7 @@ class EnumOptionController extends AbstractEntityController {
 			List<EnumOption> options = enumOptionService.searchEnumOption(enume,params['q'],params);
 			
 			if(params['sort']==null)
-				Collections.sort(options, Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
+				Collections.sort(options, Orderable.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
 			
 			render (view: '/entity/list', model:[
 				entities: options,

@@ -37,7 +37,7 @@ import grails.plugin.springcache.annotations.CacheFlush
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.reports.ReportProgram;
 
 import org.chai.kevin.AbstractEntityController

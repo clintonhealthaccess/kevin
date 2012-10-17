@@ -32,10 +32,10 @@ import java.util.List
 
 import org.chai.kevin.Period;
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.reports.ReportProgram;
@@ -262,10 +262,10 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		setupLocationTree()
 		setupProgramTree()
 		setupDashboardTree()
-		def dataElement4 = newNormalizedDataElement(CODE(10), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
+		def dataElement4 = newNormalizedDataElement(CODE(10), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]])
 		def ratio4 = newSum("\$"+dataElement4.id, CODE(11))
 		def target4 = newDashboardTarget("Target 5", ratio4, ReportProgram.findByCode(ROOT), 1)
-		def dataElement5 = newNormalizedDataElement(CODE(12), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
+		def dataElement5 = newNormalizedDataElement(CODE(12), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]])
 		def ratio5 = newSum("\$"+dataElement5.id, CODE(13))
 		def target5 = newDashboardTarget("Target 6", ratio5, ReportProgram.findByCode(ROOT), 1)
 		refresh()
@@ -372,7 +372,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		
 		when:
 		def country = newLocationLevel(NATIONAL, 1)
-		def rwanda = newLocation(j(["en":RWANDA]), RWANDA, country)		
+		def rwanda = newLocation(["en":RWANDA], RWANDA, country)		
 		def root = ReportProgram.findByCode(ROOT)	
 		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
 		

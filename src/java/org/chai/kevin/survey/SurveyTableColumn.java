@@ -32,6 +32,7 @@ package org.chai.kevin.survey;
  *
  */
 
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -53,12 +54,12 @@ import javax.persistence.UniqueConstraint;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "SurveyTableColumn")
 @Table(name = "dhsst_survey_table_column", uniqueConstraints={@UniqueConstraint(columnNames="code")})
-public class SurveyTableColumn extends Orderable<Integer> implements Exportable {
+public class SurveyTableColumn extends Orderable implements Exportable {
 
 	private Long id;
 	private String code;
@@ -98,11 +99,11 @@ public class SurveyTableColumn extends Orderable<Integer> implements Exportable 
 	
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
+		return Utils.split(typeCodeString, Utils.DEFAULT_CODE_DELIMITER);
 	}
 	
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
+		this.typeCodeString = Utils.unsplit(typeCodes, Utils.DEFAULT_CODE_DELIMITER);
 	}
 
 	@ManyToOne(targetEntity=SurveyTableQuestion.class, fetch=FetchType.LAZY)
@@ -127,7 +128,7 @@ public class SurveyTableColumn extends Orderable<Integer> implements Exportable 
 	
 	@Transient
 	public Set<String> getTypeApplicable() {
-		return Utils.split(this.typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
+		return Utils.split(this.typeCodeString, Utils.DEFAULT_CODE_DELIMITER);
 	}
 
 	@Transient

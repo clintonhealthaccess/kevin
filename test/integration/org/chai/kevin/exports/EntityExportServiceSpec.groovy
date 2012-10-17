@@ -10,9 +10,9 @@ import org.chai.kevin.Translation
 import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocationType;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 import org.chai.kevin.survey.SurveyQuestion
 import org.chai.kevin.survey.SurveyCheckboxQuestion
 import org.chai.kevin.survey.SurveySimpleQuestion
@@ -29,10 +29,10 @@ class EntityExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = SurveyIntegrationTests.newSurvey(CODE(10), j(["en":"survey"]), period)
-		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = SurveyIntegrationTests.newSurveySection(CODE(12), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = SurveyIntegrationTests.newSurvey(CODE(10), ["en":"survey"], period)
+		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = SurveyIntegrationTests.newSurveySection(CODE(12), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = SurveyIntegrationTests.newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))		
@@ -52,10 +52,10 @@ class EntityExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = SurveyIntegrationTests.newSurvey(CODE(10), j(["en":"survey"]), period)
-		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = SurveyIntegrationTests.newSurveySection(CODE(12), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = SurveyIntegrationTests.newSurvey(CODE(10), ["en":"survey"], period)
+		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = SurveyIntegrationTests.newSurveySection(CODE(12), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = SurveyIntegrationTests.newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))		
@@ -73,10 +73,10 @@ class EntityExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = SurveyIntegrationTests.newSurvey(CODE(10), j(["en":"survey"]), period)
-		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = SurveyIntegrationTests.newSurveySection(CODE(12), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = SurveyIntegrationTests.newSurvey(CODE(10), ["en":"survey"], period)
+		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = SurveyIntegrationTests.newSurveySection(CODE(12), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = SurveyIntegrationTests.newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))
@@ -187,7 +187,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		entityData[3].equals("")
 		
 		when:
-		ie.trans = new Translation(j(["en":"English", "fr":"French"]))
+		ie.trans = new Translation(["en":"English", "fr":"French"])
 		entityData = entityExportService.getEntityData(ie, fields)
 		
 		then:

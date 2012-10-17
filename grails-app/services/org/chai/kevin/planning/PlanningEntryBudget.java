@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.data.Enum;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
 

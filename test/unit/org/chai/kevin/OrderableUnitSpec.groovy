@@ -8,7 +8,8 @@ import grails.plugin.spock.UnitSpec;
 
 class OrderableUnitSpec extends UnitSpec {
 
-	static class TestOrderable extends Orderable<Ordering> {
+	static class TestOrderable extends Orderable {
+		
 		Long id;
 		Ordering order;
 		

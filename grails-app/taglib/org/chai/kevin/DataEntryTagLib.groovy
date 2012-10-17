@@ -7,7 +7,7 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormValidationRule;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveySection;
 import org.apache.commons.lang.NotImplementedException;
@@ -40,8 +40,8 @@ class DataEntryTagLib {
 		}
 	}
 	
-	private Comparator<Orderable<Ordering>> getOrderingComparator() {
-		return Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage);
+	private Comparator<Orderable> getOrderingComparator() {
+		return Orderable.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage);
 	}
 	
 	def renderUserErrors = { attrs, body ->

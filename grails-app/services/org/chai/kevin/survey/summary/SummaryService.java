@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.chai.kevin.LocationService;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
+import org.chai.location.LocationService;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyProgram;
 import org.chai.kevin.survey.SurveyQuestion;

@@ -5,7 +5,6 @@ import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
-import org.chai.kevin.data.ExpressionMap
 import org.chai.kevin.data.NormalizedDataElement
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Source;
@@ -20,10 +19,6 @@ import org.chai.kevin.fct.FctTargetOption
 import org.chai.kevin.form.FormElement
 import org.chai.kevin.form.FormEnteredValue
 import org.chai.kevin.form.FormValidationRule
-import org.chai.kevin.location.DataLocation
-import org.chai.kevin.location.DataLocationType
-import org.chai.kevin.location.Location
-import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.planning.Planning
 import org.chai.kevin.planning.PlanningCost
 import org.chai.kevin.planning.PlanningOutput
@@ -49,6 +44,10 @@ import org.chai.kevin.survey.SurveyTableRow
 import org.chai.kevin.util.JSONUtils
 import org.chai.kevin.value.RawDataElementValue
 import org.chai.kevin.value.Value
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 
 public class Initializer {
 
@@ -126,67 +125,47 @@ public class Initializer {
 		}
 	}
 	
-	static def createDummyStructure() {
-
-		if (!Period.count()) {
-			// periods
-			def period = new Period(code:"period1", startDate: mar01, endDate: mar31)
-			period.save(failOnError: true)
-
-			def period2 = new Period(code:"period2",startDate: mar011, endDate: mar311)
-			period2.save(failOnError: true, flush: true)
+	static def createLocationLevels() {
+		if (!LocationLevel.count()) {
+			new LocationLevel(code: "country", names_en: "Country", order: 1).save(failOnError: true)
+			new LocationLevel(code: "province", names_en: "Province", order: 2).save(failOnError: true)
+			new LocationLevel(code: "district", names_en: "District", order: 3).save(failOnError: true)
+			new LocationLevel(code: "sector", names_en: "Sector", order: 4).save(failOnError: true)
 		}
-
+	}
+	
+	static def createDataLocationTypes() {
+		if (!DataLocationType.count()) {
+			new DataLocationType(code: 'health center', names_en: "Health Center").save(failOnError: true)
+			new DataLocationType(code: 'district hospital', names_en: "District Hospital").save(failOnError: true)
+		}
+	}
+	
+	static def createLocations() {
 		if (!Location.count()) {
-
-			def hc = new DataLocationType(names: j(["en":"Health Center"]), code: "Health Center").save(failOnError: true)
-			def dh = new DataLocationType(names: j(["en":"District Hospital"]), code: "District Hospital").save(failOnError: true)
-
-			def country = new LocationLevel(names: j(["en":"National"]), code: "National", order: 1).save(failOnError: true)
-			def province = new LocationLevel(names: j(["en":"Province"]), code: "Province", order: 2).save(failOnError: true)
-			def district = new LocationLevel(names: j(["en":"District"]), code: "District", order: 3).save(failOnError: true)
-			def sector = new LocationLevel(names: j(["en":"Sector"]), code: "Sector", order: 4).save(failOnError: true)
-
-			def rwanda = new Location(names: j(["en":"Rwanda"]), code: "Rwanda", parent: null, level: country).save(failOnError: true)
-
-			def kigali = new Location(names: j(["en":"Kigali City"]), code: "Kigali City", parent: rwanda, level: province).save(failOnError: true)
-			def north = new Location(names: j(["en":"North"]), code: "North", parent: rwanda, level: province).save(failOnError: true)
-			def south = new Location(names: j(["en":"South"]), code: "South", parent: rwanda, level: province).save(failOnError: true)
-			def east = new Location(names: j(["en":"East"]), code: "East", parent: rwanda, level: province).save(failOnError: true)
-			def west = new Location(names: j(["en":"West"]), code: "West", parent: rwanda, level: province).save(failOnError: true)
-
-			def burera = new Location(names: j(["en":"Burera"]), code: "0404", parent: north, level: district).save(failOnError: true)
-
-			rwanda.children = [
-				kigali,
-				north,
-				south,
-				east,
-				west
-			]
-			north.children = [burera]
-			rwanda.save(failOnError: true)
-			north.save(failOnError: true)
-
-			country.locations = [rwanda]
-			province.locations = [
-				kigali,
-				north,
-				south,
-				east,
-				west
-			]
-			district.locations = [burera]
-			country.save(failOnError: true)
-			province.save(failOnError: true)
-			district.save(failOnError: true)
-			
-			def butaro = new DataLocation(names: j(["en":"Butaro"]), code: "322", location: burera, type: dh).save(failOnError: true)
-			def kivuye = new DataLocation(names: j(["en":"Kivuye"]), code: "327", location: burera, type: hc).save(failOnError: true)
-			def rusasa = new DataLocation(names: j(["en":"Rusasa"]), code: "332", location: burera, type: hc).save(failOnError: true)
-			burera.dataLocations = [butaro, kivuye, rusasa]
-			burera.save(failOnError: true)
+			def rwanda = new Location(code: "rwanda", names_en: 'Rwanda', parent: null, level: LocationLevel.findByCode('country')).save(failOnError: true)
+			def north = new Location(code: "north", names_en: 'North', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def south = new Location(code: "south", names_en: 'South', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def east = new Location(code: "east", names_en: 'East', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def west = new Location(code: "west", names_en: 'West', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def kigali = new Location(code: "kigali", names_en: 'Kigali City', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def gasabo = new Location(code: "gasabo", names_en: 'Gasabo', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
+			def kicukiro = new Location(code: "kicukiro", names_en: 'Kicukiro', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
+			def nyarugenge = new Location(code: "Nyarugenge", names_en: 'Nyarugenge', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
+			def burera = new Location(code: "burera", names_en: 'Burera', parent: north, level: LocationLevel.findByCode('district')).save(failOnError: true)
 		}
+	}
+	
+	static def createDataLocations() {
+		if (!DataLocation.count()) {
+			[	new DataLocation(code: "butaro-hd", names_en: 'Butaro HD', type: DataLocationType.findByCode('district hospital')),
+				new DataLocation(code: "kivuye-cs", names_en: 'Kivuye CS', type: DataLocationType.findByCode('health center')),
+				new DataLocation(code: "rusas-cs", names_en: 'Butaro HD', type: DataLocationType.findByCode('health center'))
+			].each {Location.findByCode('burera').addToDataLocations(it).save(failOnError: true)}
+		}
+	}
+	
+	static def createDummyStructure() {
 
 		if (!ReportProgram.count()) {
 			def root = new ReportProgram(names:j(["en":"Strategic Programs"]), code:"Strategic Programs", descriptions:j(["en":"Strategic Programs"]), parent: null)
@@ -2095,10 +2074,6 @@ public class Initializer {
 		return calendar.getTime();
 	}
 
-	public static ExpressionMap e(def map) {
-		return new ExpressionMap(jsonText: JSONUtils.getJSONFromMap(map))
-	}
-
 	public static Value v(def value) {
 		return new Value("{\"value\":"+value+"}");
 	}
@@ -2107,7 +2082,4 @@ public class Initializer {
 		return new Translation(jsonText: JSONUtils.getJSONFromMap(map));
 	}
 
-	public static Ordering o(def map) {
-		return new Ordering(jsonText: JSONUtils.getJSONFromMap(map));
-	}
 }

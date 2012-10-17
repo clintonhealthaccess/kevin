@@ -47,7 +47,6 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
-import org.chai.kevin.data.ExpressionMap;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Source;
 import org.chai.kevin.data.Sum
@@ -68,11 +67,11 @@ import org.chai.kevin.value.RawDataElementValue
 import org.chai.kevin.value.NormalizedDataElementValue
 import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.Value;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.UserType;
@@ -132,20 +131,20 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static def setupLocationTree() {
 		// for the test environment, the location level is set to 4
 		// so we create a tree accordingly
-		def hc = newDataLocationType(j(["en":HEALTH_CENTER_GROUP]), HEALTH_CENTER_GROUP);
-		def dh = newDataLocationType(j(["en":DISTRICT_HOSPITAL_GROUP]), DISTRICT_HOSPITAL_GROUP);
+		def hc = newDataLocationType(["en":HEALTH_CENTER_GROUP], HEALTH_CENTER_GROUP);
+		def dh = newDataLocationType(["en":DISTRICT_HOSPITAL_GROUP], DISTRICT_HOSPITAL_GROUP);
 		
 		def country = newLocationLevel(NATIONAL, 1)
 		def province = newLocationLevel(PROVINCE, 2)
 		def district = newLocationLevel(DISTRICT, 3)
 		def sector = newLocationLevel(SECTOR, 4)
 		
-		def rwanda = newLocation(j(["en":RWANDA]), RWANDA, country)
-		def north = newLocation(j(["en":NORTH]), NORTH, rwanda, province)
-		def burera = newLocation(j(["en":BURERA]), BURERA, north, district)
+		def rwanda = newLocation(["en":RWANDA], RWANDA, country)
+		def north = newLocation(["en":NORTH], NORTH, rwanda, province)
+		def burera = newLocation(["en":BURERA], BURERA, north, district)
 		
-		newDataLocation(j(["en":BUTARO]), BUTARO, burera, dh)
-		newDataLocation(j(["en":KIVUYE]), KIVUYE, burera, hc)				
+		newDataLocation(["en":BUTARO], BUTARO, burera, dh)
+		newDataLocation(["en":KIVUYE], KIVUYE, burera, hc)				
 	}
 
 	static def setupProgramTree() {
@@ -160,62 +159,57 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return period.save(failOnError: true, flush: true)
 	} 
 	
-	static def newDataLocationType(def code) {
-		return newDataLocationType([:], code)
-	}
-	
 	static def newDataLocationType(def names, def code) {
-		return new DataLocationType(names: names, code: code).save(failOnError: true)
-	}
-	
-	static def newDataElementExport(def descriptions,def periods, def locationType, def locations, def dataElements){
-		return new DataElementExport(descriptions:descriptions,periods:periods,typeCodeString:Utils.unsplit(locationType, DataLocationType.DEFAULT_CODE_DELIMITER),locations:locations,dataElements:dataElements,date:new Date()).save(failOnError: true);
-	}
-	
-	static def newCalculationExport(def descriptions,def periods, def locationType, def locations, def calculations){
-		return new CalculationExport(descriptions:descriptions,periods:periods,typeCodeString:Utils.unsplit(locationType, DataLocationType.DEFAULT_CODE_DELIMITER),locations:locations,calculations:calculations,date:new Date()).save(failOnError: true);
-	}
-		
-	static def newDataLocation(def code, def location, def type) {
-		return newDataLocation([:], code, location, type)
-	}
-	
-	static def newDataLocation(def names, def code, def location, def type) {
-		def dataLocation = new DataLocation(names: names, code: code, location: location, type: type).save(failOnError: true, flush: true)
-		if (location != null) {
-			 location.dataLocations << dataLocation
-			 location.save(failOnError: true, flush: true)
-		}
-		return dataLocation
+		def dataLocationType = new DataLocationType(code: code)
+		setLocaleValueInMap(dataLocationType, names, "Names")
+		return dataLocationType.save(failOnError: true)
 	}
 	
 	static def newLocationLevel(String code, def order) {
-		return new LocationLevel(code: code, order: order).save(failOnError: true)
+		def locationLevel = new LocationLevel(code: code, order: order)
+		return locationLevel.save(failOnError: true)
 	}
 	
-	static def newLocation(String code, def level) {
-		return newLocation([:], code, null, level)
-	}
-
 	static def newLocation(def names, def code, def level) {
 		return newLocation(names, code, null, level)
 	}
-		
-	static def newLocation(String code, def parent, def level) {
-		return newLocation([:], code, parent, level)
-	}
 	
 	static def newLocation(def names, def code, def parent, def level) {
-		def location = new Location(names: names, code: code, parent: parent, level: level).save(failOnError: true)
-		level.locations << location
+		def location = new Location(code: code, parent: parent, level: level)
+		setLocaleValueInMap(location,names,"Names")
+		location.save(failOnError: true)
+		level.addToLocations(location)
 		level.save(failOnError: true)
 		if (parent != null) {
-			parent.children << location
+			parent.addToChildren(location)
 			parent.save(failOnError: true)
 		}
 		return location
-	}	
-			
+	}
+	
+	static def newDataLocation(def names, def code, def location, def type) {
+		def dataLocation = new DataLocation(code: code, location: location, type: type)
+		setLocaleValueInMap(dataLocation,names,"Names")
+		dataLocation.save(failOnError: true)
+		if (location != null) {
+			location.addToDataLocations(dataLocation)
+			location.save(failOnError: true)
+		}
+		if (type != null) {
+			type.addToDataLocations(dataLocation)
+			type.save(failOnError: true)
+	   }
+		return dataLocation
+	}
+	
+	static def newDataElementExport(def descriptions,def periods, def locationType, def locations, def dataElements){
+		return new DataElementExport(descriptions:descriptions,periods:periods,typeCodeString:Utils.unsplit(locationType, Utils.DEFAULT_CODE_DELIMITER),locations:locations,dataElements:dataElements,date:new Date()).save(failOnError: true);
+	}
+	
+	static def newCalculationExport(def descriptions,def periods, def locationType, def locations, def calculations){
+		return new CalculationExport(descriptions:descriptions,periods:periods,typeCodeString:Utils.unsplit(locationType, Utils.DEFAULT_CODE_DELIMITER),locations:locations,calculations:calculations,date:new Date()).save(failOnError: true);
+	}
+		
 	static def newUser(def username, def uuid) {
 		return new User(userType: UserType.OTHER, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
 	}
@@ -272,11 +266,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static RawDataElement newRawDataElement(def code, def type) {
-		return newRawDataElement(j([:]), code, type)
+		return newRawDataElement([:], code, type)
 	}
 	
 	static RawDataElement newRawDataElement(def code, def type, Source source) {
-		return newRawDataElement(j([:]), code, type, null, source)
+		return newRawDataElement([:], code, type, null, source)
 	}
 	
 	static RawDataElement newRawDataElement(def names, def code, def type, String info) {
@@ -306,11 +300,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newNormalizedDataElement(def code, Type type, def expressionMap) {
-		return newNormalizedDataElement(j([:]), code, type, expressionMap, [:])
+		return newNormalizedDataElement([:], code, type, expressionMap, [:])
 	}
 	
 	static def newNormalizedDataElement(def code, Type type, def expressionMap, Map params) {
-		return newNormalizedDataElement(j([:]), code, type, expressionMap, params)
+		return newNormalizedDataElement([:], code, type, expressionMap, params)
 	}
 	
 	static NormalizedDataElementValue newNormalizedDataElementValue(def normalizedDataElement, def location, def period, def status, def value) {
@@ -341,16 +335,16 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new Enum(code: code).save(failOnError: true, flush: true)
 	}
 	
-	static Enum newEnume(def code, def names, def descriptions){
-		return new Enum(code: code, names:j("en":names),descriptions:j("en":descriptions)).save(failOnError: true, flush: true)
-	}
+//	static Enum newEnume(def code, def names, def descriptions){
+//		return new Enum(code: code, names:"en":names,descriptions:"en":descriptions).save(failOnError: true, flush: true)
+//	}
 		
 	static EnumOption newEnumOption(def enume, def value) {
-		return newEnumOption([:], enume, value, new Ordering())
+		return newEnumOption([:], enume, value, null)
 	}
 	
 	static EnumOption newEnumOption(def names, Enum enume, def value) {
-		return newEnumOption(names, enume, value, new Ordering())
+		return newEnumOption(names, enume, value, null)
 	}
 	
 	static EnumOption newEnumOption(Enum enume, def value, def order) {
@@ -359,7 +353,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	
 	static EnumOption newEnumOption(def names, Enum enume, def value, def order) {
 		def enumOption = new EnumOption(code: enume.code+value, names: names, enume: enume, value: value, order: order).save(failOnError: true)
-		enume.addEnumOption(enumOption)
+		enume.addToEnumOptions(enumOption)
 		enume.save(failOnError: true)
 		return enumOption
 	}
@@ -369,7 +363,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def static newFormValidationRule(def code, def element, def prefix, def types, def expression, boolean allowOutlier, def dependencies = []) {
-		def validationRule = new FormValidationRule(code: code, expression: expression, prefix: prefix, messages: [:], formElement: element, typeCodeString: Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
+		def validationRule = new FormValidationRule(code: code, expression: expression, prefix: prefix, messages: [:], formElement: element, typeCodeString: Utils.unsplit(types, Utils.DEFAULT_CODE_DELIMITER), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
 		element.addValidationRule(validationRule)
 		element.save(failOnError: true)
 		return validationRule
@@ -428,68 +422,56 @@ abstract class IntegrationTests extends IntegrationSpec {
 		WebUtils.metaClass.static.getSavedRequest = { ServletRequest request -> null }
 	}
 	
+	
+//	static def getLocationLevels(def levels) {
+//		def result = []
+//		for (def level : levels) {
+//			result.add LocationLevel.findByCode(level)
+//		}
+//		return result;
+//	}
+//	
+//	static def getCalculationLocation(def code) {
+//		def location = Location.findByCode(code)
+//		if (location == null) location = DataLocation.findByCode(code)
+//		return location
+//	}
+//	
+//	static def getLocations(def codes) {
+//		def result = []
+//		for (String code : codes) {
+//			result.add(Location.findByCode(code))
+//		}
+//		return result
+//	}
+//	
+//	static def getDataLocations(def codes) {
+//		def result = []
+//		for (String code : codes) {
+//			result.add(DataLocation.findByCode(code))
+//		}
+//		return result
+//	}
+//	static def getDataLocationTypes(def codes){
+//		def result=[]
+//		for(String code: codes)
+//			result.add(DataLocationType.findByCode(code));
+//		return result;
+//	}
+	
 	static def g(def types) {
-		return Utils.unsplit(types, DataLocationType.DEFAULT_CODE_DELIMITER)
-	}
-	
-	static def getLocationLevels(def levels) {
-		def result = []
-		for (def level : levels) {
-			result.add LocationLevel.findByCode(level)
-		}
-		return result;
-	}
-	
-	static def getCalculationLocation(def code) {
-		def location = Location.findByCode(code)
-		if (location == null) location = DataLocation.findByCode(code)
-		return location
-	}
-	
-	static def getLocations(def codes) {
-		def result = []
-		for (String code : codes) {
-			result.add(Location.findByCode(code))
-		}
-		return result
-	}
-	
-	static def getDataLocations(def codes) {
-		def result = []
-		for (String code : codes) {
-			result.add(DataLocation.findByCode(code))
-		}
-		return result
-	}
-	static def getDataLocationTypes(def codes){
-		def result=[]
-		for(String code: codes)
-			result.add(DataLocationType.findByCode(code));
-		return result;
+		return Utils.unsplit(types, Utils.DEFAULT_CODE_DELIMITER)
 	}
 	
 	static s(def list) {
 		return new HashSet(list)
 	}
 	
-	static e(def map) {
-		return new ExpressionMap(jsonText: JSONUtils.getJSONFromMap(map))
-	}
-	
-	static j(def map) {
-		return new Translation(jsonText: JSONUtils.getJSONFromMap(map));
-	}
-	
-	static o(def map) {
-		return new Ordering(jsonText: JSONUtils.getJSONFromMap(map));
-	}
-	
 	static v(def value) {
 		return new Value("{\"value\":"+value+"}");
 	}
 	
-	static Date getDate( int year, int month, int day )
-	{
+	static Date getDate( int year, int month, int day ) {
 		final Calendar calendar = Calendar.getInstance();
 
 		calendar.clear();
@@ -498,6 +480,16 @@ abstract class IntegrationTests extends IntegrationSpec {
 		calendar.set( Calendar.DAY_OF_MONTH, day );
 
 		return calendar.getTime();
+	}
+	
+	static def setLocaleValueInMap(def object, def map, def fieldName) {
+		def methodName = 'set'+fieldName
+		// TODO replace with CONF variable if this fails
+		def grailsApplication = new User().domainClass.grailsApplication
+		grailsApplication.config.i18nFields.locales.each{ loc ->
+			if(map.get(loc) != null) object."$methodName"(map.get(loc), new Locale(loc))
+			else object."$methodName"("", new Locale(loc))
+		}
 	}
 }
 

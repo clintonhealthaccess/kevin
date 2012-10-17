@@ -4,8 +4,8 @@ import grails.plugin.spock.UnitSpec;
 
 import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Sum;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.AggregationValue;
 import org.chai.kevin.value.CalculationPartialValue;

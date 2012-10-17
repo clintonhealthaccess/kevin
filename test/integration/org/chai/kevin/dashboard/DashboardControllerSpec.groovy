@@ -1,7 +1,7 @@
 package org.chai.kevin.dashboard
 
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
 import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.JSONUtils;

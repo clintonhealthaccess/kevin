@@ -205,17 +205,17 @@ log4j = {
 		   
 }
 
-environments {
-	test {
-		log4j = {
-			root {
-				error
-			}
-			
-			off 'ExpressionLog'
-		}
-	}
-}
+//environments {
+//	test {
+//		log4j = {
+//			root {
+//				error
+//			}
+//			
+//			off 'ExpressionLog'
+//		}
+//	}
+//}
 
 /**
  * Application specific config

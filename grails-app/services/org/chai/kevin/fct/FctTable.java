@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.chai.kevin.location.CalculationLocation;
+import org.chai.location.CalculationLocation;
 import org.chai.kevin.reports.ReportTable;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.SumValue;

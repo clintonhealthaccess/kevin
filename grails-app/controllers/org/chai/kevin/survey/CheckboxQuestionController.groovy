@@ -33,7 +33,7 @@ import org.chai.kevin.Translation;
 import org.chai.kevin.util.Utils
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.apache.commons.lang.math.NumberUtils;
 
 /**

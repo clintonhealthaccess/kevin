@@ -58,8 +58,8 @@ class PlanningTypeUnitSpec extends UnitTests {
 		
 		when:
 		planningType = new PlanningType(costs: [
-			new PlanningCost(id: 1, names: j(["en": "Test1"])),
-			new PlanningCost(id: 2, names: j(["en": "Test2"]))
+			new PlanningCost(id: 1, names: ["en": "Test1"]),
+			new PlanningCost(id: 2, names: ["en": "Test2"])
 		])
 		planningType.buildGroupHierarchy(languageService)
 		
@@ -70,8 +70,8 @@ class PlanningTypeUnitSpec extends UnitTests {
 		
 		when:
 		planningType = new PlanningType(costs: [
-			new PlanningCost(id: 1, names: j(["en": "Group - Test1"])),
-			new PlanningCost(id: 2, names: j(["en": "Group - Test2"]))
+			new PlanningCost(id: 1, names: ["en": "Group - Test1"]),
+			new PlanningCost(id: 2, names: ["en": "Group - Test2"])
 		])
 		planningType.buildGroupHierarchy(languageService)
 		
@@ -83,8 +83,8 @@ class PlanningTypeUnitSpec extends UnitTests {
 		
 		when:
 		planningType = new PlanningType(costs: [
-			new PlanningCost(id: 1, names: j(["en": "Test1"])),
-			new PlanningCost(id: 2, names: j(["en": "Group - Test2"]))
+			new PlanningCost(id: 1, names: ["en": "Test1"]),
+			new PlanningCost(id: 2, names: ["en": "Group - Test2"])
 		])
 		planningType.buildGroupHierarchy(languageService)
 		

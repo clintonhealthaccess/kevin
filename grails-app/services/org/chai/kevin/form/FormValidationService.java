@@ -8,8 +8,8 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.ValidationService;
@@ -58,7 +58,7 @@ public class FormValidationService {
 		if (log.isDebugEnabled()) log.debug("getInvalidPrefix(validationRule="+validationRule+", dataLocation="+dataLocation+")");
 
 		Set<String> result = new HashSet<String>();
-		if (Utils.split(validationRule.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER).contains(dataLocation.getType().getCode())) {
+		if (Utils.split(validationRule.getTypeCodeString(), Utils.DEFAULT_CODE_DELIMITER).contains(dataLocation.getType().getCode())) {
 			// we validate only if that rule applies to the group
 			ValidatableValue validatable = locator.getValidatable(validationRule.getFormElement().getId(), dataLocation);
 	

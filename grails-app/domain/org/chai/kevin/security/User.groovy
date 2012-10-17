@@ -1,7 +1,7 @@
 package org.chai.kevin.security
 
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.security.PasswordToken;
 import org.chai.kevin.security.RegistrationToken;

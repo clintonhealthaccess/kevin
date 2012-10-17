@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Sum;
-import org.chai.kevin.location.CalculationLocation;
+import org.chai.location.CalculationLocation;
 
 public class SumValue extends CalculationValue<SumPartialValue> {
 	

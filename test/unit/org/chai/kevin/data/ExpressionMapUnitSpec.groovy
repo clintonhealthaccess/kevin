@@ -9,7 +9,7 @@ class ExpressionMapUnitSpec extends UnitSpec {
 	def "test simple map"() {
 		
 		when:
-		def map = new ExpressionMap([('1'): new JSONMap([('HC'): '$1 + $2'])])
+		def map = new Expressions([('1'): new JSONMap([('HC'): '$1 + $2'])])
 		
 		then:
 		map[('1')].equals(['HC':'$1 + $2'])
@@ -19,7 +19,7 @@ class ExpressionMapUnitSpec extends UnitSpec {
 	
 	def "test map with 2 periods"() {
 		when:
-		def map = new ExpressionMap()
+		def map = new Expressions()
 		map['1'] = [:]
 		map['1']['type'] = '123'
 		map['2'] = [:]

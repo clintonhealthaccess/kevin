@@ -10,17 +10,17 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LocationService;
+import org.chai.location.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.util.Utils.ReportType;
@@ -50,11 +50,11 @@ public class DsrService {
 		Set<CalculationLocation> calculationLocations = new HashSet<CalculationLocation>();		
 		switch(reportType){
 			case MAP:
-				calculationLocations = new HashSet<CalculationLocation>(location.getChildrenWithData(skips, types, true));
+				calculationLocations = new HashSet<CalculationLocation>(location.getChildrenEntitiesWithDataLocations(skips, types, true));
 				break;
 			case TABLE:
 			default:
-				calculationLocations = new HashSet<CalculationLocation>(location.collectLocationTreeWithData(skips, types, true));
+				calculationLocations = new HashSet<CalculationLocation>(location.collectTreeWithDataLocations(skips, types, true));
 		}
 		
 		List<DsrTarget> targets = new ArrayList<DsrTarget>();

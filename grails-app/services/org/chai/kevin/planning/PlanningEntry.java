@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.form.FormElement.ElementCalculator;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
 

@@ -43,7 +43,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Exportable;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -102,7 +102,7 @@ public class SurveySimpleQuestion extends SurveyQuestion implements Exportable {
 			throw new IllegalArgumentException("survey element does not belong to question (simple)");
 		}
 		return new HashSet<String>(CollectionUtils.intersection(
-			Utils.split(this.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER),
+			Utils.split(this.getTypeCodeString(), Utils.DEFAULT_CODE_DELIMITER),
 			this.getSection().getTypeApplicable())
 		);
 	}

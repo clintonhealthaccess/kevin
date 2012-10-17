@@ -6,9 +6,9 @@ import org.chai.kevin.IntegrationTests
 import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardIntegrationTests
 import org.chai.kevin.dsr.DsrIntegrationTests
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.security.UserController;
 import org.chai.kevin.dashboard.DashboardTarget;

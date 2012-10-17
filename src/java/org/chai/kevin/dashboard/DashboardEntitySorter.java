@@ -48,7 +48,7 @@ public class DashboardEntitySorter {
 				else if(entity1.isTarget() && !entity2.isTarget()) 
 					return 1;
 				else
-					return entity1.compareTo((Orderable<Integer>)entity2);				
+					return entity1.compareTo((Orderable)entity2);				
 			}
 		};
 	}

@@ -1,4 +1,4 @@
-package org.chai.kevin.location;
+package org.chai.location;
 
 import org.chai.kevin.AbstractEntityController;
 import java.io.File;
@@ -11,11 +11,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationService;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.LocationService;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.util.Utils
 import org.supercsv.io.CsvListWriter;
@@ -95,7 +95,7 @@ class LocationController extends AbstractEntityController {
 	
 	def getAjaxData = {
 		def clazz = Location.class
-		if (params['class'] != null) clazz = Class.forName('org.chai.kevin.location.'+params['class'], true, Thread.currentThread().contextClassLoader)
+		if (params['class'] != null) clazz = Class.forName('org.chai.location.'+params['class'], true, Thread.currentThread().contextClassLoader)
 		
 		def locations = locationService.searchLocation(clazz, params['term'], [:])		
 		render(contentType:"text/json") {

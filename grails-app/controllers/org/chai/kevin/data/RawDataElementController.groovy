@@ -32,7 +32,7 @@ package org.chai.kevin.data
  */
 import org.apache.commons.logging.Log;
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.LocationService
+import org.chai.location.LocationService
 import org.chai.kevin.Period;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.survey.SurveyElement
@@ -78,7 +78,7 @@ class RawDataElementController extends AbstractEntityController {
 	}
 		
 	def saveEntity(def entity) {
-		if (entity.id != null && !params['oldType'].equals(new Type(params['type.jsonValue']))) {
+		if (entity.id != null && !params['oldType'].equals(new Type(params['typeString']))) {
 			def surveyElements = surveyService.getSurveyElements(entity, null);
 			if (log.isDebugEnabled()) log.debug("deleting SurveyEnteredValues for "+surveyElements);
 			surveyElements.each { element ->
@@ -91,7 +91,7 @@ class RawDataElementController extends AbstractEntityController {
 	def validateEntity(def entity) {
 		//TODO check for duplicate code
 		boolean valid = entity.validate()
-		if (entity.id != null && !params['oldType'].equals(new Type(params['type.jsonValue'])) && valueService.getNumberOfValues(entity) != 0) {
+		if (entity.id != null && !params['oldType'].equals(entity.type) && valueService.getNumberOfValues(entity)) {
 			// error if types are different
 			entity.errors.rejectValue('type', 'rawdataelement.type.cannotChange', 'Cannot change type because the element has associated values.')
 			valid = false
@@ -124,20 +124,14 @@ class RawDataElementController extends AbstractEntityController {
 	}
 
 	def bindParams(def entity) {
-		bindData(entity, params, [exclude:'type.jsonValue'])
-
-		if (entity.type == null) entity.type = new Type()
-		params['oldType'] = new Type(entity.type.jsonValue)
+		params['oldType'] = entity.type
+		
+		bindData(entity, params, [exclude:'typeString'])
 		
 		// we assign the new type only if there are no associated values
-		if (entity.id == null || valueService.getNumberOfValues(entity) == 0) {
-			bindData(entity, params, [include:'type.jsonValue'])
+		if (entity.id == null || !valueService.getNumberOfValues(entity)) {
+			bindData(entity, params, [include:'typeString'])
 		}
-				
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
 	def search = {

@@ -3,7 +3,7 @@ package org.chai.kevin.data
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.Period;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.task.CalculateTask;
 import org.chai.task.Task.TaskStatus;
 import org.chai.kevin.value.DataValue;

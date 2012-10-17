@@ -6,14 +6,8 @@
 <hibernate-configuration>
 
 	<session-factory>	
-		<!-- mapping class="org.chai.kevin.Period" />
-	
-		<mapping class="org.chai.kevin.data.Source" />
-	    <mapping class="org.chai.kevin.data.NormalizedDataElement" />
-	    <mapping class="org.chai.kevin.data.Calculation" />
-	    <mapping class="org.chai.kevin.data.Aggregation" />
+		<!-- mapping class="org.chai.kevin.data.Aggregation" />
 	    <mapping class="org.chai.kevin.data.Sum" />
-	    <mapping class="org.chai.kevin.data.RawDataElement" />
 	    <mapping class="org.chai.kevin.data.Enum" />
 	    <mapping class="org.chai.kevin.data.EnumOption" />
 		
@@ -58,12 +52,6 @@
 		<mapping class="org.chai.kevin.planning.PlanningSkipRule" />
 		<mapping class="org.chai.kevin.planning.PlanningOutput" />
 		<mapping class="org.chai.kevin.planning.PlanningOutputColumn" />
-
-		<mapping class="org.chai.kevin.location.CalculationLocation" />
-		<mapping class="org.chai.kevin.location.DataLocation" />
-		<mapping class="org.chai.kevin.location.DataLocationType" />
-		<mapping class="org.chai.kevin.location.Location" />
-		<mapping class="org.chai.kevin.location.LocationLevel" />
 		
 		<mapping class="org.chai.kevin.exports.DataExport" />
 		<mapping class="org.chai.kevin.exports.DataElementExport" />

@@ -31,8 +31,8 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.exports.DataElementExportController;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 
 /**
  * @author Jean Kahigiso M.
@@ -147,7 +147,7 @@ class DataElementExportControllerSpec extends IntegrationTests {
 		locations.addAll(getLocations([BURERA]));
 		locations.addAll(getDataLocations([KIVUYE]));
 		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
-		def dataElementExport = newDataElementExport(j("en":"Testing Seach One"),periods, locationType, locations, dataElements);
+		def dataElementExport = newDataElementExport("en":"Testing Seach One",periods, locationType, locations, dataElements);
 		dataElementExportController = new  DataElementExportController();
 		
 		when:

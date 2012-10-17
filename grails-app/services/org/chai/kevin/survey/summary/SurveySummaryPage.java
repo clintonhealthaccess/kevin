@@ -6,8 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import org.chai.kevin.LocationSorter;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.kevin.survey.SurveyProgram;
 import org.chai.kevin.survey.SurveySection;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
@@ -72,7 +71,7 @@ public class SurveySummaryPage {
 	public void sort(String parameter, String order, String language) {
 		if (locations == null || parameter == null || order == null) return;
 		if (parameter.equals(LOCATION_SORT)) {
-			Collections.sort(locations, LocationSorter.BY_NAME(language));
+//			Collections.sort(locations, LocationSorter.BY_NAME(language));
 			if (order.equals("desc")) Collections.reverse(locations); 
 		}
 		else if (parameter.equals(PROGRESS_SORT)) {

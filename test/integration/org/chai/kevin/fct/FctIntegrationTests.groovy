@@ -2,7 +2,7 @@ package org.chai.kevin.fct
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.util.Utils;
 

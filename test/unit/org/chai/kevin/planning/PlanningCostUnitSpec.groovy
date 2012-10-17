@@ -11,7 +11,7 @@ class PlanningCostUnitSpec extends UnitTests {
 		when:
 		def languageService = new LanguageService()
 		languageService.metaClass.getCurrentLanguage = {"en"}
-		def planningCost = new PlanningCost(names: j(["en": "Cost - Revenue"]))
+		def planningCost = new PlanningCost(names: ["en": "Cost - Revenue"])
 		
 		then:
 		planningCost.getGroups(languageService) == ["Cost"]
@@ -23,7 +23,7 @@ class PlanningCostUnitSpec extends UnitTests {
 		def languageService = new LanguageService()
 		languageService.metaClass.getCurrentLanguage = {"fr"}
 		languageService.metaClass.getFallbackLanguage = {"en"}
-		def planningCost = new PlanningCost(names: j(["en": "Cost - Revenue"]))
+		def planningCost = new PlanningCost(names: ["en": "Cost - Revenue"])
 		
 		then:
 		planningCost.getGroups(languageService) == ["Cost"]
@@ -35,7 +35,7 @@ class PlanningCostUnitSpec extends UnitTests {
 		def languageService = new LanguageService()
 		languageService.metaClass.getCurrentLanguage = {"fr"}
 		languageService.metaClass.getFallbackLanguage = {"en"}
-		def planningCost = new PlanningCost(names: j([:]))
+		def planningCost = new PlanningCost(names: [:])
 		
 		then:
 		planningCost.getGroups(languageService) == []

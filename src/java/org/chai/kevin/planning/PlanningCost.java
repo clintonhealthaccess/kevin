@@ -2,6 +2,7 @@ package org.chai.kevin.planning;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -24,7 +25,7 @@ import org.chai.kevin.data.NormalizedDataElement;
 
 @Entity(name="PlanningCost")
 @Table(name="dhsst_planning_cost")
-public class PlanningCost extends Orderable<Integer> {
+public class PlanningCost extends Orderable {
 
 	public enum PlanningCostType {OUTGOING("planning.planningcost.type.outgoing"), INCOMING("planning.planningcost.type.incoming");
 		private String code;

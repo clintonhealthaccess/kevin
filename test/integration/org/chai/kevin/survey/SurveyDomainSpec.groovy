@@ -9,9 +9,9 @@ import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormValidationRule;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.DataLocation;
 	
 class SurveyDomainSpec extends SurveyIntegrationTests {
 

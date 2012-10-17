@@ -1,5 +1,7 @@
 package org.chai.kevin.planning;
 
+import java.util.Map;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -17,7 +19,7 @@ import org.chai.kevin.Translation;
 @Entity(name="PlanningOutputColumn")
 @Table(name="dhsst_planning_output_column")
 
-public class PlanningOutputColumn extends Orderable<Integer> {
+public class PlanningOutputColumn extends Orderable {
 
 	private Long id;
 	

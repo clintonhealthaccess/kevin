@@ -21,7 +21,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -99,10 +99,10 @@ public class Planning {
 	
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
+		return Utils.split(typeCodeString, Utils.DEFAULT_CODE_DELIMITER);
 	}
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
+		this.typeCodeString = Utils.unsplit(typeCodes, Utils.DEFAULT_CODE_DELIMITER);
 	}
 	
 	@ManyToOne(targetEntity=Period.class)

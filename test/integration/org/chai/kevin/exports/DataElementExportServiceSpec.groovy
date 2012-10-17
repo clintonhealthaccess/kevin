@@ -37,7 +37,7 @@ import org.chai.kevin.Period;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.exports.DataElementExport;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.RawDataElementValue;
@@ -73,7 +73,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		
 		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
 		
-		def exporter = newDataElementExport(j("en":"Testing Seach One"),periods, [HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP], locations, dataElements);
+		def exporter = newDataElementExport("en":"Testing Seach One",periods, [HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP], locations, dataElements);
 		
 		when:
 		def exportedFile = dataElementExportService.exportData(exporter, 'en');
@@ -97,7 +97,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		
 		def dataElements=new HashSet([dataElementOne]);
 		
-		def exporterOne = newDataElementExport(j("en":"Testing Seach One"),periods, [HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP], locations, dataElements);
+		def exporterOne = newDataElementExport("en":"Testing Seach One",periods, [HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP], locations, dataElements);
 		when:
 		def dataLocations = locationService.getDataLocationsOfType(locations,locationTypes)
 		def exportedFileOne = dataElementExportService.exportDataElements("Testing",dataLocations,exporterOne.periods,exporterOne.dataElements, 'en');
@@ -177,7 +177,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		def period= newPeriod();
 		def locations= getDataLocations([KIVUYE]);
 
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(HEALTH_CENTER_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(HEALTH_CENTER_GROUP):"1"]])
 		
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, locations[0], period, Status.VALID, v("1"))
 		

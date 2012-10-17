@@ -26,8 +26,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Translation;
 import org.chai.kevin.form.FormElement.ElementCalculator;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 
 @Entity(name="FormValidationRule")
@@ -112,11 +112,11 @@ public class FormValidationRule {
 	
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
+		return Utils.split(typeCodeString, Utils.DEFAULT_CODE_DELIMITER);
 	}
 	
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
+		this.typeCodeString = Utils.unsplit(typeCodes, Utils.DEFAULT_CODE_DELIMITER);
 	}
 	
 	@Basic

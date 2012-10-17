@@ -31,7 +31,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.AbstractController
 import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationService;
+import org.chai.location.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.PeriodSorter
 import org.chai.kevin.data.Data;
@@ -39,11 +39,11 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.exports.DataExport;
 import org.chai.kevin.exports.SurveyExportService;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 

@@ -31,6 +31,7 @@ package org.chai.kevin.survey;
  * @author JeanKahigiso
  *
  */
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -52,14 +53,14 @@ import javax.persistence.UniqueConstraint;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 @Entity(name = "SurveyCheckboxOption")
 @Table(name = "dhsst_survey_checkbox_option", uniqueConstraints={@UniqueConstraint(columnNames="code")})
-public class SurveyCheckboxOption extends Orderable<Integer> implements Exportable {
+public class SurveyCheckboxOption extends Orderable implements Exportable {
 
 	private Long id;
 	private String code;
@@ -100,10 +101,10 @@ public class SurveyCheckboxOption extends Orderable<Integer> implements Exportab
 	
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
+		return Utils.split(typeCodeString, Utils.DEFAULT_CODE_DELIMITER);
 	}
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
+		this.typeCodeString = Utils.unsplit(typeCodes, Utils.DEFAULT_CODE_DELIMITER);
 	}
 
 	@ManyToOne(targetEntity = SurveyCheckboxQuestion.class)
@@ -138,7 +139,7 @@ public class SurveyCheckboxOption extends Orderable<Integer> implements Exportab
 	
 	@Transient
 	public Set<String> getTypeApplicable() {
-		return Utils.split(this.typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
+		return Utils.split(this.typeCodeString, Utils.DEFAULT_CODE_DELIMITER);
 	}
 
 	public SurveyCheckboxOption deepCopy(SurveyCloner cloner) {
@@ -169,4 +170,5 @@ public class SurveyCheckboxOption extends Orderable<Integer> implements Exportab
 	public String toExportString() {
 		return "[" + Utils.formatExportCode(getCode()) + ", " + getSurveyElement().toExportString() + "]";
 	}
+
 }

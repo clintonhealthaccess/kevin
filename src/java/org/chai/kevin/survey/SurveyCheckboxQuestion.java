@@ -45,7 +45,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Exportable;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -114,7 +114,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion implements Exportable
 	public List<SurveyCheckboxOption> getOptions(DataLocationType type) {
 		List<SurveyCheckboxOption> result = new ArrayList<SurveyCheckboxOption>();
 		for (SurveyCheckboxOption surveyCheckboxOption : getOptions()) {
-			if (Utils.split(surveyCheckboxOption.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER)
+			if (Utils.split(surveyCheckboxOption.getTypeCodeString(), Utils.DEFAULT_CODE_DELIMITER)
 					.contains(type.getCode()))
 				result.add(surveyCheckboxOption);
 		}
@@ -132,7 +132,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion implements Exportable
 				found = true;
 				optionOrgUnitUuIds.addAll(CollectionUtils.intersection(
 					option.getTypeApplicable(),
-					Utils.split(this.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER))
+					Utils.split(this.getTypeCodeString(), Utils.DEFAULT_CODE_DELIMITER))
 				);
 			}
 		}

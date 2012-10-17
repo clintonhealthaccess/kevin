@@ -53,7 +53,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.value.Value;
 
 /**
@@ -61,6 +61,9 @@ import org.chai.kevin.value.Value;
  * 
  */
 public class Utils {
+	
+	public final static String DEFAULT_CODE_DELIMITER = ";";
+//	public final static String 
 	
 	public enum ReportType {
 		MAP, TABLE		

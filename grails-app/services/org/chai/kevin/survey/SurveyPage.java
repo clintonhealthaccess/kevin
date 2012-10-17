@@ -2,24 +2,20 @@ package org.chai.kevin.survey;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
-import org.chai.kevin.Orderable;
-import org.chai.kevin.Ordering;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Enum;
-import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
+import org.chai.location.DataLocation;
 
 public class SurveyPage {
 

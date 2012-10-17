@@ -53,8 +53,8 @@ class DataExportServiceSpec extends IntegrationTests {
 		
 		def dataElement=new HashSet([dataElementOne,dataElementTwo]);
 		
-		def exporterOne = newDataElementExport(j("en":"Testing Seach One"),periods, locationType, locations, dataElement);
-		def exporterTwo = newDataElementExport(j("en":"Testing Seach Two"),periods, locationType, locations, dataElement);
+		def exporterOne = newDataElementExport("en":"Testing Seach One",periods, locationType, locations, dataElement);
+		def exporterTwo = newDataElementExport("en":"Testing Seach Two",periods, locationType, locations, dataElement);
 		
 		when:
 		def searchOne = dataExportService.searchDataExports(DataElementExport.class,'One',[:]);

@@ -30,7 +30,7 @@ package org.chai.kevin.planning
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.Period;
 import org.chai.kevin.PeriodSorter
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 /**
  * @author Jean Kahigiso M.
  *

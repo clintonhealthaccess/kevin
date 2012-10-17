@@ -43,7 +43,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Data;
-import org.chai.kevin.location.CalculationLocation;
+import org.chai.location.CalculationLocation;
 import org.hibernate.annotations.NaturalId;
 
 @MappedSuperclass

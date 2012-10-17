@@ -1,10 +1,10 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractController;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 import org.chai.kevin.survey.summary.SurveySummaryPage;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 

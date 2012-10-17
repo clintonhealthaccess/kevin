@@ -74,7 +74,7 @@ class TranslatableSpec extends IntegrationTests {
 
 	def "translatable set map sets json"() {
 		when:
-		def dataElement = newRawDataElement(j(["en":ENGLISH, "fr":FRANCAIS]), CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(["en":ENGLISH, "fr":FRANCAIS], CODE(1), Type.TYPE_NUMBER())
 
 		then:
 		(new HashMap(["en":ENGLISH, "fr":FRANCAIS])).equals(dataElement.names)
@@ -85,7 +85,7 @@ class TranslatableSpec extends IntegrationTests {
 
 	def "translatable set json sets map"() {
 		when:
-		def dataElement = newRawDataElement(j("en":"test"), CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement("en":"test", CODE(1), Type.TYPE_NUMBER())
 		
 		dataElement.names.putAll([en: ENGLISH, fr: FRANCAIS]);
 		dataElement.save(failOnError:true);

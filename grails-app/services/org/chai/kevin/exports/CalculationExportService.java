@@ -39,11 +39,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.util.Utils;
@@ -68,7 +68,7 @@ public class CalculationExportService extends ExportService {
 		
 		Set<DataLocationType> types = new HashSet<DataLocationType>();
 		List<CalculationLocation> calculationLocations = new ArrayList<CalculationLocation>();
-		List<CalculationLocation> locations = new ArrayList<CalculationLocation>();
+		List<Location> locations = new ArrayList<Location>();
 		List<DataLocation> dataLocations = new ArrayList<DataLocation>();
 		Set<LocationLevel> skips = reportService.getSkipReportLevels(skipLevels);		
 

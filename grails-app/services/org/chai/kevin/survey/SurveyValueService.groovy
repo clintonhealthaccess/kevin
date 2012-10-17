@@ -3,11 +3,11 @@ package org.chai.kevin.survey;
 import javax.persistence.Entity;
 
 import org.apache.shiro.SecurityUtils
-import org.chai.kevin.LocationService
+import org.chai.location.LocationService
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion
 import org.chai.kevin.survey.validation.SurveyEnteredSection

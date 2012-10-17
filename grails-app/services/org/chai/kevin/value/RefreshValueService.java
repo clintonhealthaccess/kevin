@@ -4,19 +4,16 @@ import grails.plugin.springcache.annotations.CacheFlush;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.PeriodService;
 import org.chai.kevin.data.Calculation;
@@ -25,21 +22,17 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.SourceMap;
-import org.chai.kevin.json.JSONMap;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.LocationService;
 import org.chai.task.Progress;
 import org.hibernate.Criteria;
-import org.hibernate.LockMode;
-import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -269,19 +262,14 @@ public class RefreshValueService {
 			originalSourceMap.put(period.getId()+"", jsonMap);
 		}
 		
-		SourceMap sourceMap = new SourceMap();
-		for (Entry<String, Map<String, List<String>>> entry : originalSourceMap.entrySet()) {
-			sourceMap.put(entry.getKey(), entry.getValue());
-		}
-		
 		
 		if (data instanceof NormalizedDataElement) {
 			NormalizedDataElement normalizedDataElement = (NormalizedDataElement)data;
-			normalizedDataElement.setSourceMap(sourceMap);
+			normalizedDataElement.setSourceMap(originalSourceMap);
 		}
 		else if (data instanceof Calculation) {
 			Calculation calculation = (Calculation)data;
-			calculation.setSourceMap(sourceMap);
+			calculation.setSourceMap(originalSourceMap);
 		}
 	}
 	

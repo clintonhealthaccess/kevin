@@ -62,14 +62,13 @@ import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 @Entity(name = "SurveyTableRow")
 @Table(name = "dhsst_survey_table_row", uniqueConstraints={@UniqueConstraint(columnNames="code")})
-public class SurveyTableRow extends Orderable<Integer> implements Exportable {
+public class SurveyTableRow extends Orderable implements Exportable {
 
 	private Long id;
 	private String code;
@@ -88,7 +87,7 @@ public class SurveyTableRow extends Orderable<Integer> implements Exportable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
+	
 	@Basic
 	@Column(name="ordering")
 	public Integer getOrder() {
@@ -110,11 +109,11 @@ public class SurveyTableRow extends Orderable<Integer> implements Exportable {
 	
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
+		return Utils.split(typeCodeString, Utils.DEFAULT_CODE_DELIMITER);
 	}
 	
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
+		this.typeCodeString = Utils.unsplit(typeCodes, Utils.DEFAULT_CODE_DELIMITER);
 	}
 
 	@ManyToOne(targetEntity=SurveyTableQuestion.class, fetch=FetchType.LAZY)
@@ -152,7 +151,7 @@ public class SurveyTableRow extends Orderable<Integer> implements Exportable {
 
 	@Transient
 	public Set<String> getTypeApplicable() {
-		return Utils.split(this.typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
+		return Utils.split(this.typeCodeString, Utils.DEFAULT_CODE_DELIMITER);
 	}
 	
     @Transient

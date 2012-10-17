@@ -31,8 +31,8 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.exports.DataElementExportController;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 
 /**
  * @author Jean Kahigiso M.
@@ -150,7 +150,7 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		locations.addAll(getDataLocations([KIVUYE]));
 		
 		def calculations=new HashSet([sum,aggregation]);
-		def dataExport = newCalculationExport(j("en":"Testing Seach One"),periods, locationType, locations, calculations);
+		def dataExport = newCalculationExport("en":"Testing Seach One",periods, locationType, locations, calculations);
 		
 		calculationExportController = new  CalculationExportController();
 		

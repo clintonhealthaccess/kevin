@@ -37,7 +37,7 @@ import org.chai.kevin.Period;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.exports.DataElementExport;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.RawDataElementValue;
@@ -71,7 +71,7 @@ class CalculationExportServiceSpec extends IntegrationTests {
 		
 		def calculations = new HashSet([sum,aggregation]);
 		
-		def exporter = newCalculationExport(j("en":"Testing Seach One"),periods, locationType, locations, calculations);
+		def exporter = newCalculationExport("en":"Testing Seach One",periods, locationType, locations, calculations);
 		
 		when:
 		def exportedFile = calculationExportService.exportData(exporter, 'en');
@@ -95,7 +95,7 @@ class CalculationExportServiceSpec extends IntegrationTests {
 		
 		def calculations=new HashSet([sum]);
 		
-		def exporterOne = newCalculationExport(j("en":"Testing Seach One"),periods, locationType, locations, calculations);
+		def exporterOne = newCalculationExport("en":"Testing Seach One",periods, locationType, locations, calculations);
 		when:
 		def selectedLocations = locationService.getDataLocationsOfType(locations,locationTypes)
 		def exportedFileOne = calculationExportService.exportCalculations("Testing",selectedLocations,exporterOne.periods,exporterOne.calculations,locationTypes, 'en');

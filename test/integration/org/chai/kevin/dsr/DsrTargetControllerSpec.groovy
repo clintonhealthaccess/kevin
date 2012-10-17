@@ -106,7 +106,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(CODE(1))
 		def category = newDsrTargetCategory(CODE(1), 1)
-		def normalizedDataElement = newNormalizedDataElement(CODE(4), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(4), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]])
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
 		

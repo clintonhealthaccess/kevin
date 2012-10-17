@@ -32,6 +32,7 @@ package org.chai.kevin.survey;
  *
  */
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -55,13 +56,13 @@ import javax.persistence.UniqueConstraint;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "SurveyQuestion")
 @Table(name = "dhsst_survey_question", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class SurveyQuestion extends Orderable<Integer> implements Exportable {
+public abstract class SurveyQuestion extends Orderable implements Exportable {
 
 	// TODO might be a good idea to get rid of this
 	public enum QuestionType {
@@ -99,7 +100,7 @@ public abstract class SurveyQuestion extends Orderable<Integer> implements Expor
 	public void setId(Long id) {
 		this.id = id;
 	}
-
+	
 	@Basic
 	@Column(name="ordering")
 	public Integer getOrder() {
@@ -131,11 +132,11 @@ public abstract class SurveyQuestion extends Orderable<Integer> implements Expor
 
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
+		return Utils.split(typeCodeString, Utils.DEFAULT_CODE_DELIMITER);
 	}
 	
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
+		this.typeCodeString = Utils.unsplit(typeCodes, Utils.DEFAULT_CODE_DELIMITER);
 	}
 	
 	@Embedded

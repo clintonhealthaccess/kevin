@@ -38,9 +38,9 @@ import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.dsr.DsrIntegrationTests;
 import org.chai.kevin.dsr.DsrTarget;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocationType;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
@@ -62,7 +62,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "get data element by id"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [:])
 		def ratio = newSum("1", CODE(3))
 		def sum = newSum("1", CODE(4))
 		def aggregation = newAggregation("1", CODE(5))
@@ -120,7 +120,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "get data element by code"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [:])
 		def ratio = newSum("1", CODE(3))
 		def sum = newSum("1", CODE(4))
 		def aggregation = newAggregation("1", CODE(5))
@@ -177,7 +177,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "list data element"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [:])
 		def ratio = newSum("1", CODE(3))
 		def sum = newSum("1", CODE(4))
 		def aggregation = newAggregation("1", CODE(5))
@@ -215,9 +215,9 @@ class DataServiceSpec extends IntegrationTests {
 	
 	def "search for data element works"() {
 		setup:
-		def dataElement1 = newRawDataElement(j(["en": "element"]), CODE(1), Type.TYPE_NUMBER())
-		def dataElement2 = newRawDataElement(j(["en": "something"]), CODE(2), Type.TYPE_NUMBER())
-		def dataElement3 = newRawDataElement(j(["en": ""]), CODE(3), Type.TYPE_NUMBER(), "info")
+		def dataElement1 = newRawDataElement(["en": "element"], CODE(1), Type.TYPE_NUMBER())
+		def dataElement2 = newRawDataElement(["en": "something"], CODE(2), Type.TYPE_NUMBER())
+		def dataElement3 = newRawDataElement(["en": ""], CODE(3), Type.TYPE_NUMBER(), "info")
 		
 		expect:
 		dataService.searchData(RawDataElement.class, "ele", [], [:]).equals([dataElement1])
@@ -233,8 +233,8 @@ class DataServiceSpec extends IntegrationTests {
 	
 	def "search for normalized data element works"() {
 		setup:
-		def dataElement1 = newNormalizedDataElement(j(["en": "expression"]), CODE(1), Type.TYPE_NUMBER(), e([:]))
-		def dataElement2 = newNormalizedDataElement(j(["en": "something"]), CODE(2), Type.TYPE_NUMBER(), e([:]))
+		def dataElement1 = newNormalizedDataElement(["en": "expression"], CODE(1), Type.TYPE_NUMBER(), [:])
+		def dataElement2 = newNormalizedDataElement(["en": "something"], CODE(2), Type.TYPE_NUMBER(), [:])
 		
 		expect:
 		dataService.searchData(NormalizedDataElement.class, "expr", [], [:]).equals([dataElement1])
@@ -248,7 +248,7 @@ class DataServiceSpec extends IntegrationTests {
 	
 	def "search for calculations work"() {
 		setup:
-		def ratio1 = newSum(j(["en": "sum"]), "1", CODE(1));
+		def ratio1 = newSum(["en": "sum"], "1", CODE(1));
 		
 		expect:
 		dataService.searchData(Sum.class, "su", [], [:]).equals([ratio1])
@@ -274,7 +274,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "delete normalized data elements with associated values throws exception"() {
 		when:
 		setupLocationTree()
-		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
 		def period = newPeriod()
 		newNormalizedDataElementValue(dataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, Value.NULL_INSTANCE())
 		
@@ -305,7 +305,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "delete normalized data element with associated expression throws exception"() {
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
 		
 		dataService.delete(rawDataElement)
 		
@@ -329,7 +329,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "get referencing normalized data element"() {
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
 		
 		then:
 		dataService.getReferencingNormalizedDataElements(rawDataElement).equals([normalizedDataElement])

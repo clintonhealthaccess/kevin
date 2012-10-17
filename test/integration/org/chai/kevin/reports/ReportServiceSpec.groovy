@@ -6,7 +6,7 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.dsr.DsrIntegrationTests;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.fct.FctIntegrationTests;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.LocationLevel;
 
 class ReportServiceSpec extends ReportIntegrationTests {
 

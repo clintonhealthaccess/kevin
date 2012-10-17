@@ -13,11 +13,11 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Period;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.util.Utils.ReportType;
@@ -54,12 +54,12 @@ public class FctService {
 		Set<CalculationLocation> treeLocations = new HashSet<CalculationLocation>();		
 		switch(reportType){
 			case MAP:
-				treeLocations = new HashSet<CalculationLocation>(location.getChildrenWithData(skips, types, true));
+				treeLocations = new HashSet<CalculationLocation>(location.getChildrenEntitiesWithDataLocations(skips, types, true));
 				break;
 			case TABLE:
 			default:
-				treeLocations = new HashSet<CalculationLocation>(location.collectLocationTreeWithData(skips, types, true));
-				topLevelLocations.addAll(location.getChildrenWithData(skips, types, true));
+				treeLocations = new HashSet<CalculationLocation>(location.collectTreeWithDataLocations(skips, types, true));
+				topLevelLocations.addAll(location.getChildrenEntitiesWithDataLocations(skips, types, true));
 		}
 		
 		for (CalculationLocation treeLocation : treeLocations) {

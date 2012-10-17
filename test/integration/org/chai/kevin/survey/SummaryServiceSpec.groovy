@@ -1,9 +1,9 @@
 package org.chai.kevin.survey;
 
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocationType;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 import org.chai.kevin.survey.summary.SurveySummaryPage;
 
 class SummaryServiceSpec extends SurveyIntegrationTests {
@@ -144,7 +144,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 	def "test locations are collected at all levels"() {
 		setupLocationTree()
 		def north = Location.findByCode(NORTH)
-		newDataLocation(j(["en":'DP']), "DP", north, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP));
+		newDataLocation(["en":'DP'], "DP", north, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP));
 		def period = newPeriod()
 		def survey = newSurvey(CODE(1), period)
 		

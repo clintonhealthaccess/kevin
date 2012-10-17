@@ -34,6 +34,7 @@ package org.chai.kevin.survey;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -57,8 +58,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
+import org.chai.location.DataLocationType;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
@@ -66,7 +67,7 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "SurveySection")
 @Table(name = "dhsst_survey_section", uniqueConstraints={@UniqueConstraint(columnNames="code")})
-public class SurveySection extends Orderable<Integer> implements Exportable {
+public class SurveySection extends Orderable implements Exportable {
 
 	private Long id;
 	private String code;
@@ -117,10 +118,10 @@ public class SurveySection extends Orderable<Integer> implements Exportable {
 	
 	@Transient
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER);
+		return Utils.split(typeCodeString, Utils.DEFAULT_CODE_DELIMITER);
 	}
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes, DataLocationType.DEFAULT_CODE_DELIMITER);
+		this.typeCodeString = Utils.unsplit(typeCodes, Utils.DEFAULT_CODE_DELIMITER);
 	}
 
 	@OneToMany(targetEntity=SurveyQuestion.class, mappedBy="section", orphanRemoval=true)
@@ -158,7 +159,7 @@ public class SurveySection extends Orderable<Integer> implements Exportable {
 	@Transient
 	public Set<String> getTypeApplicable() {
 		return new HashSet<String>(CollectionUtils.intersection(
-				Utils.split(this.typeCodeString, DataLocationType.DEFAULT_CODE_DELIMITER),
+				Utils.split(this.typeCodeString, Utils.DEFAULT_CODE_DELIMITER),
 				this.program.getTypeApplicable()));
 	}
 
@@ -175,7 +176,7 @@ public class SurveySection extends Orderable<Integer> implements Exportable {
 	public List<SurveyQuestion> getQuestions(DataLocationType type) {
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
 		for (SurveyQuestion surveyQuestion : getQuestions()) {
-			if (Utils.split(surveyQuestion.getTypeCodeString(), DataLocationType.DEFAULT_CODE_DELIMITER).contains(type.getCode())) {
+			if (Utils.split(surveyQuestion.getTypeCodeString(), Utils.DEFAULT_CODE_DELIMITER).contains(type.getCode())) {
 				result.add(surveyQuestion);
 			}
 		}

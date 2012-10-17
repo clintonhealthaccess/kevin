@@ -36,10 +36,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.chai.kevin.Period;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.value.Value;
@@ -85,7 +85,7 @@ public class DashboardService {
 			calculationLocations.add(location);
 		else {
 			Set<LocationLevel> skipLevels = getSkipLocationLevels();
-			calculationLocations.addAll(location.getChildrenWithData(skipLevels, types, true));			
+			calculationLocations.addAll(location.getChildrenEntitiesWithDataLocations(skipLevels, types, true));			
 		}
 		
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		

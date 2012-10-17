@@ -1,4 +1,4 @@
-package org.chai.kevin.location
+package org.chai.location
 
 import grails.plugin.spock.UnitSpec;
 

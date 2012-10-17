@@ -1,4 +1,4 @@
-package org.chai.kevin.location
+package org.chai.location
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.util.JSONUtils;

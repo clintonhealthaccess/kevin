@@ -15,8 +15,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationService;
-import org.chai.kevin.LocationSorter;
+import org.chai.location.LocationService;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
@@ -26,10 +25,10 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.data.Type.ValueVisitor;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyCheckboxOption;
 import org.chai.kevin.survey.SurveyCheckboxQuestion;
@@ -138,7 +137,7 @@ public class SurveyExportService {
 	public File getSurveyExportFile(String filename, CalculationLocation location, SurveySection section, SurveyProgram program, Survey survey) throws IOException { 
 				
 		List<DataLocation> dataLocations = location.collectDataLocations(null, null);
-		Collections.sort(dataLocations, LocationSorter.BY_NAME(languageService.getCurrentLanguage()));
+//		Collections.sort(dataLocations, LocationSorter.BY_NAME(languageService.getCurrentLanguage()));
 		
 		File csvFile = File.createTempFile(filename, CSV_FILE_EXTENSION);
 		
@@ -296,7 +295,7 @@ public class SurveyExportService {
 				if(type.getType().equals(ValueType.ENUM)){
 					String enumCode = type.getEnumCode();
 					Enum enume = enumService.getEnumByCode(enumCode);
-					List<EnumOption> enumOptions = enume.getEnumOptions();
+					List<EnumOption> enumOptions = enume.getAllEnumOptions();
 					for(EnumOption enumOption : enumOptions)
 						surveyQuestionItems.add(languageService.getText(enumOption.getNames()));
 				}
@@ -406,7 +405,7 @@ public class SurveyExportService {
 					String enumCode = type.getEnumCode();
 					Enum enume = enumService.getEnumByCode(enumCode);
 					if(enume != null){
-						List<EnumOption> enumOptions = enume.getEnumOptions();
+						List<EnumOption> enumOptions = enume.getAllEnumOptions();
 						for(EnumOption enumOption : enumOptions){
 							surveyQuestionItem = languageService.getText(enumOption.getNames());
 							if(surveyQuestionItem != null && !surveyQuestionItem.isEmpty()) 
