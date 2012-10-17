@@ -126,7 +126,7 @@ class DsrController extends AbstractController {
 		DsrTargetCategory dsrCategory = getDsrTargetCategory(program)
 		
 		ReportType reportType = getReportType()
-		def viewSkipLevels = dsrService.getSkipViewLevels(reportType)
+		def mapSkipLevels = dsrService.getSkipViewLevels(reportType)
 		
 		Set<DsrTarget> dsrIndicators = getDsrIndicators(reportType, dsrCategory, program)
 		
@@ -163,7 +163,7 @@ class DsrController extends AbstractController {
 				currentLocationTypes: dataLocationTypes,
 				locationSkipLevels: locationSkipLevels,
 				currentView: reportType,
-				viewSkipLevels: viewSkipLevels
+				mapSkipLevels: mapSkipLevels
 			]
 		}
 	}

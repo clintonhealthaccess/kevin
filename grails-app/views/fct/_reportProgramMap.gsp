@@ -1,190 +1,268 @@
 <%@ page import="org.chai.kevin.data.Type.ValueType" %>
 <div class='map-wrap'>	
-	<div id="map" class="map"></div>
-	<!-- TODO move this to a map_init.js file -->
+	<div id="map" class="map" />
+	
 	<r:script>
-	
-	<!-- the map -->
-	var map = L.map('map').setView([-1.951069, lng=30.06134], 10);
-	L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
-		maxZoom: 18,
-		//TODO move this to message.properties?
-		attribution: 'Map Data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Contributors &mdash; ' +
-				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a> &mdash; ' +
-				'Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>'
-	}).addTo(map);
-	
-	<!-- locations -->
-	var locationLayer = L.geoJson(null, {		
-		style: function (feature) {
+	var baseLocationLayer = L.geoJson(null, {
+		style: function (feature){
 			return feature.properties && feature.properties.style;
-		}
-	}).addTo(map);
-			
-	<!-- data locations -->
-	var dataLocationLayer = L.geoJson(null, {
-		pointToLayer: dataLocationPointToLayer, 
-		onEachFeature: onEachDataLocationFeature
-	}).addTo(map);
+		},
+		onEachFeature: onEachBaseLocationLayerFeature
+	});
+	var baseLocationInfoLayer = L.geoJson(null, {
+		pointToLayer: fctBaseLocationInfoPointToLayer
+	});
 	
-	addLocationLayerData(locationLayer, dataLocationLayer);
-
-	function addLocationLayerData(locationLayer){
-		<!-- Locations -->
-		var locationUrl = "http://geocommons.com/datasets/265901/features.json?filter[code][][equals]=${currentLocation.code}";		
-		jQuery.getJSON(locationUrl, function(data){		
+	var locationValueLayers = []
+	var locationValueLayerMap = []
+	var locationInfoLayers = []
+	var locationInfoLayerMap = []
+	
+	//TODO data location value and info layer map
+	var dataLocationValueLayer = null
+	var dataLocationInfoLayer = null
+	
+	var overlays = []
+	
+	if(${currentLocation.getLocationChildren(locationSkipLevels) != null && 
+		!currentLocation.getLocationChildren(locationSkipLevels).empty}){
 		
-			jQuery.each(data.features, function(i,f){
-				
-				//TODO get rid of this and use f.geometry.coordinates
-					
-				//create polygon coordinates
-				var polygonCoordinates = []
-				var coordinates = []
-				var latlonRegex = /\[(\-|\d|\.)*,(\-|\d|\.)*\]/g;
-				
-				//TODO if coordinates == null
-				$(f.properties.coordinates.match(latlonRegex)).each(function(){
-					var coordinate = this;
-					coordinate = this.replace(/(\[|\])/g,"");
-					var lat = parseFloat(coordinate.split(',')[0]);
-					var lon = parseFloat(coordinate.split(',')[1]);
-					coordinates.push([lat, lon]);					
-				});
-				polygonCoordinates.push(coordinates);
-				
-				//create polygon geojson feature
-				var geojsonPolygonFeature = {
-						"id": f.properties.code,
-					    "type": f.type,    
-					    "geometry": {
-					        "type": f.properties.featuretype,
-					        "coordinates": polygonCoordinates
-					    },
-					    "properties": {
-					    	//TODO get hex code from a color map to set color styles
-					        "style": {
-								color: "#7FCDBB",			//"#99D8C9",
-					        	weight: 4,
-					        	fillColor: "#7FCDBB",		//"#99D8C9",
-					            fillOpacity: 0.5,			//0.4
-					            clickable: false					            
-					        },
-					    }
-				};
-				var geojsonPolygon = L.geoJson(geojsonPolygonFeature);
-				var latLngBounds = geojsonPolygon.getBounds();
-				map.fitBounds(latLngBounds);
-				locationLayer.addData(geojsonPolygonFeature);							
+		var mapTableIndicators = $('.js-map-table-indicator');
+		$(mapTableIndicators).each(function(index, mapTableIndicator){
+			var indicatorName = $(mapTableIndicator).data('indicator-names');
+			var locationValueLayer = L.geoJson(null, {
+				pointToLayer: fctLocationValuePointToLayer
 			});
+			var locationInfoLayer = L.geoJson(null, {
+				pointToLayer: fctLocationInfoPointToLayer
+			});
+			locationValueLayerMap[indicatorName] = locationValueLayer;
+			locationInfoLayerMap[indicatorName] = locationInfoLayer;
+			overlays[indicatorName] = L.layerGroup([locationValueLayer, locationInfoLayer]);
 			
-			addDataLocationLayerData(dataLocationLayer);
-			
-		});		
-	}
-	
-	function addDataLocationLayerData(dataLocationLayer){
-		<!-- Data Locations -->
-		var dataLocations = [];
-		$('.js-map-table-value.js-selected-value').each(function(){
-	        var dataLocation = $(this).data('location-code');
-	        if(dataLocations.indexOf(dataLocation) < 0){
-	        	dataLocations.push(dataLocation+'');
-	        }
-	    });
-	    var fosaIds = dataLocations.join('|');
+			locationValueLayers.push(locationValueLayer);
+			locationInfoLayers.push(locationInfoLayer);
+		});
 		
-		var dataLocationUrl = "http://geocommons.com/datasets/262585/features.json?filter[fosaid][][in]="+fosaIds;
-		jQuery.getJSON(dataLocationUrl, function(data){
-			
-			if(locationLayer.whatever){
+		mapLocations(baseLocationLayer, true, false);
+	    mapLayers = ([baseLocationLayer, baseLocationInfoLayer]).concat(locationValueLayers).concat(locationInfoLayers);
+	    createTheMap();
+	     //TODO message.properties
+	    overlays["Locations"] = baseLocationInfoLayer;
+	    L.control.layers(null, overlays).addTo(map);
+	}
+	else{
+		dataLocationValueLayer = L.geoJson(null, {
+			pointToLayer: fctDataLocationValuePointToLayer
+		});
+		dataLocationInfoLayer = L.geoJson(null, {
+			pointToLayer: fctDataLocationInfoPointToLayer
+		});
+		
+		mapLocations(baseLocationLayer, false, true);
+		mapLayers = ([baseLocationLayer, baseLocationInfoLayer]).concat([dataLocationValueLayer, dataLocationInfoLayer]);
+		createTheMap();
+		 //TODO message.properties
+		overlays["Facilities"] = dataLocationInfoLayer;
+		L.control.layers(null, overlays).addTo(map);
+	}
+
+	//alert("after everything ");
+
+	function mapLocations(baseLocationLayer, mapLocationValueLayer, mapDataLocationValueLayer){
+		var locationUrl = null;
+		if(mapDataLocationValueLayer){
+			locationUrl = "http://geocommons.com/datasets/265901/features.json?filter[code][][equals]=${currentLocation.code}";
+		}
+		else{
+			locationUrl = "http://geocommons.com/datasets/265901/features.json?filter[code][][in]=${reportLocations.collect{it.code}.join('|')}";
+		}
+		jQuery.getJSON(locationUrl, function(data){
+		
+			//alert("success");
+			//TODO
+			if(data == null){
+				return;
 			}
 			
-			var fosaDataLocations = []
-			
 			jQuery.each(data.features, function(i,f){
+				var polygonCoordinates = createPolygonCoordinates(f, false);
+				var geojsonPolygonFeature = createGeoJsonPolygonFeature(f, polygonCoordinates);
+				baseLocationLayer.addData(geojsonPolygonFeature);
 				
-				$('.js-map-table-value.js-selected-value[data-location-code="'+f.properties.fosaid+'"]').each(function(index, mapTableValue){					
-					fosaDataLocations.push(f.properties.fosaid+'');
-										
-					var locationName = $(mapTableValue).data('location-names');						
-					var indicatorName = $(mapTableValue).data('indicator-names');
-					var indicatorClass = $(mapTableValue).data('indicator-class');
+				if(mapLocationValueLayer){
+					var multiPolygon = L.multiPolygon(polygonCoordinates);
+					var bounds = multiPolygon.getBounds();
+					var center = bounds.getCenter();
+					var multiPolygonCoordinates = [center.lat, center.lng];
 					
-					var mapValue = $(mapTableValue).children('div.report-value-number').children('div.report-value');
-					var rawValue = $(mapValue).data('report-value-raw');
-					var reportValue = $(mapValue).data('report-value');
-					var reportValueType = $(mapValue).data('report-value-type');				
-					
-					if(f.geometry){
-						//create point geojson feature
-						var geojsonPointFeature = {
-								"id": f.properties.fosaid,
-							    "type": f.type,    
-							    "geometry": {
-							        "type": f.geometry.type,
-							        "coordinates": f.geometry.coordinates
-							    },
-							    "properties": {
-							    	"rawValue": rawValue,
-							    	"reportValue": reportValue,
-							    	"reportValueType": reportValueType,
-							    	"locationName": locationName,
-							    	"indicatorName": indicatorName,
-							    	"indicatorClass": indicatorClass,
-							        "popupContent": 'Location: '+locationName+'<br /> '+indicatorName+': '+reportValue
-							    }
-						};
-						dataLocationLayer.addData(geojsonPointFeature);
-					}
-					else{
-						//missing fosa coordinates
-						$('.nav-table td[data-location-code="'+f.properties.fosaid+'"]').append('&#185;');
-					}
-				});								
-			});						
-			
-			for(var i = 0 ; i < dataLocations.length; i++){
-				var dataLocation = dataLocations[i];
-				if(fosaDataLocations.indexOf(dataLocation) < 0){
-					//missing fosa facility
-					$('.nav-table td[data-location-code="'+dataLocation+'"]').append('&#178;');
+					var fosaid = f.properties.code;
+					var mapTableValue = $('.js-map-table-value[data-location-code="'+fosaid+'"]').first();
+					var feature = {
+						"id": fosaid,
+						"type": "Feature",
+					    "geometry": {
+					    	"type": "Point",
+					        "coordinates": multiPolygonCoordinates
+						},
+						"properties":{
+							"locationName": $(mapTableValue).data('location-names'),
+							"reportValueIcon": "${resource(dir:'images',file:'/maps/report-value-null.png')}"
+						}
+					};
+					baseLocationInfoLayer.addData(feature);
 				}
-			}									
+								
+			});
+			
+			mapTheMap(baseLocationLayer, mapLocationValueLayer, mapDataLocationValueLayer);
+			
+			if(mapLocationValueLayer){
+				mapLocationValues(data);
+			}
+			if(mapDataLocationValueLayer){
+				mapDataLocations();
+			}
+		});
+		//TODO
+		//.success(function() { alert("second success"); })
+		//.error(function() { alert("error"); })
+		//.complete(function() { alert("complete"); });
+	}
+	
+	function mapLocationValues(data){
+		jQuery.each(data.features, function(i,f){
+			
+			var fosaid = f.properties.code;
+			
+			var indicatorRawValueMap = [];
+			var mapTableValues = $('.js-map-table-value[data-location-code="'+fosaid+'"]');
+			$(mapTableValues).each(function(index, mapTableValue){
+				var indicatorName = $(mapTableValue).data('indicator-names');
+				var mapReportValue = $(mapTableValue).children('div.report-value-number').children('div.report-value');
+				var rawValue = parseFloat($(mapReportValue).data('report-value-raw'));
+				indicatorRawValueMap[indicatorName] = rawValue;
+			});
+			var sortedIndicators = sortMapByValue(indicatorRawValueMap);
+			
+			$(sortedIndicators).each(function(index, sortedIndicator){
+				
+				var mapTableIndicator = $('.js-map-table-indicator[data-indicator-names="'+sortedIndicator+'"]');
+				var indicatorName = $(mapTableIndicator).data('indicator-names');
+				var indicatorClass = $(mapTableIndicator).data('indicator-class');
+				
+				var latLngPolygonCoordinates = []
+				var latLngCoordinates = []
+				var polygonCoordinates = createPolygonCoordinates(f, false);
+				var multiPolygon = L.multiPolygon(polygonCoordinates);
+				var bounds = multiPolygon.getBounds();
+				var center = bounds.getCenter();
+				var multiPolygonCoordinates = [center.lat, center.lng];
+				
+				if(sortedIndicators.length > 1){
+					if(indicatorClass == "indicator-best"){
+						//TODO figure out why this returns NorthWest bounds
+						var northWest = bounds.getSouthEast();
+						multiPolygonCoordinates = createNorthSouthOffsetCoordinates(northWest, center);
+					}
+					else if(indicatorClass == "indicator-middle"){
+						var southWest = bounds.getSouthWest();
+						multiPolygonCoordinates = createEastWestOffsetCoordinates(southWest, center);
+					}
+					else if(indicatorClass == "indicator-worst"){
+						//TODO figure out why this returns SouthEast bounds
+						var southEast = bounds.getNorthWest();
+						multiPolygonCoordinates = createNorthSouthOffsetCoordinates(southEast, center);
+					}
+				}
+				
+				var mapTableValue = $('.js-map-table-value[data-indicator-names="'+indicatorName+'"][data-location-code="'+fosaid+'"]');
+				var mapReportValue = $(mapTableValue).children('div.report-value-number').children('div.report-value');
+				var mapPercentageValue = $(mapTableValue).children('div.report-value-percentage').children('div.report-value');
+				
+				var feature = {
+					"id": fosaid,
+				    "geometry": {
+				        "coordinates": multiPolygonCoordinates
+					},
+					"properties":{
+						"indicatorClass": $(mapTableValue).data('indicator-class')
+					}
+				};
+				
+				feature.properties.rawValue = $(mapPercentageValue).data('report-value-raw');
+				feature.properties.reportValue = $(mapPercentageValue).data('report-value');
+				
+				//create point geojson feature
+				var geojsonPointFeature = createGeoJsonPointFeature(feature);			
+				var locationValueLayer = locationValueLayerMap[indicatorName];
+				locationValueLayer.addData(geojsonPointFeature);
+
+				feature.properties.rawValue = $(mapReportValue).data('report-value-raw');
+				feature.properties.reportValue = $(mapReportValue).data('report-value');
+				feature.properties.reportValueIcon = "${resource(dir:'images',file:'/maps/report-value-null.png')}"
+				
+				//create point geojson feature
+				geojsonPointFeature = createGeoJsonPointFeature(feature);
+				var locationInfoLayer = locationInfoLayerMap[indicatorName];
+				locationInfoLayer.addData(geojsonPointFeature);
+			});
+								
 		});
 	}
 	
-	function dataLocationPointToLayer(feature, latlng) {		
-		var rawValue = feature.properties.rawValue;
-		var reportValue = feature.properties.reportValue;
-		var indicatorClass = feature.properties.indicatorClass;
-		var geojsonMarkerOptions = {
-		    radius: 8,
-		    fillColor: mapColors[indicatorClass],
-		    color: mapColors[indicatorClass],
-		    weight: 1,
-		    opacity: 1,
-		    fillOpacity: 0.75
-		};
-		var geojsonMarker = L.circleMarker(latlng, geojsonMarkerOptions);		
-       	return geojsonMarker;
-   	}
-	
-	function onEachLocationFeature(feature, layer){
-		layer.options.geometry = feature.geometry;
-	}
+	function mapDataLocations(){
+		var fosaLocations = [];
+	    var dataLocationUrl = "http://geocommons.com/datasets/262585/features.json?filter[fosaid][][in]=${reportLocations.collect{it.code}.join('|')}";
+		jQuery.getJSON(dataLocationUrl, function(data){
+		
+			//alert("success");
+			//TODO
+			if(data == null){
+				return;
+			}
 			
-	function onEachDataLocationFeature(feature, layer) {
-	    if (feature.properties && feature.properties.popupContent) {
-	        layer.bindPopup(feature.properties.popupContent);	        	        
-	        layer.on("mouseover", function (e) {
-	        	layer.openPopup();
-            });
-	        layer.on("mouseout", function (e) {
-                map.closePopup();
-            });
-    	}
-    	layer.options.geometry = feature.geometry;
+			jQuery.each(data.features, function(i,f){
+				var fosaid = f.properties.fosaid;
+				$('.js-map-table-value.js-selected-value[data-location-code="'+fosaid+'"]').each(function(index, mapTableValue){
+					var mapValue = $(mapTableValue).children('div.report-value-number').children('div.report-value');					
+					fosaLocations.push(fosaid+"");
+					if(!f.geometry){
+						//fosa coordinates missing
+						missingFosaCoordinates(f.properties.fosaid);
+					}
+					else{
+						var feature = {
+							"id": fosaid,
+						    "geometry": {
+						        "coordinates": f.geometry.coordinates
+							},
+							"properties":{
+								"locationName": $(mapTableValue).data('location-names'),
+								"indicatorName": $(mapTableValue).data('indicator-names'),
+								"indicatorClass": $(mapTableValue).data('indicator-class'),
+								//TODO use report table for raw value, report value, and report value type
+								"rawValue": $(mapValue).data('report-value-raw'),
+								"reportValue": $(mapValue).data('report-value'),
+								"reportValueType": $(mapValue).data('report-value-type'),
+								"reportValueIcon": "${resource(dir:'images',file:'/maps/report-value-null.png')}"
+							}
+						};
+						//create point geojson feature
+						var geojsonPointFeature = createGeoJsonPointFeature(feature);
+						dataLocationValueLayer.addData(geojsonPointFeature);
+						dataLocationInfoLayer.addData(geojsonPointFeature);
+					}
+				});								
+			});						
+			//fosa locations missing
+			var dhsstLocations = ("${reportLocations.collect{it.code}.join(';')}").split(';');
+			missingFosaLocations(fosaLocations, dhsstLocations);									
+		});
+		//TODO
+		//.success(function() { alert("second success"); })
+		//.error(function() { alert("error"); })
+		//.complete(function() { alert("complete"); });
 	}
 	</r:script>
 </div>

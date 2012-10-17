@@ -105,10 +105,8 @@ public abstract class CalculationLocation {
 		}
 		
 		//location tree list
-		if (result) {
-			if (locations != null && !this.collectsData()) 
-				locations.add(this);
-		}
+		if (result && locations != null && !this.collectsData()) locations.add(this);
+
 		return result;
 	}
 	
