@@ -11,7 +11,7 @@
 			</g:elseif> 
 			<g:elseif test="${currentSurvey != null}">
 				<g:i18n field="${currentSurvey.names}" />
-			</g:elseif> 
+			</g:elseif>
 			<g:else>
 				<g:message code="default.select.label" args="[message(code:'survey.label')]" />
 			</g:else>
@@ -19,22 +19,31 @@
 		<div class="dropdown-list js_dropdown-list push-top-10">
 			<ul>
 				<g:each in="${surveys}" var="survey">
+				
+					<% linkParams.remove('program') %>
+					<% linkParams.remove('section') %>
+					
 					<li class="js_foldable foldable ${currentSurvey?.id==survey.id?'current':''}">
-						<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a> 
-						<a class="item ${currentSurvey?.id == survey.id? 'opened':''}" href="${createLink(controller: 'surveySummary', action:'summaryPage', params:[location: currentLocation?.id, survey: survey.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc'])}">
+						<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a>
+						<a class="item ${currentSurvey?.id == survey.id? 'opened':''}" href="${createLink(controller: 'surveySummary', action:'summaryPage', params:linkParams << [survey: survey.id])}">
 							<g:i18n field="${survey.names}" />
 						</a>
 						<ul class="js_foldable-container foldable-container">
 							<g:each in="${survey.getPrograms()}" var="program">
+							
+								<% linkParams.remove('section') %>
+							
 								<li class="js_foldable foldable ${currentProgram?.id==program.id?'current':''}">
 									<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a> 
-									<a class="item ${currentProgram?.id == program.id?'opened':''}" href="${createLink(controller:'surveySummary', action:'summaryPage', params:[location: currentLocation?.id, program: program.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc'])}">
+									<a class="item ${currentProgram?.id == program.id?'opened':''}" 
+										href="${createLink(controller:'surveySummary', action:'summaryPage', params:linkParams << [survey: survey.id, program: program.id])}">
 										<g:i18n field="${program.names}" />
 									</a>
 									<ul class="js_foldable-container foldable-container">
 										<g:each in="${program.getSections()}" var="section">
 											<li class="js_foldable foldable ${currentSection?.id==section.id?'current':''}">
-												<a class="item ${currentSection?.id == section.id?'opened':''}" href="${createLink(controller:'surveySummary', action:'summaryPage', params:[location: currentLocation?.id, section: section.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc'])}">
+												<a class="item ${currentSection?.id == section.id?'opened':''}" 
+													href="${createLink(controller:'surveySummary', action:'summaryPage', params:linkParams << [survey: survey.id, program: program.id, section: section.id])}">
 													<g:i18n field="${section.names}" />
 												</a>
 											</li>
