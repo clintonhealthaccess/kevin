@@ -10,10 +10,20 @@
 	<body>
 		<div>
 			<div class="filter-bar">
-				<g:render template="/survey/summary/surveyFilter"/>
-				<g:locationFilter linkParams="${[survey: currentSurvey?.id, program: currentProgram?.id, section: currentSection?.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc']}" 
-					selected="${currentLocation}" selectedTypes="${currentLocationTypes}" skipLevels="${locationSkipLevels}"/>
-				<g:dataLocationTypeFilter linkParams="${params}" selected="${currentLocationTypes}"/>
+			
+				<% def surveyLinkParams = new HashMap(params) %>
+				<% surveyLinkParams['sort'] = SurveySummaryPage.PROGRESS_SORT %>
+				<% surveyLinkParams['order'] = 'desc' %>
+				
+				<g:render template="/survey/summary/surveyFilter" model="[linkParams: surveyLinkParams]"/>
+				
+				<% surveyLinkParams['survey'] = currentSurvey?.id %>
+				<% surveyLinkParams['program'] = currentProgram?.id %>
+				<% surveyLinkParams['section'] = currentSection?.id %>
+				
+				<g:locationFilter linkParams="${surveyLinkParams}" selected="${currentLocation}" 
+					selectedTypes="${currentLocationTypes}" skipLevels="${locationSkipLevels}"/>
+				<g:dataLocationTypeFilter linkParams="${surveyLinkParams}" selected="${currentLocationTypes}"/>
 			</div>
 						
 			<div class="main">			
@@ -36,7 +46,13 @@
 								<shiro:hasPermission permission="surveySummary:refresh">
 									<li>
 										<a href="${createLinkWithTargetURI(controller: 'task', action: 'create', 
-											params: params << [class: 'RefreshSurveyTask', surveyId: currentSurvey.id, locationId: currentLocation.id])}">
+											params: surveyLinkParams << [
+																			class: 'RefreshSurveyTask',
+																			surveyId: currentSurvey.id,
+																			programId: currentProgram?.id,
+																			sectionId: currentSection?.id,
+																			locationId: currentLocation.id
+																		])}">
 											<g:message code="survey.summary.refreshsurvey.label" />
 										</a>
 									</li>
@@ -45,7 +61,7 @@
 									<g:if test="${!submitSkipLevels.contains(currentLocation.level)}">
 										<li>
 											<a href="${createLink(controller: 'surveySummary', action: 'submitAll', 
-												params: params << [survey: currentSurvey?.id, program: currentProgram?.id, submitLocation: currentLocation.id])}">
+												params: surveyLinkParams << [submitLocation: currentLocation.id])}">
 												<g:message code="survey.summary.submitallprogram.label" />
 											</a>
 										</li>
