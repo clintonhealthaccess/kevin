@@ -48,10 +48,10 @@
 										<a href="${createLinkWithTargetURI(controller: 'task', action: 'create', 
 											params: surveyLinkParams << [
 																			class: 'RefreshSurveyTask',
+																			locationId: currentLocation.id,
 																			surveyId: currentSurvey.id,
 																			programId: currentProgram?.id,
-																			sectionId: currentSection?.id,
-																			locationId: currentLocation.id
+																			sectionId: currentSection?.id
 																		])}">
 											<g:message code="survey.summary.refreshsurvey.label" />
 										</a>

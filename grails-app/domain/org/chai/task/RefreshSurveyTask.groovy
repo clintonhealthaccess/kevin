@@ -32,8 +32,8 @@ class RefreshSurveyTask extends Task {
 			def section = SurveySection.get(sectionId)
 			def location = Location.get(locationId)
 			
-			if(location != null){
-				if(section != null && program != null && survey != null){
+			if(location != null && survey != null){
+				if(section != null && program != null){
 					surveyPageService.refresh(
 						location, survey, program, section,
 						closeIfComplete==null?false:closeIfComplete,
@@ -41,7 +41,7 @@ class RefreshSurveyTask extends Task {
 						this
 					);
 				}
-				if(program != null && survey != null){
+				else if(program != null){
 					surveyPageService.refresh(
 						location, survey, program,
 						closeIfComplete==null?false:closeIfComplete,
@@ -49,7 +49,7 @@ class RefreshSurveyTask extends Task {
 						this
 					);
 				}
-				if(survey != null){
+				else {
 					surveyPageService.refresh(
 						location, survey,
 						closeIfComplete==null?false:closeIfComplete,

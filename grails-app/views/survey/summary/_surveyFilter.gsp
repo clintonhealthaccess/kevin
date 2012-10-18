@@ -19,13 +19,20 @@
 		<div class="dropdown-list js_dropdown-list push-top-10">
 			<ul>
 				<g:each in="${surveys}" var="survey">
+				
+					<% linkParams.remove('program') %>
+					<% linkParams.remove('section') %>
+					
 					<li class="js_foldable foldable ${currentSurvey?.id==survey.id?'current':''}">
-						<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a> 
+						<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a>
 						<a class="item ${currentSurvey?.id == survey.id? 'opened':''}" href="${createLink(controller: 'surveySummary', action:'summaryPage', params:linkParams << [survey: survey.id])}">
 							<g:i18n field="${survey.names}" />
 						</a>
 						<ul class="js_foldable-container foldable-container">
 							<g:each in="${survey.getPrograms()}" var="program">
+							
+								<% linkParams.remove('section') %>
+							
 								<li class="js_foldable foldable ${currentProgram?.id==program.id?'current':''}">
 									<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a> 
 									<a class="item ${currentProgram?.id == program.id?'opened':''}" 

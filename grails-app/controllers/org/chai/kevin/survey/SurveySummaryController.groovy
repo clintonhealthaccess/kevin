@@ -31,15 +31,15 @@ class SurveySummaryController extends AbstractController {
 		SurveySummaryPage summaryPage = null;
 		
 		// TODO build different classes for this and refactor into several actions
-		if (section != null && location != null) {
+		if (section != null && location != null && dataLocationTypes != null) {
 			summaryPage = summaryService.getSectionSummaryPage(location, dataLocationTypes, section)
 			template = '/survey/summary/summarySectionTable'
 		}
-		else if (program != null && location != null) {
+		else if (program != null && location != null && dataLocationTypes != null) {
 			summaryPage = summaryService.getProgramSummaryPage(location, dataLocationTypes, program)
 			template = '/survey/summary/summaryProgramTable'
 		}
-		else if (survey != null && location != null) {
+		else if (survey != null && location != null && dataLocationTypes != null) {
 			summaryPage = summaryService.getSurveySummaryPage(location, dataLocationTypes, survey);
 			template = '/survey/summary/summarySurveyTable'
 		}
