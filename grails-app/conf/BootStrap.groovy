@@ -27,7 +27,6 @@
 */
 
 import org.chai.kevin.Initializer;
-import org.chai.kevin.cost.CostRampUpYear;
 import java.util.Date;
 import java.nio.channels.Channel;
 import org.chai.kevin.security.Role;
@@ -50,6 +49,7 @@ import com.ibm.jaql.lang.expr.core.TimeoutExpr.TaskState;
 
 class BootStrap {
 	
+	def sessionFactory
 	def rabbitTemplate
 	def taskService
 
@@ -125,13 +125,19 @@ class BootStrap {
 			Initializer.createDataLocationTypes()
 			Initializer.createLocations()
 			Initializer.createDataLocations()
-		
+			sessionFactory.currentSession.flush()
+			
 			// TODO review this
+			Initializer.createRoles();
 			Initializer.createUsers();
 		
 			Initializer.createPeriods();
 			Initializer.createSources();
-			
+
+			Initializer.createEnums();
+			Initializer.createRawDataElements();
+			Initializer.createNormalizedDataElements();
+						
 //			Initializer.createDummyStructure();
 //			Initializer.createUsers();
 //			Initializer.createDataElementsAndExpressions();
@@ -148,14 +154,6 @@ class BootStrap {
 		
     }
 
-    def destroy = {
-//		switch (GrailsUtil.environment) {
-//			case "production":
-//				break;
-//			case "development":
-////				deleteAll();
-//				break;
-//		}
-    }
-
+    def destroy = { }
+	
 }

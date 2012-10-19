@@ -60,6 +60,7 @@ abstract class Data<T extends DataValue> {
 		tablePerHierarchy false
 		timestamp sqlType: "datetime"
 		lastValueChanged sqlType: "datetime"
+		code unique: true
 		cache true
 	}
 	
@@ -93,7 +94,7 @@ abstract class Data<T extends DataValue> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this.is(obj))
 			return true;
 		if (obj == null)
 			return false;

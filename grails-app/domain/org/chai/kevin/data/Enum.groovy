@@ -75,6 +75,7 @@ class Enum implements Exportable, Importable {
 	static mapping = {
 		table 'dhsst_enum'
 		enumOptions lazy: false
+		code unique: true
 		cache true
 	}
 	
@@ -117,7 +118,7 @@ class Enum implements Exportable, Importable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this.is(obj))
 			return true;
 		if (obj == null)
 			return false;

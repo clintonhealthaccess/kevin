@@ -69,31 +69,31 @@ class NormalizedDataElement extends DataElement<NormalizedDataElementValue> {
 	 * Retaining backward compatibility with old getters and setters
 	 */
 	Map getExpressionMap() {
-		if (expressionMapString != null && cachedExpressionMap == null) cachedExpressionMap = JSONUtils.getMapFromJSON(expressionMapString)
-		return cachedExpressionMap
+		if (expressionMapString != null && cachedExpressionMap == null) this.cachedExpressionMap = JSONUtils.getMapFromJSON(expressionMapString)
+		return this.cachedExpressionMap
 	}
 	
 	void setExpressionMap(Map expressionMap) {
-		expressionMapString = JSONUtils.getJSONFromMap(expressionMap)
-		cachedExpressionMap = expressionMap
+		this.expressionMapString = JSONUtils.getJSONFromMap(expressionMap)
+		this.cachedExpressionMap = expressionMap
 	}
 	
 	void setExpressionMapString(String expressionMapString) {
-		cachedExpressionMap = null
-		expressionMapString = expressionMapString
+		this.cachedExpressionMap = null
+		this.expressionMapString = expressionMapString
 	}
 	
 	/*
 	 * Retaining backward compatibility with old getters and setters
 	 */
 	Map getSourceMap() {
-		if (sourceMapString != null && cachedSourceMap == null) cachedSourceMap = JSONUtils.getMapFromJSON(sourceMapString)
-		return cachedSourceMap
+		if (sourceMapString != null && cachedSourceMap == null) this.cachedSourceMap = JSONUtils.getMapFromJSON(sourceMapString)
+		return this.cachedSourceMap
 	}
 	
 	void setSourceMap(Map sourceMap) {
-		sourceMapString = JSONUtils.getJSONFromMap(sourceMap)
-		cachedSourceMap = sourceMap
+		this.sourceMapString = JSONUtils.getJSONFromMap(sourceMap)
+		this.cachedSourceMap = sourceMap
 	}
 	
 	void setSourceMapString(String sourceMapString) {

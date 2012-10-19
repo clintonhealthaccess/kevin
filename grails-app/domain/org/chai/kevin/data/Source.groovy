@@ -47,6 +47,7 @@ public class Source {
 	static mapping = {
 		table 'dhsst_data_source'
 		cache true
+		code unique: true
 	}
 	
 	static constraints =  {
@@ -69,7 +70,7 @@ public class Source {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this.is(obj))
 			return true;
 		if (obj == null)
 			return false;

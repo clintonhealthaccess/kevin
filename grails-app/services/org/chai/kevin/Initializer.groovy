@@ -78,44 +78,56 @@ public class Initializer {
 	}
 	
 	static def createUsers() {
-		
-//		def user = new User(userType: UserType.OTHER,code:"dhsst", username: "dhsst", firstname: "Dhsst", lastname: "Dhsst", email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), active: true, confirmed: true, uuid:'dhsst_uuid', defaultLanguage:'fr', phoneNumber: '+250 11 111 11 11', organisation:'org')
-//		user.addToRoles(reportAllReadonly)
-//		user.addToRoles(surveyAllReadonly)
-//		// access to site
-//		user.save(failOnError: true)
+		def user = new User(
+			userType: UserType.OTHER, code:"dhsst", username: "dhsst", 
+			firstname: "Dhsst", lastname: "Dhsst", 
+			email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), 
+			active: true, confirmed: true, uuid:'dhsst_uuid', 
+			defaultLanguage:'fr', phoneNumber: '+250 11 111 11 11', organisation:'org')
+		[	Role.findByName('report-all-readonly'), 
+			Role.findByName('survey-all-readonly')
+		].each {user.addToRoles(it)}
+		user.save(failOnError: true)
 
-		def admin = new User(userType: UserType.OTHER, code:"admin", firstname: "Super", lastname: "Admin", username: "admin", email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), active: true, confirmed: true, uuid:'admin_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
+		def admin = new User(
+			userType: UserType.OTHER, code:"admin", username: "admin",
+			firstname: "Super", lastname: "Admin", 
+			email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), 
+			active: true, confirmed: true, uuid:'admin_uuid', 
+			phoneNumber: '+250 11 111 11 11', organisation:'org')
 		admin.addToPermissions("*")
 		admin.save(failOnError: true)
 
-//		def butaro = new User(userType: UserType.SURVEY, code:"butaro",username: "butaro", firstname: "butaro", lastname: "butaro", locationId: DataLocation.findByCode("322").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'butaro_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
-//		butaro.addToPermissions("editSurvey:view")
-//		butaro.addToPermissions("editSurvey:*:"+DataLocation.findByCode("322").id)
-//		butaro.addToPermissions("menu:survey")
-//		butaro.addToPermissions("menu:reports")
-//		butaro.addToPermissions("home:*")
-//		butaro.save(failOnError: true)
-//		
-//		def kivuye = new User(userType: UserType.PLANNING, code:"kivuye",username: "kivuye", firstname: "kivuye", lastname: "kivuye", locationId: DataLocation.findByCode("327").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid', phoneNumber: '+250 11 111 11 11', organisation:'org')
-//		kivuye.addToPermissions("editPlanning:view")
-//		kivuye.addToPermissions("editPlanning:*:"+DataLocation.findByCode("327").id)
-//		kivuye.addToPermissions("menu:planning")
-//		kivuye.addToPermissions("menu:reports")
-//		kivuye.addToPermissions("home:*")
-//		kivuye.save(failOnError: true)
+		def butaro = new User(userType: UserType.SURVEY, code:"butaro",
+			username: "butaro", firstname: "butaro", lastname: "butaro", 
+			locationId: DataLocation.findByCode("butaro_hd").id, passwordHash: new Sha256Hash("123").toHex(), 
+			active: true, confirmed: true, uuid: 'butaro_uuid', 
+			phoneNumber: '+250 11 111 11 11', organisation:'org')
+		[	"editSurvey:view", 
+			"editSurvey:*:"+DataLocation.findByCode("butaro_hd").id, 
+			"menu:survey", 
+			"menu:reports", 
+			"home:*"].each {butaro.addToPermissions(it)}
+		butaro.save(failOnError: true)
+		
+		def kivuye = new User(userType: UserType.PLANNING, code:"kivuye",
+			username: "kivuye", firstname: "kivuye", lastname: "kivuye",
+			locationId: DataLocation.findByCode("kivuye_cs").id, passwordHash: new Sha256Hash("123").toHex(),
+			active: true, confirmed: true, uuid: 'kivuye_uuid',
+			phoneNumber: '+250 11 111 11 11', organisation:'org')
+		[	"editPlanning:view",
+			"editPlanning:*:"+DataLocation.findByCode("kivuye_cs").id,
+			"menu:planning",
+			"menu:reports",
+			"home:*"].each {kivuye.addToPermissions(it)}
+		kivuye.save(failOnError: true)
 	}
-	
-	static Date mar01 = getDate( 2005, 3, 1 );
-	static Date mar31 = getDate( 2005, 3, 31 );
-	static Date mar011 = getDate( 2006, 3, 1 );
-	static Date mar311 = getDate( 2006, 3, 31 );
 	
 	static def createPeriods() {
 		if (!Period.count()) {
 			// periods
-			new Period(code:"period1", startDate: mar01, endDate: mar31).save(failOnError: true)
-			new Period(code:"period2", startDate: mar011, endDate: mar311).save(failOnError: true)
+			new Period(code:"period1", startDate: getDate( 2005, 3, 1 ), endDate: getDate( 2005, 3, 31 )).save(failOnError: true)
+			new Period(code:"period2", startDate: getDate( 2006, 3, 1 ), endDate: getDate( 2006, 3, 31 )).save(failOnError: true)
 		}
 	}
 
@@ -136,32 +148,110 @@ public class Initializer {
 	
 	static def createDataLocationTypes() {
 		if (!DataLocationType.count()) {
-			new DataLocationType(code: 'health center', names_en: "Health Center").save(failOnError: true)
-			new DataLocationType(code: 'district hospital', names_en: "District Hospital").save(failOnError: true)
+			new DataLocationType(code: 'health_center', names_en: "Health Center").save(failOnError: true)
+			new DataLocationType(code: 'district_hospital', names_en: "District Hospital").save(failOnError: true)
 		}
 	}
 	
 	static def createLocations() {
 		if (!Location.count()) {
-			def rwanda = new Location(code: "rwanda", names_en: 'Rwanda', parent: null, level: LocationLevel.findByCode('country')).save(failOnError: true)
-			def north = new Location(code: "north", names_en: 'North', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
-			def south = new Location(code: "south", names_en: 'South', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
-			def east = new Location(code: "east", names_en: 'East', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
-			def west = new Location(code: "west", names_en: 'West', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
-			def kigali = new Location(code: "kigali", names_en: 'Kigali City', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
-			def gasabo = new Location(code: "gasabo", names_en: 'Gasabo', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
-			def kicukiro = new Location(code: "kicukiro", names_en: 'Kicukiro', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
-			def nyarugenge = new Location(code: "Nyarugenge", names_en: 'Nyarugenge', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
-			def burera = new Location(code: "burera", names_en: 'Burera', parent: north, level: LocationLevel.findByCode('district')).save(failOnError: true)
+			def rwanda 		= new Location(code: "rwanda", names_en: 'Rwanda', parent: null, level: LocationLevel.findByCode('country')).save(failOnError: true)
+			def north 		= new Location(code: "north", names_en: 'North', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def south 		= new Location(code: "south", names_en: 'South', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def east 		= new Location(code: "east", names_en: 'East', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def west 		= new Location(code: "west", names_en: 'West', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def kigali 		= new Location(code: "kigali", names_en: 'Kigali City', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def gasabo 		= new Location(code: "gasabo", names_en: 'Gasabo', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
+			def kicukiro 	= new Location(code: "kicukiro", names_en: 'Kicukiro', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
+			def nyarugenge 	= new Location(code: "Nyarugenge", names_en: 'Nyarugenge', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
+			def burera 		= new Location(code: "burera", names_en: 'Burera', parent: north, level: LocationLevel.findByCode('district')).save(failOnError: true)
 		}
 	}
 	
 	static def createDataLocations() {
 		if (!DataLocation.count()) {
-			[	new DataLocation(code: "butaro-hd", names_en: 'Butaro HD', type: DataLocationType.findByCode('district hospital')),
-				new DataLocation(code: "kivuye-cs", names_en: 'Kivuye CS', type: DataLocationType.findByCode('health center')),
-				new DataLocation(code: "rusas-cs", names_en: 'Butaro HD', type: DataLocationType.findByCode('health center'))
+			[	new DataLocation(code: "butaro_hd", names_en: 'Butaro HD', type: DataLocationType.findByCode('district_hospital')),
+				new DataLocation(code: "kivuye_cs", names_en: 'Kivuye CS', type: DataLocationType.findByCode('health_center')),
+				new DataLocation(code: "rusas_cs", names_en: 'Butaro HD', type: DataLocationType.findByCode('health_center'))
 			].each {Location.findByCode('burera').addToDataLocations(it).save(failOnError: true)}
+		}
+	}
+	
+	static def createEnums() {
+		if (!Enum.count()) {
+			def gender = new Enum(code: "gender", names_en: 'Gender')
+			[	new EnumOption(code: "male", names_en: 'Male', value: 'male', order: ["en":1, "fr":2]),
+				new EnumOption(code: "female", names_en: 'Female', value: 'female', order: ["en":1, "fr":2])
+			].each {gender.addToEnumOptions(it)}
+			gender.save(failOnError: true)
+			
+			def function = new Enum(code: "primary_function", names_en: 'Primary Function')
+			[	new EnumOption(code: "doctor", names_en: 'Doctor', names_fr: 'Docteur', value: 'doctor', order: ["en":2, "fr":2]),
+				new EnumOption(code: "nurse", names_en: 'Nurse', names_fr: 'Infirmière', value: 'doctor', order: ["en":3, "fr":3]),
+				new EnumOption(code: "anesthesist", names_en: 'Anesthesist', names_fr: 'Anesthésiste', value: 'anesthesist', order: ["en":1, "fr":1]),
+				new EnumOption(code: "receptionist", names_en: 'Receptionist', names_fr: 'Receptionist', value: 'receptionist', order: ["en":4, "fr":4]),
+			].each {function.addToEnumOptions(it)}
+			function.save(failOnError: true)
+			
+			def energy = new Enum(code: 'energy_source', names_en: 'Energy Source')
+			[	new EnumOption(code: 'national_grid', names_en: 'National Grid', names_fr: 'Réseau national', value: 'national_grid', order: ["en":3, "fr":3]),
+				new EnumOption(code: 'generator', names_en: 'Generator', names_fr: 'Générateur', value: 'generator', order: ["en":1, "fr":1]),
+				new EnumOption(code: 'solar', names_en: 'Solar', names_fr: 'Solaire', value: 'solar', order: ["en":2, "fr":2]),
+				new EnumOption(code: 'other', names_en: 'Other', names_fr: 'Autre', value: 'other', order: ["en":4, "fr":4]),
+			].each {energy.addToEnumOptions(it)}
+			energy.save(failOnError: true)
+			
+//			def enume = new Enum(names:j(["en":"Enum 1"]), descriptions:j([:]), code:"ENUM1");
+//			def enumOption1 = new EnumOption(code:"EnumOption1",names:j(["en":"Value 1"]), descriptions:j(["en":"Lorem Ipsum blabla bli blabla bla Lorem Ipsum Sit Amet Description is huge"]), value:"value1", enume: enume, order: o(["en":1,"fr":2]));
+//			def enumOption2 = new EnumOption(code:"EnumOption2",names:j(["en":"Value 2"]), descriptions:j(["en":"Small Description Lorem Ipsum"]), value:"value2", enume: enume, order: o(["en":2,"fr":1]));
+//			
+//			def enume2 = new Enum(names:j(["en":"Enum 2"]), descriptions:j([:]), code:"ENUM2");
+//			def enumOption01 = new EnumOption(code:"EnumOption3",names:j(["en":"N/A Did not receive training"]), value:"N/A Did not receive training", enume: enume2);
+//			def enumOption02 = new EnumOption(code:"EnumOption4",names:j(["en":"NGO or Partner"]), value:"NGO or Partner", enume: enume2);
+//			def enumOption03 = new EnumOption(code:"EnumOption5",names:j(["en":"Ministry of Health"]), value:"Ministry of Health", enume: enume2);
+//			
+//			def enumeGender = new Enum(names:j(["en":"Table Sex"]), descriptions:j([:]), code:"gender");
+//			def enumGenderOption1 = new EnumOption(code:"EnumOption6",names:j(["en":"Male"]), value:"male", enume: enumeGender, order: o(["en":1,"fr":2]));
+//			def enumGenderOption2 = new EnumOption(code:"EnumOption7",names:j(["en":"Female"]), value:"female", enume: enumeGender, order: o(["en":2,"fr":1]));
+//			
+//			def primaryFunction = new Enum(names:j(["en":"Primary function table"]), descriptions:j([:]), code:"primaryfunction");
+//			def primaryFunctionOp1 = new EnumOption(code:"EnumOption8",names:j(["en":"PrimaryFunction1"]), value:"primaryFunction1", enume: primaryFunction, order: o(["en":1,"fr":2]));
+//			def primaryFunctionOp2 = new EnumOption(code:"EnumOption9",names:j(["en":"PrimaryFunction2"]), value:"primaryFunction2", enume: primaryFunction, order: o(["en":2,"fr":1]));
+		}
+	}
+
+	static def createRawDataElements() {
+		if (!RawDataElement.count()) {
+			
+			// service delivery
+			new RawDataElement(code: 'in_facility_birth', type: Type.TYPE_NUMBER(), source: Source.findByCode('dhsst')).save(failOnError: true)
+			new RawDataElement(code: 'out_facility_birth', type: Type.TYPE_NUMBER(), source: Source.findByCode('dhsst')).save(failOnError: true)
+			
+			// geographical access
+			// TODO make a nominative version of this
+			new RawDataElement(code: 'energy_source', type: Type.TYPE_ENUM('energy_source'), source: Source.findByCode('dhsst')).save(failOnError: true)
+			
+			// TODO human resources
+			// TODO make a nominative version of this
+		}
+	}
+		
+	static def createNormalizedDataElements() {
+		if (!NormalizedDataElement.count()) {
+			
+			// service delivery
+			new NormalizedDataElement(code: 'total_birth', type: Type.TYPE_NUMBER(), expressionMap: Period.list().collectEntries ([:], { period ->
+				[(period.id.toString()), DataLocationType.list().collectEntries ([:], { type -> 
+					[(type.code), '\$' + RawDataElement.findByCode('in_facility_birth').id + ' + \$' + RawDataElement.findByCode('out_facility_birth').id]	
+				})]
+			})).save(failOnError: true)
+			
+			// geographical access
+			new NormalizedDataElement(code: 'use_solar', type: Type.TYPE_BOOL(), expressionMap: Period.list().collectEntries ([:], { period ->
+				[(period.id.toString()), DataLocationType.list().collectEntries ([:], { type -> 
+					[(type.code), '\$' + RawDataElement.findByCode('energy_source').id + ' == "solar"']	
+				})]
+			})).save(failOnError: true)
 		}
 	}
 	
@@ -191,64 +281,6 @@ public class Initializer {
 
 	static def createDataElementsAndExpressions() {
 
-		if (!Enum.count()) {
-			// Enumerations
-			def enume = new Enum(names:j(["en":"Enum 1"]), descriptions:j([:]), code:"ENUM1");
-			def enumOption1 = new EnumOption(code:"EnumOption1",names:j(["en":"Value 1"]), descriptions:j(["en":"Lorem Ipsum blabla bli blabla bla Lorem Ipsum Sit Amet Description is huge"]), value:"value1", enume: enume, order: o(["en":1,"fr":2]));
-			def enumOption2 = new EnumOption(code:"EnumOption2",names:j(["en":"Value 2"]), descriptions:j(["en":"Small Description Lorem Ipsum"]), value:"value2", enume: enume, order: o(["en":2,"fr":1]));
-			
-			def enume2 = new Enum(names:j(["en":"Enum 2"]), descriptions:j([:]), code:"ENUM2");
-			def enumOption01 = new EnumOption(code:"EnumOption3",names:j(["en":"N/A Did not receive training"]), value:"N/A Did not receive training", enume: enume2);
-			def enumOption02 = new EnumOption(code:"EnumOption4",names:j(["en":"NGO or Partner"]), value:"NGO or Partner", enume: enume2);
-			def enumOption03 = new EnumOption(code:"EnumOption5",names:j(["en":"Ministry of Health"]), value:"Ministry of Health", enume: enume2);
-			
-			def enumeGender = new Enum(names:j(["en":"Table Sex"]), descriptions:j([:]), code:"gender");
-			def enumGenderOption1 = new EnumOption(code:"EnumOption6",names:j(["en":"Male"]), value:"male", enume: enumeGender, order: o(["en":1,"fr":2]));
-			def enumGenderOption2 = new EnumOption(code:"EnumOption7",names:j(["en":"Female"]), value:"female", enume: enumeGender, order: o(["en":2,"fr":1]));
-			
-			def primaryFunction = new Enum(names:j(["en":"Primary function table"]), descriptions:j([:]), code:"primaryfunction");
-			def primaryFunctionOp1 = new EnumOption(code:"EnumOption8",names:j(["en":"PrimaryFunction1"]), value:"primaryFunction1", enume: primaryFunction, order: o(["en":1,"fr":2]));
-			def primaryFunctionOp2 = new EnumOption(code:"EnumOption9",names:j(["en":"PrimaryFunction2"]), value:"primaryFunction2", enume: primaryFunction, order: o(["en":2,"fr":1]));
-			
-			enume.enumOptions = [
-				enumOption1, 
-				enumOption2
-			]
-			enume.save(failOnError: true)
-			enumOption1.save(failOnError: true)
-			enumOption2.save(failOnError: true, flush:true)
-
-			enume2.enumOptions = [
-				enumOption01,
-				enumOption02,
-				enumOption03
-			]
-			enume2.save(failOnError: true)
-			enumOption01.save(failOnError: true)
-			enumOption02.save(failOnError: true, flush:true)
-			enumOption03.save(failOnError: true)
-
-			enumeGender.enumOptions = [
-				enumGenderOption1,
-				enumGenderOption2
-			]
-			enumeGender.save(failOnError: true)
-			enumGenderOption1.save(failOnError: true)
-			enumGenderOption2.save(failOnError: true, flush:true)
-			
-			primaryFunction.enumOptions = [
-				primaryFunctionOp1,
-				primaryFunctionOp2
-			]
-			primaryFunction.save(failOnError: true)
-			primaryFunctionOp1.save(failOnError: true)
-			primaryFunctionOp2.save(failOnError: true, flush:true)
-		}
-
-		if (!Source.count()) {
-			def source = new Source(names:j(['en':'DHSST']), code: 'dhsst').save(failOnError: true)
-		}
-		
 		if (!RawDataElement.count()) {
 			// Data Elements
 			def dataElement10 = new RawDataElement(names:j(["en":"Element 10"]), descriptions:j([:]), code:"CODE10", type: Type.TYPE_ENUM (Enum.findByCode('ENUM2').code))

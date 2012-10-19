@@ -349,6 +349,7 @@
 <classpathentry kind="var" path="GRAILS_IVYCACHE/org.apache.tomcat.embed/tomcat-embed-core/jars/tomcat-embed-core-7.0.27.jar"/>
 <classpathentry kind="var" path="GRAILS_IVYCACHE/org.apache.tomcat.embed/tomcat-embed-jasper/jars/tomcat-embed-jasper-7.0.27.jar"/>
 <classpathentry kind="var" path="GRAILS_IVYCACHE/org.apache.tomcat.embed/tomcat-embed-logging-log4j/jars/tomcat-embed-logging-log4j-7.0.27.jar"/>
+<classpathentry kind="var" path="GRAILS_IVYCACHE/org.apache.ivy/ivy/jars/ivy-2.2.0.jar"/>
 <classpathentry kind="var" path="GRAILS_WORKDIR/projects/kevin/plugins/yui-minify-resources-0.1.5/lib/yuicompressor-2.4.7.jar"/>
 <classpathentry combineaccessrules="false" kind="src" path="/chai-locations"/>
 <classpathentry kind="output" path="web-app/WEB-INF/classes"/>

@@ -167,6 +167,7 @@ public class ValueService {
 		criteria.add(Restrictions.eq("data", data));
 		if (period != null) criteria.add(Restrictions.eq("period", period));
 		if (dataLocation != null) criteria.add(Restrictions.eq("location", dataLocation));
+		criteria.add(Restrictions.isNull("type"));
 		
 		return criteria;
 	}

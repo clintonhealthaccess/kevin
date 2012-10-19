@@ -120,7 +120,7 @@ grails.project.dependency.resolution = {
 		compile ":svn:1.0.2"
 		compile ":cdn-resources:0.2.1"
 		compile ":mail:1.0"
-		compile ":build-info-tag:0.1"
+		compile ":build-info-tag:0.3.1"
 		compile ":yui-minify-resources:0.1.5"
 		compile ":rabbitmq-tasks:0.5.3-SNAPSHOT"
 		compile ':cloud-foundry:1.2.3'

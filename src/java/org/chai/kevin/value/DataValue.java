@@ -3,6 +3,7 @@ package org.chai.kevin.value;
 import java.util.Date;
 
 import org.chai.kevin.Period;
+import org.chai.kevin.data.Data;
 import org.chai.location.CalculationLocation;
 
 public interface DataValue {
@@ -15,4 +16,6 @@ public interface DataValue {
 	
 	public abstract Date getTimestamp();
 
+	public abstract Data getData();
+	
 }

@@ -60,7 +60,7 @@ public abstract class DataElement<T extends DataValue> extends Data<T> implement
 	 * Retaining backward compatibility with old getters and setters
 	 */
 	Type getType() {
-		if (typeString != null && cachedType == null) cachedType = new Type(typeString)
+		if (typeString != null && cachedType == null) this.cachedType = new Type(typeString)
 		return cachedType
 	}
 	

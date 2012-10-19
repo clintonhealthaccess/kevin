@@ -110,27 +110,33 @@ public class EnumOption extends LanguageOrderable implements Exportable, Importa
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		result = prime * result + ((enume == null) ? 0 : enume.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this.is(obj))
 			return true;
 		if (obj == null)
 			return false;
 		if (!(obj instanceof EnumOption))
 			return false;
 		EnumOption other = (EnumOption) obj;
-		if (getId() == null) {
-			if (other.getId() != null)
+		if (code == null) {
+			if (other.code != null)
 				return false;
-		} else if (!getId().equals(other.getId()))
+		} else if (!code.equals(other.code))
+			return false;
+		if (enume == null) {
+			if (other.enume != null)
+				return false;
+		} else if (!enume.equals(other.enume))
 			return false;
 		return true;
-	}	
-	
+	}
+
 	@Override
 	public String toExportString() {
 		return "[" + Utils.formatExportCode(getCode().toString()) + "]";
