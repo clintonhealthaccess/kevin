@@ -36,7 +36,7 @@
 								<shiro:hasPermission permission="surveySummary:refresh">
 									<li>
 										<a href="${createLinkWithTargetURI(controller: 'task', action: 'create', 
-											params: params << [class: 'RefreshSurveyTask', surveyId: currentSurvey.id, locationId: currentLocation.id])}">
+											params: params << [class: 'RefreshSurveyTask', surveyId: currentSurvey?.id, locationId: currentLocation.id])}">
 											<g:message code="survey.summary.refreshsurvey.label" />
 										</a>
 									</li>
