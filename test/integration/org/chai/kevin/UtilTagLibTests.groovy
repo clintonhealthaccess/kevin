@@ -17,13 +17,13 @@ class UtilTagLibTests extends GroovyPagesTestCase {
 		controller.request.forwardURI = '/kevin/test/test'
 		// contextPath is always the path to the app
 		controller.request.contextPath = '/kevin'
-		controller.request.params = ['param': '123']
+		controller.request.params = ['test': '123']
 		
 		def url = applyTemplate(
 			'<g:createLinkWithTargetURI controller="test" action="test" params="[test: 123]"/>'
 		)
 
-		assertEquals "/test/test?targetURI=%2Ftest%2Ftest%3Ftest%3D123&test=123", url
+		assertEquals "/kevin/test/test?targetURI=%2Ftest%2Ftest%3Ftest%3D123&test=123", url
 	}
 	
 	def testLinkWithTargetURIWhenNullQuery() {
@@ -34,13 +34,43 @@ class UtilTagLibTests extends GroovyPagesTestCase {
 		controller.request.forwardURI = '/kevin/test/test'
 		// contextPath is always the path to the app
 		controller.request.contextPath = '/kevin'
-		controller.request.params = ['param': '123']
+		controller.request.params = ['test': '123']
 		
 		def url = applyTemplate(
 			'<g:createLinkWithTargetURI controller="test" action="test" params="[test: 123]"/>'
 		)
 
-		assertEquals "/test/test?targetURI=%2Ftest%2Ftest&test=123", url
+		assertEquals "/kevin/test/test?targetURI=%2Ftest%2Ftest&test=123", url
+	}
+	
+	def testLinkExcludeParams(){
+		def controller = new UserController()
+		
+		controller.request.params = ['test': '123', 'more': '456']
+		def url = applyTemplate(
+			'<g:createLinkExcludeParams controller="controller" action="action" params="[test: 123, more: 456]" exclude="[\'more\']"/>'
+		)
+		assertEquals "/kevin/controller/action?test=123", url
+	}
+	
+	def testLinkExcludeParamsWhenNull(){
+		def controller = new UserController()
+		
+		controller.request.params = ['test': '123', 'more': '456']
+		def url = applyTemplate(
+			'<g:createLinkExcludeParams controller="controller" action="action" params="[test: 123, more: 456]"/>'
+		)
+		assertEquals "/kevin/controller/action?more=456&test=123", url
+	}
+	
+	def testLinkExcludeParamsWhenEmptyList(){
+		def controller = new UserController()
+		
+		controller.request.params = ['test': '123', 'more': '456']
+		def url = applyTemplate(
+			'<g:createLinkExcludeParams controller="controller" action="action" params="[test: 123, more: 456]" exclude="[]"/>'
+		)
+		assertEquals "/kevin/controller/action?more=456&test=123", url
 	}
 	
 	def testStripHtml() {

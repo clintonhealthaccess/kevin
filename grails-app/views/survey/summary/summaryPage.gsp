@@ -14,13 +14,11 @@
 				<% def surveyLinkParams = new HashMap(params) %>
 				<% surveyLinkParams['sort'] = SurveySummaryPage.PROGRESS_SORT %>
 				<% surveyLinkParams['order'] = 'desc' %>
-				
-				<g:render template="/survey/summary/surveyFilter" model="[linkParams: surveyLinkParams]"/>
-				
 				<% surveyLinkParams['survey'] = currentSurvey?.id %>
 				<% surveyLinkParams['program'] = currentProgram?.id %>
 				<% surveyLinkParams['section'] = currentSection?.id %>
 				
+				<g:render template="/survey/summary/surveyFilter" model="[linkParams: surveyLinkParams]"/>
 				<g:locationFilter linkParams="${surveyLinkParams}" selected="${currentLocation}" 
 					selectedTypes="${currentLocationTypes}" skipLevels="${locationSkipLevels}"/>
 				<g:dataLocationTypeFilter linkParams="${surveyLinkParams}" selected="${currentLocationTypes}"/>

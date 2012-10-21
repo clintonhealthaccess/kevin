@@ -20,6 +20,8 @@ class SurveySummaryController extends AbstractController {
 	
 	// TODO refactor into several actions for survey/program/section
 	def summaryPage = {
+		if (log.isDebugEnabled()) log.debug("survey.summaryPage, params:"+params)
+		
 		Location location = Location.get(params.int('location'))
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 		

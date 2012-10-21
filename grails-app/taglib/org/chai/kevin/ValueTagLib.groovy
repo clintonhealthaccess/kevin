@@ -250,6 +250,7 @@ class ValueTagLib {
 		}
 	}
 	
+	//TODO explain what zero, enums, and nullText are
 	def value = {attrs, body ->
 		if (log.isDebugEnabled()) log.debug('value(attrs='+attrs+',body='+body+')')
 		

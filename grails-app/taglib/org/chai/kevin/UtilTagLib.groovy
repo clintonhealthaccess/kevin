@@ -36,13 +36,30 @@ class UtilTagLib {
 	def languageService
 	
 	def createLinkWithTargetURI = {attrs, body ->
-		if (attrs['params'] == null) attrs['params'] = [:]
-		else attrs['params'] = new HashMap(attrs['params'])
+		log.debug('createLinkWithTargetURI before creating link with target uri attrs: '+attrs)
+		if (attrs['params'] == null) 
+			attrs['params'] = [:]
+		else 
+			attrs['params'] = new HashMap(attrs['params'])
 		attrs['params'] << [targetURI: request.forwardURI - request.contextPath + (request.queryString==null?'':'?'+request.queryString)];
-		
-		log.debug('creating link with attrs: '+attrs)
+		log.debug('createLinkWithTargetURI creating link with attrs: '+attrs)
 		out << createLink(attrs, body)
-	}		
+	}
+	
+	def createLinkExcludeParams = {attrs, body ->
+		if (attrs['params'] == null) attrs['params'] = [:]
+		def includeParams = new HashMap(attrs['params'])
+		def excludeParams = attrs['exclude']
+		//log.debug('createLinkExcludeParams before exclude link params: '+includeParams+' exclude: '+excludeParams);
+		if (excludeParams != null){
+			for(def excludeParam : excludeParams){
+				includeParams.remove(excludeParam)
+			}
+		}
+		attrs['params'] = includeParams
+		//log.debug('createLinkExcludeParams creating link with attrs: '+attrs)
+		out << createLink(attrs, body)
+	}
 	
 	def toHtml = {attrs, body ->
 		out << attrs.value.replaceAll("(\\r\\n|\\n)", "<br/>").replaceAll("( )", "&nbsp;")	

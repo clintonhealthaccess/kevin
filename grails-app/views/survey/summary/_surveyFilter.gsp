@@ -1,5 +1,8 @@
 <%@ page import="org.chai.kevin.survey.summary.SurveySummaryPage" %>
-
+<%
+	newLinkParams = [:]
+	newLinkParams.putAll linkParams
+%>
 <div class="left">
 	<span class="js_dropdown dropdown">
 		<a class="survey js_dropdown-link nice-button with-highlight" href="#"> 
@@ -20,30 +23,25 @@
 			<ul>
 				<g:each in="${surveys}" var="survey">
 				
-					<% linkParams.remove('program') %>
-					<% linkParams.remove('section') %>
-					
 					<li class="js_foldable foldable ${currentSurvey?.id==survey.id?'current':''}">
 						<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a>
-						<a class="item ${currentSurvey?.id == survey.id? 'opened':''}" href="${createLink(controller: 'surveySummary', action:'summaryPage', params:linkParams << [survey: survey.id])}">
+						<a class="item ${currentSurvey?.id == survey.id? 'opened':''}" href="${createLinkExcludeParams(controller: 'surveySummary', action:'summaryPage', params:newLinkParams << [survey: survey.id], exclude: ['program', 'section'])}">
 							<g:i18n field="${survey.names}" />
 						</a>
 						<ul class="js_foldable-container foldable-container">
 							<g:each in="${survey.getPrograms()}" var="program">
 							
-								<% linkParams.remove('section') %>
-							
 								<li class="js_foldable foldable ${currentProgram?.id==program.id?'current':''}">
 									<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a> 
 									<a class="item ${currentProgram?.id == program.id?'opened':''}" 
-										href="${createLink(controller:'surveySummary', action:'summaryPage', params:linkParams << [survey: survey.id, program: program.id])}">
+										href="${createLinkExcludeParams(controller:'surveySummary', action:'summaryPage', params:newLinkParams << [survey: survey.id, program: program.id], exclude:['section'])}">
 										<g:i18n field="${program.names}" />
 									</a>
 									<ul class="js_foldable-container foldable-container">
 										<g:each in="${program.getSections()}" var="section">
 											<li class="js_foldable foldable ${currentSection?.id==section.id?'current':''}">
 												<a class="item ${currentSection?.id == section.id?'opened':''}" 
-													href="${createLink(controller:'surveySummary', action:'summaryPage', params:linkParams << [survey: survey.id, program: program.id, section: section.id])}">
+													href="${createLink(controller:'surveySummary', action:'summaryPage', params:newLinkParams << [survey: survey.id, program: program.id, section: section.id])}">
 													<g:i18n field="${section.names}" />
 												</a>
 											</li>
