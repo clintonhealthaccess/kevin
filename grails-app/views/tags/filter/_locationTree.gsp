@@ -20,8 +20,8 @@
 						action: action,
 						current: current,
 						location: child,
-						locationFilterTree:locationFilterTree,				
-						linkParams:linkParams]" />
+						locationFilterTree: locationFilterTree,				
+						linkParams: linkParams]" />
 				</ul>
 			</g:if>
 		</g:each>	
