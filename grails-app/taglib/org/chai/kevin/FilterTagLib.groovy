@@ -123,9 +123,7 @@ class FilterTagLib {
 	
 	def dataLocationTypeFilter = {attrs, body ->
 		DataLocationType.withTransaction {
-			//log.debug('dataLocationTypeFilter before exclude link params attrs: '+attrs)
 			def model = excludeLinkParams(attrs)
-			//log.debug('dataLocationTypeFilter after exclude link params attrs: '+attrs)
 			def currentLocationTypes = null
 			if(attrs['selected'] == null) currentLocationTypes = []
 			else currentLocationTypes = attrs['selected'].asList().sort{it.id}
@@ -135,7 +133,6 @@ class FilterTagLib {
 					currentLocationTypes: currentLocationTypes,
 					dataLocationTypes: dataLocationTypes					
 				]
-			//log.debug('dataLocationTypeFilter rendering template with model: '+model)
 			out << render(template:'/tags/filter/dataLocationTypeFilter', model:model)
 		}
 	}	

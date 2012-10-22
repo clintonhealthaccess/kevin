@@ -8,7 +8,6 @@ class SecurityFilters {
     def filters = {
 		all(uri: "/**") {
 			before = {
-				log.debug("before filtering params: "+params+", controller: "+controllerName+", action: "+actionName)
 
 				// Ignore direct views (e.g. the default main index page).
 				if (!controllerName) return true
@@ -28,8 +27,6 @@ class SecurityFilters {
 				}
 				
 				accessControl()
-				
-				log.debug("after filtering params: "+params+", controller: "+controllerName+", action: "+actionName)
 			}
 		}
     }
