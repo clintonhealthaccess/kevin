@@ -299,14 +299,14 @@ class DsrServiceSpec extends DsrIntegrationTests {
 
 		then:
 		dsrTable.locations.size() == 4
-		dsrTable.locations.equals(s([Location.findByCode(NORTH), Location.findByCode(BURERA), DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)]))
+		dsrTable.locations.equals([Location.findByCode(NORTH), Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE), DataLocation.findByCode(BUTARO)])
 		
 		when: //report type is map
 		dsrTable = dsrService.getDsrTable(location, program, period, types, category1, Utils.ReportType.MAP)
 		
 		then:
 		dsrTable.locations.size() == 1
-		dsrTable.locations.equals(s([Location.findByCode(BURERA)]))
+		dsrTable.locations.equals([Location.findByCode(BURERA)])
 		
 	}
 

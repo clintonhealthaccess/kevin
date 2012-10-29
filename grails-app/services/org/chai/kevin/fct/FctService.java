@@ -41,28 +41,28 @@ public class FctService {
 			log.debug("getFctTable(period="+period+",location="+location+",program="+program+",target="+target+")");				
 				
 		Map<CalculationLocation, Map<FctTargetOption, SumValue>> valueMap = new HashMap<CalculationLocation, Map<FctTargetOption, SumValue>>();
-		List<FctTargetOption> targetOptions = new ArrayList<FctTargetOption>();
+		List<CalculationLocation> calculationLocations = new ArrayList<CalculationLocation>();
 		List<FctTarget> targets = new ArrayList<FctTarget>();
+		List<FctTargetOption> targetOptions = new ArrayList<FctTargetOption>();
 		List<CalculationLocation> topLevelLocations = new ArrayList<CalculationLocation>();
 		
-		targetOptions = target.getTargetOptions();
-		if(targetOptions.isEmpty())
-			return new FctTable(valueMap, targetOptions, targets, topLevelLocations);
-		Collections.sort(targetOptions);
-		
-		Set<LocationLevel> skips = reportService.getSkipReportLevels(locationSkipLevels);	
-		Set<CalculationLocation> treeLocations = new HashSet<CalculationLocation>();		
+		Set<LocationLevel> skips = reportService.getSkipReportLevels(locationSkipLevels);			
 		switch(reportType){
 			case MAP:
-				treeLocations = new HashSet<CalculationLocation>(location.getChildrenWithData(skips, types, true));
+				calculationLocations = location.getChildrenWithData(skips, types, true);
 				break;
 			case TABLE:
 			default:
-				treeLocations = new HashSet<CalculationLocation>(location.collectLocationTreeWithData(skips, types, true));
+				calculationLocations = location.collectLocationTreeWithData(skips, types, true);
 				topLevelLocations.addAll(location.getChildrenWithData(skips, types, true));
 		}
 		
-		for (CalculationLocation treeLocation : treeLocations) {
+		targetOptions = target.getTargetOptions();
+		if(calculationLocations.isEmpty() || targetOptions.isEmpty())
+			return new FctTable(valueMap, calculationLocations, targets, targetOptions, topLevelLocations);
+		Collections.sort(targetOptions);
+		
+		for (CalculationLocation treeLocation : calculationLocations) {
 			Map<FctTargetOption, SumValue> targetMap = new HashMap<FctTargetOption, SumValue>();
 			for(FctTargetOption targetOption : targetOptions){
 				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+targetOption.getSum());
@@ -74,7 +74,7 @@ public class FctService {
 		targets = getFctTargetsWithOptions(program);		
 		Collections.sort(targets);
 		
-		FctTable fctTable = new FctTable(valueMap, targetOptions, targets, topLevelLocations);
+		FctTable fctTable = new FctTable(valueMap, calculationLocations, targets, targetOptions, topLevelLocations);
 		if (log.isDebugEnabled()) log.debug("getFctTable(...)="+fctTable);
 		return fctTable;
 	}

@@ -47,14 +47,14 @@ public class DsrService {
 		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",location="+location+",program="+program+",types="+types+",category="+category+",reportType="+reportType+")");
 
 		Set<LocationLevel> skips = reportService.getSkipReportLevels(locationSkipLevels);
-		Set<CalculationLocation> calculationLocations = new HashSet<CalculationLocation>();		
+		List<CalculationLocation> calculationLocations = new ArrayList<CalculationLocation>();		
 		switch(reportType){
 			case MAP:
-				calculationLocations = new HashSet<CalculationLocation>(location.getChildrenWithData(skips, types, true));
+				calculationLocations = location.getChildrenWithData(skips, types, true);
 				break;
 			case TABLE:
 			default:
-				calculationLocations = new HashSet<CalculationLocation>(location.collectLocationTreeWithData(skips, types, true));
+				calculationLocations = location.collectLocationTreeWithData(skips, types, true);
 		}
 		
 		List<DsrTarget> targets = new ArrayList<DsrTarget>();

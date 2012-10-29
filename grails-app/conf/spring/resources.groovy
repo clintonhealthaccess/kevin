@@ -46,6 +46,7 @@ import org.chai.kevin.fct.FctService
 import org.chai.kevin.form.FormValidationService
 import org.chai.kevin.planning.PlanningService
 import org.chai.kevin.reports.ReportService
+import org.chai.kevin.reports.ReportExportService
 import org.chai.kevin.survey.SurveyCopyService
 import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.summary.SummaryService
@@ -143,6 +144,12 @@ beans = {
 		valueService = ref("valueService")		
 		sessionFactory = ref("sessionFactory")
 		skipLevels = reportSkipLevels		
+	}
+	
+	reportExportService(ReportExportService){
+		languageService = ref("languageService")
+		locationService = ref("locationService")
+		skipLevels = reportSkipLevels
 	}
 	
 	dashboardService(DashboardService) {

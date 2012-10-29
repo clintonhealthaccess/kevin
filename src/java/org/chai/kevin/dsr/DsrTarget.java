@@ -42,6 +42,7 @@ import org.chai.kevin.data.Data;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.reports.ReportProgram;
+import org.chai.kevin.reports.ReportTableIndicator;
 import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
@@ -51,7 +52,7 @@ import org.hibernate.proxy.HibernateProxy;
 @Entity(name = "DsrTarget")
 @Table(name = "dhsst_dsr_target")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DsrTarget extends AbstractReportTarget implements ReportTarget, Exportable, Importable {
+public class DsrTarget extends AbstractReportTarget implements ReportTarget, ReportTableIndicator, Exportable, Importable {
 	
 	private DsrTargetCategory category;
 	private String format;
@@ -70,11 +71,6 @@ public class DsrTarget extends AbstractReportTarget implements ReportTarget, Exp
 		}
 	}
 	
-	@Transient
-	public Type getType() {
-		return getData().getType();
-	}
-	
 	@ManyToOne(targetEntity=DsrTargetCategory.class)
 	public DsrTargetCategory getCategory() {
 		return category;
@@ -84,6 +80,12 @@ public class DsrTarget extends AbstractReportTarget implements ReportTarget, Exp
 		this.category = category;
 	}
 
+	@Override
+	@Transient
+	public Type getType() {
+		return getData().getType();
+	}
+	
 	@Basic
 	public String getFormat() {
 		return format;

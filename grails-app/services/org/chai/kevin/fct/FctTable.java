@@ -31,57 +31,58 @@ package org.chai.kevin.fct;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportTable;
-import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
 
 public class FctTable extends ReportTable<FctTargetOption, CalculationLocation, SumValue> {
 	
-	protected List<FctTargetOption> targetOptions;
 	private List<FctTarget> targets;
+	protected List<FctTargetOption> targetOptions;
+	
+	//TODO rename to barLocations or childLocations or something better
 	protected List<CalculationLocation> topLevelLocations;
 	
-	public FctTable(Map<CalculationLocation, Map<FctTargetOption, SumValue>> valueMap, List<FctTargetOption> targetOptions, List<FctTarget> targets, List<CalculationLocation> topLevelLocations) {
+	public FctTable(Map<CalculationLocation, Map<FctTargetOption, SumValue>> valueMap, List<CalculationLocation> locations, 
+			List<FctTarget> targets, List<FctTargetOption> targetOptions, List<CalculationLocation> topLevelLocations) {
 		super(valueMap);
-		this.targetOptions = targetOptions;
 		this.targets = targets;
+		this.targetOptions = targetOptions;
 		this.topLevelLocations = topLevelLocations;
 	}
 	
-	public Double getTotalAverage(CalculationLocation topLevelLocation){
-		Double totalAverage = 0d;
-		for(FctTargetOption targetOption : targetOptions){
-			if(getReportValue(topLevelLocation, targetOption) != null && !getReportValue(topLevelLocation, targetOption).getAverage().isNull()){
-				Value average = getReportValue(topLevelLocation, targetOption).getAverage();
-					totalAverage += average.getNumberValue().doubleValue();
-			}
-		}
-		DecimalFormat frmt = new DecimalFormat("#.##");
-		return Double.parseDouble(frmt.format(totalAverage));		
-	}
-	
-	public List<FctTargetOption> getTargetOptions(){
-		return targetOptions;
+	public List<FctTargetOption> getIndicators() {
+		List<FctTargetOption> indicators = super.getIndicators();
+		if(indicators != null && !indicators.isEmpty())
+			return indicators;
+		else
+			return targetOptions;
 	}
 	
 	public List<FctTarget> getTargets(){
 		return targets;
 	}
 	
-	public List<CalculationLocation> getTopLevelLocations(){
-		return topLevelLocations;
+	public List<FctTargetOption> getTargetOptions(){
+		return targetOptions;
 	}
 	
-	public Set<CalculationLocation> getLocations(){
-		return valueMap.keySet();
+	public List<CalculationLocation> getTopLevelLocations(){
+		return topLevelLocations;
 	}	
 
 	public boolean hasData(){
 		return (super.hasData());
+	}
+	
+	@Override
+	public Value getValue(CalculationLocation location, FctTargetOption targetOption) {
+		Value value = null;
+		SumValue sumValue = super.getReportValue(location, targetOption);
+		if(sumValue != null) value = sumValue.getValue();
+		return value;
 	}
 	
 	public SumValue getTableReportValue(CalculationLocation location, FctTargetOption targetOption){
@@ -101,4 +102,17 @@ public class FctTable extends ReportTable<FctTargetOption, CalculationLocation, 
 		if(sumValue != null) value = sumValue.getAverage();
 		return value;
 	}
+	
+	public Double getTotalAverage(CalculationLocation topLevelLocation){
+		Double totalAverage = 0d;
+		for(FctTargetOption targetOption : targetOptions){
+			if(getReportValue(topLevelLocation, targetOption) != null && !getReportValue(topLevelLocation, targetOption).getAverage().isNull()){
+				Value average = getReportValue(topLevelLocation, targetOption).getAverage();
+					totalAverage += average.getNumberValue().doubleValue();
+			}
+		}
+		DecimalFormat frmt = new DecimalFormat("#.##");
+		return Double.parseDouble(frmt.format(totalAverage));		
+	}
+
 }

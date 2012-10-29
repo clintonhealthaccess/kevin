@@ -81,7 +81,9 @@ public class ReportService {
 	public List<AbstractReportTarget> getReportTargets(Data<?> data) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AbstractReportTarget.class);
 		criteria.add(Restrictions.eq("data", data));
-		return (List<AbstractReportTarget>)criteria.list();
+		List<AbstractReportTarget> indicators = (List<AbstractReportTarget>)criteria.list();
+		if (log.isDebugEnabled()) log.debug("getReportTargets(data="+data+",indicators="+indicators+")");
+		return indicators;
 	}
 	
 	// TODO check this

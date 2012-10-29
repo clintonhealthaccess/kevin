@@ -1,9 +1,7 @@
 package org.chai.kevin.dsr;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportTable;
@@ -39,25 +37,33 @@ import org.chai.kevin.value.Value;
 
 public class DsrTable extends ReportTable<DsrTarget, CalculationLocation, Value> {
 	
-	private Set<CalculationLocation> locations;
+	private List<CalculationLocation> locations;
 	private List<DsrTarget> targets;
-	private List<DsrTargetCategory> targetCategories;		
+	private List<DsrTargetCategory> targetCategories;
 	
 	public DsrTable(Map<CalculationLocation, Map<DsrTarget, Value>> valueMap, 
-			Set<CalculationLocation> locations, List<DsrTarget> targets, List<DsrTargetCategory> targetCategories) {
+			List<CalculationLocation> locations, List<DsrTarget> targets, List<DsrTargetCategory> targetCategories) {
 		super(valueMap);
 		this.locations = locations;
 		this.targets = targets;
-		this.targetCategories = targetCategories;		
+		this.targetCategories = targetCategories;
 	}
 	
 	@Override
-	public Set<CalculationLocation> getLocations(){
-		Set<CalculationLocation> locations = super.getLocations();		
+	public List<CalculationLocation> getLocations(){
+		List<CalculationLocation> locations = super.getLocations();		
 		if(locations != null && !locations.isEmpty())
 			return locations;
 		else
 			return this.locations;
+	}
+	
+	public List<DsrTarget> getIndicators() {
+		List<DsrTarget> indicators = super.getIndicators();
+		if(indicators != null && !indicators.isEmpty())
+			return indicators;
+		else
+			return targets;
 	}
 	
 	public List<DsrTarget> getTargets(){
@@ -70,6 +76,11 @@ public class DsrTable extends ReportTable<DsrTarget, CalculationLocation, Value>
 
 	public boolean hasData(){
 		return (super.hasData());
+	}
+	
+	@Override
+	public Value getValue(CalculationLocation location, DsrTarget target) {
+		return super.getReportValue(location, target);
 	}
 	
 	public Value getTableReportValue(CalculationLocation location, DsrTarget target){

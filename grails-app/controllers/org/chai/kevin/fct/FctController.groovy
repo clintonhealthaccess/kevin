@@ -10,13 +10,16 @@ import org.chai.kevin.location.DataLocationType
 import org.chai.kevin.location.Location
 import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.reports.ReportEntity
+import org.chai.kevin.reports.ReportExportService
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.util.Utils.ReportType;
+import org.chai.kevin.util.Utils;
 
 class FctController extends AbstractController {
 
 	def fctService;
+	def reportExportService;
 	
 	public FctTarget getFctTarget(def program){
 		def fctTarget = null
@@ -122,5 +125,46 @@ class FctController extends AbstractController {
 				mapSkipLevels: mapSkipLevels
 			]
 		}
-	}		
+	}
+	
+	def export = {
+		if (log.isDebugEnabled()) log.debug("fct.export, params:"+params)
+
+		Period period = getPeriod()
+		ReportProgram program = getProgram(FctTarget.class)
+		Location location = getLocation()
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()
+		FctTarget fctTarget = getFctTarget(program)
+		Set<FctTargetOption> fctIndicators = getFctIndicators(fctTarget, program)
+		ReportType reportType = getReportType()
+		
+		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
+							'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(),
+							'fctTarget':fctTarget?.id,
+							//'indicators':fctIndicators != null ? fctIndicators.collect{ it.id }.sort() : null,
+							'reportType':reportType.toString().toLowerCase()]
+		def newParams = redirectIfDifferent(reportParams)
+		
+		if(newParams != null && !newParams.empty){
+			 redirect(controller: 'fct', action: 'view', params: newParams)
+		}
+		else {
+			def fctTable = null
+			if (fctTarget != null)
+				fctTable = fctService.getFctTable(location, program, fctTarget, period, dataLocationTypes, reportType);
+			
+			if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" program: "+program+", location: "+location)
+			
+			String filename = reportExportService.getExportFilename(location, program);
+			File csvFile = reportExportService.getReportExportFile(filename, fctTable);
+			def zipFile = Utils.getZipFile(csvFile, filename)
+				
+			if(zipFile.exists()){
+				response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());
+				response.setContentType("application/zip");
+				response.setHeader("Content-length", zipFile.length().toString());
+				response.outputStream << zipFile.newInputStream()
+			}
+		}
+	}
 }
