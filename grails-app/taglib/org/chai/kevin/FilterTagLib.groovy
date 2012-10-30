@@ -57,6 +57,11 @@ class FilterTagLib {
 		out << render(template:'/templates/reportView', model:model)
 	}
 	
+	def reportExport = {attrs, body ->
+		def model = excludeLinkParams(attrs)
+		out << render(template:'/templates/reportExport', model:model)
+	}
+	
 	def reportCategoryFilter = {attrs, body ->
 		def model = excludeLinkParams(attrs)
 		out << render(template:'/dsr/reportCategoryFilter', model:model)

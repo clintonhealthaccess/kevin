@@ -1,9 +1,9 @@
 package org.chai.kevin.dsr;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportTable;
@@ -39,25 +39,45 @@ import org.chai.kevin.value.Value;
 
 public class DsrTable extends ReportTable<DsrTarget, CalculationLocation, Value> {
 	
-	private Set<CalculationLocation> locations;
+	private List<CalculationLocation> locations;
 	private List<DsrTarget> targets;
-	private List<DsrTargetCategory> targetCategories;		
+	private List<DsrTargetCategory> targetCategories;
 	
 	public DsrTable(Map<CalculationLocation, Map<DsrTarget, Value>> valueMap, 
-			Set<CalculationLocation> locations, List<DsrTarget> targets, List<DsrTargetCategory> targetCategories) {
+			List<CalculationLocation> locations, List<DsrTarget> targets, List<DsrTargetCategory> targetCategories) {
 		super(valueMap);
 		this.locations = locations;
 		this.targets = targets;
-		this.targetCategories = targetCategories;		
+		this.targetCategories = targetCategories;
 	}
 	
 	@Override
-	public Set<CalculationLocation> getLocations(){
-		Set<CalculationLocation> locations = super.getLocations();		
+	public List<CalculationLocation> getLocations(){
+		List<CalculationLocation> locations = new ArrayList<CalculationLocation>();
+		locations.addAll(valueMap.keySet());	
 		if(locations != null && !locations.isEmpty())
 			return locations;
 		else
 			return this.locations;
+	}
+	
+	@Override
+	public List<DsrTarget> getIndicators() {
+		List<DsrTarget> indicators = new ArrayList<DsrTarget>();
+		for(CalculationLocation location : valueMap.keySet()){
+			Map<DsrTarget, Value> targetMap = valueMap.get(location);
+			for(DsrTarget target: targetMap.keySet()){
+				if(!indicators.contains(target)) indicators.add(target);
+			}
+		}
+		if(indicators != null && !indicators.isEmpty()){
+			Collections.sort(indicators);
+			return indicators;
+		}
+		else{
+			Collections.sort(targets);
+			return targets;
+		}
 	}
 	
 	public List<DsrTarget> getTargets(){
@@ -70,6 +90,11 @@ public class DsrTable extends ReportTable<DsrTarget, CalculationLocation, Value>
 
 	public boolean hasData(){
 		return (super.hasData());
+	}
+	
+	@Override
+	public Value getValue(CalculationLocation location, DsrTarget target) {
+		return super.getReportValue(location, target);
 	}
 	
 	public Value getTableReportValue(CalculationLocation location, DsrTarget target){

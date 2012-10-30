@@ -1,9 +1,9 @@
 package org.chai.kevin.reports;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.value.Value;
@@ -16,14 +16,15 @@ public abstract class ReportTable<T, S extends CalculationLocation, U> {
 		this.valueMap = valueMap;
 	}
 	
-	public Set<S> getLocations(){
-		return valueMap.keySet();
-	}
+	public abstract List<S> getLocations();
+	public abstract List<T> getIndicators();
 	
 	public boolean hasData(){
 		return !valueMap.isEmpty();
 	}
 
+	public abstract Value getValue(CalculationLocation location, T target);
+	
 	public U getReportValue(CalculationLocation location, T target){
 		U reportValue = null;
 		Map<T, U> reportValues = valueMap.get(location);

@@ -241,18 +241,18 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newReportProgram(def code) {
-		return new ReportProgram(code: code, parent: null, names: [:]).save(failOnError: true, flush: true);
+		return new ReportProgram(code: code, parent: null, names: j(["en":code])).save(failOnError: true, flush: true);
 	}
 	
 	static def newReportProgram(def code, def parent) {
-		def reportProgram = new ReportProgram(code: code, parent: parent, names: [:]).save(failOnError: true, flush: true);
+		def reportProgram = new ReportProgram(code: code, parent: parent, names: j(["en":code])).save(failOnError: true, flush: true);
 		parent.children << reportProgram
 		parent.save(failOnError: true)
 		return reportProgram
 	}
 	
 	static def newReportProgram(def code, def parent, def children){
-		return new ReportProgram(code: code, parent: parent, children: children, names: [:]).save(failOnError: true, flush: true);
+		return new ReportProgram(code: code, parent: parent, children: children, names: j(["en":code])).save(failOnError: true, flush: true);
 	}
 	
 	static RawDataElementValue newRawDataElementValue(def rawDataElement, def period, def location, def value) {

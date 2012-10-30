@@ -41,15 +41,18 @@ import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.Period;
+import org.chai.kevin.reports.ReportExportService
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.util.Utils.ReportType;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class DsrController extends AbstractController {
 
-	LanguageService languageService;
-	DsrService dsrService;
+	def languageService;
+	def dsrService;
+	def reportExportService;
 	
 	public DsrTargetCategory getDsrTargetCategory(def program){
 		def dsrTargetCategory = null
@@ -124,7 +127,7 @@ class DsrController extends AbstractController {
 		Location location = getLocation()
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 		DsrTargetCategory dsrCategory = getDsrTargetCategory(program)
-		
+
 		ReportType reportType = getReportType()
 		def mapSkipLevels = dsrService.getSkipViewLevels(reportType)
 		
@@ -142,7 +145,7 @@ class DsrController extends AbstractController {
 		def newParams = redirectIfDifferent(reportParams)
 		
 		if(newParams != null && !newParams.empty) {
-			redirect(controller: 'dsr', action: 'view', params: newParams)
+			redirect(action: 'view', params: newParams)
 		}
 		else {
 			def dsrTable = null
@@ -165,6 +168,47 @@ class DsrController extends AbstractController {
 				currentView: reportType,
 				mapSkipLevels: mapSkipLevels
 			]
+		}
+	}
+	
+	def export = {
+		if (log.isDebugEnabled()) log.debug("dsr.export, params:"+params)
+		
+		Period period = getPeriod()
+		ReportProgram program = getProgram(DsrTarget.class)
+		Location location = getLocation()
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()
+		DsrTargetCategory dsrCategory = getDsrTargetCategory(program)
+		ReportType reportType = getReportType()
+		
+		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
+					'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(),
+					'dsrCategory':dsrCategory?.id,
+					'reportType':reportType.toString().toLowerCase()]
+		
+		def newParams = redirectIfDifferent(reportParams)
+		
+		if(newParams != null && !newParams.empty) {
+			redirect(action: 'export', params: newParams)
+		}
+		else{
+			def dsrTable = null
+			if (dsrCategory != null)
+				dsrTable = dsrService.getDsrTable(location, program, period, dataLocationTypes, dsrCategory, reportType);
+			
+			if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+" program: "+program+", location: "+location)
+			
+			String report = message(code:'dsr.title');
+			String filename = reportExportService.getReportExportFilename(report, location, program, period);
+			File csvFile = reportExportService.getReportExportFile(filename, dsrTable);
+			def zipFile = Utils.getZipFile(csvFile, filename)
+				
+			if(zipFile.exists()){
+				response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());
+				response.setContentType("application/zip");
+				response.setHeader("Content-length", zipFile.length().toString());
+				response.outputStream << zipFile.newInputStream()
+			}
 		}
 	}
 }

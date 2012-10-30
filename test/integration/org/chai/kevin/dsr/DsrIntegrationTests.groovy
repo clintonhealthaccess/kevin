@@ -9,7 +9,7 @@ import org.chai.kevin.util.Utils;
 abstract class DsrIntegrationTests extends IntegrationTests {
 	
 	static def newDsrTarget(def code, def order, def data, def average, def format, def program, def category) {
-		def target = new DsrTarget(names: [:],
+		def target = new DsrTarget(names: j(["en":code]),
 			code: code,
 			order: order,
 			format: format,

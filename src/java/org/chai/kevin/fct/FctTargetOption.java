@@ -6,10 +6,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Exportable;
-import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.reports.AbstractReportTarget;
+import org.chai.kevin.reports.ReportTableIndicator;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -18,15 +18,22 @@ import org.hibernate.proxy.HibernateProxy;
 @Entity(name = "FctTargetOption")
 @Table(name = "dhsst_fct_target_option")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class FctTargetOption extends AbstractReportTarget implements Exportable {
+public class FctTargetOption extends AbstractReportTarget implements ReportTableIndicator, Exportable {
 
 	private FctTarget target;	
 	private String numberFormat = "#";
 	private String percentageFormat = "#%";
 	
+	@Override
 	@Transient
 	public Type getType() {
 		return getSum().getType();
+	}
+
+	@Override
+	@Transient
+	public String getFormat() {
+		return getNumberFormat();
 	}
 	
 	@Transient
@@ -67,4 +74,5 @@ public class FctTargetOption extends AbstractReportTarget implements Exportable 
 	public String toExportString() {
 		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
+
 }

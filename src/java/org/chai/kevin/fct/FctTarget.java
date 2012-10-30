@@ -43,7 +43,6 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
-import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportTarget;
