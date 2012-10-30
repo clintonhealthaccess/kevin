@@ -1,3 +1,8 @@
+import org.chai.kevin.survey.Survey;
+import org.chai.location.CalculationLocation;
+import org.chai.location.Location;
+import org.chai.task.Progress;
+
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -26,7 +31,11 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.Initializer;
+import org.chai.init.DataInitializer;
+import org.chai.init.ReportInitializer;
+import org.chai.init.StructureInitializer;
+import org.chai.init.SurveyInitializer;
+
 import java.util.Date;
 import java.nio.channels.Channel;
 import org.chai.kevin.security.Role;
@@ -52,7 +61,9 @@ class BootStrap {
 	def sessionFactory
 	def rabbitTemplate
 	def taskService
-
+	def refreshValueService
+	def surveyPageService
+	
     def init = { servletContext ->
 
 		// we clear the queue
@@ -121,23 +132,45 @@ class BootStrap {
 			
 			break;
 		case "development":
-			Initializer.createLocationLevels()
-			Initializer.createDataLocationTypes()
-			Initializer.createLocations()
-			Initializer.createDataLocations()
+			// we initialize the structure
+			StructureInitializer.createLocationLevels()
+			StructureInitializer.createDataLocationTypes()
+			StructureInitializer.createLocations()
+			StructureInitializer.createDataLocations()
 			sessionFactory.currentSession.flush()
-			
 			// TODO review this
-			Initializer.createRoles();
-			Initializer.createUsers();
-		
-			Initializer.createPeriods();
-			Initializer.createSources();
+			StructureInitializer.createRoles();
+			StructureInitializer.createUsers();
+			StructureInitializer.createPeriods();
+			StructureInitializer.createSources();
 
-			Initializer.createEnums();
-			Initializer.createRawDataElements();
-			Initializer.createNormalizedDataElements();
+			// we initialize the data
+			DataInitializer.createEnums();
+			DataInitializer.createRawDataElements();
+			DataInitializer.createRawDataElementValues();
+			DataInitializer.createNormalizedDataElements();
+			DataInitializer.createSums();
 						
+			refreshValueService.refreshAll(null)
+			
+			// we initialize the reports
+			ReportInitializer.createReportPrograms();
+			ReportInitializer.createDsrTargetCategories();
+			ReportInitializer.createDsrTargets();
+			ReportInitializer.createFctTargets();
+			ReportInitializer.createFctTargetOptions();
+			
+			// we initialize the survey
+			SurveyInitializer.createSurveys()
+			SurveyInitializer.createSurveyPrograms()
+			SurveyInitializer.createSurveySections()
+			SurveyInitializer.createSurveyQuestions()
+			SurveyInitializer.createValidationRules()
+			SurveyInitializer.createSurveySkipRules()
+			
+			// refresh
+			surveyPageService.refresh(Location.findByCode('rwanda'), Survey.findByCode('survey_period2'), false, true, null);
+			
 //			Initializer.createDummyStructure();
 //			Initializer.createUsers();
 //			Initializer.createDataElementsAndExpressions();

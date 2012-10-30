@@ -97,7 +97,7 @@ class LanguageService implements ApplicationContextAware {
 				else {
 					def option = enume?.getOptionForValue(value.enumValue)
 					if (option == null) result = value.enumValue
-					else result = getText(option.names)
+					else result = option.names
 				}
 				break;
 			case (ValueType.NUMBER):

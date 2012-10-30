@@ -19,9 +19,9 @@ class SumControllerSpec extends IntegrationTests {
 		sumController.saveWithoutTokenCheck()
 		
 		then:
-		Sum.count() == 1
-		Sum.list()[0].code == CODE(1)
-		Sum.list()[0].expression == "1"
+		Summ.count() == 1
+		Summ.list()[0].code == CODE(1)
+		Summ.list()[0].expression == "1"
 		
 	}
 
@@ -34,7 +34,7 @@ class SumControllerSpec extends IntegrationTests {
 		sumController.saveWithoutTokenCheck()
 		
 		then:
-		Sum.count() == 0
+		Summ.count() == 0
 	}
 	
 	def "delete sum deletes values"() {
@@ -50,7 +50,7 @@ class SumControllerSpec extends IntegrationTests {
 		sumController.delete()
 		
 		then:
-		Sum.count() == 0
+		Summ.count() == 0
 		SumPartialValue.count() == 0 
 	}
 
@@ -67,7 +67,7 @@ class SumControllerSpec extends IntegrationTests {
 		sumController.save()
 		
 		then:
-		Sum.count() == 1
+		Summ.count() == 1
 		SumPartialValue.count() == 0
 	}	
 	
@@ -84,7 +84,7 @@ class SumControllerSpec extends IntegrationTests {
 		sumController.save()
 		
 		then:
-		Sum.count() == 1
-		!Sum.list()[0].timestamp.equals(time1)
+		Summ.count() == 1
+		!Summ.list()[0].timestamp.equals(time1)
 	}	
 }

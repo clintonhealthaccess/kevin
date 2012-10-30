@@ -127,7 +127,7 @@ public class RefreshValueService {
 			}
 			
 			else {
-				progress.incrementProgress(periodService.listPeriods().size() * countLocations(DataLocation.class));
+				if (progress != null) progress.incrementProgress(periodService.listPeriods().size() * countLocations(DataLocation.class));
 			}
 			
 			return normalizedDataElement.getLastValueChanged();
@@ -218,7 +218,7 @@ public class RefreshValueService {
 					
 					// TODO improve performance by getting all values at the same time
 					updateNormalizedDataElementValue(newNormalizedDataElement, dataLocation, period);
-					progress.incrementProgress();
+					if (progress != null) progress.incrementProgress();
 				}
 				
 				updateSources(newNormalizedDataElement);
@@ -324,7 +324,7 @@ public class RefreshValueService {
 		removeNulls(dataElementDependencySet);
 		if (log.isDebugEnabled()) log.debug("dependencies of normalized data elements size: " + dataElementDependencySet.size());
 	
-		progress.setMaximum(
+		if (progress != null) progress.setMaximum(
 			// all dependencies of NDEs
 			(dataElementDependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
 			// all dependent NDEs of calculations
@@ -424,7 +424,7 @@ public class RefreshValueService {
 					
 					// TODO improve performance by getting all values at the same time
 					updateCalculationPartialValues(newCalculation, location, period);
-					progress.incrementProgress();
+					if (progress != null) progress.incrementProgress();
 				}
 				
 				updateSources(newCalculation);

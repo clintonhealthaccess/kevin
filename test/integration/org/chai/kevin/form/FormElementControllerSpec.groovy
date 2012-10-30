@@ -57,7 +57,7 @@ class FormElementControllerSpec extends SurveyIntegrationTests {
 		then:
 		jsonResult.elements.size() == 1
 		jsonResult.elements[0].key == element.id
-		jsonResult.elements[0].value == element.getLabel(languageService)+'['+element.id+']'
+		jsonResult.elements[0].value == element.getLabel()+'['+element.id+']'
 	}
 	
 	def "test get description for form element"() {

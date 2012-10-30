@@ -1,13 +1,9 @@
-//package org.chai.kevin
-//
-//import java.util.Comparator;
-//import org.chai.kevin.Ordering.OrderingComparator;
-//import org.chai.kevin.util.JSONUtils;
-//
-//import grails.plugin.spock.UnitSpec;
-//
-//class OrderableUnitSpec extends UnitSpec {
-//
+package org.chai.kevin
+
+import grails.plugin.spock.UnitSpec
+
+class OrderableUnitSpec extends UnitSpec {
+
 //	static class TestOrderable extends Orderable {
 //		
 //		Long id;
@@ -105,4 +101,4 @@
 //	static o(def map) {
 //		return new Ordering(jsonText: JSONUtils.getJSONFromMap(map));
 //	}
-//}
+}

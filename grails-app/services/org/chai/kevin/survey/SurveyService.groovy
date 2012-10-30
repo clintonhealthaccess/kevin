@@ -114,7 +114,7 @@ class SurveyService {
 	
 	Set<SurveyElement> getSurveyElements(RawDataElement dataElement, Survey survey) {
 		if (log.isDebugEnabled()) log.debug("getSurveyElements(dataElement=${dataElement}, survey=${survey})")
-		def c = SurveyElement.createCriteria()
+		def c = sessionFactory.currentSession.createCriteria(SurveyElement.class)
 		if (survey != null) {
 			c.createAlias("surveyQuestion", "sq")
 			.createAlias("sq.section", "ss")

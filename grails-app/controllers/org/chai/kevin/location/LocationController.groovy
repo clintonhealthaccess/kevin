@@ -1,4 +1,4 @@
-package org.chai.location;
+package org.chai.kevin.location;
 
 import org.chai.kevin.AbstractEntityController;
 import java.io.File;

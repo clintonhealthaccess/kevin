@@ -192,7 +192,7 @@ public class ExpressionService {
 	
 	@Transactional(readOnly=true)
     public <T extends Data<?>> Map<String, T> getDataInExpression(String expression, Class<T> clazz) {
-    	if (log.isDebugEnabled()) log.debug("getDataInExpression(expression="+expression+", clazz="+clazz+")");
+    	if (log.isTraceEnabled()) log.trace("getDataInExpression(expression="+expression+", clazz="+clazz+")");
     	
         Map<String, T> dataInExpression = new HashMap<String, T>();
     	Set<String> placeholders = getVariables(expression);
@@ -213,7 +213,7 @@ public class ExpressionService {
         	dataInExpression.put(placeholder, data);
         }
     	
-    	if (log.isDebugEnabled()) log.debug("getDataInExpression()="+dataInExpression);
+    	if (log.isTraceEnabled()) log.trace("getDataInExpression()="+dataInExpression);
         return dataInExpression;
     }
 	

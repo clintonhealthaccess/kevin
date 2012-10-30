@@ -32,23 +32,20 @@ import java.util.Map
 
 import org.chai.kevin.Exportable
 import org.chai.kevin.Importable
-import org.chai.kevin.LanguageOrderable;
-import org.chai.kevin.Orderable
-import org.chai.kevin.util.JSONUtils
 import org.chai.kevin.util.Utils
 
 @i18nfields.I18nFields
-public class EnumOption extends LanguageOrderable implements Exportable, Importable {
+public class EnumOption implements Exportable, Importable {
 
 	// deprecated
 	Long id;
 	
 	String code
 	String value
+	
 	String names
 	String descriptions
-	
-	String orderString
+	String orders
 	
 	// TODO flag to deactivate option in survey, 
 	// think about how to make that better
@@ -58,10 +55,11 @@ public class EnumOption extends LanguageOrderable implements Exportable, Importa
 	// deprecated
 	String jsonDescriptions
 	String jsonNames
+	String jsonOrders
 	
 	static belongsTo = [enume: Enum]
 
-	static i18nFields = ['names', 'descriptions']
+	static i18nFields = ['names', 'descriptions', 'orders']
 	
 	static mapping = {
 		table 'dhsst_enum_option'
@@ -70,41 +68,21 @@ public class EnumOption extends LanguageOrderable implements Exportable, Importa
 	}
 	
 	static constraints =  {
-		code (nullable: false, blank: false, unique: true)
+		code (nullable: false, blank: false, unique: ['code', 'enume'])
 		value (nullable: false, blank: false)
 		names (nullable: true)
 		descriptions (nullable: true)
-		order (nullable: true)
-		orderString (nullable: true)
+		orders (nullable: true)
 		
 		// deprecated
 		jsonDescriptions(nullable: true)
 		jsonNames(nullable: true)
+		jsonOrders(nullable: true)
 	}
 
 	Map cachedOrderMap 
 	
 	static transients = ['cachedOrderMap', 'order']
-	
-	/*
-	 * Retaining backward compatibility with old getters and setters
-	 */
-	Map getOrder() {
-		if (orderString != null && cachedOrderMap == null) this.cachedOrderMap = JSONUtils.getMapFromJSON(orderString)
-		return cachedOrderMap
-	}
-	
-	void setOrder(Map order) {
-		if (log.debugEnabled) log.debug('setOrder(order='+order+')')
-		this.orderString = JSONUtils.getJSONFromMap(order)
-		this.cachedOrderMap = order
-		if (log.debugEnabled) log.debug('orderString set: '+orderString+', cachedOrderMap: '+cachedOrderMap)
-	}
-	
-	void setOrderString(String orderString) {
-		this.cachedOrderMap = null
-		this.orderString = orderString
-	}
 	
 	@Override
 	public int hashCode() {

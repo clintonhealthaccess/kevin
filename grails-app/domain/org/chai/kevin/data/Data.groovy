@@ -39,7 +39,6 @@ import org.chai.kevin.value.DataValue
 @i18nfields.I18nFields
 abstract class Data<T extends DataValue> {
 	
-	// deprecated
 	Long id
 	
 	Date timestamp = new Date()

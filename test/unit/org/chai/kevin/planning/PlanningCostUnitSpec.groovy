@@ -1,45 +1,36 @@
 package org.chai.kevin.planning
 
-import org.chai.kevin.LanguageService;
-import org.chai.kevin.UnitTests;
+import grails.plugin.spock.UnitSpec
 
-import grails.plugin.spock.UnitSpec;
+import org.chai.kevin.LanguageService
 
-class PlanningCostUnitSpec extends UnitTests {
+class PlanningCostUnitSpec extends UnitSpec {
 
 	def "get groups and display name"() {
 		when:
-		def languageService = new LanguageService()
-		languageService.metaClass.getCurrentLanguage = {"en"}
-		def planningCost = new PlanningCost(names: ["en": "Cost - Revenue"])
+		def planningCost = new PlanningCost(names_en: "Cost - Revenue")
 		
 		then:
-		planningCost.getGroups(languageService) == ["Cost"]
-		planningCost.getDisplayName(languageService) == "Revenue"
+		planningCost.getGroups() == ["Cost"]
+		planningCost.getDisplayName() == "Revenue"
 	}
 	
 	def "get groups and display on default langauge"() {
 		when:
-		def languageService = new LanguageService()
-		languageService.metaClass.getCurrentLanguage = {"fr"}
-		languageService.metaClass.getFallbackLanguage = {"en"}
-		def planningCost = new PlanningCost(names: ["en": "Cost - Revenue"])
+		def planningCost = new PlanningCost(names_en: "Cost - Revenue")
 		
 		then:
-		planningCost.getGroups(languageService) == ["Cost"]
-		planningCost.getDisplayName(languageService) == "Revenue"
+		planningCost.getGroups() == ["Cost"]
+		planningCost.getDisplayName() == "Revenue"
 	}
 	
 	def "get groups and display on empty name"() {
 		when:
-		def languageService = new LanguageService()
-		languageService.metaClass.getCurrentLanguage = {"fr"}
-		languageService.metaClass.getFallbackLanguage = {"en"}
-		def planningCost = new PlanningCost(names: [:])
+		def planningCost = new PlanningCost()
 		
 		then:
-		planningCost.getGroups(languageService) == []
-		planningCost.getDisplayName(languageService) == ""
+		planningCost.getGroups() == []
+		planningCost.getDisplayName() == ""
 	}
 	
 }

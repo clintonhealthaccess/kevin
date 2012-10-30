@@ -5,7 +5,7 @@ import org.chai.kevin.Period;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.data.Sum;
+import org.chai.kevin.data.Summ;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
@@ -355,14 +355,14 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		s(data.values()).equals(s([null, rawDataElement]))
 		
 		when:
-		data = expressionService.getDataInExpression("\$"+rawDataElement.id, Sum.class)
+		data = expressionService.getDataInExpression("\$"+rawDataElement.id, Summ.class)
 		
 		then:
 		data.size() == 1
 		s(data.values()).equals(s([null]))
 		
 		when:
-		data = expressionService.getDataInExpression("\$"+ratio.id+"+"+"\$"+rawDataElement.id, Sum.class)
+		data = expressionService.getDataInExpression("\$"+ratio.id+"+"+"\$"+rawDataElement.id, Summ.class)
 		
 		then:
 		data.size() == 2
@@ -476,7 +476,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		formula = "convert(\$"+dataElement3.id+", schema double)"
 		
 		then:
-		!expressionService.expressionIsValid(formula, Sum.class)
+		!expressionService.expressionIsValid(formula, Summ.class)
 	}
 	
 	def "test circular dependency"() {

@@ -85,21 +85,21 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		refresh()
 
 		when:
-		def dashboard = dashboardService.getLocationDashboard(Location.findByCode(currentLocationName), ReportProgram.findByCode(currentProgramName), period, new HashSet(types.collect {DataLocationType.findByCode(it)}), false);
-		def value = dashboard.getPercentage(getCalculationLocation(locationName), getDashboardEntity(currentProgramName))
+		def dashboard = dashboardService.getLocationDashboard(Location.findByCode(currentLocationName), DashboardProgram.findByCode(currentProgramName).program, period, new HashSet(types.collect {DataLocationType.findByCode(it)}), false);
+		def value = dashboard.getPercentage(getCalculationLocation(locationName), DashboardProgram.findByCode(currentProgramName))
 
 		then:
 		Utils.formatNumber("#.0", value.numberValue) == Utils.formatNumber("#.0", expectedValue)
 
 		where:
 		currentLocationName	| currentProgramName	| locationName	| types										    | expectedValue
-		BURERA				| PROGRAM1				| BUTARO		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|30.0d
-		BURERA				| PROGRAM1				| KIVUYE		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
-		BURERA				| PROGRAM1				| BUTARO		| [DISTRICT_HOSPITAL_GROUP]						|30.0d
-		BURERA				| PROGRAM1				| KIVUYE		| [HEALTH_CENTER_GROUP]							|40.0d
-		RWANDA				| ROOT					| NORTH			| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|15.0d
-		RWANDA				| ROOT					| NORTH			| [DISTRICT_HOSPITAL_GROUP]						|50/3
-		RWANDA				| ROOT					| NORTH			| [HEALTH_CENTER_GROUP]							|50/3
+		BURERA				| DASHBOARD_PROGRAM1	| BUTARO		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|30.0d
+		BURERA				| DASHBOARD_PROGRAM1	| KIVUYE		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
+		BURERA				| DASHBOARD_PROGRAM1	| BUTARO		| [DISTRICT_HOSPITAL_GROUP]						|30.0d
+		BURERA				| DASHBOARD_PROGRAM1	| KIVUYE		| [HEALTH_CENTER_GROUP]							|40.0d
+		RWANDA				| DASHBOARD_ROOT		| NORTH			| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|15.0d
+		RWANDA				| DASHBOARD_ROOT		| NORTH			| [DISTRICT_HOSPITAL_GROUP]						|50/3
+		RWANDA				| DASHBOARD_ROOT		| NORTH			| [HEALTH_CENTER_GROUP]							|50/3
 	}
 
 	def "get program dashboard with correct values"() {
@@ -118,19 +118,19 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		value.numberValue == expectedValue
 
 		where:
-		currentLocationName	| currentProgramName	| programName 	| types										    | expectedValue
-		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
-		BURERA				| PROGRAM1				| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|20.0d
-		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP]						|40.0d
-		BURERA				| PROGRAM1				| TARGET1		| [HEALTH_CENTER_GROUP]							|40.0d
-		BURERA				| PROGRAM1				| TARGET2		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
-		BURERA				| PROGRAM1				| TARGET2		| [HEALTH_CENTER_GROUP]							|null
-		BURERA				| ROOT					| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|30.0d
-		BURERA				| ROOT					| PROGRAM2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|10.0d
-		BURERA				| PROGRAM3				| TARGET4		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|5.0d
-		BURERA				| PROGRAM3				| TARGET4		| [DISTRICT_HOSPITAL_GROUP]						|10.0d
-		BURERA				| PROGRAM3				| TARGET4		| [HEALTH_CENTER_GROUP]							|0.0d
-		BURERA				| ROOT					| PROGRAM3		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|5.0d
+		currentLocationName	| currentProgramName	| programName 			| types										    | expectedValue
+		BURERA				| PROGRAM1				| TARGET1				| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
+		BURERA				| PROGRAM1				| TARGET2				| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|20.0d
+		BURERA				| PROGRAM1				| TARGET1				| [DISTRICT_HOSPITAL_GROUP]						|40.0d
+		BURERA				| PROGRAM1				| TARGET1				| [HEALTH_CENTER_GROUP]							|40.0d
+		BURERA				| PROGRAM1				| TARGET2				| [DISTRICT_HOSPITAL_GROUP]						|20.0d
+		BURERA				| PROGRAM1				| TARGET2				| [HEALTH_CENTER_GROUP]							|null
+		BURERA				| ROOT					| DASHBOARD_PROGRAM1	| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|30.0d
+		BURERA				| ROOT					| DASHBOARD_PROGRAM2	| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|10.0d
+		BURERA				| PROGRAM3				| TARGET4				| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|5.0d
+		BURERA				| PROGRAM3				| TARGET4				| [DISTRICT_HOSPITAL_GROUP]						|10.0d
+		BURERA				| PROGRAM3				| TARGET4				| [HEALTH_CENTER_GROUP]							|0.0d
+		BURERA				| ROOT					| DASHBOARD_PROGRAM3	| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|5.0d
 	}
 	
 	def "get program dashboard with no partial values"() {
@@ -148,14 +148,14 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		value.isNull()
 
 		where:
-		currentLocationName	| currentProgramName	| programName 	| types										    
-		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
-		BURERA				| PROGRAM1				| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
-		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
-		BURERA				| PROGRAM1				| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
-		RWANDA				| ROOT					| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
-		BURERA				| PROGRAM1				| TARGET1		| [DISTRICT_HOSPITAL_GROUP]						
-		RWANDA				| ROOT					| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP]						
+		currentLocationName	| currentProgramName	| programName		 	| types										    
+		BURERA				| PROGRAM1				| TARGET1				| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
+		BURERA				| PROGRAM1				| TARGET2				| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
+		BURERA				| PROGRAM1				| TARGET1				| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
+		BURERA				| PROGRAM1				| TARGET2				| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
+		RWANDA				| ROOT					| DASHBOARD_PROGRAM1	| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]
+		BURERA				| PROGRAM1				| TARGET1				| [DISTRICT_HOSPITAL_GROUP]						
+		RWANDA				| ROOT					| DASHBOARD_PROGRAM1	| [DISTRICT_HOSPITAL_GROUP]						
 	}
 	
 	def "get program dashboard"() {
@@ -175,10 +175,10 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		dashboard.locationPath.containsAll expectedLocationPath.collect {Location.findByCode(it)}
 
 		where:
-		locationName	| programCode	| expectedLocations	| expectedEntities  	| expectedLocationPath	| expectedProgramPath
-		RWANDA			| ROOT			| [RWANDA]			| [PROGRAM1, PROGRAM2]	| []					| []
-		BURERA			| PROGRAM1		| [BURERA]			| [TARGET1, TARGET2]	| [RWANDA, NORTH]		| [ROOT]
-		BURERA			| ROOT			| [BURERA]			| [PROGRAM1, PROGRAM2]	| [RWANDA, NORTH]		| []
+		locationName	| programCode	| expectedLocations	| expectedEntities  						| expectedLocationPath	| expectedProgramPath
+		RWANDA			| ROOT			| [RWANDA]			| [DASHBOARD_PROGRAM1, DASHBOARD_PROGRAM2]	| []					| []
+		BURERA			| PROGRAM1		| [BURERA]			| [TARGET1, TARGET2]						| [RWANDA, NORTH]		| [ROOT]
+		BURERA			| ROOT			| [BURERA]			| [DASHBOARD_PROGRAM1, DASHBOARD_PROGRAM2]	| [RWANDA, NORTH]		| []
 	}
 	
 	def "get program (compare) dashboard"() {
@@ -198,10 +198,10 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		dashboard.locationPath.containsAll expectedLocationPath.collect {Location.findByCode(it)}
 
 		where:
-		locationName	| programCode	| expectedLocations	| expectedEntities  	| expectedLocationPath	| expectedProgramPath
-		RWANDA			| ROOT			| [RWANDA]			| [PROGRAM1, PROGRAM2]	| []					| []
-		BURERA			| PROGRAM1		| [BURERA]			| [TARGET1, TARGET2]	| [RWANDA, NORTH]		| [ROOT]
-		BURERA			| ROOT			| [BURERA]			| [PROGRAM1, PROGRAM2]	| [RWANDA, NORTH]		| []		
+		locationName	| programCode	| expectedLocations	| expectedEntities  						| expectedLocationPath	| expectedProgramPath
+		RWANDA			| ROOT			| [RWANDA]			| [DASHBOARD_PROGRAM1, DASHBOARD_PROGRAM2]	| []					| []
+		BURERA			| PROGRAM1		| [BURERA]			| [TARGET1, TARGET2]						| [RWANDA, NORTH]		| [ROOT]
+		BURERA			| ROOT			| [BURERA]			| [DASHBOARD_PROGRAM1, DASHBOARD_PROGRAM2]	| [RWANDA, NORTH]		| []		
 	}
 	
 	def "get program dashboard with sorted dashboard program entities"(){
@@ -216,17 +216,17 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		def dashboard = dashboardService.getProgramDashboard(Location.findByCode(RWANDA), ReportProgram.findByCode(ROOT), period, new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)]));
 
 		then:
-		dashboard.dashboardEntities[0].equals(DashboardProgram.findByCode(PROGRAM1))
-		dashboard.dashboardEntities[1].equals(DashboardProgram.findByCode(PROGRAM2))
+		dashboard.dashboardEntities[0].equals(DashboardProgram.findByCode(DASHBOARD_PROGRAM1))
+		dashboard.dashboardEntities[1].equals(DashboardProgram.findByCode(DASHBOARD_PROGRAM2))
 		
 		when:
-		DashboardProgram.findByCode(PROGRAM1).order = 2
-		DashboardProgram.findByCode(PROGRAM2).order = 1		
+		DashboardProgram.findByCode(DASHBOARD_PROGRAM1).order = 2
+		DashboardProgram.findByCode(DASHBOARD_PROGRAM2).order = 1		
 		dashboard = dashboardService.getProgramDashboard(Location.findByCode(RWANDA), ReportProgram.findByCode(ROOT), period, new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)]));
 		
 		then:
-		dashboard.dashboardEntities[0].equals(DashboardProgram.findByCode(PROGRAM2))
-		dashboard.dashboardEntities[1].equals(DashboardProgram.findByCode(PROGRAM1))
+		dashboard.dashboardEntities[0].equals(DashboardProgram.findByCode(DASHBOARD_PROGRAM2))
+		dashboard.dashboardEntities[1].equals(DashboardProgram.findByCode(DASHBOARD_PROGRAM1))
 		
 	}
 	
@@ -274,24 +274,24 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		def dashboard = dashboardService.getProgramDashboard(Location.findByCode(RWANDA), ReportProgram.findByCode(ROOT), period, new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)]));
 
 		then:
-		dashboard.dashboardEntities[0].equals(DashboardProgram.findByCode(PROGRAM1))
-		dashboard.dashboardEntities[1].equals(DashboardProgram.findByCode(PROGRAM2))
-		dashboard.dashboardEntities[2].equals(DashboardProgram.findByCode(PROGRAM3))
+		dashboard.dashboardEntities[0].equals(DashboardProgram.findByCode(DASHBOARD_PROGRAM1))
+		dashboard.dashboardEntities[1].equals(DashboardProgram.findByCode(DASHBOARD_PROGRAM2))
+		dashboard.dashboardEntities[2].equals(DashboardProgram.findByCode(DASHBOARD_PROGRAM3))
 		dashboard.dashboardEntities[3].equals(DashboardTarget.findByCode("Target 5"))
 		dashboard.dashboardEntities[4].equals(DashboardTarget.findByCode("Target 6"))
 		
 		when:
-		DashboardProgram.findByCode(PROGRAM1).order = 2
-		DashboardProgram.findByCode(PROGRAM2).order = 1
-		DashboardProgram.findByCode(PROGRAM3).order = 3
+		DashboardProgram.findByCode(DASHBOARD_PROGRAM1).order = 2
+		DashboardProgram.findByCode(DASHBOARD_PROGRAM2).order = 1
+		DashboardProgram.findByCode(DASHBOARD_PROGRAM3).order = 3
 		DashboardTarget.findByCode("Target 5").order = 2
 		DashboardTarget.findByCode("Target 6").order = 1
 		dashboard = dashboardService.getProgramDashboard(Location.findByCode(RWANDA), ReportProgram.findByCode(ROOT), period, new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)]));
 		
 		then:
-		dashboard.dashboardEntities[0].equals(DashboardProgram.findByCode(PROGRAM2))
-		dashboard.dashboardEntities[1].equals(DashboardProgram.findByCode(PROGRAM1))
-		dashboard.dashboardEntities[2].equals(DashboardProgram.findByCode(PROGRAM3))
+		dashboard.dashboardEntities[0].equals(DashboardProgram.findByCode(DASHBOARD_PROGRAM2))
+		dashboard.dashboardEntities[1].equals(DashboardProgram.findByCode(DASHBOARD_PROGRAM1))
+		dashboard.dashboardEntities[2].equals(DashboardProgram.findByCode(DASHBOARD_PROGRAM3))
 		dashboard.dashboardEntities[3].equals(DashboardTarget.findByCode("Target 6"))
 		dashboard.dashboardEntities[4].equals(DashboardTarget.findByCode("Target 5"))
 		
@@ -305,7 +305,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		when:
 		def burera = Location.findByCode(BURERA)
 		def root = newReportProgram(ROOT)
-		def dashboardRoot = newDashboardProgram(ROOT, root, 0)
+		def dashboardRoot = newDashboardProgram(DASHBOARD_ROOT, root, 0)
 		def period = Period.list([cache: true])[0]				
 		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
 		
@@ -334,10 +334,10 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		dashboard.locationPath.containsAll expectedLocationPath.collect {Location.findByCode(it)}
 
 		where:
-		locationName	| programCode	| expectedLocations		| expectedEntities  | expectedLocationPath	| expectedProgramPath
-		BURERA			| PROGRAM1		| [BUTARO, KIVUYE]		| [PROGRAM1]		| [RWANDA, NORTH]		| [ROOT]
-		BURERA			| ROOT			| [BUTARO, KIVUYE]		| [ROOT]			| [RWANDA, NORTH]		| []
-		RWANDA			| ROOT			| [NORTH]				| [ROOT]			| []					| []
+		locationName	| programCode	| expectedLocations		| expectedEntities 		| expectedLocationPath	| expectedProgramPath
+		BURERA			| PROGRAM1		| [BUTARO, KIVUYE]		| [DASHBOARD_PROGRAM1]	| [RWANDA, NORTH]		| [ROOT]
+		BURERA			| ROOT			| [BUTARO, KIVUYE]		| [DASHBOARD_ROOT]		| [RWANDA, NORTH]		| []
+		RWANDA			| ROOT			| [NORTH]				| [DASHBOARD_ROOT]		| []					| []
 	}
 	
 	def "get location compare dashboard"() {
@@ -358,9 +358,9 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		dashboard.locationPath.containsAll expectedLocationPath.collect {Location.findByCode(it)}
 
 		where:
-		locationName	| programCode	| expectedLocations		| expectedEntities  | expectedLocationPath	| expectedProgramPath
-		BURERA			| PROGRAM1		| [BURERA]				| [PROGRAM1]		| [RWANDA, NORTH]		| [ROOT]
-		NORTH			| ROOT			| [NORTH]				| [ROOT]			| [RWANDA]				| []
+		locationName	| programCode	| expectedLocations		| expectedEntities  	| expectedLocationPath	| expectedProgramPath
+		BURERA			| PROGRAM1		| [BURERA]				| [DASHBOARD_PROGRAM1]	| [RWANDA, NORTH]		| [ROOT]
+		NORTH			| ROOT			| [NORTH]				| [DASHBOARD_ROOT]		| [RWANDA]				| []
 	}
 	
 	def "get location dashboard with no locations"(){

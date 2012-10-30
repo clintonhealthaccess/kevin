@@ -7,7 +7,7 @@
 	<a name="element-${element.id}-${suffix}"></a>
    	<g:if test="${!print}">
 
-		<select class="input ${!readonly?'loading-disabled':''}" name="elements[${element.id}].value${suffix}" disabled="disabled" data-enum="${enume.id}">
+		<select class="input ${!readonly?'loading-disabled':''}" name="elements[${element.id}].value${suffix}" disabled="disabled" data-enum="${enume?.id}">
 			<option value=""><g:message code="survey.element.enum.select.label"/></option>
 		
 			<g:eachOption enum="${enume}" var="option">

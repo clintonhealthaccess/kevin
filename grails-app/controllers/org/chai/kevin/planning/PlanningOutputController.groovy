@@ -28,10 +28,9 @@
 package org.chai.kevin.planning
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.Period;
-import org.chai.kevin.PeriodSorter
-import org.chai.kevin.data.DataElement;
-import org.chai.location.DataLocationType;
+import org.chai.kevin.Period
+import org.chai.kevin.data.DataElement
+import org.chai.location.DataLocationType
 /**
  * @author Jean Kahigiso M.
  *
@@ -77,12 +76,6 @@ class PlanningOutputController extends AbstractEntityController {
 	def bindParams(def entity) {
 		bindData(entity, params, [exclude:'dataElement.id'])
 		if (params.int('dataElement.id')) entity.dataElement = dataService.getData(params.int('dataElement.id'), DataElement.class)
-
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.helps!=null) entity.helps = params.helps
-		if (params.captions!=null) entity.captions = params.captions
 	}
 
 	def list = {

@@ -19,7 +19,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def program = newReportProgram(CODE(1))
 		def location = Location.findByCode(BURERA)
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		def target = newDsrTarget(CODE(3), 1, dataElement, program, category)
 		def types = new HashSet([
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
@@ -49,7 +49,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def burera = Location.findByCode(BURERA)
 		def average = newSum("1", CODE(2))
 		def isAverage = true
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		def target = newDsrTarget(CODE(3), 1, average, isAverage, program, category)
 		def types = new HashSet([
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
@@ -79,7 +79,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def burera = Location.findByCode(BURERA)
 		def average = newSum("1", CODE(2))
 		def isAverage = null
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		def target = newDsrTarget(CODE(3), 1, average, isAverage, program, category)
 		def types = new HashSet([
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
@@ -108,7 +108,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def program = newReportProgram(CODE(1))
 		def burera = Location.findByCode(BURERA)
 		def sum = newSum("1", CODE(2))
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		def target = newDsrTarget(CODE(3), 1, sum, program, category)
 		def types = new HashSet([
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
@@ -141,7 +141,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
 		def rawDataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		def target = newDsrTarget(CODE(3), 1, rawDataElement, program, category)
 		newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_NUMBER(10d))
 		def reportType = Utils.ReportType.TABLE
@@ -180,7 +180,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]])
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, program, category)
 		def reportType = Utils.ReportType.TABLE
 		refreshNormalizedDataElement()
@@ -207,7 +207,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10"]])
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, program, category)
 		def reportType = Utils.ReportType.TABLE
 		refreshNormalizedDataElement()
@@ -235,8 +235,8 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]])
-		def category = newDsrTargetCategory(CODE(1), 1)
-		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, program, category)
+		def category = newDsrTargetCategory(CODE(3), 1)
+		def target = newDsrTarget(CODE(4), 1, normalizedDataElement, program, category)
 		def reportType = Utils.ReportType.TABLE
 		refreshNormalizedDataElement()
 
@@ -317,7 +317,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def program = newReportProgram(CODE(1))
 		def location = Location.findByCode(BURERA)
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		def target = newDsrTarget(CODE(3), 1, dataElement, program, category)
 		def types = new HashSet([
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
@@ -453,7 +453,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def program = newReportProgram(CODE(1))
 		def location = Location.findByCode(BURERA)
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		def target = newDsrTarget(CODE(3), 1, dataElement, program, category)
 		def types = new HashSet([
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),

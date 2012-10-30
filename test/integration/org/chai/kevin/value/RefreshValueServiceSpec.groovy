@@ -35,7 +35,8 @@ import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.data.Sum;
+import org.chai.kevin.data.Source;
+import org.chai.kevin.data.Summ;
 import org.chai.kevin.data.Type;
 import org.chai.location.CalculationLocation;
 import org.chai.location.DataLocation;
@@ -64,13 +65,14 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		NormalizedDataElement.executeUpdate("delete NormalizedDataElement")
 		SumPartialValue.executeUpdate("delete SumPartialValue")
 		AggregationPartialValue.executeUpdate("delete AggregationPartialValue")
-		Sum.executeUpdate("delete Summ")
+		Summ.executeUpdate("delete Summ")
 		Aggregation.executeUpdate("delete Aggregation")
 		DataLocation.executeUpdate("delete DataLocation")
 		Location.executeUpdate("delete Location")
 		LocationLevel.executeUpdate("delete LocationLevel")
 		DataLocationType.executeUpdate("delete DataLocationType")
 		Period.executeUpdate("delete Period")
+		Source.executeUpdate("delete Source")
 		sessionFactory.currentSession.flush()
 	} 
 	
@@ -391,7 +393,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		then:
 		SumPartialValue.count() == 8
 		SumPartialValue.list()[0].timestamp != null
-		Sum.list()[0].refreshed != null
+		Summ.list()[0].refreshed != null
 	}
 	
 	def "test refresh sum refreshes all fields"() {
@@ -462,7 +464,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		RawDataElementValue.count() == 0
 		SumPartialValue.count() == 8
 		SumPartialValue.list()[0].timestamp != null
-		Sum.list()[0].refreshed != null
+		Summ.list()[0].refreshed != null
 	}
 	
 	def "test refresh calculations progress"() {
@@ -502,7 +504,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		SumPartialValue.count() == 8
 		SumPartialValue.list()[0].timestamp != null
 		NormalizedDataElement.list()[0].refreshed != null
-		Sum.list()[0].refreshed != null
+		Summ.list()[0].refreshed != null
 	}
 	
 	def "test refresh calculation updates when last value changed is set after refresh"() {
@@ -520,7 +522,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		
 		then:
 		SumPartialValue.count() == 8
-		Sum.list()[0].lastValueChanged.after(date)
+		Summ.list()[0].lastValueChanged.after(date)
 	}
 	
 	def "test refresh calculations updates timestamps"() {
@@ -543,7 +545,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		then:
 		SumPartialValue.count() == 8
 		!SumPartialValue.list()[0].timestamp.equals(timestamp)	
-		!Sum.list()[0].refreshed.equals(refreshed)
+		!Summ.list()[0].refreshed.equals(refreshed)
 	}
 	
 	def "test refresh normalized data elements refreshes dependencies first"() {
@@ -739,7 +741,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		refreshValueService.refreshCalculation(sum, new TestProgress());
 		
 		then:
-		s(Sum.list()[0].getSources(period, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP))) == s([source.code])
-		s(Sum.list()[0].getSources(period, DataLocationType.findByCode(HEALTH_CENTER_GROUP))) == s([source.code])
+		s(Summ.list()[0].getSources(period, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP))) == s([source.code])
+		s(Summ.list()[0].getSources(period, DataLocationType.findByCode(HEALTH_CENTER_GROUP))) == s([source.code])
 	}
 }

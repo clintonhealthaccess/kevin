@@ -156,7 +156,6 @@ beans = {
 	dsrService(DsrService){		
 		reportService = ref("reportService")
 		valueService = ref("valueService")
-		dataService = ref("dataService")
 		locationSkipLevels = dsrSkipLevels
 		viewMapSkipLevels = dsrViewMapSkipLevels
 	}

@@ -9,17 +9,9 @@ import org.chai.kevin.util.Utils;
 abstract class DsrIntegrationTests extends IntegrationTests {
 	
 	static def newDsrTarget(def code, def order, def data, def average, def format, def program, def category) {
-		def target = new DsrTarget(names: [:],
-			code: code,
-			order: order,
-			format: format,
-			data: data,
-			average: average,
-			program: program,
-			category: category
-		).save(failOnError: true)
+		def target = new DsrTarget(code: code, order: order, format: format, data: data, average: average, program: program, category: category).save(failOnError: true)
 		if (category != null) {
-			category.targets << target
+			category.addToTargets(target)
 			category.save(failOnError: true)
 		}
 		program.save(failOnError: true)

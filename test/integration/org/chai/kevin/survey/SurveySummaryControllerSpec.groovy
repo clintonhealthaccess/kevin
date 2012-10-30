@@ -9,9 +9,6 @@ import org.chai.location.DataLocationType;
 import org.chai.location.Location;
 import org.chai.location.LocationLevel;
 import org.chai.kevin.security.User;
-import org.chai.kevin.survey.validation.SurveyEnteredProgram;
-import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
-import org.chai.kevin.survey.validation.SurveyEnteredSection;
 
 class SurveySummaryControllerSpec extends SurveyIntegrationTests {
 

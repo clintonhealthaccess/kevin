@@ -28,12 +28,11 @@ package org.chai.kevin.dashboard;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.chai.kevin.Orderable;
 import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.location.CalculationLocation;
 
-public interface DashboardEntity extends Comparable<Orderable> {
+public interface DashboardEntity {
 	
 	public Integer getWeight();
 	

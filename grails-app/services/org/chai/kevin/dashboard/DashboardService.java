@@ -68,7 +68,6 @@ public class DashboardService {
 		
 		if(dashboardEntities.isEmpty())
 			return new Dashboard(locations, dashboardEntities, locationPath, valueMap);
-		Collections.sort(dashboardEntities, DashboardEntitySorter.BY_ENTITY());
 		
 		locationPath = calculateLocationPath(location);
 		
@@ -164,7 +163,7 @@ public class DashboardService {
 	//gets all dashboard program children
 	private List<DashboardProgram> getDashboardProgramChildren(ReportProgram program){
 		List<DashboardProgram> result = new ArrayList<DashboardProgram>();
-		List<ReportProgram> children = program.getChildren();
+		List<ReportProgram> children = program.getAllChildren();
 		for (ReportProgram child : children) {
 			DashboardProgram dashboardProgram = getDashboardProgram(child);
 			if(dashboardProgram != null)	

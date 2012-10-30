@@ -16,6 +16,4 @@ public interface DataValue {
 	
 	public abstract Date getTimestamp();
 
-	public abstract Data getData();
-	
 }

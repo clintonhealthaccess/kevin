@@ -49,7 +49,7 @@ import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Source;
-import org.chai.kevin.data.Sum
+import org.chai.kevin.data.Summ
 import org.chai.kevin.data.Type;
 import org.chai.kevin.exports.CalculationExport
 import org.chai.kevin.exports.DataElementExport
@@ -86,13 +86,13 @@ abstract class IntegrationTests extends IntegrationSpec {
 	
 	public static final Type INVALID_TYPE = new Type("invalid_type")
 	
-	public static final String HEALTH_CENTER_GROUP = "Health Center"
-	public static final String DISTRICT_HOSPITAL_GROUP = "District Hospital"
+	public static final String HEALTH_CENTER_GROUP = "health_center"
+	public static final String DISTRICT_HOSPITAL_GROUP = "district_hospital"
 	
-	public static final String NATIONAL = "National"
-	public static final String PROVINCE = "Province"
-	public static final String DISTRICT = "District"
-	public static final String SECTOR = "Sector"
+	public static final String NATIONAL = "country"
+	public static final String PROVINCE = "province"
+	public static final String DISTRICT = "district"
+	public static final String SECTOR = "sector"
 	
 	public static final String RWANDA = "Rwanda"
 	public static final String KIGALI_CITY = "Kigali City"
@@ -117,10 +117,6 @@ abstract class IntegrationTests extends IntegrationSpec {
 	public static String TARGET4 = "Target 4"
 	
 	public static String CATEGORY1 = "Category1"
-	
-	// TODO get rid of this
-	def static inc = 0;
-	def static code = ""+inc;
 	
 	def setup() {
 		// using cache.use_second_level_cache = false in test mode doesn't work so
@@ -155,9 +151,13 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 		
 	static def newPeriod() {
-		def period = new Period(code: "2005", startDate: mar01, endDate: mar31)
-		return period.save(failOnError: true, flush: true)
+		newPeriod(2005)
 	} 
+	
+	static def newPeriod(def code) {
+		def period = new Period(code: code, startDate: mar01, endDate: mar31)
+		return period.save(failOnError: true, flush: true)
+	}
 	
 	static def newDataLocationType(def names, def code) {
 		def dataLocationType = new DataLocationType(code: code)
@@ -203,11 +203,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newDataElementExport(def descriptions,def periods, def locationType, def locations, def dataElements){
-		return new DataElementExport(descriptions:descriptions,periods:periods,typeCodeString:Utils.unsplit(locationType, Utils.DEFAULT_CODE_DELIMITER),locations:locations,dataElements:dataElements,date:new Date()).save(failOnError: true);
+		return new DataElementExport(descriptions:descriptions,periods:periods,typeCodeString:Utils.unsplit(locationType, Utils.DEFAULT_TYPE_CODE_DELIMITER),locations:locations,dataElements:dataElements,date:new Date()).save(failOnError: true);
 	}
 	
 	static def newCalculationExport(def descriptions,def periods, def locationType, def locations, def calculations){
-		return new CalculationExport(descriptions:descriptions,periods:periods,typeCodeString:Utils.unsplit(locationType, Utils.DEFAULT_CODE_DELIMITER),locations:locations,calculations:calculations,date:new Date()).save(failOnError: true);
+		return new CalculationExport(descriptions:descriptions,periods:periods,typeCodeString:Utils.unsplit(locationType, Utils.DEFAULT_TYPE_CODE_DELIMITER),locations:locations,calculations:calculations,date:new Date()).save(failOnError: true);
 	}
 		
 	static def newUser(def username, def uuid) {
@@ -235,18 +235,18 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newReportProgram(def code) {
-		return new ReportProgram(code: code, parent: null, names: [:]).save(failOnError: true, flush: true);
+		return new ReportProgram(code: code, parent: null).save(failOnError: true, flush: true);
 	}
 	
 	static def newReportProgram(def code, def parent) {
-		def reportProgram = new ReportProgram(code: code, parent: parent, names: [:]).save(failOnError: true, flush: true);
-		parent.children << reportProgram
+		def reportProgram = new ReportProgram(code: code, parent: parent).save(failOnError: true, flush: true);
+		parent.addToChildren(reportProgram)
 		parent.save(failOnError: true)
 		return reportProgram
 	}
 	
 	static def newReportProgram(def code, def parent, def children){
-		return new ReportProgram(code: code, parent: parent, children: children, names: [:]).save(failOnError: true, flush: true);
+		return new ReportProgram(code: code, parent: parent, children: children).save(failOnError: true, flush: true);
 	}
 	
 	static RawDataElementValue newRawDataElementValue(def rawDataElement, def period, def location, def value) {
@@ -266,11 +266,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static RawDataElement newRawDataElement(def code, def type) {
-		return newRawDataElement([:], code, type)
+		return newRawDataElement(null, code, type)
 	}
 	
 	static RawDataElement newRawDataElement(def code, def type, Source source) {
-		return newRawDataElement([:], code, type, null, source)
+		return newRawDataElement(null, code, type, null, source)
 	}
 	
 	static RawDataElement newRawDataElement(def names, def code, def type, String info) {
@@ -282,7 +282,9 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static RawDataElement newRawDataElement(def names, def code, def type, def info, def source) {
-		return new RawDataElement(names: names, code: code, type: type, info: info, source: source).save(failOnError: true, flush:true)
+		def dataElement = new RawDataElement(code: code, type: type, info: info, source: source).save(failOnError: true, flush:true)
+		setLocaleValueInMap(dataElement, names, "Names")
+		return dataElement
 	}
 	
 	static Source newSource(def code) {
@@ -292,7 +294,9 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static def newNormalizedDataElement(def names, def code, def type, def expressionMap, Map params) {
 		params << [failOnError: true]
 		params << [flush: true]
-		return new NormalizedDataElement(names: names, code: code, type: type, expressionMap: expressionMap).save(params)
+		def dataElement = new NormalizedDataElement(code: code, type: type, expressionMap: expressionMap).save(params)
+		setLocaleValueInMap(dataElement, names, "Names")
+		return dataElement
 	}
 
 	static def newNormalizedDataElement(def names, String code, def type, def expressionMap) {
@@ -300,11 +304,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newNormalizedDataElement(def code, Type type, def expressionMap) {
-		return newNormalizedDataElement([:], code, type, expressionMap, [:])
+		return newNormalizedDataElement(null, code, type, expressionMap, [:])
 	}
 	
 	static def newNormalizedDataElement(def code, Type type, def expressionMap, Map params) {
-		return newNormalizedDataElement([:], code, type, expressionMap, params)
+		return newNormalizedDataElement(null, code, type, expressionMap, params)
 	}
 	
 	static NormalizedDataElementValue newNormalizedDataElementValue(def normalizedDataElement, def location, def period, def status, def value) {
@@ -312,35 +316,41 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static Aggregation newAggregation(def names, def expression, def code) {
-		return new Aggregation(names: names, expression: expression, code: code).save(failOnError: true)
+		def data = new Aggregation(expression: expression, code: code).save(failOnError: true)
+		setLocaleValueInMap(data, names, "Names")
+		return data
 	}
 
 	static Aggregation newAggregation(def expression, def code) {
-		return newAggregation([:], expression, code)
+		return newAggregation(null, expression, code)
 	}
 
 	static def newSum(String expression, def code) {
-		return newSum([:], expression, code)
+		return newSum(null, expression, code)
 	}
 	
-	static Sum newSum(def names, def expression, def code) {
-		return new Sum(names: names, expression: expression, code: code).save(failOnError: true, flush: true)
+	static Summ newSum(def names, def expression, def code) {
+		def data = new Summ(expression: expression, code: code).save(failOnError: true, flush: true)
+		setLocaleValueInMap(data, names, "Names")
+		return data
 	}
 	
-	static Sum newSum(def expression, def code) {
-		return newSum([:], expression, code)
+	static Summ newSum(def expression, def code) {
+		return newSum(null, expression, code)
 	}
 	
 	static Enum newEnume(def code) {
-		return new Enum(code: code).save(failOnError: true, flush: true)
+		return newEnume(code, null)
 	}
 	
-//	static Enum newEnume(def code, def names, def descriptions){
-//		return new Enum(code: code, names:"en":names,descriptions:"en":descriptions).save(failOnError: true, flush: true)
-//	}
-		
+	static Enum newEnume(def code, def names) {
+		def enume = new Enum(code: code).save(failOnError: true, flush: true)
+		setLocaleValueInMap(enume, names, "Names")
+		return enume;
+	}
+	
 	static EnumOption newEnumOption(def enume, def value) {
-		return newEnumOption([:], enume, value, null)
+		return newEnumOption(null, enume, value, null)
 	}
 	
 	static EnumOption newEnumOption(def names, Enum enume, def value) {
@@ -348,11 +358,13 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static EnumOption newEnumOption(Enum enume, def value, def order) {
-		return newEnumOption([:], enume, value, order)
+		return newEnumOption(null, enume, value, order)
 	}
 	
 	static EnumOption newEnumOption(def names, Enum enume, def value, def order) {
-		def enumOption = new EnumOption(code: enume.code+value, names: names, enume: enume, value: value, order: order).save(failOnError: true)
+		def enumOption = new EnumOption(code: enume.code+value, enume: enume, value: value).save(failOnError: true)
+		setLocaleValueInMap(enumOption, names, "Names")
+		setLocaleValueInMap(enumOption, order, "Orders")
 		enume.addToEnumOptions(enumOption)
 		enume.save(failOnError: true)
 		return enumOption
@@ -363,8 +375,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def static newFormValidationRule(def code, def element, def prefix, def types, def expression, boolean allowOutlier, def dependencies = []) {
-		def validationRule = new FormValidationRule(code: code, expression: expression, prefix: prefix, messages: [:], formElement: element, typeCodeString: Utils.unsplit(types, Utils.DEFAULT_CODE_DELIMITER), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
-		element.addValidationRule(validationRule)
+		def validationRule = new FormValidationRule(code: code, expression: expression, prefix: prefix, formElement: element, typeCodeString: Utils.unsplit(types, Utils.DEFAULT_TYPE_CODE_DELIMITER), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
+		element.addToValidationRules(validationRule)
 		element.save(failOnError: true)
 		return validationRule
 	}
@@ -377,10 +389,12 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new FormSkipRule(code: code, expression: expression, skippedFormElements: skippedElements).save(failOnError: true)
 	}
 	
-	// TODO change this
 	def static newFormElement(def dataElement) {
-		inc++
-		return new FormElement(code: code, dataElement: dataElement).save(failOnError: true)
+		return newFormElement(dataElement, null)
+	}
+	
+	def static newFormElement(def dataElement, def headers) {
+		return new FormElement(dataElement: dataElement, headers: headers).save(failOnError: true)
 	}
 
 	def refresh() {
@@ -405,7 +419,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 		
 		Period.list().each { period ->
 			sessionFactory.currentSession.createCriteria(CalculationLocation.class).list().each { location ->
-				Sum.list().each { sum ->
+				Summ.list().each { sum ->
 					refreshValueService.updateCalculationPartialValues(sum, location, period)
 				}
 				Aggregation.list().each { aggregation ->
@@ -422,45 +436,14 @@ abstract class IntegrationTests extends IntegrationSpec {
 		WebUtils.metaClass.static.getSavedRequest = { ServletRequest request -> null }
 	}
 	
-	
-//	static def getLocationLevels(def levels) {
-//		def result = []
-//		for (def level : levels) {
-//			result.add LocationLevel.findByCode(level)
-//		}
-//		return result;
-//	}
-//	
-//	static def getCalculationLocation(def code) {
-//		def location = Location.findByCode(code)
-//		if (location == null) location = DataLocation.findByCode(code)
-//		return location
-//	}
-//	
-//	static def getLocations(def codes) {
-//		def result = []
-//		for (String code : codes) {
-//			result.add(Location.findByCode(code))
-//		}
-//		return result
-//	}
-//	
-//	static def getDataLocations(def codes) {
-//		def result = []
-//		for (String code : codes) {
-//			result.add(DataLocation.findByCode(code))
-//		}
-//		return result
-//	}
-//	static def getDataLocationTypes(def codes){
-//		def result=[]
-//		for(String code: codes)
-//			result.add(DataLocationType.findByCode(code));
-//		return result;
-//	}
+	static def getCalculationLocation(def code) {
+		def location = Location.findByCode(code)
+		if (location == null) location = DataLocation.findByCode(code)
+		return location
+	}
 	
 	static def g(def types) {
-		return Utils.unsplit(types, Utils.DEFAULT_CODE_DELIMITER)
+		return Utils.unsplit(types, Utils.DEFAULT_TYPE_CODE_DELIMITER)
 	}
 	
 	static s(def list) {
@@ -483,14 +466,17 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def setLocaleValueInMap(def object, def map, def fieldName) {
+		if (map == null) return
+		
 		def methodName = 'set'+fieldName
 		// TODO replace with CONF variable if this fails
 		def grailsApplication = new User().domainClass.grailsApplication
 		grailsApplication.config.i18nFields.locales.each{ loc ->
-			if(map.get(loc) != null) object."$methodName"(map.get(loc), new Locale(loc))
+			if(map.get(loc) != null) object."$methodName"(map.get(loc)+'', new Locale(loc))
 			else object."$methodName"("", new Locale(loc))
 		}
 	}
+	
 }
 
 class TestProgress implements Progress {

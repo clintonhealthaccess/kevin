@@ -114,7 +114,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period1 = newPeriod()
-		def period2 = newPeriod()
+		def period2 = newPeriod(2006)
 		
 		def survey1 = newSurvey(CODE(1), period1)
 		def program1 = newSurveyProgram(CODE(1), survey1, 1, [(HEALTH_CENTER_GROUP)])

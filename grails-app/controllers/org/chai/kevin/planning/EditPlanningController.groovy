@@ -199,7 +199,7 @@ class EditPlanningController extends AbstractController {
 				else {
 					def header
 					if (planningList.planningType.fixedHeader == null || planningList.planningType.fixedHeader.empty) {
-						header = languageService.getText(planningList.planningType.names) + (planningList.planningType.maxNumber!=1?(' ' + i):'')
+						header = planningList.planningType.names + (planningList.planningType.maxNumber!=1?(' ' + i):'')
 					} 
 					else {
 						header = languageService.getStringValue(entry.fixedHeaderValue, planningList.planningType.fixedHeaderType)
@@ -209,7 +209,7 @@ class EditPlanningController extends AbstractController {
 					entryLines << line
 				}	
 			}
-			def line = new AggregateLine(languageService.getText(planningList.planningType.namesPlural), entryLines, ['standout'])
+			def line = new AggregateLine(planningList.planningType.namesPlural, entryLines, ['standout'])
 			line.openByDefault = true
 			planningListLines << line
 		}
@@ -237,7 +237,7 @@ class EditPlanningController extends AbstractController {
 				if (cost.type == PlanningCostType.INCOMING) values = [null, Value.VALUE_NUMBER(0), Value.VALUE_NUMBER(0)]
 				else values = [Value.VALUE_NUMBER(0), null, Value.VALUE_NUMBER(0)]
 			}
-			if (values != null) costLines << new NumberLine(languageService.getText(cost.names), values, types)
+			if (values != null) costLines << new NumberLine(cost.names, values, types)
 		}
 		return costLines
 	}
@@ -277,7 +277,7 @@ class EditPlanningController extends AbstractController {
 		}
 		def columns = outputTable.planningOutput.columns.collect {i18n(field: it.names)}
 		return new Table(
-			languageService.getText(outputTable.planningOutput.captions),
+			outputTable.planningOutput.captions,
 			columns, lines, 
 			outputTable.planningOutput.displayTotal, 
 			['budget']

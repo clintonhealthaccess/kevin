@@ -30,7 +30,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		
 		then:
 		model.currentPeriod.equals(period)
-		model.dashboardEntity.equals(DashboardProgram.findByCode(ROOT))
+		model.dashboardEntity.equals(DashboardProgram.findByCode(DASHBOARD_ROOT))
 		model.currentLocation.equals(Location.findByCode(RWANDA))
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.programDashboard.hasData() == true
@@ -42,7 +42,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		def period = newPeriod()
 		setupLocationTree()
 		def program = newReportProgram(PROGRAM1)
-		def dashboardProgram = newDashboardProgram(PROGRAM1, program, 1)
+		def dashboardProgram = newDashboardProgram(DASHBOARD_PROGRAM1, program, 1)
 		def calculation = newSum("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, program, 1)
 		dashboardController = new DashboardController()
@@ -63,7 +63,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		def period = newPeriod()
 		setupLocationTree()
 		def program = newReportProgram(PROGRAM1)
-		def dashboardProgram = newDashboardProgram(PROGRAM1, program, 1)
+		def dashboardProgram = newDashboardProgram(DASHBOARD_PROGRAM1, program, 1)
 		def calculation = newSum("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, program, 1)
 		dashboardController = new DashboardController()
@@ -89,7 +89,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		def period = newPeriod()
 		setupLocationTree()
 		def program = newReportProgram(PROGRAM1)
-		def dashboardProgram = newDashboardProgram(PROGRAM1, program, 1)
+		def dashboardProgram = newDashboardProgram(DASHBOARD_PROGRAM1, program, 1)
 		def calculation = newSum("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, program, 1)
 		dashboardController = new DashboardController()
@@ -149,7 +149,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		when:
 		dashboardController.params.location = Location.findByCode(RWANDA).id
 		dashboardController.params.program = ReportProgram.findByCode(ROOT).id
-		dashboardController.params.dashboardEntity = DashboardProgram.findByCode(ROOT).id
+		dashboardController.params.dashboardEntity = DashboardProgram.findByCode(DASHBOARD_ROOT).id
 		dashboardController.params.period = period.id
 		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		dashboardController.params.table = 'program'
@@ -161,9 +161,9 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		then:		
 		compareValues != null
 		compareValues.size() > 0
-		compareValues[0].id == DashboardProgram.findByCode(PROGRAM1).id
+		compareValues[0].id == DashboardProgram.findByCode(DASHBOARD_PROGRAM1).id
 		compareValues[0].value == 30
-		compareValues[1].id == DashboardProgram.findByCode(PROGRAM2).id
+		compareValues[1].id == DashboardProgram.findByCode(DASHBOARD_PROGRAM2).id
 		compareValues[1].value == 10
 	}
 	
@@ -179,7 +179,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		when:
 		dashboardController.params.location = Location.findByCode(RWANDA).id
 		dashboardController.params.program = ReportProgram.findByCode(ROOT).id
-		dashboardController.params.dashboardEntity = DashboardProgram.findByCode(ROOT).id
+		dashboardController.params.dashboardEntity = DashboardProgram.findByCode(DASHBOARD_ROOT).id
 		dashboardController.params.period = period.id
 		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		dashboardController.params.table = 'location'
@@ -191,7 +191,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		then:
 		compareValues != null
 		compareValues.size() == 1
-		compareValues[0].id == DashboardProgram.findByCode(ROOT).id
+		compareValues[0].id == DashboardProgram.findByCode(DASHBOARD_ROOT).id
 		Utils.formatNumber("#.0", compareValues[0].value) == "16.7"
 	}
 

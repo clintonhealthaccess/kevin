@@ -68,10 +68,6 @@ class SectionController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
 	}
 	
 	
@@ -83,8 +79,7 @@ class SectionController extends AbstractEntityController {
 			response.sendError(404)
 		}
 		else {
-			List<SurveySection> sections = program.sections;
-			Collections.sort(sections)
+			def sections = program.sections.sort();
 	
 			def max = Math.min(params['offset']+params['max'], sections.size())
 			

@@ -3,7 +3,6 @@ package org.chai.kevin.form
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
 import org.chai.location.DataLocationType;
-import org.chai.location.DataLocationController;
 import org.chai.location.DataLocation;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyIntegrationTests;

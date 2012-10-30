@@ -29,13 +29,15 @@ package org.chai.kevin.value;
  */
 
 import org.chai.kevin.Period;
+import org.chai.kevin.data.Data;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.location.DataLocation;
 
 class NormalizedDataElementValue extends StoredValue {
 	
 	Status status;
-	NormalizedDataElement data;
+	// TODO this should be of type NormalizedDataElement
+	Data data;
 	
 	static mapping = {
 		table 'dhsst_value_normalized_data_element'

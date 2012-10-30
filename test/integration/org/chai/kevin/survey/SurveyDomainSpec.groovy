@@ -8,6 +8,7 @@ import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.Type;
+import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormValidationRule;
 import org.chai.location.DataLocationType;
 import org.chai.location.Location;
@@ -17,7 +18,6 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 
 	private static final Log log = LogFactory.getLog(SurveyDomainSpec.class)
 
-	
 	def "table question has data elements"() {
 		setup:
 		def period = newPeriod()
@@ -55,13 +55,12 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		skipRule.id == null
 		
 		when:
-		survey.addSkipRule(skipRule)
+		survey.addToSkipRules(skipRule)
 		survey.save(failOnError: true, flush: true)
 		
 		then:
 		skipRule.id != null
 	}
-	
 	
 	def "test get sruvey elements on questions without elements"() {
 		when:
@@ -126,6 +125,143 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		then:
 		SurveyElement.list()[0].validationRules.size() == 2
 		FormValidationRule.count() == 2
+	}
+	
+	def "delete question deletes survey element and validation rules"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(2), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def validationRule = newFormValidationRule(CODE(1), element, '', [(DISTRICT_HOSPITAL_GROUP)], 'true')
+		
+		when:
+		question.delete()
+		section.removeFromQuestions(question).save()
+		
+		then:
+		SurveyQuestion.count() == 0
+		SurveyElement.count() == 0
+		FormElement.count() == 0
+		FormValidationRule.count() == 0
+		// does not delete raw data element
+		RawDataElement.count() == 1
+	}
+	
+	def "delete table question deletes rows and columns"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newTableQuestion(CODE(1), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def column = newTableColumn(CODE(1), question, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def row = newTableRow(CODE(1), question, 1, [(DISTRICT_HOSPITAL_GROUP)], [(column): null])
+
+		when:
+		question.delete()
+		section.removeFromQuestions(question)
+		
+		then:
+		SurveyQuestion.count() == 0
+		SurveyElement.count() == 0
+		SurveyTableRow.count() == 0
+		SurveyTableColumn.count() == 0
+	}
+	
+	def "delete checkbox question deletes options"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newCheckboxQuestion(CODE(1), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def option = newCheckboxOption(CODE(1), question, 1, [(DISTRICT_HOSPITAL_GROUP)])
+
+		when:
+		question.delete()
+		section.removeFromQuestions(question)
+		
+		then:
+		SurveyQuestion.count() == 0
+		SurveyElement.count() == 0
+		SurveyCheckboxOption.count() == 0
+	}
+	
+	def "delete survey table row deletes row column map"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question1 = newTableQuestion(CODE(1), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def column = newTableColumn(CODE(1), question1, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def row = newTableRow(CODE(1), question1, 1, [(DISTRICT_HOSPITAL_GROUP)], [(column): null])
+
+		when:
+		row.delete()
+		question1.removeFromRows(row)
+		
+		then:
+		SurveyTableRow.count() == 0
+		SurveyTableRowColumnMap.count() == 0
+	}
+	
+	def "delete section deletes questions"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(2), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		
+		when:
+		section.delete()
+		program.removeFromSections(section)
+		
+		then:
+		SurveySection.count() == 0
+		SurveyQuestion.count() == 0
+	}
+	
+	def "delete program deletes sections"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		
+		when:
+		program.delete()
+		survey.removeFromPrograms(program)
+		
+		then:
+		SurveyProgram.count() == 0
+		SurveySection.count() == 0
+	}
+	
+	def "delete survey deletes programs and skip rules"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def skipRule = newSurveySkipRule(CODE(1), survey, "true", [:], [])
+		
+		when:
+		survey.delete()
+		
+		then:
+		Survey.count() == 0
+		SurveySkipRule.count() == 0
 	}
 	
 }

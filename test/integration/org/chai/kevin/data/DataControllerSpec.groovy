@@ -322,8 +322,8 @@ class DataControllerSpec extends IntegrationTests {
 		def period = newPeriod()
 		def dataElement = newRawDataElement(["en":"Element 1"], CODE(1), Type.TYPE_NUMBER())
 		def program = newReportProgram(CODE(1))
-		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(1), 1);
-		def target = DsrIntegrationTests.newDsrTarget(CODE(1), dataElement, program, category)
+		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(2), 1);
+		def target = DsrIntegrationTests.newDsrTarget(CODE(3), dataElement, program, category)
 		dataController = new DataController()
 		
 		when:

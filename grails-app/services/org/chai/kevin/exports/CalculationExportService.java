@@ -39,16 +39,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
-import org.chai.location.CalculationLocation;
-import org.chai.location.DataLocation;
-import org.chai.location.DataLocationType;
-import org.chai.location.Location;
-import org.chai.location.LocationLevel;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.CalculationValue;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.io.ICsvListWriter;
 import org.supercsv.prefs.CsvPreference;
@@ -77,17 +77,17 @@ public class CalculationExportService extends ExportService {
 			if(type!=null) types.add(type);
 		}
 		
-		for(CalculationLocation location : export.getLocations())
+		for(CalculationLocation location : export.getAllLocations())
 			location.collectLocations(locations, dataLocations, skips, types);
 		
 		calculationLocations.addAll(Utils.removeDuplicates(locations));
 		calculationLocations.addAll(Utils.removeDuplicates(dataLocations));
 			
 		if (log.isDebugEnabled()) log.debug(" Exporter calculationLocations "+calculationLocations+")");
-		return this.exportCalculations(languageService.getText(export.getDescriptions(), language),calculationLocations,export.getPeriods(),((CalculationExport) export).getCalculations(),types,language);
+		return this.exportCalculations(languageService.getText(export.getDescriptions(), language),calculationLocations,export.getAllPeriods(),((CalculationExport) export).getAllCalculations(),types,language);
 	}
 		
-	public File exportCalculations(String fileName,List<CalculationLocation> calculationLocations,Set<Period> periods,Set<Calculation<CalculationPartialValue>> calculations,Set<DataLocationType> types, String language) throws IOException{
+	public File exportCalculations(String fileName,List<CalculationLocation> calculationLocations,List<Period> periods,List<Calculation> calculations,Set<DataLocationType> types, String language) throws IOException{
 		if (log.isDebugEnabled()) log.debug(" exportDataElement(String "+fileName+" List<CalculationLocation>: " + calculationLocations + " List<Period>: "+ periods + " Set<Calculation<CalculationPartialValue>>: " + calculations + ")");
 		File csvFile = File.createTempFile(fileName, ImportExportConstant.CSV_FILE_EXTENSION);
 		FileWriter csvFileWriter = new FileWriter(csvFile);
@@ -96,7 +96,7 @@ public class CalculationExportService extends ExportService {
 		return csvFile;
 	}
 
-	private void writeCalculation(ICsvListWriter writer, List<CalculationLocation> calculationLocations, Set<Period> periods,Set<Calculation<CalculationPartialValue>> calculations,Set<DataLocationType> types, String language) throws IOException {
+	private void writeCalculation(ICsvListWriter writer, List<CalculationLocation> calculationLocations, List<Period> periods,List<Calculation> calculations,Set<DataLocationType> types, String language) throws IOException {
 		try{
 			String[] csvHeaders = null;
 			// headers

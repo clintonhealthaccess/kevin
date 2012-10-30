@@ -50,6 +50,7 @@ class NormalizedDataElement extends DataElement<NormalizedDataElementValue> {
 	static mapping = {
 		table 'dhsst_data_normalized_element'
 		refreshed sqlType: "datetime"
+		expressionMapString sqlType: 'text'
 	}
 	
 	static constraints =  {
@@ -134,7 +135,7 @@ class NormalizedDataElement extends DataElement<NormalizedDataElementValue> {
 	@Override
 	public Set<String> getSources(Period period, DataLocationType type) {
 		Set<String> result = new HashSet<String>();
-		if (sourceMap.containsKey(period.getId()+"") && sourceMap.get(period.getId()+"").containsKey(type.getCode())) {
+		if (sourceMap != null && sourceMap.containsKey(period.getId()+"") && sourceMap.get(period.getId()+"").containsKey(type.getCode())) {
 			result.addAll(sourceMap.get(period.getId()+"").get(type.getCode()));
 		}
 		return result;
@@ -143,7 +144,7 @@ class NormalizedDataElement extends DataElement<NormalizedDataElementValue> {
 	@Override
 	public Set<String> getSources() {
 		Set<String> result = new HashSet<String>();
-		for (Map<String, List<String>> map : sourceMap.values()) {
+		for (Map<String, List<String>> map : sourceMap?.values()) {
 			for (List<String> sources : map.values()) {
 				result.addAll(sources);
 			}

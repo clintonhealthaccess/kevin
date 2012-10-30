@@ -79,7 +79,7 @@ class EditSurveyController extends AbstractController {
 
 		if (location == null) valid = false
 		else {
-			if (types != null && !Utils.split(types, Utils.DEFAULT_CODE_DELIMITER).contains(location.type.code)) valid = false
+			if (types != null && !Utils.split(types, Utils.DEFAULT_TYPE_CODE_DELIMITER).contains(location.type.code)) valid = false
 		}
 
 		if (!valid) {

@@ -11,6 +11,7 @@
 		href="${createLink(controller:controller, action:action, params:linkParams)}">
 		<g:i18n field="${location.names}" />
 	</a>
+	
 	<g:if test="${location.children != null && !location.children.empty}">		
 		<g:each in="${location.children}" var="child">
 			<g:if test="${locationFilterTree.contains(child)}">

@@ -34,7 +34,7 @@ import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Sum;
+import org.chai.kevin.data.Summ;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.dsr.DsrIntegrationTests;
 import org.chai.kevin.dsr.DsrTarget;
@@ -81,13 +81,13 @@ class DataServiceSpec extends IntegrationTests {
 		result.equals(normalizedDataElement)
 
 		when:
-		result = dataService.getData(ratio.id, Sum.class)
+		result = dataService.getData(ratio.id, Summ.class)
 		
 		then:
 		result.equals(ratio)
 
 		when:
-		result = dataService.getData(sum.id, Sum.class)
+		result = dataService.getData(sum.id, Summ.class)
 		
 		then:
 		result.equals(sum)
@@ -97,8 +97,8 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.getData(ratio.id, RawDataElement.class) == null
 		dataService.getData(sum.id, NormalizedDataElement.class) == null
 		dataService.getData(sum.id, RawDataElement.class) == null
-		dataService.getData(rawDataElement.id, Sum.class) == null				
-		dataService.getData(normalizedDataElement.id, Sum.class) == null
+		dataService.getData(rawDataElement.id, Summ.class) == null				
+		dataService.getData(normalizedDataElement.id, Summ.class) == null
 		dataService.getData(normalizedDataElement.id, RawDataElement.class) == null
 		
 	}
@@ -107,11 +107,11 @@ class DataServiceSpec extends IntegrationTests {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def program = newReportProgram(CODE(1))
-		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(1), 1)
-		def dsrTarget = DsrIntegrationTests.newDsrTarget(CODE(1), rawDataElement, program, category)
+		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(2), 1)
+		def dsrTarget = DsrIntegrationTests.newDsrTarget(CODE(3), rawDataElement, program, category)
 		
 		when:
-		dsrTarget = DsrTarget.findByCode(CODE(1))
+		dsrTarget = DsrTarget.findByCode(CODE(3))
 		
 		then:
 		dataService.getData(dsrTarget.getData().id, Calculation.class) == null 
@@ -139,13 +139,13 @@ class DataServiceSpec extends IntegrationTests {
 		result.equals(normalizedDataElement)
 
 		when:
-		result = dataService.getDataByCode(ratio.code, Sum.class)
+		result = dataService.getDataByCode(ratio.code, Summ.class)
 		
 		then:
 		result.equals(ratio)
 
 		when:
-		result = dataService.getDataByCode(sum.code, Sum.class)
+		result = dataService.getDataByCode(sum.code, Summ.class)
 		
 		then:
 		result.equals(sum)
@@ -155,9 +155,9 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.getDataByCode(ratio.code, RawDataElement.class) == null
 		dataService.getDataByCode(sum.code, NormalizedDataElement.class) == null
 		dataService.getDataByCode(sum.code, RawDataElement.class) == null
-		dataService.getDataByCode(rawDataElement.code, Sum.class) == null
+		dataService.getDataByCode(rawDataElement.code, Summ.class) == null
 		dataService.getDataByCode(rawDataElement.code, NormalizedDataElement.class) == null
-		dataService.getDataByCode(normalizedDataElement.code, Sum.class) == null
+		dataService.getDataByCode(normalizedDataElement.code, Summ.class) == null
 		dataService.getDataByCode(normalizedDataElement.code, RawDataElement.class) == null
 		
 	}
@@ -183,8 +183,8 @@ class DataServiceSpec extends IntegrationTests {
 		def aggregation = newAggregation("1", CODE(5))
 		
 		expect:
-		dataService.list(Sum.class, [:]).equals([ratio, sum])
-		dataService.count(Sum.class) == 2
+		dataService.list(Summ.class, [:]).equals([ratio, sum])
+		dataService.count(Summ.class) == 2
 		dataService.list(DataElement.class, [:]).equals([rawDataElement, normalizedDataElement])
 		dataService.count(DataElement.class) == 2
 		dataService.list(NormalizedDataElement.class, [:]).equals([normalizedDataElement])
@@ -251,7 +251,7 @@ class DataServiceSpec extends IntegrationTests {
 		def ratio1 = newSum(["en": "sum"], "1", CODE(1));
 		
 		expect:
-		dataService.searchData(Sum.class, "su", [], [:]).equals([ratio1])
+		dataService.searchData(Summ.class, "su", [], [:]).equals([ratio1])
 		dataService.searchData(Data.class, "su", [], [:]).equals([ratio1])
 		
 	}
@@ -297,7 +297,7 @@ class DataServiceSpec extends IntegrationTests {
 		
 		then:
 		thrown IllegalArgumentException
-		Sum.count() == 1
+		Summ.count() == 1
 		SumPartialValue.count() == 1
 		
 	}
@@ -323,7 +323,7 @@ class DataServiceSpec extends IntegrationTests {
 		
 		then:
 		thrown IllegalArgumentException
-		Sum.count() == 1
+		Summ.count() == 1
 	}
 	
 	def "get referencing normalized data element"() {
@@ -356,7 +356,7 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.getReferencingCalculations(rawDataElement).equals([sum])
 		
 		when:
-		newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [(1):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
+		newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
 		
 		then:
 		dataService.getReferencingCalculations(rawDataElement).equals([sum])

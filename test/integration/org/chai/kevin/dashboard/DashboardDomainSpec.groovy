@@ -31,7 +31,7 @@ package org.chai.kevin.dashboard
 import grails.validation.ValidationException;
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.chai.kevin.data.Sum
+import org.chai.kevin.data.Summ
 import org.chai.kevin.data.Type
 
 class DashboardDomainSpec extends DashboardIntegrationTests {
@@ -109,13 +109,13 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 		def target = newDashboardTarget(CODE(1), calculation, program, 1)
 		
 		then:
-		Sum.count() == 1
+		Summ.count() == 1
 		
 		when:
 		target.save(failOnError: true)
 		
 		then:
-		Sum.count() == 1
+		Summ.count() == 1
 	}
 	
 	def "get parent"() {

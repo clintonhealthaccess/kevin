@@ -62,7 +62,7 @@ public class ReportService {
 		if (collectedTargets != null) collectedTargets.addAll(targets);
 		
 		boolean hasTargets = !targets.isEmpty();
-		for (ReportProgram child : program.getChildren()) {
+		for (ReportProgram child : program.getAllChildren()) {
 			hasTargets = hasTargets | collectReportTree(clazz, child, collectedPrograms, collectedTargets);
 		}
 		

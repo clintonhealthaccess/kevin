@@ -56,8 +56,8 @@
 			timeToLiveSeconds="86400"
     />
     
-    <cache name="org.chai.kevin.reports.ReportProgram"
-    		maxElementsInMemory="200"
+    <cache name="org.chai.kevin.reports.ReportEntity"
+    		maxElementsInMemory="1000"
 			timeToLiveSeconds="86400"
 	/>
     	

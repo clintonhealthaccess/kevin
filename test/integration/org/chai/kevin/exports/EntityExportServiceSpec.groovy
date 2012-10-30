@@ -1,25 +1,22 @@
 package org.chai.kevin.exports
 
 import java.lang.reflect.Field
-import java.util.Date;
+import java.util.Date
 
-import org.apache.commons.lang.StringUtils;
-import org.chai.kevin.Exportable;
+import org.apache.commons.lang.StringUtils
+import org.chai.kevin.Exportable
 import org.chai.kevin.IntegrationTests
-import org.chai.kevin.Translation
 import org.chai.kevin.dashboard.DashboardTarget
-import org.chai.kevin.data.Type;
-import org.chai.kevin.form.FormEnteredValue;
-import org.chai.location.DataLocationType;
-import org.chai.location.DataLocation;
-import org.chai.location.Location;
-import org.chai.kevin.survey.SurveyQuestion
+import org.chai.kevin.data.Type
+import org.chai.kevin.form.FormEnteredValue
 import org.chai.kevin.survey.SurveyCheckboxQuestion
-import org.chai.kevin.survey.SurveySimpleQuestion
-import org.chai.kevin.survey.SurveyTableQuestion
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyIntegrationTests
-import org.chai.kevin.util.Utils;
+import org.chai.kevin.survey.SurveyQuestion
+import org.chai.kevin.survey.SurveySimpleQuestion
+import org.chai.kevin.survey.SurveyTableQuestion
+import org.chai.kevin.util.Utils
+import org.chai.location.DataLocation
 
 class EntityExportServiceSpec extends IntegrationTests {
 
@@ -187,7 +184,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		entityData[3].equals("")
 		
 		when:
-		ie.trans = new Translation(["en":"English", "fr":"French"])
+		ie.trans = ["en":"English", "fr":"French"]
 		entityData = entityExportService.getEntityData(ie, fields)
 		
 		then:
@@ -277,13 +274,13 @@ class EntityExportServiceSpec extends IntegrationTests {
 		public Integer num;
 		public String code;
 		public Date dat;
-		public Translation trans;
+		public Map trans;
 		
 		public IsExportableEntity() {
 			this.num = 0;
 			this.code = "";
 			this.dat = new Date();
-			this.trans = new Translation();
+			this.trans = [:];
 		}
 		
 		public IsExportableEntity(String code, Integer num, Date dat) {

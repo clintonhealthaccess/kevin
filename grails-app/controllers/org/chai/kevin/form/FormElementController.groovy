@@ -8,7 +8,6 @@ import org.chai.kevin.survey.SurveyElement;
 class FormElementController {
 	
 	def formElementService
-	def languageService
 	
 	def view = {
 		// TODO make this method generic, it shouldn't contain any reference to SurveyElement
@@ -32,7 +31,7 @@ class FormElementController {
 				formElements.each { formElement ->
 					elem (
 						key: formElement.id,
-						value: formElement.getLabel(languageService)+'['+formElement.id+']'
+						value: formElement.label+'['+formElement.id+']'
 					)
 				}
 			}
@@ -44,7 +43,7 @@ class FormElementController {
 		
 		render(contentType:"text/json") {
 			result = 'success'
-			html = g.render(template:'/entity/form/formElements', model:[formElements: formElements, languageService: languageService])
+			html = g.render(template:'/entity/form/formElements', model:[formElements: formElements])
 		}
 	}
 	

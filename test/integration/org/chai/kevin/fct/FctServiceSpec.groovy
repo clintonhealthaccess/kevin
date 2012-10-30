@@ -58,8 +58,8 @@ class FctServiceSpec extends FctIntegrationTests {
 		def reportType = Utils.ReportType.TABLE
 		def fctTable = null
 		
-		when:
-		def dummy = newLocation("dummy", location, level)
+		when:	
+		def dummy = newLocation([:], "dummy", location, level)
 		refresh()
 		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes, reportType)
 		

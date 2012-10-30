@@ -1,7 +1,9 @@
-package org.chai.location
+package org.chai.kevin.location
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.util.JSONUtils;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 
 class LocationControllerSpec extends IntegrationTests {
 

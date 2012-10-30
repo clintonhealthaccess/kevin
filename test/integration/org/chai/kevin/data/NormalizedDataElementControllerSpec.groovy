@@ -125,7 +125,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		
 		then:
 		NormalizedDataElement.count() == 1
-		Sum.count() == 1
+		Summ.count() == 1
 	}
 	
 	def "cannot delete normalized data element if there are associated planning costs"() {
@@ -167,8 +167,8 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 	def "create normalized element with expressions"() {
 		setup:
 		def period1 = newPeriod()
-		def period2 = newPeriod()
-		def type1 = newDataLocationType("type1")
+		def period2 = newPeriod(2006)
+		def type1 = newDataLocationType([:], "type1")
 		normalizedDataElementController = new NormalizedDataElementController()
 
 		when:

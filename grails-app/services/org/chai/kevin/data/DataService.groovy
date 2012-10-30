@@ -113,7 +113,7 @@ class DataService {
 	
 	public List<NormalizedDataElement> getReferencingNormalizedDataElements(Data data) {
 		def criteria = sessionFactory.currentSession.createCriteria(NormalizedDataElement.class);
-		def list = criteria.add(Restrictions.like("expressionMap.jsonText", "\$"+data.id, MatchMode.ANYWHERE)).list()
+		def list = criteria.add(Restrictions.like("expressionMapString", "\$"+data.id, MatchMode.ANYWHERE)).list()
 		return list.findAll { result ->
 			return !result.expressions.findAll { expression ->
 				return Utils.containsId(expression, data.id)
@@ -141,15 +141,16 @@ class DataService {
 		
 		List<Data<T>> data = criteria.addOrder(Order.asc("id")).list()
 		
-		StringUtils.split(text).each { chunk ->
-			data.retainAll { element ->
-				// we look in "info" if it is a data element
-				(clazz.equals(RawDataElement.class)?Utils.matches(chunk, element.info):false) ||
-				Utils.matches(chunk, element.id+"") ||
-				Utils.matches(chunk, element.names[languageService.getCurrentLanguage()]) ||
-				Utils.matches(chunk, element.code)
-			}
-		}
+		// TODO review this
+//		StringUtils.split(text).each { chunk ->
+//			data.retainAll { element ->
+//				// we look in "info" if it is a data element
+//				(clazz.equals(RawDataElement.class)?Utils.matches(chunk, element.info):false) ||
+//				Utils.matches(chunk, element.id+"") ||
+//				Utils.matches(chunk, element.names[languageService.getCurrentLanguage()]) ||
+//				Utils.matches(chunk, element.code)
+//			}
+//		}
 		
 		if (!allowedTypes.isEmpty()) {
 			data.retainAll { element ->
@@ -170,7 +171,7 @@ class DataService {
 			// we look in "info" if it is a data element
 			if (clazz.equals(RawDataElement.class)) disjunction.add(Restrictions.ilike("info", chunk, MatchMode.ANYWHERE))
 			disjunction.add(Restrictions.ilike("code", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("names.jsonText", chunk, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("names_"+languageService.currentLanguage, chunk, MatchMode.ANYWHERE))
 			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("id", Long.parseLong(chunk)))
 			
 			textRestrictions.add(disjunction)

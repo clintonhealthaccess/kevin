@@ -45,6 +45,7 @@ public abstract class DataElement<T extends DataValue> extends Data<T> implement
 	static mapping = {
 		table 'dhsst_data_element'
 		tablePerHierarchy false
+		typeString sqlType: 'text'
 	}
 	
 	static constraints = {

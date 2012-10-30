@@ -63,11 +63,11 @@ public class PlanningService {
 	public PlanningSummaryPage getSummaryPage(Planning planning, Location location) {
 		List<DataLocation> dataLocations = location.collectDataLocations(null, getDataLocationTypes(planning));
 		Map<PlanningType, PlanningTypeSummary> summaries = new HashMap<PlanningType, PlanningTypeSummary>();
-		for (PlanningType planningType : planning.getPlanningTypes()) {
+		for (PlanningType planningType : planning.getAllPlanningTypes()) {
 			summaries.put(planningType, getPlanningTypeSummary(planningType, dataLocations));
 		}
 		
-		return new PlanningSummaryPage(planning.getPlanningTypes(), dataLocations, summaries);
+		return new PlanningSummaryPage(planning.getAllPlanningTypes(), dataLocations, summaries);
 	}
 	
 	// TODO move to planning type
@@ -95,7 +95,7 @@ public class PlanningService {
 			rawDataElementValue = new RawDataElementValue(type.getFormElement().getDataElement(), location, type.getPeriod(), Value.NULL_INSTANCE());
 		}
 		Map<PlanningCost, NormalizedDataElementValue> costValues = new HashMap<PlanningCost, NormalizedDataElementValue>();
-		for (PlanningCost planningCost : type.getCosts()) {
+		for (PlanningCost planningCost : type.getAllCosts()) {
 			costValues.put(planningCost, valueService.getDataElementValue(planningCost.getDataElement(), location, type.getPeriod()));
 		}
 		
@@ -162,7 +162,7 @@ public class PlanningService {
 	
 	@Transactional(readOnly=false)
 	public void submitIfNeeded(Planning planning, DataLocation location) {
-		for (PlanningType planningType : planning.getPlanningTypes()) {
+		for (PlanningType planningType : planning.getAllPlanningTypes()) {
 			PlanningList planningList = getPlanningList(planningType, location);
 			if (!"true".equals(planningList.getFormEnteredValue().getValidatable().getValue().getAttribute(SUBMITTED))) { 
 				// we refresh the corresponding raw data element

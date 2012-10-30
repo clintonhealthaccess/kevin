@@ -42,7 +42,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def program = newReportProgram(CODE(1))
 		def ratio = newSum("1", CODE(2))
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
 		
@@ -62,7 +62,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		setup:
 		setupLocationTree()
 		def program = newReportProgram(CODE(1))
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		def sum = newSum("1", CODE(2))
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
@@ -83,7 +83,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		setup:
 		setupLocationTree()
 		def program = newReportProgram(CODE(1))
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		def rawDataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
@@ -105,7 +105,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(1))
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		def normalizedDataElement = newNormalizedDataElement(CODE(4), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]])
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
@@ -127,8 +127,8 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def program = newReportProgram(CODE(1))
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def category = newDsrTargetCategory(CODE(1), 1)
-		def target = newDsrTarget(CODE(1), dataElement, program, category)
+		def category = newDsrTargetCategory(CODE(2), 1)
+		def target = newDsrTarget(CODE(3), dataElement, program, category)
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
 		
@@ -144,13 +144,13 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		setup:
 		def program = newReportProgram(CODE(1))
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def category = newDsrTargetCategory(CODE(1), 1)
-		def target = newDsrTarget(CODE(1), dataElement, program, category)
+		def category = newDsrTargetCategory(CODE(2), 1)
+		def target = newDsrTarget(CODE(3), dataElement, program, category)
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
 		
 		when:
-		dsrTargetController.params.q = CODE(1)
+		dsrTargetController.params.q = CODE(3)
 		dsrTargetController.search()
 		
 		then:

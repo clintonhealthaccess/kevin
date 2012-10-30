@@ -6,47 +6,7 @@
 <hibernate-configuration>
 
 	<session-factory>	
-		<!-- mapping class="org.chai.kevin.reports.ReportProgram" />	
-	    <mapping class="org.chai.kevin.dsr.DsrTarget"/>	
-		<mapping class="org.chai.kevin.dsr.DsrTargetCategory"/>	
-	    <mapping class="org.chai.kevin.fct.FctTarget"/>
-	    <mapping class="org.chai.kevin.fct.FctTargetOption" />
-	    <mapping class="org.chai.kevin.dashboard.DashboardTarget" />
-	    <mapping class="org.chai.kevin.dashboard.DashboardProgram" />
-	
-		<mapping class="org.chai.kevin.form.FormValidationRule" />
-		<mapping class="org.chai.kevin.form.FormSkipRule" />
-		<mapping class="org.chai.kevin.form.FormElement" />
-		<mapping class="org.chai.kevin.form.FormEnteredValue" />
-	
-        <mapping class="org.chai.kevin.survey.Survey" />
-		<mapping class="org.chai.kevin.survey.SurveyProgram" />
-		<mapping class="org.chai.kevin.survey.SurveySection" />
-		<mapping class="org.chai.kevin.survey.SurveyElement" />
-		<mapping class="org.chai.kevin.survey.SurveyQuestion" />
-		<mapping class="org.chai.kevin.survey.SurveySimpleQuestion" />
-		<mapping class="org.chai.kevin.survey.SurveyCheckboxQuestion" />
-		<mapping class="org.chai.kevin.survey.SurveyCheckboxOption" />
-		<mapping class="org.chai.kevin.survey.SurveyTableQuestion" />
-		<mapping class="org.chai.kevin.survey.SurveyTableColumn" />
-		<mapping class="org.chai.kevin.survey.SurveyTableRow" />
-		<mapping class="org.chai.kevin.survey.SurveySkipRule" />
-	
-		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredQuestion" />
-		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredSection" />
-		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredProgram" />
-		
-		<mapping class="org.chai.kevin.planning.Planning" />
-		<mapping class="org.chai.kevin.planning.PlanningType" />
-		<mapping class="org.chai.kevin.planning.PlanningCost" />
-		<mapping class="org.chai.kevin.planning.PlanningSkipRule" />
-		<mapping class="org.chai.kevin.planning.PlanningOutput" />
-		<mapping class="org.chai.kevin.planning.PlanningOutputColumn" />
-		
-		<mapping class="org.chai.kevin.exports.DataExport" />
-		<mapping class="org.chai.kevin.exports.DataElementExport" />
-		<mapping class="org.chai.kevin.exports.CalculationExport" / -->
-		
+		<!-- EMPTY BIIITCHES ! -->		
 	</session-factory>
 
 </hibernate-configuration>

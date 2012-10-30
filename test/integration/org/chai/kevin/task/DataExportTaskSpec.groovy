@@ -7,7 +7,7 @@ import org.chai.kevin.IntegrationTests
 import org.chai.kevin.Period
 import org.chai.kevin.data.NormalizedDataElement
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Sum;
+import org.chai.kevin.data.Summ;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.exports.CalculationExport
 import org.chai.kevin.exports.DataElementExport
@@ -30,7 +30,7 @@ class DataExportTaskSpec extends IntegrationTests {
 		CalculationExport.list().each {it.locations.clear(); it.periods.clear(); it.calculations.clear(); it.delete();}
 		sessionFactory.currentSession.flush()
 		NormalizedDataElement.executeUpdate("delete NormalizedDataElement")
-		Sum.executeUpdate("delete Summ")
+		Summ.executeUpdate("delete Summ")
 		RawDataElement.executeUpdate("delete RawDataElement")
 		DataLocation.executeUpdate("delete DataLocation")
 		Location.executeUpdate("delete Location")
@@ -149,7 +149,7 @@ class DataExportTaskSpec extends IntegrationTests {
 		def period = newPeriod()
 		
 		def dataExport = newDataElementExport("en":"Testing Seach One",
-			new HashSet([newPeriod()]),
+			new HashSet([period]),
 			DISTRICT_HOSPITAL_GROUP+HEALTH_CENTER_GROUP,
 			new HashSet([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]),
 			new HashSet([newRawDataElement(CODE(1), Type.TYPE_NUMBER())]))

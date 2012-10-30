@@ -131,7 +131,7 @@ class DsrController extends AbstractController {
 		Set<DsrTarget> dsrIndicators = getDsrIndicators(reportType, dsrCategory, program)
 		
 		def locationSkipLevels = dsrService.getSkipLocationLevels()
-		def locationTree = location.collectLocationTreeWithData(locationSkipLevels, dataLocationTypes, false).asList()
+		def locationTree = location.collectTreeWithDataLocations(locationSkipLevels, dataLocationTypes, false).asList()
 		
 		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id, 
 							'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 							

@@ -1,6 +1,7 @@
-package org.chai.location;
+package org.chai.kevin.location;
 
 import org.chai.kevin.AbstractEntityController;
+import org.chai.location.LocationLevel;
 
 class LocationLevelController extends AbstractEntityController {
 

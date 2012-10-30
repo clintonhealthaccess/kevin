@@ -67,8 +67,8 @@ class ReportServiceSpec extends ReportIntegrationTests {
 		def program = newReportProgram(CODE(1))
 		
 		when:
-		def dashboardProgram = DashboardIntegrationTests.newDashboardProgram(CODE(1), program)
-		def dashboardTarget = DashboardIntegrationTests.newDashboardTarget(CODE(1), sum, program, 1)
+		def dashboardProgram = DashboardIntegrationTests.newDashboardProgram(CODE(2), program)
+		def dashboardTarget = DashboardIntegrationTests.newDashboardTarget(CODE(3), sum, program, 1)
 		
 		then:
 		reportService.getReportTargets(sum) == [dashboardTarget]

@@ -105,7 +105,7 @@ class FilterTagLib {
 			def model = excludeLinkParams(attrs)
 			def location = attrs['selected']
 			def locationFilterRoot = locationService.getRootLocation()	
-			def locationFilterTree = locationFilterRoot.collectLocationTreeWithData(attrs['skipLevels'], attrs['selectedTypes'], false)
+			def locationFilterTree = locationFilterRoot.collectTreeWithDataLocations(attrs['skipLevels'], attrs['selectedTypes'], false)
 			model << 
 				[
 					currentLocation: location,

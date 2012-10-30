@@ -3,11 +3,11 @@ package org.chai.kevin.data
 class SumController extends AbstractCalculationController {
 	
 	def getEntity(def id) {
-		return Sum.get(id)
+		return Summ.get(id)
 	}
 	
 	def createEntity() {
-		return new Sum();
+		return new Summ();
 	}
 	
 	def getLabel() {
@@ -15,6 +15,6 @@ class SumController extends AbstractCalculationController {
 	}
 	
 	def getEntityClass(){
-		return Sum.class;
+		return Summ.class;
 	}
 }

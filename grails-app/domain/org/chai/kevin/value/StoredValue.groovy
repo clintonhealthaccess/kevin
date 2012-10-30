@@ -78,7 +78,7 @@ abstract class StoredValue implements DataValue {
 	public StoredValue(CalculationLocation location, Period period, Value value) {
 		this.location = location;
 		this.period = period;
-		this.value = value;
+		if (value != null) this.value = value;
 	}
 
 	Value cachedValue
@@ -101,5 +101,42 @@ abstract class StoredValue implements DataValue {
 		this.valueString = valueString
 		this.cachedValue = null
 	}
-		
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((location == null) ? 0 : location.hashCode());
+		result = prime * result + ((period == null) ? 0 : period.hashCode());
+		result = prime * result + ((data == null) ? 0 : data.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this.is(obj))
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof StoredValue))
+			return false;
+		StoredValue other = (StoredValue) obj;
+		if (location == null) {
+			if (other.location != null)
+				return false;
+		} else if (!location.equals(other.location))
+			return false;
+		if (period == null) {
+			if (other.period != null)
+				return false;
+		} else if (!period.equals(other.period))
+			return false;
+		if (data == null) {
+			if (other.data != null)
+				return false;
+		} else if (!data.equals(other.data))
+			return false;
+		return true;
+	}
+	
 }

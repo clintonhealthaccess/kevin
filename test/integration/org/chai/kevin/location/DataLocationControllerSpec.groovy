@@ -1,6 +1,9 @@
-package org.chai.location
+package org.chai.kevin.location
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
 
 class DataLocationControllerSpec extends IntegrationTests {
 

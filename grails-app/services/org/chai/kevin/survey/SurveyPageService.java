@@ -58,9 +58,6 @@ import org.chai.location.LocationLevel;
 import org.chai.kevin.survey.SurveyElement.SurveyElementCalculator;
 import org.chai.kevin.survey.SurveyElement.SurveyElementSubmitter;
 import org.chai.kevin.survey.SurveyQuestion.QuestionType;
-import org.chai.kevin.survey.validation.SurveyEnteredProgram;
-import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
-import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
@@ -292,7 +289,7 @@ public class SurveyPageService {
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		Set<SurveyProgram> validPrograms = new HashSet<SurveyProgram>(survey.getPrograms(dataLocation.getType()));
-		for (SurveyProgram program : survey.getPrograms()) {
+		for (SurveyProgram program : survey.getAllPrograms()) {
 			if (validPrograms.contains(program)) refreshProgramForDataLocation(dataLocation, program, closeIfComplete, reset);
 			else if (reset) deleteSurveyEnteredProgram(program, dataLocation);
 		}
@@ -300,14 +297,14 @@ public class SurveyPageService {
 	
 	private void refreshProgramForDataLocation(DataLocation dataLocation, SurveyProgram program, boolean closeIfComplete, boolean reset) {
 		Set<SurveySection> validSections = new HashSet<SurveySection>(program.getSections(dataLocation.getType()));
-		for (SurveySection section : program.getSections()) {
+		for (SurveySection section : program.getAllSections()) {
 			if (validSections.contains(section)) refreshSectionForDataLocation(dataLocation, section, reset);
 			else if (reset) deleteSurveyEnteredSection(section, dataLocation);
 		}
 		
 		SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program);
 		setProgramStatus(enteredProgram, dataLocation);
-		if (closeIfComplete && enteredProgram.isComplete() && !enteredProgram.isInvalid()) enteredProgram.setClosed(true);
+		if (closeIfComplete && enteredProgram.getComplete() && !enteredProgram.getInvalid()) enteredProgram.setClosed(true);
 		surveyValueService.save(enteredProgram);
 	}
 	
@@ -317,7 +314,7 @@ public class SurveyPageService {
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		Set<SurveyQuestion> validQuestions = new HashSet<SurveyQuestion>(section.getQuestions(dataLocation.getType()));
-		for (SurveyQuestion question : section.getQuestions()) {
+		for (SurveyQuestion question : section.getAllQuestions()) {
 			if (validQuestions.contains(question)) refreshQuestionForDataLocation(dataLocation, question, reset);
 			else if (reset) deleteSurveyEnteredQuestion(question, dataLocation);
 		}
@@ -388,7 +385,7 @@ public class SurveyPageService {
 		
 		SurveyPage surveyPage = null;
 		// if the program is not closed, we go on with the save
-		if (!enteredProgram.isClosed()) {
+		if (!enteredProgram.getClosed()) {
 			Map<SurveyElement, FormEnteredValue> affectedElements = new HashMap<SurveyElement, FormEnteredValue>();
 			// first we save the values
 			for (SurveyElement element : elements) {
@@ -405,8 +402,6 @@ public class SurveyPageService {
 				// here, a write lock is acquired on the FormEnteredValue that will be kept
 				// till the end of the transaction, if in READ_COMMITTED isolation mode, a timeout
 				// is likely to occur because the transaction is quite long
-				SurveyService.setUserAndTimestamp(enteredValue);
-				formElementService.save(enteredValue);
 				affectedElements.put(element, enteredValue);
 				
 				// if it is a checkbox question, we need to reset the values to null
@@ -522,7 +517,8 @@ public class SurveyPageService {
 	// FIXME HACK 
 	// TODO get rid of this
 	private void resetCheckboxQuestion(DataLocation dataLocation, SurveyElement element, Map<SurveyElement, FormEnteredValue> affectedElements) {
-		if (log.isDebugEnabled()) log.debug("question is of type: "+element.getSurveyQuestion().getType());
+		if (log.isDebugEnabled()) log.debug("resetCheckboxQuestion(dataLocation="+dataLocation+", element="+element+", affectedElements="+affectedElements+")");
+		if (log.isDebugEnabled()) log.debug("resetting question: "+element.getSurveyQuestion());
 		if (element.getSurveyQuestion().getType() == QuestionType.CHECKBOX) {
 			if (log.isDebugEnabled()) log.debug("checking if checkbox question needs to be reset");
 			boolean reset = true;
@@ -556,8 +552,8 @@ public class SurveyPageService {
 		
 		for (SurveySection section : program.getProgram().getSections(dataLocation.getType())) {
 			SurveyEnteredSection enteredSection = getSurveyEnteredSection(dataLocation, section);
-			if (!enteredSection.isComplete()) complete = false;
-			if (enteredSection.isInvalid()) invalid = true;
+			if (!enteredSection.getComplete()) complete = false;
+			if (enteredSection.getInvalid()) invalid = true;
 			
 			if (enteredSection.getTotalQuestions() != null) {
 				totalQuestions += enteredSection.getTotalQuestions();
@@ -583,11 +579,11 @@ public class SurveyPageService {
 		
 		for (SurveyQuestion question : questions) {
 			SurveyEnteredQuestion enteredQuestion = surveyValueService.getOrCreateSurveyEnteredQuestion(dataLocation, question);
-			if (!enteredQuestion.isComplete() && !enteredQuestion.isSkipped()) complete = false;
-			if (enteredQuestion.isInvalid() && !enteredQuestion.isSkipped()) invalid = true;
+			if (!enteredQuestion.getComplete() && !enteredQuestion.isSkipped()) complete = false;
+			if (enteredQuestion.getInvalid() && !enteredQuestion.isSkipped()) invalid = true;
 			
-			if (	enteredQuestion.isComplete() 
-					&& (!enteredQuestion.isInvalid() || enteredQuestion.isSkipped())) {
+			if (	enteredQuestion.getComplete() 
+					&& (!enteredQuestion.getInvalid() || enteredQuestion.isSkipped())) {
 				completedQuestions++;
 			}
 		}
@@ -658,7 +654,7 @@ public class SurveyPageService {
 			if(!surveyProgram.getTypeCodes().contains(dataLocation.getType().getCode())) continue;
 			
 			// we get whether to submit anyways if the program is not closed, even if it is incomplete or invalid
-			boolean isClosed = getSurveyEnteredProgram(dataLocation, surveyProgram).isClosed();				
+			boolean isClosed = getSurveyEnteredProgram(dataLocation, surveyProgram).getClosed();				
 			if (!isClosed) {
 				
 				// first we make sure that the program is valid and complete, so we revalidate it
@@ -722,7 +718,7 @@ public class SurveyPageService {
 		SurveyEnteredProgram enteredProgram = surveyValueService.getSurveyEnteredProgram(program, dataLocation);
 		if (enteredProgram != null) surveyValueService.delete(enteredProgram); 
 		
-		for (SurveySection section : program.getSections()) {
+		for (SurveySection section : program.getAllSections()) {
 			deleteSurveyEnteredSection(section, dataLocation);
 		}
 	}
@@ -731,7 +727,7 @@ public class SurveyPageService {
 		SurveyEnteredSection enteredSection = surveyValueService.getSurveyEnteredSection(section, dataLocation);
 		if (enteredSection != null) surveyValueService.delete(enteredSection);
 		
-		for (SurveyQuestion question : section.getQuestions()) {
+		for (SurveyQuestion question : section.getAllQuestions()) {
 			deleteSurveyEnteredQuestion(question, dataLocation);
 		}
 	}

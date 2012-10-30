@@ -90,7 +90,7 @@ class FctController extends AbstractController {
 		def viewSkipLevels = []
 		
 		def locationSkipLevels = fctService.getSkipLocationLevels()
-		def locationTree = location.collectLocationTreeWithData(locationSkipLevels, dataLocationTypes, false).asList()
+		def locationTree = location.collectTreeWithDataLocations(locationSkipLevels, dataLocationTypes, false).asList()
 
 		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
 							'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 

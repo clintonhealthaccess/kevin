@@ -51,9 +51,7 @@ class DataElementExportControllerSpec extends IntegrationTests {
 		def typeTwo = Type.TYPE_BOOL();
 		def dataElementOne = newRawDataElement(CODE(1), typeOne);
 		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
-		def locations = new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
 		dataElementExportController = new  DataElementExportController();
 		
@@ -83,9 +81,7 @@ class DataElementExportControllerSpec extends IntegrationTests {
 		def typeTwo = Type.TYPE_BOOL();
 		def dataElementOne = newRawDataElement(CODE(1), typeOne);
 		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
-		def locations=new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
 		dataElementExportController = new  DataElementExportController();
 		
@@ -114,9 +110,7 @@ class DataElementExportControllerSpec extends IntegrationTests {
 		def typeTwo = Type.TYPE_BOOL();
 		def dataElementOne = newRawDataElement(CODE(1), typeOne);
 		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
-		def locations=new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
 		dataElementExportController = new  DataElementExportController();
 		
@@ -143,9 +137,7 @@ class DataElementExportControllerSpec extends IntegrationTests {
 		def typeTwo = Type.TYPE_BOOL();
 		def dataElementOne = newRawDataElement(CODE(1), typeOne);
 		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
-		def locations=new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
 		def dataElementExport = newDataElementExport("en":"Testing Seach One",periods, locationType, locations, dataElements);
 		dataElementExportController = new  DataElementExportController();

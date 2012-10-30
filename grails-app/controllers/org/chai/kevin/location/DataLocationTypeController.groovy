@@ -1,6 +1,8 @@
-package org.chai.location;
+package org.chai.kevin.location;
 
 import org.chai.kevin.AbstractEntityController;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
 
 class DataLocationTypeController extends AbstractEntityController {
 

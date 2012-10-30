@@ -38,6 +38,7 @@ import org.chai.kevin.data.Data;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.exports.DataElementExport;
 import org.chai.location.DataLocation;
+import org.chai.location.Location;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.RawDataElementValue;
@@ -67,9 +68,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		def dataElementOne = newRawDataElement(CODE(1), typeOne);
 		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
 		
-		def locations=new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		
 		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
 		
@@ -91,9 +90,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		def typeOne = Type.TYPE_NUMBER();
 		def dataElementOne = newRawDataElement(CODE(1), typeOne);
 		
-		def locations=new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		
 		def dataElements=new HashSet([dataElementOne]);
 		
@@ -109,7 +106,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree();
 		def period= newPeriod();
-		def locations= getDataLocations([KIVUYE]);
+		def locations = [DataLocation.findByCode(KIVUYE)]
 		
 		def typeListMap = Type.TYPE_LIST(Type.TYPE_MAP(["key1": Type.TYPE_STRING()]));
 		def dataElementMap = newRawDataElement(CODE(1), typeListMap);
@@ -142,7 +139,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		setupLocationTree();
 		def date= new Date();
 		def period= newPeriod();
-		def locations= getDataLocations([KIVUYE]);
+		def locations = [DataLocation.findByCode(KIVUYE)]
 		
 		def typeDate = Type.TYPE_DATE();
 		def dataElementDate = newRawDataElement(CODE(1), typeDate);
@@ -175,7 +172,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		setupLocationTree();
 		def date= new Date();
 		def period= newPeriod();
-		def locations= getDataLocations([KIVUYE]);
+		def locations = [DataLocation.findByCode(KIVUYE)]
 
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(HEALTH_CENTER_GROUP):"1"]])
 		
@@ -207,7 +204,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		setupLocationTree();
 		def date= new Date();
 		def period= newPeriod();
-		def locations= getDataLocations([KIVUYE]);
+		def locations = [DataLocation.findByCode(KIVUYE)]
 		
 		def typeString = Type.TYPE_STRING();
 		def dataElementString = null;
@@ -223,7 +220,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		setupLocationTree();
 		def date= new Date();
 		def period= newPeriod();
-		def locations= getDataLocations([KIVUYE]);
+		def locations = [DataLocation.findByCode(KIVUYE)]
 
 		def typeNumber = Type.TYPE_NUMBER();
 		def dataElementNumber = newRawDataElement(CODE(1), typeNumber);

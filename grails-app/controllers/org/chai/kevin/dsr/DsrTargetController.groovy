@@ -88,11 +88,6 @@ class DsrTargetController extends AbstractEntityController {
 	def bindParams(def entity) {
 		bindData(entity, params, [exclude:'data.id'])
 		if (params.int('data.id')) entity.data = dataService.getData(params.int('data.id'), Data.class)
-		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
 	def search = {

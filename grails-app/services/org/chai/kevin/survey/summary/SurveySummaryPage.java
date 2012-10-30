@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.chai.location.DataLocation;
+import org.chai.kevin.survey.SurveyEnteredProgram;
 import org.chai.kevin.survey.SurveyProgram;
 import org.chai.kevin.survey.SurveySection;
-import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 
 public class SurveySummaryPage {
 

@@ -51,10 +51,7 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		def sum = newSum("",CODE(1));
 		def aggregation = newAggregation("1",CODE(2));
 		
-		def locations = new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
-		
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def calculations=new HashSet([sum,aggregation]);
 		calculationExportController = new  CalculationExportController();
 		
@@ -82,10 +79,7 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		def sum = newSum("1",CODE(1));
 		def aggregation = newAggregation("",CODE(2));
 		
-		def locations = new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
-		
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def calculations=new HashSet([sum,aggregation]);
 		calculationExportController = new  CalculationExportController();
 		
@@ -114,10 +108,7 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		def sum = newSum("1",CODE(1));
 		def aggregation = newAggregation("",CODE(2));
 		
-		def locations = new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
-		
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def calculations=new HashSet([sum,aggregation]);
 		calculationExportController = new  CalculationExportController();
 		
@@ -145,10 +136,7 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		def sum = newSum("1",CODE(1));
 		def aggregation = newAggregation("",CODE(2));
 		
-		def locations=new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
-		
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def calculations=new HashSet([sum,aggregation]);
 		def dataExport = newCalculationExport("en":"Testing Seach One",periods, locationType, locations, calculations);
 		

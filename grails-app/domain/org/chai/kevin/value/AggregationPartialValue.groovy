@@ -11,14 +11,16 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Aggregation;
+import org.chai.kevin.data.Data;
 import org.chai.location.CalculationLocation;
 import org.chai.location.DataLocationType;
 import org.hibernate.annotations.NaturalId;
 
 class AggregationPartialValue extends CalculationPartialValue {
 
+	// TODO this should be of type Aggregation
+	Data data;
 	String expressionData;
-	Aggregation data;
 	
 	static constraints = {
 		// TODO this create an UNIQUE index in the database that should not be theres

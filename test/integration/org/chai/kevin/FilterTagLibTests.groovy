@@ -48,10 +48,10 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 	}
 	
 	def testLocationFilter() {
-		def hc = IntegrationTests.newDataLocationType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
+		def hc = IntegrationTests.newDataLocationType(["en":IntegrationTests.HEALTH_CENTER_GROUP], IntegrationTests.HEALTH_CENTER_GROUP);
 		def country = IntegrationTests.newLocationLevel(IntegrationTests.NATIONAL, 1)
-		def rwanda = IntegrationTests.newLocation(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
-		def butaro = IntegrationTests.newDataLocation(IntegrationTests.j(["en":IntegrationTests.BUTARO]), IntegrationTests.BUTARO, rwanda, hc)
+		def rwanda = IntegrationTests.newLocation(["en":IntegrationTests.RWANDA], IntegrationTests.RWANDA, country)
+		def butaro = IntegrationTests.newDataLocation(["en":IntegrationTests.BUTARO], IntegrationTests.BUTARO, rwanda, hc)
 		
 		def html = applyTemplate(
 			'<g:locationFilter selected="${location}"/>',
@@ -79,8 +79,8 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 	}
 	
 	def testLocationTypeFilter() {
-		def hc = IntegrationTests.newDataLocationType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
-		def dh = IntegrationTests.newDataLocationType(IntegrationTests.j(["en":IntegrationTests.DISTRICT_HOSPITAL_GROUP]), IntegrationTests.DISTRICT_HOSPITAL_GROUP);
+		def hc = IntegrationTests.newDataLocationType(["en":IntegrationTests.HEALTH_CENTER_GROUP], IntegrationTests.HEALTH_CENTER_GROUP);
+		def dh = IntegrationTests.newDataLocationType(["en":IntegrationTests.DISTRICT_HOSPITAL_GROUP], IntegrationTests.DISTRICT_HOSPITAL_GROUP);
 		
 		def html = applyTemplate(
 			'<g:dataLocationTypeFilter selected="${dataLocationTypes}"/>',
@@ -89,15 +89,15 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 			]
 		)
 		
-		assertTrue html.contains("Health Center")
-		assertTrue html.contains("District Hospital")
+		assertTrue html.contains(IntegrationTests.HEALTH_CENTER_GROUP)
+		assertTrue html.contains(IntegrationTests.DISTRICT_HOSPITAL_GROUP)
 	}
 	
 	def testLocationFilterDisplaysNothingWhenNothingSelected() {
-		def hc = IntegrationTests.newDataLocationType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
+		def hc = IntegrationTests.newDataLocationType(["en":IntegrationTests.HEALTH_CENTER_GROUP], IntegrationTests.HEALTH_CENTER_GROUP);
 		def country = IntegrationTests.newLocationLevel(IntegrationTests.NATIONAL, 1)
-		def rwanda = IntegrationTests.newLocation(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
-		def butaro = IntegrationTests.newDataLocation(IntegrationTests.j(["en":IntegrationTests.BUTARO]), IntegrationTests.BUTARO, rwanda, hc)
+		def rwanda = IntegrationTests.newLocation(["en":IntegrationTests.RWANDA], IntegrationTests.RWANDA, country)
+		def butaro = IntegrationTests.newDataLocation(["en":IntegrationTests.BUTARO], IntegrationTests.BUTARO, rwanda, hc)
 		
 		def html = applyTemplate('<g:locationFilter />')
 		assertTrue html.contains('select ')

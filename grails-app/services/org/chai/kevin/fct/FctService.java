@@ -45,7 +45,7 @@ public class FctService {
 		List<FctTarget> targets = new ArrayList<FctTarget>();
 		List<CalculationLocation> topLevelLocations = new ArrayList<CalculationLocation>();
 		
-		targetOptions = target.getTargetOptions();
+		targetOptions = target.getFctTargetOptions();
 		if(targetOptions.isEmpty())
 			return new FctTable(valueMap, targetOptions, targets, topLevelLocations);
 		Collections.sort(targetOptions);
@@ -88,7 +88,7 @@ public class FctService {
 		List<FctTarget> result = new ArrayList<FctTarget>();
 		List<FctTarget> targets = reportService.getReportTargets(FctTarget.class, program);
 		for(FctTarget target : targets){
-			if(target.getTargetOptions() != null && !target.getTargetOptions().isEmpty())
+			if(target.getFctTargetOptions() != null && !target.getFctTargetOptions().isEmpty())
 				result.add(target);
 		}
 		return result;

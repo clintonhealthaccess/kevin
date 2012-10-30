@@ -27,23 +27,12 @@
  */
 package org.chai.kevin.exports
 
-import java.io.File;
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.chai.location.LocationService;
-import org.chai.kevin.Period;
-import org.chai.kevin.util.ImportExportConstant;
-import org.chai.kevin.Translation;
-import org.chai.kevin.exports.DataExport;
+import java.util.List
+import java.util.Map
+
 import org.apache.commons.lang.StringUtils
-import org.hibernate.Criteria;
-import org.hibernate.SessionFactory;
 import org.chai.kevin.util.Utils
+import org.hibernate.Criteria
 import org.hibernate.criterion.MatchMode
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Projections
@@ -74,12 +63,6 @@ public class DataExportService {
 		else
 			exporters= criteria.addOrder(Order.desc("date")).list()
 
-		StringUtils.split(text).each { chunk ->
-			exporters.retainAll { exporter ->
-				Utils.matches(chunk, exporter.descriptions[languageService.getCurrentLanguage()]);
-			}
-		}
-
 		return exporters;
 	}
 	
@@ -88,7 +71,7 @@ public class DataExportService {
 		def textRestrictions = Restrictions.conjunction()
 		StringUtils.split(text).each { chunk ->
 			def disjunction = Restrictions.disjunction();
-			disjunction.add(Restrictions.ilike("descriptions.jsonText", chunk, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("descriptions"+languageService.currentLanguage, chunk, MatchMode.ANYWHERE))
 			textRestrictions.add(disjunction)
 		}
 		criteria.add(textRestrictions)

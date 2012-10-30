@@ -12,9 +12,6 @@ import org.chai.kevin.Period;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.survey.validation.SurveyEnteredProgram;
-import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
-import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.location.DataLocation;
 
 public class SurveyPage {
@@ -148,7 +145,7 @@ public class SurveyPage {
 		if (log.isDebugEnabled()) log.debug("getIncompleteSections(program="+program+")");
 		List<SurveySection> result = new ArrayList<SurveySection>();
 		for (SurveySection section : program.getSections(dataLocation.getType())) {
-			if (!sections.get(section).isComplete()) result.add(section);
+			if (!sections.get(section).getComplete()) result.add(section);
 		}
 		if (log.isDebugEnabled()) log.debug("getIncompleteSections(...)="+result);
 		return result;
@@ -159,7 +156,7 @@ public class SurveyPage {
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
 		for (SurveySection section : program.getSections(dataLocation.getType())) {
 			for (SurveyQuestion question : section.getQuestions(dataLocation.getType())) {
-				if (questions.get(question).isInvalid() &&  !questions.get(question).isSkipped()) {
+				if (questions.get(question).getInvalid() &&  !questions.get(question).isSkipped()) {
 					result.add(question);
 				}
 			}
@@ -197,16 +194,16 @@ public class SurveyPage {
 	
 	public boolean canSubmit(SurveyProgram surveyProgram) {
 		Map<SurveyProgram, SurveyEnteredProgram> programs = this.getEnteredPrograms();
-		boolean isClosed = programs.get(surveyProgram).isClosed();
-		boolean isComplete = programs.get(surveyProgram).isComplete();
-		boolean isInvalid = programs.get(surveyProgram).isInvalid();
+		boolean isClosed = programs.get(surveyProgram).getClosed();
+		boolean isComplete = programs.get(surveyProgram).getComplete();
+		boolean isInvalid = programs.get(surveyProgram).getInvalid();
 		boolean canSubmit = !isClosed && isComplete && !isInvalid;		
 		return canSubmit;
 	}
 	
 	public boolean isReadonly(SurveyProgram surveyProgram) {
-		return !surveyProgram.getSurvey().isActive()
+		return !surveyProgram.getSurvey().getActive()
 		|| !SecurityUtils.getSubject().isPermitted("editSurvey:save:"+dataLocation.getId()) 
-		|| programs.get(program).isClosed(); 
+		|| programs.get(program).getClosed(); 
 	}
 }

@@ -63,9 +63,7 @@ class PlanningSkipRuleController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
+
 		// binding skipped elements
 		entity.skippedFormElements.clear()
 		int i = 0;

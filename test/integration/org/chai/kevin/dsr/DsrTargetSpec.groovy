@@ -10,10 +10,10 @@ class DsrTargetSpec extends DsrIntegrationTests {
 		setup:
 		def program = newReportProgram(CODE(1))
 		def data = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		
 		when:
-		new DsrTarget(program: program, code: CODE(1), data: data, category: category).save(failOnError: true)
+		new DsrTarget(program: program, code: CODE(3), data: data, category: category).save(failOnError: true)
 		
 		then:
 		DsrTarget.count() == 1
@@ -23,17 +23,17 @@ class DsrTargetSpec extends DsrIntegrationTests {
 		setup:
 		def program = newReportProgram(CODE(1))
 		def data = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		
 		when: "sum is default"
-		new DsrTarget(program: program, code: CODE(1), data: data, category: category).save(failOnError: true)
+		new DsrTarget(program: program, code: CODE(3), data: data, category: category).save(failOnError: true)
 		
 		then:
 		DsrTarget.count() == 1
 		DsrTarget.list()[0].average.equals(null)
 		
 		when: "sum is specified"
-		new DsrTarget(program: program, code: CODE(2), data: data, average: false, category: category).save(failOnError: true)
+		new DsrTarget(program: program, code: CODE(4), data: data, average: false, category: category).save(failOnError: true)
 		
 		then:
 		DsrTarget.count() == 2
@@ -44,10 +44,10 @@ class DsrTargetSpec extends DsrIntegrationTests {
 		setup:
 		def program = newReportProgram(CODE(1))
 		def data = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		
 		when: "average is specified"
-		new DsrTarget(program: program, code: CODE(1), data: data, average: true, category: category).save(failOnError: true)
+		new DsrTarget(program: program, code: CODE(3), data: data, average: true, category: category).save(failOnError: true)
 		
 		then:
 		DsrTarget.count() == 1
@@ -57,10 +57,10 @@ class DsrTargetSpec extends DsrIntegrationTests {
 	def "cannot save target with null calculation element"() {
 		setup:
 		def program = newReportProgram(CODE(1))
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		
 		when:
-		new DsrTarget(program: program, code: CODE(1), category: category).save(failOnError: true)
+		new DsrTarget(program: program, code: CODE(3), category: category).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -70,7 +70,7 @@ class DsrTargetSpec extends DsrIntegrationTests {
 		setup:
 		def program = newReportProgram(CODE(1))
 		def data = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def category = newDsrTargetCategory(CODE(1), 1)
+		def category = newDsrTargetCategory(CODE(2), 1)
 		
 		when:
 		new DsrTarget(program: program, data: data, category: category).save(failOnError: true)
@@ -86,7 +86,7 @@ class DsrTargetSpec extends DsrIntegrationTests {
 		def data = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		
 		when:
-		new DsrTarget(program: program, code: CODE(1), data: data).save(failOnError: true)
+		new DsrTarget(program: program, code: CODE(2), data: data).save(failOnError: true)
 		
 		then:
 		thrown ValidationException

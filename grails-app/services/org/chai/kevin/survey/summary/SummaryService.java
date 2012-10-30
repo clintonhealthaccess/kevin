@@ -11,12 +11,12 @@ import org.chai.location.DataLocation;
 import org.chai.location.DataLocationType;
 import org.chai.location.Location;
 import org.chai.kevin.survey.Survey;
+import org.chai.kevin.survey.SurveyEnteredProgram;
+import org.chai.kevin.survey.SurveyEnteredSection;
 import org.chai.kevin.survey.SurveyProgram;
 import org.chai.kevin.survey.SurveyQuestion;
 import org.chai.kevin.survey.SurveySection;
 import org.chai.kevin.survey.SurveyValueService;
-import org.chai.kevin.survey.validation.SurveyEnteredProgram;
-import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.springframework.transaction.annotation.Transactional;
 
 public class SummaryService {

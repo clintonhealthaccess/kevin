@@ -28,31 +28,12 @@ package org.chai.kevin.data;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList
+import java.util.List
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
-
-import org.chai.kevin.Exportable;
-import org.chai.kevin.Importable;
-import org.chai.kevin.Translation;
-import org.chai.kevin.util.Utils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.chai.kevin.Exportable
+import org.chai.kevin.Importable
+import org.chai.kevin.util.Utils
 
 @i18nfields.I18nFields
 class Enum implements Exportable, Importable {
@@ -74,7 +55,7 @@ class Enum implements Exportable, Importable {
 	
 	static mapping = {
 		table 'dhsst_enum'
-		enumOptions lazy: false
+		enumOptions lazy: false, cache: true
 		code unique: true
 		cache true
 	}
@@ -105,7 +86,7 @@ class Enum implements Exportable, Importable {
 	}
 	
 	public List<EnumOption> getAllEnumOptions() {
-		return enumOptions
+		return new ArrayList(enumOptions?:[])
 	}
 	
 	@Override

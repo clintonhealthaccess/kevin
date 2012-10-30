@@ -28,7 +28,7 @@ class DataEntryTagLib {
 		def enume = attrs['enum']
 		def var = attrs['var']
 		
-		def options = enume==null?[]:enume.activeEnumOptions?.sort(getOrderingComparator())
+		def options = enume==null?[]:enume.activeEnumOptions?.sort({it.getOrders(languageService.currentLocale)})
 
 		for (option in options) {
 			if (var) {
@@ -38,10 +38,6 @@ class DataEntryTagLib {
 				out << body(option)
 			}
 		}
-	}
-	
-	private Comparator<Orderable> getOrderingComparator() {
-		return Orderable.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage);
 	}
 	
 	def renderUserErrors = { attrs, body ->

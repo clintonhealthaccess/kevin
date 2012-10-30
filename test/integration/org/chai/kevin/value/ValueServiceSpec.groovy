@@ -33,7 +33,7 @@ import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Sum;
+import org.chai.kevin.data.Summ;
 import org.chai.kevin.data.Type;
 import org.chai.location.DataLocation;
 import org.chai.location.DataLocationType;
@@ -168,7 +168,7 @@ class ValueServiceSpec extends IntegrationTests {
 		valueService.getNumberOfValues(rawDataElement, period) == 1
 		
 		when:
-		def newPeriod = newPeriod()
+		def newPeriod = newPeriod(2006)
 		
 		then:
 		valueService.getNumberOfValues(rawDataElement, newPeriod) == 0
@@ -235,7 +235,7 @@ class ValueServiceSpec extends IntegrationTests {
 		valueService.listDataValues(rawDataElement, null, period, [:]).equals([rawDataElementValue])
 		
 		when:
-		def period2 = newPeriod()
+		def period2 = newPeriod(2006)
 		def rawDataElementValue2 = newRawDataElementValue(rawDataElement, period2, DataLocation.findByCode(BUTARO), v("40"))
 		
 		then:
@@ -296,8 +296,8 @@ class ValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def kivuye = DataLocation.findByCode(KIVUYE)
 		def butaro = DataLocation.findByCode(BUTARO)
-		kivuye.names = ['en': 'loc1']
-		butaro.names = ['en': 'loc2']
+		kivuye.names_en = 'loc1'
+		butaro.names_en = 'loc2'
 		kivuye.save(failOnError: true)
 		butaro.save(failOnError: true)
 		
@@ -342,7 +342,7 @@ class ValueServiceSpec extends IntegrationTests {
 		valueService.countDataValues(null, rawDataElement, null, period) == 1
 		
 		when:
-		def period2 = newPeriod()
+		def period2 = newPeriod(2006)
 		def rawDataElementValue2 = newRawDataElementValue(rawDataElement, period2, DataLocation.findByCode(BUTARO), v("40"))
 		
 		then:
@@ -398,7 +398,7 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period1 = newPeriod()
-		def period2 = newPeriod()
+		def period2 = newPeriod(2006)
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		
 		when:

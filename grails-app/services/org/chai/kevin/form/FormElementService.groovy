@@ -33,17 +33,6 @@ class FormElementService {
 		
 		List<FormElement> data = criteria.addOrder(Order.asc("id")).list()
 		
-		StringUtils.split(text).each { chunk ->
-			data.retainAll { element ->
-				// we look in "info" if it is a data element
-				Utils.matches(chunk, element.dataElement.id+"") ||
-				Utils.matches(chunk, element.dataElement.info) ||
-				Utils.matches(chunk, element.dataElement.names[languageService.getCurrentLanguage()]) ||
-				Utils.matches(chunk, element.dataElement.code) ||
-				Utils.matches(chunk, element.id+"")
-			}
-		}
-		
 		if (!allowedTypes.isEmpty()) {
 			data.retainAll { element ->
 				element.dataElement.type.type.name().toLowerCase() in allowedTypes
@@ -64,7 +53,7 @@ class FormElementService {
 			// data element
 			disjunction.add(Restrictions.ilike("de.info", chunk, MatchMode.ANYWHERE))
 			disjunction.add(Restrictions.ilike("de.code", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("de.names.jsonText", chunk, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("de.names_"+languageService.currentLanguage, chunk, MatchMode.ANYWHERE))
 			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("de.id", Long.parseLong(chunk)))
 			// survey element
 			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("id", Long.parseLong(chunk)))
@@ -76,7 +65,7 @@ class FormElementService {
 		if (!allowedTypes.isEmpty()) {
 			def typeRestrictions = Restrictions.disjunction()
 			allowedTypes.each { type ->
-				typeRestrictions.add(Restrictions.like("de.type.jsonValue", type, MatchMode.ANYWHERE))
+				typeRestrictions.add(Restrictions.like("de.typeString", type, MatchMode.ANYWHERE))
 			}
 			criteria.add(typeRestrictions)
 		}
@@ -90,9 +79,7 @@ class FormElementService {
 	
 	void save(FormEnteredValue formEnteredValue) {
 		if (log.isDebugEnabled()) log.debug("save(formEnteredValue=${formEnteredValue}})")
-//		formEnteredValue.setUserUuid(SecurityUtils.subject.principal)
-//		formEnteredValue.setTimestamp(new Date());
-		formEnteredValue.save();
+		formEnteredValue.save(failOnError: true);
 	}
 	
 	void delete(FormEnteredValue formEnteredValue) {

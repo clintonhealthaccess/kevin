@@ -28,10 +28,8 @@
 package org.chai.kevin.data
 
 
-import org.apache.commons.lang.math.NumberUtils
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.LanguageOrderable;
-import org.chai.kevin.Orderable
+import org.chai.kevin.LanguageService;
 
 /**
  * @author Jean Kahigiso M.
@@ -40,7 +38,7 @@ import org.chai.kevin.Orderable
 class EnumOptionController extends AbstractEntityController {
 
 	def languageService
-	def enumOptionService
+	def enumService
 	
 	def getEntity(def id){
 		return EnumOption.get(id)
@@ -66,30 +64,18 @@ class EnumOptionController extends AbstractEntityController {
 		return EnumOption.class;
 	}
 	
-//	def validateEntity(def entity) {
-//		return entity.validate()
-//	}
-
 	def saveEntity(def entity) {
-		log.debug('saving, order: '+ entity.order +', orderString: '+entity.orderString)
-		
 		entity.enume.addToEnumOptions(entity)
-		entity.save()
 		entity.enume.save()
 	}
 	
 	def deleteEntity(def entity) {
 		entity.enume.removeFromEnumOptions(entity)
 		entity.delete()
-		entity.enume.save()
 	}
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.order!=null) entity.order = params.order.collectEntries ([:]) { i,val -> [i, NumberUtils.toInt(val)] }
 	}
 	
 	def list = {
@@ -101,7 +87,7 @@ class EnumOptionController extends AbstractEntityController {
 		}
 		else {
 			def options = enume.enumOptions;
-			options.sort(LanguageOrderable.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
+			options.sort({it.getOrders(languageService.currentLocale)})
 			
 			def max = Math.min(params['offset']+params['max'], options.size())
 			
@@ -123,15 +109,12 @@ class EnumOptionController extends AbstractEntityController {
 			response.sendError(404)
 		}
 		else {
-			List<EnumOption> options = enumOptionService.searchEnumOption(enume,params['q'],params);
-			
-			if(params['sort']==null)
-				Collections.sort(options, Orderable.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
+			def options = enumService.searchEnumOption(enume,params['q'],params);
 			
 			render (view: '/entity/list', model:[
 				entities: options,
 				template: "data/enumOptionList",
-				entityCount: enumOptionService.countEnumOption(enume,params['q']),
+				entityCount: options.totalCount,
 				entityClass: getEntityClass(),
 				q:params['q'],
 				code: getLabel()

@@ -3,7 +3,7 @@ package org.chai.kevin.exports
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Sum;
+import org.chai.kevin.data.Summ;
 import org.chai.kevin.data.Type;
 import org.chai.location.Location;
 
@@ -47,7 +47,7 @@ class DataExportDomainSpec extends IntegrationTests {
 		then:
 		Period.count() == 1
 		Location.count() == 3
-		Sum.count() == 1
+		Summ.count() == 1
 		
 	}
 	

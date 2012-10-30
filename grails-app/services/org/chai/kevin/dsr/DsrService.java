@@ -37,7 +37,6 @@ public class DsrService {
 	
 	private ReportService reportService;
 	private ValueService valueService;
-	private DataService dataService;
 	private Set<String> locationSkipLevels;
 	private Set<String> viewMapSkipLevels;
 	
@@ -120,7 +119,7 @@ public class DsrService {
 		Set<DsrTargetCategory> categories = new HashSet<DsrTargetCategory>();
 		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, program);
 		for(DsrTarget target : targets)
-			if(target.getCategory() != null) categories.add(target.getCategory());
+			if(target.getDsrTargetCategory() != null) categories.add(target.getDsrTargetCategory());
 		return new ArrayList<DsrTargetCategory>(categories);	
 	}
 
@@ -131,11 +130,7 @@ public class DsrService {
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
 	}
-	
-	public void setDataService(DataService dataService) {
-		this.dataService = dataService;
-	}	
-	
+
 	public void setLocationSkipLevels(Set<String> locationSkipLevels) {
 		this.locationSkipLevels = locationSkipLevels;
 	}

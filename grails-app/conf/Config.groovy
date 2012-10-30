@@ -202,6 +202,7 @@ log4j = {
 		   'org.chai.kevin.service.imports.NominativeDataImporter',
 		   'org.chai.kevin.service.imports.DataImporter',
 		   'org.chai.kevin.service.imports.DataImporterSpec'
+//		   'org.hibernate.type'
 		   
 }
 
@@ -234,15 +235,18 @@ site.period=0
 site.admin.email="admin@dhsst.org"
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
-site.datalocationtype.checked=["District Hospital","Health Center"]
+
+// TODO external config
+site.datalocationtype.checked=["district_hospital","health_center"]
+report.skip.levels=["sector"]
+
 
 task.temp.folder='files/'
 
-report.skip.levels=["Sector"]
 dashboard.skip.levels=[]
+fct.skip.levels=[]
 dsr.skip.levels=[]
 dsr.view.map.skip.levels=["National", "Province"]
-fct.skip.levels=[]
 
 survey.skip.levels=["Sector"]
 survey.submit.skip.levels=["National", "Province"]

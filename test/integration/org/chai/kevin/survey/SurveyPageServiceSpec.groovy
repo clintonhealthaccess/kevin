@@ -7,9 +7,6 @@ import org.chai.location.DataLocationType
 import org.chai.location.DataLocation;
 import org.chai.location.Location;
 import org.chai.location.LocationLevel;
-import org.chai.kevin.survey.validation.SurveyEnteredProgram;
-import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
-import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.RawDataElementValue;
@@ -807,7 +804,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupSecurityManager(newUser('test', 'uuid'))
 		
 		def period1 = newPeriod()
-		def period2 = newPeriod()
+		def period2 = newPeriod(2006)
 		
 		def survey = newSurvey(CODE(1), period2)
 		survey.lastPeriod = period1
@@ -835,7 +832,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupSecurityManager(newUser('test', 'uuid'))
 		
 		def period1 = newPeriod()
-		def period2 = newPeriod()
+		def period2 = newPeriod(2006)
 		
 		def survey = newSurvey(CODE(1), period2)
 		survey.lastPeriod = period1

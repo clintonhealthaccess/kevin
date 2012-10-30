@@ -27,71 +27,58 @@
  */
 package org.chai.kevin.data
 
-import java.util.List;
-import java.util.Map;
+import java.util.List
+import java.util.Map
+
 import org.apache.commons.lang.StringUtils
-import org.hibernate.Criteria;
-import org.chai.kevin.data.Enum
-import org.chai.kevin.util.Utils
-import org.hibernate.criterion.MatchMode
-import org.hibernate.criterion.Order
-import org.hibernate.criterion.Projections
-import org.hibernate.criterion.Restrictions
 
 /**
  * @author Jean Kahigiso M.
  *
  */
 class EnumService {
+	
 	static transactional = true
-	def sessionFactory;
+	
 	def languageService;
 	
 	public List<Enum> searchEnum(String text, Map<String, Object> params) {
-		def criteria = getSearchCriteria(text)
+		if(log.isDebugEnabled()) log.debug("searchEnum(text="+text+",params="+params+")")
 		
-		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
-		if (params['max'] != null) criteria.setMaxResults(params['max'])
+		def dbFieldName = 'names_' + languageService.currentLanguage;
+//		def dbFieldDescription = 'names_' + languageService.currentLanguage;
 		
-		List<Enum> enums =[];
-		
-		if(params['sort']!=null)
-			enums= criteria.addOrder(Order.asc(params['sort'])).list()
-		else
-			enums= criteria.addOrder(Order.asc("id")).list()
-		
-		StringUtils.split(text).each { chunk ->
-			enums.retainAll { enume ->
-				Utils.matches(chunk, enume.names[languageService.getCurrentLanguage()]) ||
-				Utils.matches(chunk, enume.descriptions[languageService.getCurrentLanguage()]) ||
-				Utils.matches(chunk, enume.code)
-
+		def criteria = Enum.createCriteria()
+		return criteria.list(offset:params.offset, max:params.max, sort:params.sort ?:"id", order: params.order ?:"asc"){
+			StringUtils.split(text).each { chunk ->
+				 or{
+					 ilike("code","%"+chunk+"%")
+					 ilike(dbFieldName,"%"+chunk+"%")
+//					 ilike(dbFieldDescription,"%"+chunk+"%")
+				 }
 			}
 		}
-		return enums
 		
 	}
 	
-	public Integer countEnum(String text) {
-		return getSearchCriteria(text).setProjection(Projections.count("id")).uniqueResult()
-	}
-	
-	private Criteria getSearchCriteria(String text) {
-		def criteria = sessionFactory.getCurrentSession().createCriteria(Enum.class);
+	public def searchEnumOption(def enume, String text, def params) {
+		if(log.isDebugEnabled()) log.debug("searchEnumOption(enume="+enume+",text="+text+",params="+params+")")
 		
-		def textRestrictions = Restrictions.conjunction()
-		StringUtils.split(text).each { chunk ->
-			def disjunction = Restrictions.disjunction();
-			disjunction.add(Restrictions.ilike("names.jsonText", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("descriptions.jsonText", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("code", chunk, MatchMode.ANYWHERE))			
-			textRestrictions.add(disjunction)
+		def dbFieldName = 'names_' + languageService.currentLanguage;
+		def criteria = EnumOption.createCriteria()
+		
+		return criteria.list(offset:params.offset, max:params.max, sort:params.sort ?:"id", order: params.order ?:"asc"){
+			eq("enume", enume)
+			StringUtils.split(text).each { chunk ->
+				 or{
+					 ilike("code","%"+chunk+"%")
+					 ilike(dbFieldName,"%"+chunk+"%")
+					 ilike("value", "%"+chunk+"%")
+				 }
+			}
 		}
-		criteria.add(textRestrictions)
-		return criteria
-		
 	}
-
+	
 	public Enum getEnumByCode(String code){
 		return Enum.findByCode(code)
 	}

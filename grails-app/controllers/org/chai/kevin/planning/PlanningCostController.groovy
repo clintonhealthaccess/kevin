@@ -28,10 +28,6 @@
 package org.chai.kevin.planning
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.Period;
-import org.chai.kevin.PeriodSorter
-import org.chai.kevin.Translation;
-import org.chai.kevin.data.Enum;
 /**
  * @author Jean Kahigiso M.
  *
@@ -73,10 +69,6 @@ class PlanningCostController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
 	}
 	
 	def list = {
@@ -85,7 +77,7 @@ class PlanningCostController extends AbstractEntityController {
 		PlanningType planningType = PlanningType.get(params.int('planningType.id'))
 		if (planningType == null) response.sendError(404)
 		else {
-			List<PlanningCost> planningCosts = planningType.costs
+			def planningCosts = planningType.costs
 	
 			render (view: '/planning/admin/list', model:[
 				template:"planningCostList",

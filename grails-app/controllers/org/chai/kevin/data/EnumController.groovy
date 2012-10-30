@@ -85,7 +85,7 @@ class EnumController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: enums,
 			template: "data/enumList",
-			entityCount: enumService.countEnum(params['q']),
+			entityCount: enums.totalCount,
 			entityClass: getEntityClass(),
 			q:params['q'],
 			code: getLabel()			

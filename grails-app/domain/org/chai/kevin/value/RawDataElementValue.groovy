@@ -38,8 +38,8 @@ import org.chai.location.DataLocation;
 //)
 class RawDataElementValue extends StoredValue {
 	
-	Long id;
-	RawDataElement data;
+	// TODO this should be of type RawDataElement
+	Data data;
 
 	static mapping = {
 		table 'dhsst_value_raw_data_element'

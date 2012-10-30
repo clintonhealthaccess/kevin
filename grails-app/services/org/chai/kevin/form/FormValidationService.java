@@ -58,7 +58,7 @@ public class FormValidationService {
 		if (log.isDebugEnabled()) log.debug("getInvalidPrefix(validationRule="+validationRule+", dataLocation="+dataLocation+")");
 
 		Set<String> result = new HashSet<String>();
-		if (Utils.split(validationRule.getTypeCodeString(), Utils.DEFAULT_CODE_DELIMITER).contains(dataLocation.getType().getCode())) {
+		if (Utils.split(validationRule.getTypeCodeString(), Utils.DEFAULT_TYPE_CODE_DELIMITER).contains(dataLocation.getType().getCode())) {
 			// we validate only if that rule applies to the group
 			ValidatableValue validatable = locator.getValidatable(validationRule.getFormElement().getId(), dataLocation);
 	

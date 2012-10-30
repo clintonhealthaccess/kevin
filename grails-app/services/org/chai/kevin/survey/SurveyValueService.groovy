@@ -8,9 +8,6 @@ import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.location.DataLocation;
-import org.chai.kevin.survey.validation.SurveyEnteredProgram
-import org.chai.kevin.survey.validation.SurveyEnteredQuestion
-import org.chai.kevin.survey.validation.SurveyEnteredSection
 import org.hibernate.Criteria
 import org.hibernate.FlushMode
 import org.hibernate.criterion.Projections
@@ -27,9 +24,7 @@ class SurveyValueService {
 	
 	void save(SurveyEnteredProgram surveyEnteredProgram) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredProgram=${surveyEnteredProgram}})")
-//		surveyEnteredProgram.setUserUuid(SecurityUtils.subject.principal)
-//		surveyEnteredProgram.setTimestamp(new Date());
-		surveyEnteredProgram.save();
+		surveyEnteredProgram.save(failOnError: true);
 	}
 
 	void delete(SurveyEnteredProgram surveyEnteredProgram) {
@@ -45,9 +40,7 @@ class SurveyValueService {
 	
 	void save(SurveyEnteredQuestion surveyEnteredQuestion) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredQuestion=${surveyEnteredQuestion}})")
-//		surveyEnteredQuestion.setUserUuid(SecurityUtils.subject.principal)
-//		surveyEnteredQuestion.setTimestamp(new Date());
-		surveyEnteredQuestion.save();
+		surveyEnteredQuestion.save(failOnError: true);
 	}
 	
 	void delete(SurveyEnteredQuestion surveyEnteredQuestion) {
@@ -56,9 +49,7 @@ class SurveyValueService {
 	
 	void save(SurveyEnteredSection surveyEnteredSection) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredSection=${surveyEnteredSection}})")
-//		surveyEnteredSection.setUserUuid(SecurityUtils.subject.principal)
-//		surveyEnteredSection.setTimestamp(new Date());
-		surveyEnteredSection.save();
+		surveyEnteredSection.save(failOnError: true);
 	}
 	
 	void delete(SurveyEnteredSection surveyEnteredSection) {
@@ -167,7 +158,7 @@ class SurveyValueService {
 		c.add(Restrictions.eq("dataLocation", dataLocation))
 		
 		if (survey != null || program != null || section != null) c.createAlias("formElement", "se")
-		if (survey != null || program != null || section != null) c.createAlias("se.surveyQuestion", "sq")
+		if (survey != null || program != null || section != null) c.createAlias("se.question", "sq")
 		if (survey != null || program != null) c.createAlias("sq.section", "ss")
 		if (survey != null) c.createAlias("ss.program", "so")
 

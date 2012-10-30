@@ -23,7 +23,7 @@ public class PlanningEntryBudget extends PlanningEntry {
 	private Map<PlanningCost, BudgetCost> getBudgetCosts() {
 		if (budgetCosts == null) {
 			budgetCosts = new HashMap<PlanningCost, BudgetCost>();
-			for (PlanningCost planningCost : type.getCosts()) {
+			for (PlanningCost planningCost : type.getAllCosts()) {
 				NormalizedDataElementValue value = budgetValues.get(planningCost);
 				if (value != null && !value.getValue().isNull()) {
 					if (!value.getValue().getListValue().get(getLineNumber()).isNull()) {

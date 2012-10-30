@@ -9,41 +9,63 @@ import org.hibernate.exception.ConstraintViolationException;
 class EnumServiceSpec extends IntegrationTests {
 	
 	def enumService
-	def enumOptionService
 		
-	def "test seacrh enum"(){
+	def "test search enum"(){
 		setup:
-		def enumeTwo = newEnume(CODE("the code two"), "My Enum two", "Enum two for test");
-		def enumeOne = newEnume(CODE("the code one"), "My Enum one", "Enum one for test one");	
+		def enumeTwo = newEnume(CODE(2), ['en': "My Enum two"]);
+		def enumeOne = newEnume(CODE(1), ['en': "My Enum one"]);
+		def result
+		
 		when:
-		def enumOnes = enumService.searchEnum("two",[:])
-		def enumEnums = enumService.searchEnum("test",["sort":"names"])
-		def enumCode = enumService.searchEnum("code",[:])
-		def enumCount = enumService.countEnum("enum")
+		result = enumService.searchEnum("two",[:])
+		
 		then:
-		enumOnes.equals([enumeTwo]);
-		enumEnums.equals([enumeOne,enumeTwo]);
-		enumCode.equals([enumeTwo,enumeOne]);
-		enumCount==2
+		result.equals([enumeTwo]);
+		result.totalCount == 1
 		
+		when:
+		result = enumService.searchEnum("code",[:])
 		
+		then:
+		result.equals([enumeTwo,enumeOne]);
+		result.totalCount == 2
+		
+		when:
+		result = enumService.searchEnum("my", ["sort":"names_en"])
+		
+		then:
+		result.equals([enumeOne,enumeTwo]);
+		result.totalCount == 2
 	}
 	
-	def "test seacrh enum option"(){
+	def "test search enum option"(){
 		setup:
-		def enume = newEnume(CODE("the code one"), "My Enum two", "Enum two for test");
-		def option1 = newEnumOption(enume, "\"test\"", o("en":2, "fr":1))
-		def option2 = newEnumOption(enume, "\"absent\"", o("en":1, "fr":2))
-		def option3 = newEnumOption(enume, "\"options 3\"", o("en":3, "fr":3))
-		when:
-		def optionOne = enumOptionService.searchEnumOption(enume,"tion",[:]);
-		def optionTwo = enumOptionService.searchEnumOption(enume,"s",["sort":"order"]);
-		def enumOptionCount = enumOptionService.countEnumOption(enume,"option")
-		then:
-		optionOne.equals([option3])
-		optionTwo.equals([option2,option1,option3])
-		enumOptionCount==1
+		def enume = newEnume(CODE(1));
+		def option1 = newEnumOption(enume, "\"test\"", ["en":2, "fr":1])
+		def option2 = newEnumOption(enume, "\"absent\"", ["en":1, "fr":2])
+		def option3 = newEnumOption(enume, "\"options 3\"", ["en":3, "fr":3])
+		def result
 		
+		when:
+		result = enumService.searchEnumOption(enume,"tion",[:]);
+		
+		then:
+		result.equals([option3])
+		result.totalCount == 1
+		
+		when:
+		result = enumService.searchEnumOption(enume, "s", ["sort":"orders_en"]);
+		
+		then:
+		result.equals([option2, option1, option3])
+		result.totalCount == 3
+		
+		when:
+		result = enumService.searchEnumOption(enume, "s", ["sort":"orders_fr"]);
+		
+		then:
+		result.equals([option1, option2, option3])
+		result.totalCount == 3
 	}
 	
 }

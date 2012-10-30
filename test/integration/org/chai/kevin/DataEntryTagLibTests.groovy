@@ -13,14 +13,14 @@ class DataEntryTagLibTests extends GroovyPagesTestCase {
 	def languageService
 	
 	def testEachOption() {
-		def option1 = new EnumOption(value: "1", order: IntegrationTests.o(['en':2, 'fr':1]))
-		def option2 = new EnumOption(value: "2", order: IntegrationTests.o(['en':1, 'fr':2]))
-		def enume = new Enum(enumOptions: [option1, option2])
+		def enume = new Enum()
+		enume.addToEnumOptions(new EnumOption(value: "1", order: ['en':2, 'fr':1]))
+		enume.addToEnumOptions(new EnumOption(value: "2", order: ['en':1, 'fr':2]))
 
-		assertEquals applyTemplate(
+		assertEquals  '2 1 ', applyTemplate(
 			'<g:eachOption enum="${enume}" var="option">${option.value} </g:eachOption>',
 			['enume':enume]
-		), '2 1 '
+		)
 		
 	}
 	
