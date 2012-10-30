@@ -156,7 +156,7 @@ class ReportExportServiceSpec extends ReportIntegrationTests {
 		def reportType = Utils.ReportType.TABLE
 		
 		when:
-		def file = reportExportService.getExportFilename("Reports - DSR", location, program, period)
+		def file = reportExportService.getReportExportFilename("Reports - DSR", location, program, period)
 		
 		then:
 		file.startsWith("ReportsDSR_2005_Program1_Burera")

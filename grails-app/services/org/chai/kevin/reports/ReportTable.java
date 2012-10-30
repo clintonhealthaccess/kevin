@@ -1,6 +1,7 @@
 package org.chai.kevin.reports;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -15,24 +16,8 @@ public abstract class ReportTable<T, S extends CalculationLocation, U> {
 		this.valueMap = valueMap;
 	}
 	
-	public List<S> getLocations(){
-		List<S> locations = new ArrayList<S>();
-		locations.addAll(valueMap.keySet());
-		return locations;
-	}
-	
-	public List<T> getIndicators(){
-		List<T> indicators = new ArrayList<T>();
-		for(CalculationLocation location : valueMap.keySet()){
-			Map<T, U> targetMap = valueMap.get(location);
-			for(T target: targetMap.keySet()){
-				if(!indicators.contains(target)) indicators.add(target);
-			}
-		}
-		return indicators;
-	}
-	
-	//public abstract List getIndicators();
+	public abstract List<S> getLocations();
+	public abstract List<T> getIndicators();
 	
 	public boolean hasData(){
 		return !valueMap.isEmpty();

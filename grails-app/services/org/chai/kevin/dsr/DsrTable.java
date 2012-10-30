@@ -1,5 +1,7 @@
 package org.chai.kevin.dsr;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -51,19 +53,31 @@ public class DsrTable extends ReportTable<DsrTarget, CalculationLocation, Value>
 	
 	@Override
 	public List<CalculationLocation> getLocations(){
-		List<CalculationLocation> locations = super.getLocations();		
+		List<CalculationLocation> locations = new ArrayList<CalculationLocation>();
+		locations.addAll(valueMap.keySet());	
 		if(locations != null && !locations.isEmpty())
 			return locations;
 		else
 			return this.locations;
 	}
 	
+	@Override
 	public List<DsrTarget> getIndicators() {
-		List<DsrTarget> indicators = super.getIndicators();
-		if(indicators != null && !indicators.isEmpty())
+		List<DsrTarget> indicators = new ArrayList<DsrTarget>();
+		for(CalculationLocation location : valueMap.keySet()){
+			Map<DsrTarget, Value> targetMap = valueMap.get(location);
+			for(DsrTarget target: targetMap.keySet()){
+				if(!indicators.contains(target)) indicators.add(target);
+			}
+		}
+		if(indicators != null && !indicators.isEmpty()){
+			Collections.sort(indicators);
 			return indicators;
-		else
+		}
+		else{
+			Collections.sort(targets);
 			return targets;
+		}
 	}
 	
 	public List<DsrTarget> getTargets(){

@@ -1,12 +1,10 @@
 package org.chai.kevin.reports;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -66,7 +64,7 @@ public class ReportExportService {
 		return headers.toArray(new String[0]);
 	}	
 	
-	public String getExportFilename(String report, CalculationLocation location, ReportProgram program, Period period){
+	public String getReportExportFilename(String report, CalculationLocation location, ReportProgram program, Period period){
 		String exportFilename = report.replaceAll("[^a-zA-Z0-9]", "") + "_" + period.getCode() + "_" +
 				languageService.getText(program.getNames()).replaceAll("[^a-zA-Z0-9]", "") + "_" + 
 				languageService.getText(location.getNames()).replaceAll("[^a-zA-Z0-9]", "") + "_";
@@ -75,9 +73,9 @@ public class ReportExportService {
 	
 	@Transactional(readOnly=true)
 	public File getReportExportFile(String filename, ReportTable reportTable) throws IOException { 
-				
+		
+		//TODO sort locations
 		List<CalculationLocation> locations = reportTable.getLocations();
-		//TODO Collections.sort(locations, LocationSorter.BY_NAME(languageService.getCurrentLanguage()));
 		
 		File csvFile = File.createTempFile(filename, CSV_FILE_EXTENSION);
 		

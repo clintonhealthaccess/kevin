@@ -29,6 +29,8 @@ package org.chai.kevin.fct;
  */
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +44,7 @@ public class FctTable extends ReportTable<FctTargetOption, CalculationLocation, 
 	private List<FctTarget> targets;
 	protected List<FctTargetOption> targetOptions;
 	
-	//TODO rename to barLocations or childLocations or something better
+	//TODO rename to barLocations or childLocations
 	protected List<CalculationLocation> topLevelLocations;
 	
 	public FctTable(Map<CalculationLocation, Map<FctTargetOption, SumValue>> valueMap, List<CalculationLocation> locations, 
@@ -53,12 +55,30 @@ public class FctTable extends ReportTable<FctTargetOption, CalculationLocation, 
 		this.topLevelLocations = topLevelLocations;
 	}
 	
+	@Override 
+	public List<CalculationLocation> getLocations(){
+		List<CalculationLocation> locations = new ArrayList<CalculationLocation>();
+		locations.addAll(valueMap.keySet());
+		return locations;
+	}
+	
+	@Override
 	public List<FctTargetOption> getIndicators() {
-		List<FctTargetOption> indicators = super.getIndicators();
-		if(indicators != null && !indicators.isEmpty())
+		List<FctTargetOption> indicators = new ArrayList<FctTargetOption>();
+		for(CalculationLocation location : valueMap.keySet()){
+			Map<FctTargetOption, SumValue> targetMap = valueMap.get(location);
+			for(FctTargetOption target: targetMap.keySet()){
+				if(!indicators.contains(target)) indicators.add(target);
+			}
+		}
+		if(indicators != null && !indicators.isEmpty()){
+			Collections.sort(indicators);
 			return indicators;
-		else
+		}
+		else{
+			Collections.sort(targetOptions);
 			return targetOptions;
+		}
 	}
 	
 	public List<FctTarget> getTargets(){

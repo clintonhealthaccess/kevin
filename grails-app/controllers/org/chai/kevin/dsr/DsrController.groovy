@@ -199,7 +199,7 @@ class DsrController extends AbstractController {
 			if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+" program: "+program+", location: "+location)
 			
 			String report = message(code:'dsr.title');
-			String filename = reportExportService.getExportFilename(report, location, program, period);
+			String filename = reportExportService.getReportExportFilename(report, location, program, period);
 			File csvFile = reportExportService.getReportExportFile(filename, dsrTable);
 			def zipFile = Utils.getZipFile(csvFile, filename)
 				
