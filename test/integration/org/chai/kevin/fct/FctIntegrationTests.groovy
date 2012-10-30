@@ -9,7 +9,7 @@ import org.chai.kevin.util.Utils;
 abstract class FctIntegrationTests extends IntegrationTests {
 
 	static def newFctTarget(def code, def program) {
-		def target = new FctTarget(names: [:],
+		def target = new FctTarget(names: j(["en":code]),
 			code: code,
 			program: program,
 			).save(failOnError: true)
@@ -18,7 +18,7 @@ abstract class FctIntegrationTests extends IntegrationTests {
 	}
 	
 	static def newFctTarget(def code, def order, def program) {
-		def target = new FctTarget(names: [:],
+		def target = new FctTarget(names: j(["en":code]),
 			code: code,
 			order: order,
 			program: program,
@@ -29,7 +29,7 @@ abstract class FctIntegrationTests extends IntegrationTests {
 
 	static def newFctTargetOption(def code, def target, def sum) {
 		def targetOption = new FctTargetOption(
-			names: [:],
+			names: j(["en":code]),
 			code: code,
 			target: target,
 			data: sum
@@ -41,7 +41,7 @@ abstract class FctIntegrationTests extends IntegrationTests {
 		
 	static def newFctTargetOption(def code, def order, def target, def sum) {
 		def targetOption = new FctTargetOption(
-			names: [:],
+			names: j(["en":code]),
 			order: order,
 			code: code,
 			target: target,		

@@ -1,8 +1,11 @@
 package org.chai.kevin.reports;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -63,10 +66,10 @@ public class ReportExportService {
 		return headers.toArray(new String[0]);
 	}	
 	
-	public String getExportFilename(CalculationLocation location, ReportProgram program, Period period){
-		String exportFilename = languageService.getText(program.getNames()).replaceAll("[^a-zA-Z0-9]", "") + "_" + 
-				languageService.getText(location.getNames()).replaceAll("[^a-zA-Z0-9]", "") + "_" + 
-				period.getCode();
+	public String getExportFilename(String report, CalculationLocation location, ReportProgram program, Period period){
+		String exportFilename = report.replaceAll("[^a-zA-Z0-9]", "") + "_" + period.getCode() + "_" +
+				languageService.getText(program.getNames()).replaceAll("[^a-zA-Z0-9]", "") + "_" + 
+				languageService.getText(location.getNames()).replaceAll("[^a-zA-Z0-9]", "") + "_";
 		return exportFilename;
 	}
 	
@@ -96,7 +99,7 @@ public class ReportExportService {
 				
 				ArrayList<String> reportExportRow = new ArrayList<String>();
 				
-				//Location
+				//Locations
 				List<String> rowLocations = new ArrayList<String>();
 				for (LocationLevel level : getLevels()){			
 					Location parent = locationService.getParentOfLevel(location, level);
@@ -114,7 +117,6 @@ public class ReportExportService {
 					 if(value != null && !value.isNull())
 						 reportExportRow.add(languageService.getStringValue(value, indicator.getType()));
 					 else{
-						 //TODO
 						 reportExportRow.add("N/A");
 					 }
 				}

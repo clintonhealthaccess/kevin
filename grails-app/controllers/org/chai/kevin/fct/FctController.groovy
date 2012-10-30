@@ -155,7 +155,8 @@ class FctController extends AbstractController {
 			
 			if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" program: "+program+", location: "+location)
 			
-			String filename = reportExportService.getExportFilename(location, program);
+			String report = message(code:'fct.title');
+			String filename = reportExportService.getExportFilename(report, location, program, period);
 			File csvFile = reportExportService.getReportExportFile(filename, fctTable);
 			def zipFile = Utils.getZipFile(csvFile, filename)
 				
