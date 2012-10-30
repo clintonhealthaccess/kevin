@@ -438,7 +438,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		aggregation.expression = '\$'+dataElement1.id+' + \$'+dataElement2.id
 		aggregation.refreshed = null
-		aggregation.save(failOnError: true, flush: true)
+		aggregation.save(failOnError: true)
 		refreshValueService.refreshCalculation(aggregation, new TestProgress());
 
 		then:

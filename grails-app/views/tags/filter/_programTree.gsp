@@ -6,7 +6,7 @@
 	<% linkParams = programLinkParams %>	
 	<g:if test="${selectedTargetClass == DashboardTarget.class}">
 		<g:if test="${program.children != null && !program.children.empty && !programTree.disjoint(program.children)}">
-		<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a>
+			<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a>
 		</g:if>
 		<a class="dropdown-link js_dropdown-link parameter" data-type="program"
 				data-location="${program.id}"

@@ -130,7 +130,7 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 
 	// TODO why no code here?
 	def static newSurveyElement(def question, def dataElement) {
-		def element = newSurveyElement(question, dataElement, null)
+		def element = newSurveyElement(question, dataElement, [:])
 	}
 	
 	// TODO why no code here?

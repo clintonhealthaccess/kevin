@@ -104,9 +104,7 @@ class RawDataElementController extends AbstractEntityController {
 		surveyService.getSurveyElements(entity, null).each {
 			surveyValueService.deleteEnteredValues(it)
 			
-			it.surveyQuestion.removeSurveyElement(it)
-			sessionFactory.currentSession.save(it.surveyQuestion)
-			
+			it.question.removeSurveyElement(it)
 			it.delete() 
 		}
 		

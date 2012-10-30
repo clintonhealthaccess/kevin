@@ -32,7 +32,7 @@
 
 /* slister start */
 .leaflet-marker-icon-label {
-	font-size: 17px;
+	/*font-size: 17px;*/
 	font-weight: bold;
 	white-space: nowrap;
 }

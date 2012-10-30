@@ -37,7 +37,7 @@ class RefreshSurveyTaskSpec extends IntegrationTests {
 	
 	def "null constraints"() {
 		when:
-		new RefreshSurveyTask(principal: 'uuid', status: TaskStatus.NEW, locationId: 1, surveyId: 1).save(failOnError: true, flush: true)
+		new RefreshSurveyTask(principal: 'uuid', status: TaskStatus.NEW, locationId: 1, surveyId: 1, programId: 1, sectionId: 1).save(failOnError: true, flush: true)
 		
 		then:
 		Task.count() == 1

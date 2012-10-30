@@ -20,6 +20,8 @@ class SurveySummaryController extends AbstractController {
 	
 	// TODO refactor into several actions for survey/program/section
 	def summaryPage = {
+		if (log.isDebugEnabled()) log.debug("survey.summaryPage, params:"+params)
+		
 		Location location = Location.get(params.int('location'))
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 		
@@ -31,15 +33,15 @@ class SurveySummaryController extends AbstractController {
 		SurveySummaryPage summaryPage = null;
 		
 		// TODO build different classes for this and refactor into several actions
-		if (section != null && location != null) {
+		if (section != null && location != null && dataLocationTypes != null) {
 			summaryPage = summaryService.getSectionSummaryPage(location, dataLocationTypes, section)
 			template = '/survey/summary/summarySectionTable'
 		}
-		else if (program != null && location != null) {
+		else if (program != null && location != null && dataLocationTypes != null) {
 			summaryPage = summaryService.getProgramSummaryPage(location, dataLocationTypes, program)
 			template = '/survey/summary/summaryProgramTable'
 		}
-		else if (survey != null && location != null) {
+		else if (survey != null && location != null && dataLocationTypes != null) {
 			summaryPage = summaryService.getSurveySummaryPage(location, dataLocationTypes, survey);
 			template = '/survey/summary/summarySurveyTable'
 		}

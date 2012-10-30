@@ -119,7 +119,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion implements Exportable
 		SurveyCheckboxQuestion copy = (SurveyCheckboxQuestion)question;
 		super.deepCopy(copy, cloner);
 		for (SurveyCheckboxOption option : getOptions()) {
-			copy.getOptions().add(option.deepCopy(cloner));
+			copy.addToOptions(option.deepCopy(cloner));
 		}
 	}
 

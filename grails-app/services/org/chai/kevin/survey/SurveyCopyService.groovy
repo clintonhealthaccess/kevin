@@ -85,7 +85,7 @@ public class SurveyCopyService {
 		}
 		
 		void cloneRules() {
-			if (copy.getCode() == null) throw new IllegalStateException();
+			if (copy.getId() == null) throw new IllegalStateException();
 			survey.copyRules(copy, this);
 			for (FormElement element : oldElements) {
 				element.copyRules(elements.get(element.getId()), this);
@@ -170,12 +170,12 @@ public class SurveyCopyService {
 		 */
 		@Override
 		public SurveyProgram getProgram(SurveyProgram program) {
-			if (!programs.containsKey(program.getCode())) {
+			if (!programs.containsKey(program.getId())) {
 				SurveyProgram copy = new SurveyProgram(); 
 				programs.put(program.getId(), copy);
 				program.deepCopy(copy, this);
 			}
-			return programs.get(program.getCode());
+			return programs.get(program.getId());
 		}
 		
 		/* (non-Javadoc)
@@ -183,12 +183,12 @@ public class SurveyCopyService {
 		 */
 		@Override
 		public SurveySection getSection(SurveySection section) {
-			if (!sections.containsKey(section.getCode())) {
+			if (!sections.containsKey(section.getId())) {
 				SurveySection copy = new SurveySection();
 				sections.put(section.getId(), copy);
 				section.deepCopy(copy, this);
 			}
-			return sections.get(section.getCode());
+			return sections.get(section.getId());
 		}
 
 		/* (non-Javadoc)
@@ -196,12 +196,12 @@ public class SurveyCopyService {
 		 */
 		@Override
 		public SurveyQuestion getQuestion(SurveyQuestion question) {
-			if (!questions.containsKey(question.getCode())) {
+			if (!questions.containsKey(question.getId())) {
 				SurveyQuestion copy = question.newInstance();
 				questions.put(question.getId(), copy);
 				question.deepCopy(copy, this);
 			}
-			return questions.get(question.getCode());
+			return questions.get(question.getId());
 
 		}
 

@@ -4,7 +4,7 @@
 		newLinkParams.putAll linkParams
 		newLinkParams.remove 'dataLocationTypes'
 	%>
-	<g:form name="report-filters" method="get" url="[controller:controllerName, action:actionName, params: newLinkParams]">			
+	<g:form name="report-filters" method="get" url="${[controller:controllerName, action:actionName, params: newLinkParams]}">			
 		<span class="js_dropdown dropdown">
 			<a class="datalocation js_dropdown-link nice-button with-highlight" href="#">
 				<g:if test="${currentLocationTypes != null && !currentLocationTypes.empty}">

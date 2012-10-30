@@ -218,7 +218,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		when:
 		def burera = Location.findByCode(BURERA)
 		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
-		newDataLocation("dummy", burera, dh)
+		newDataLocation(['en': 'dummy'], "dummy", burera, dh)
 		normalizedDataElement.timestamp = new Date()
 		normalizedDataElement.save(failOnError: true)
 		refreshNormalizedDataElement()
@@ -285,7 +285,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		when:
 		def burera = Location.findByCode(BURERA)
 		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
-		newDataLocation("dummy", burera, dh)
+		newDataLocation(['en': 'dummy'], "dummy", burera, dh)
 		normalizedDataElement.timestamp = new Date()
 		normalizedDataElement.save(failOnError: true)
 		refreshNormalizedDataElement()
@@ -329,7 +329,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		when:
 		def burera = Location.findByCode(BURERA)
 		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
-		newDataLocation("dummy", burera, dh)
+		newDataLocation(['en': 'dummy'], "dummy", burera, dh)
 		normalizedDataElement.timestamp = new Date()
 		normalizedDataElement.save(failOnError: true)
 		refreshNormalizedDataElement()

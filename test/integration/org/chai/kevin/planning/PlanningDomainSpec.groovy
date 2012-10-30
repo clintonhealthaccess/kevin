@@ -141,19 +141,19 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def planning = newPlanning(period, [])
 		
 		when:
-		new PlanningSkipRule(planning: planning, expression: "true").save(failOnError: true)
+		new PlanningSkipRule(code: 'skip', planning: planning, expression: "true").save(failOnError: true)
 		
 		then:
 		PlanningSkipRule.count() == 1
 		
 		when:
-		new PlanningSkipRule(expression: "true").save(failOnError: true)
+		new PlanningSkipRule(code: 'skip', expression: "true").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 		
 		when:
-		new PlanningSkipRule(planning: planning).save(failOnError: true)
+		new PlanningSkipRule(code: 'skip', planning: planning).save(failOnError: true)
 		
 		then:
 		thrown ValidationException

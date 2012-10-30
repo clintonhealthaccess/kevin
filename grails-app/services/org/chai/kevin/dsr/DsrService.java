@@ -56,39 +56,26 @@ public class DsrService {
 				calculationLocations = new HashSet<CalculationLocation>(location.collectTreeWithDataLocations(skips, types, true));
 		}
 		
-		List<DsrTarget> targets = new ArrayList<DsrTarget>();
-		targets.addAll(category.getTargetsForProgram(program));
-		
-		List<DsrTargetCategory> targetCategories = new ArrayList<DsrTargetCategory>();
-		targetCategories = getTargetCategories(program);
+		List<DsrTarget> targets = category.getTargetsForProgram(program);
+		List<DsrTargetCategory> targetCategories = getTargetCategories(program);
 		Collections.sort(targetCategories);
 		
 		Map<CalculationLocation, Map<DsrTarget, Value>> valueMap = new HashMap<CalculationLocation, Map<DsrTarget, Value>>();				
 		
-		if(calculationLocations.isEmpty() || targets.isEmpty()) 
-			return new DsrTable(valueMap, calculationLocations, targets, targetCategories);		
-		Collections.sort(targets);
-		
-		if(getSkipViewLevels(reportType).contains(location.getLevel()))
+		if (getSkipViewLevels(reportType).contains(location.getLevel()))
 			return new DsrTable(valueMap, calculationLocations, targets, targetCategories);
 		
 		for (DsrTarget target : targets) {
-			if (target.getData() instanceof Calculation) {
-				for(CalculationLocation calculationLocation : calculationLocations){
-					if(!valueMap.containsKey(calculationLocation))
-						valueMap.put(calculationLocation, new HashMap<DsrTarget, Value>());	
+			for(CalculationLocation calculationLocation : calculationLocations){
+				if(!valueMap.containsKey(calculationLocation))
+					valueMap.put(calculationLocation, new HashMap<DsrTarget, Value>());	
+			
+				if (target.getData() instanceof Calculation) {
 					valueMap.get(calculationLocation).put(target, getDsrValue(target, (Calculation)target.getData(), calculationLocation, period, types));
-				}
-			}
-			else if (target.getData() instanceof DataElement) {
-				for(CalculationLocation calculationLocation : calculationLocations){
-					if(calculationLocation instanceof DataLocation){
-						DataLocation dataLocation = (DataLocation) calculationLocation;
-						if(!valueMap.containsKey(calculationLocation))
-							valueMap.put(calculationLocation, new HashMap<DsrTarget, Value>());	
-						valueMap.get(calculationLocation).put(target, getDsrValue((DataElement)target.getData(), dataLocation, period));	
-					}
 				}	
+				else if (target.getData() instanceof DataElement && calculationLocation instanceof DataLocation) {
+					valueMap.get(calculationLocation).put(target, getDsrValue((DataElement)target.getData(), (DataLocation) calculationLocation, period));	
+				}
 			}
 		}					
 		

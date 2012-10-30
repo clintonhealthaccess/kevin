@@ -67,10 +67,11 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime
-				* result
-				+ ((calculationPartialValues == null) ? 0
-						: calculationPartialValues.hashCode());
+		result = prime * result
+				+ ((calculation == null) ? 0 : calculation.hashCode());
+		result = prime * result
+				+ ((location == null) ? 0 : location.hashCode());
+		result = prime * result + ((period == null) ? 0 : period.hashCode());
 		return result;
 	}
 
@@ -83,11 +84,20 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 		if (!(obj instanceof CalculationValue))
 			return false;
 		CalculationValue other = (CalculationValue) obj;
-		if (calculationPartialValues == null) {
-			if (other.calculationPartialValues != null)
+		if (calculation == null) {
+			if (other.calculation != null)
 				return false;
-		} else if (!calculationPartialValues
-				.equals(other.calculationPartialValues))
+		} else if (!calculation.equals(other.calculation))
+			return false;
+		if (location == null) {
+			if (other.location != null)
+				return false;
+		} else if (!location.equals(other.location))
+			return false;
+		if (period == null) {
+			if (other.period != null)
+				return false;
+		} else if (!period.equals(other.period))
 			return false;
 		return true;
 	}

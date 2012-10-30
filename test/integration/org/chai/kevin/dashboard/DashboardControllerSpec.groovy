@@ -192,7 +192,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		compareValues != null
 		compareValues.size() == 1
 		compareValues[0].id == DashboardProgram.findByCode(DASHBOARD_ROOT).id
-		Utils.formatNumber("#.0", compareValues[0].value) == "16.7"
+		Utils.formatNumber("#.0", compareValues[0].value.numberValue) == "16.7"
 	}
 
 }

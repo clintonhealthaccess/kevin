@@ -40,7 +40,7 @@ class LocationControllerSpec extends IntegrationTests {
 	def "test can delete when no children"() {
 		setup:
 		def country = newLocationLevel(NATIONAL, 1)
-		newLocation(RWANDA, country)
+		newLocation(['en': 'Rwanda', ], RWANDA, country)
 		locationController = new LocationController()
 		
 		when:

@@ -149,12 +149,12 @@ class CalculationExportController extends AbstractEntityController {
 		if (log.isDebugEnabled()) log.debug("clone(exporter="+exportExisting+")")
 		if (exportExisting) {
 			def newExport= new CalculationExport()
-			Utils.copyI18nField(this, copy, "Descriptions")
+			Utils.copyI18nField(exportExisting, newExport, "Descriptions")
 			newExport.setDate(new Date());
 			newExport.setTypeCodeString(exportExisting.getTypeCodeString());
-			newExport.getLocations().addAll(exportExisting.getLocations());
-			newExport.getPeriods().addAll(exportExisting.getPeriods());
-			newExport.getCalculations().addAll(exportExisting.getCalculations());
+			exportExisting.getLocations().each {newExport.addToLocations(it)};
+			exportExisting.getPeriods().each {newExport.addToPeriods(it)};
+			exportExisting.getCalculations().each {newExport.addToCalculations(it)};
 			newExport.save(failOnError: true);
 			
 			if(newExport) flash.message = message(code: 'exporter.cloned')

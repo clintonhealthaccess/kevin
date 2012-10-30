@@ -108,7 +108,7 @@ class Survey implements Exportable {
 		copy.setCode(getCode() + " clone");
 		Utils.copyI18nField(this, copy, "Names")
 		Utils.copyI18nField(this, copy, "Descriptions")
-		copy.setActive(isActive());
+		copy.setActive(getActive());
 		copy.setPeriod(getPeriod());
 		for (SurveyProgram program : getPrograms()) {
 			copy.getPrograms().add(cloner.getProgram(program));

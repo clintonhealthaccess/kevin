@@ -33,10 +33,10 @@ quartz {
     exposeSchedulerInRepository = false
 }
 
-//environments {
-//    test {
-//        quartz {
-//            autoStartup = true
-//        }
-//    }
-//}
+environments {
+    test {
+        quartz {
+            autoStartup = false
+        }
+    }
+}

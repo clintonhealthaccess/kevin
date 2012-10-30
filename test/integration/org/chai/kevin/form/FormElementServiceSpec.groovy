@@ -151,8 +151,8 @@ class FormElementServiceSpec extends IntegrationTests {
 	
 	def "test retrieve validation rules"() {
 		setup:
-		def hc = newDataLocationType(HEALTH_CENTER_GROUP);
-		def dh = newDataLocationType(DISTRICT_HOSPITAL_GROUP);
+		def hc = newDataLocationType(['en': 'Health Center'], HEALTH_CENTER_GROUP);
+		def dh = newDataLocationType(['en': 'Health Center'], DISTRICT_HOSPITAL_GROUP);
 		
 		def period = newPeriod()
 		def element = newFormElement(newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
@@ -181,8 +181,8 @@ class FormElementServiceSpec extends IntegrationTests {
 	
 	def "test retrieve validation rule - several rules"() {
 		setup:
-		def hc = newDataLocationType(HEALTH_CENTER_GROUP);
-		def dh = newDataLocationType(DISTRICT_HOSPITAL_GROUP);
+		def hc = newDataLocationType(['en': 'Health Center'], HEALTH_CENTER_GROUP);
+		def dh = newDataLocationType(['en': 'Health Center'], DISTRICT_HOSPITAL_GROUP);
 		
 		def period = newPeriod()
 		

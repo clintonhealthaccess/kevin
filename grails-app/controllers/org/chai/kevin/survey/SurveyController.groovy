@@ -29,7 +29,6 @@ package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.Period;
-import org.chai.kevin.PeriodSorter
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 /**
  * @author Jean Kahigiso M.
@@ -70,7 +69,6 @@ class SurveyController extends AbstractEntityController {
 
 	def getModel(def entity) {
 		List<Period> periods = Period.list([cache: true])
-		if(periods.size()>0) Collections.sort(periods,new PeriodSorter());
 		[
 			survey: entity,
 			periods: periods
@@ -89,7 +87,6 @@ class SurveyController extends AbstractEntityController {
 		adaptParamsForList()
 		
 		List<Survey> surveys = Survey.list(params);
-		if(surveys.size()>0) Collections.sort(surveys,new SurveySorter())
 
 		render (view: '/entity/list', model:[
 			template:"survey/surveyList",

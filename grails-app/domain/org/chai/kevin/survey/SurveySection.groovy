@@ -36,6 +36,7 @@ import i18nfields.I18nFields;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.IntegerOrderable;
 import org.chai.kevin.util.Utils;

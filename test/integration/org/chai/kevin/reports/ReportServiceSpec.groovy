@@ -74,15 +74,15 @@ class ReportServiceSpec extends ReportIntegrationTests {
 		reportService.getReportTargets(sum) == [dashboardTarget]
 		
 		when:
-		def dsrCategory = DsrIntegrationTests.newDsrTargetCategory(CODE(1), 1)
-		def dsrTarget = DsrIntegrationTests.newDsrTarget(CODE(1), sum, program, dsrCategory)
+		def dsrCategory = DsrIntegrationTests.newDsrTargetCategory(CODE(4), 1)
+		def dsrTarget = DsrIntegrationTests.newDsrTarget(CODE(5), sum, program, dsrCategory)
 		
 		then:
 		reportService.getReportTargets(sum) == [dashboardTarget, dsrTarget]
 		
 		when:
-		def fctTarget = FctIntegrationTests.newFctTarget(CODE(1), program)
-		def fctTargetOption = FctIntegrationTests.newFctTargetOption(CODE(1), fctTarget, sum)
+		def fctTarget = FctIntegrationTests.newFctTarget(CODE(6), program)
+		def fctTargetOption = FctIntegrationTests.newFctTargetOption(CODE(7), fctTarget, sum)
 		
 		then:
 		reportService.getReportTargets(sum) == [dashboardTarget, dsrTarget, fctTargetOption]

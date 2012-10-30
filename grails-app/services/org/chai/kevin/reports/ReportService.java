@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly=true)
 public class ReportService {
 	
-//	private static final Log log = LogFactory.getLog(ReportService.class);
+	private static final Log log = LogFactory.getLog(ReportService.class);
 	
 	private LocationService locationService;
 	private ValueService valueService;
@@ -58,15 +58,22 @@ public class ReportService {
 	}
 	
 	public <T extends ReportTarget> boolean collectReportTree(Class<T> clazz, ReportProgram program, List<ReportProgram> collectedPrograms, List<T> collectedTargets) {
-		List<T> targets = getReportTargets(clazz, program);
-		if (collectedTargets != null) collectedTargets.addAll(targets);
-		
-		boolean hasTargets = !targets.isEmpty();
+		boolean hasTargets = false;
 		for (ReportProgram child : program.getAllChildren()) {
 			hasTargets = hasTargets | collectReportTree(clazz, child, collectedPrograms, collectedTargets);
 		}
 		
+		//report target tree list
+		List<T> targets = getReportTargets(clazz, program);
+		if (log.isDebugEnabled()) log.debug("collectReportTree(program="+program+",targets="+targets+")");
+		if(!targets.isEmpty()){
+			hasTargets = true;
+			if (collectedTargets != null) collectedTargets.addAll(targets);	
+		}
+		
+		//report program tree list
 		if (hasTargets && collectedPrograms != null) collectedPrograms.add(program);
+		
 		return hasTargets;
 	}
 	
@@ -82,7 +89,9 @@ public class ReportService {
 			.createCriteria(clazz)
 			.setCacheable(true);
 		if(program != null) criteria.add(Restrictions.eq("program", program));
-		return (List<T>)criteria.list();			
+		List<T> targets = (List<T>)criteria.list();
+		if (log.isDebugEnabled()) log.debug("collectReportTree(program="+program+",targets="+targets+")");
+		return targets;			
 	}
 	
 	public void setLocationService(LocationService locationService) {

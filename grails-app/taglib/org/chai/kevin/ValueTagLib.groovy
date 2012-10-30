@@ -68,6 +68,28 @@ class ValueTagLib {
 		}
 	}
 	
+	def reportMapPercentage = { attrs, body ->
+		def value = attrs['value']
+		def type = attrs['type']
+		def format = attrs['format']
+		
+		def tooltip = attrs['tooltip'].toString()
+		
+		if(value == null || value.isNull()){
+			out << '<div class="report-value-null">'+reportTooltip(tooltip, message(code: 'report.value.null')+'')+'</div>'
+		}
+		else{
+			def average = value.numberValue.round(2)
+			DecimalFormat df = new DecimalFormat(format)
+			def reportValue = df.format(average)
+			out << '<div class="report-value"'+
+				' data-report-value="'+reportValue+'"'+
+				' data-report-value-raw="'+average+'"'+
+				' data-report-value-type="'+type.type+'">'+
+				reportValue+'</div>'
+		}
+	}
+	
 	def reportBarValue = { attrs, body ->
 		def value = attrs['value']
 		def type = attrs['type']
@@ -228,6 +250,7 @@ class ValueTagLib {
 		}
 	}
 	
+	//TODO explain what zero, enums, and nullText are
 	def value = {attrs, body ->
 		if (log.isDebugEnabled()) log.debug('value(attrs='+attrs+',body='+body+')')
 		

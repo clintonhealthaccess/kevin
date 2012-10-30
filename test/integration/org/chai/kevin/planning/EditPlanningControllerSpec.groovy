@@ -488,7 +488,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(["en": "Planning Type"], formElement, null, planning, null)
+		def planningType = newPlanningType(["en": "Planning Type"], formElement, '[_].key0', planning, null)
 		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [:])
 		def planningCost = newPlanningCost(["en": "Planning Cost"], PlanningCostType.INCOMING, normalizedDataElement, planningType)
 		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),

@@ -32,7 +32,9 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		
 		expect:
 		surveyService.searchSurveyQuestions("que", survey).equals([question1])
+		surveyService.searchSurveyQuestions("que", survey).totalCount == 1
 		surveyService.searchSurveyQuestions("que some", survey).equals([])
+		surveyService.searchSurveyQuestions("que some", survey).totalCount == 0
 	}
 	
 	def "search question - paging works"() {
@@ -47,6 +49,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		expect:
 		surveyService.searchSurveyQuestions("", survey, [offset: 0, max:1]).equals([question1])
 		surveyService.searchSurveyQuestions("", survey, [offset: 1, max:1]).equals([question2])
+		surveyService.searchSurveyQuestions("", survey, [offset: 0, max:1]).totalCount == 2
 	}
 		
 
@@ -116,55 +119,4 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		
 	}
 
-	def "search survey elements"() {
-		def period = newPeriod()
-		
-		def survey = newSurvey(CODE(1), period)
-		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
-		
-		def dataElement = newRawDataElement(["en": "element"],CODE(1), Type.TYPE_NUMBER())
-		def element = newSurveyElement(question, dataElement)
-
-		def surveyElements = null
-				
-		when: "search by element text"
-		surveyElements = surveyService.searchSurveyElements("ele", survey, [], [:])
-		
-		then:
-		surveyElements.equals([element])
-		
-		when: "search by element id"
-		surveyElements = surveyService.searchSurveyElements(""+element.id, survey, [], [:])
-		
-		then:
-		surveyElements.equals([element])
-		
-		when: "search by data element id"
-		surveyElements = surveyService.searchSurveyElements(""+dataElement.id, survey, [], [:])
-		
-		then:
-		surveyElements.equals([element])
-
-		when: "search filtered by type"
-		surveyElements = surveyService.searchSurveyElements("ele", survey, ['bool'], [:])
-		
-		then:
-		surveyElements.isEmpty()
-
-		when: "search filtered by type"
-		surveyElements = surveyService.searchSurveyElements("ele", survey, ['number'], [:])
-		
-		then:
-		surveyElements.equals([element])
-				
-		when: "search filtered by survey"
-		def survey2 = newSurvey(CODE(2), period)
-		surveyElements = surveyService.searchSurveyElements("ele", survey2, [], [:])
-		
-		then:
-		surveyElements.isEmpty()
-	}
-	
 }

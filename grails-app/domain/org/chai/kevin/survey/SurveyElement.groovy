@@ -49,7 +49,7 @@ class SurveyElement extends FormElement implements Exportable {
 	@Override
 	public void deepCopy(FormElement copy, FormCloner cloner) {
 		super.deepCopy(copy, cloner);
-		((SurveyElement)copy).setSurveyQuestion(((SurveyCloner)cloner).getQuestion(getSurveyQuestion()));
+		((SurveyElement)copy).setQuestion(((SurveyCloner)cloner).getQuestion(getQuestion()));
 	}
 	
 	@Override

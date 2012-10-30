@@ -10,7 +10,7 @@
 		</a>		
 		<div class="dropdown-list js_dropdown-list push-top-10">
 			<g:if test="${programTree != null && !programTree.empty}">
-				<ul>	
+				<ul>
 					<g:render template="/tags/filter/programTree"
 						model="[				
 						controller: controllerName, 

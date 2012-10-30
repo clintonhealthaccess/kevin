@@ -203,7 +203,7 @@ class ValueServiceSpec extends IntegrationTests {
 		valueService.getNumberOfValues(normalizedDataElement, Status.ERROR, period) == 1
 		
 		when:
-		def period2 = newPeriod()
+		def period2 = newPeriod(2006)
 		
 		then:
 		valueService.getNumberOfValues(normalizedDataElement, Status.ERROR, period2) == 0

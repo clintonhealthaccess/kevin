@@ -384,7 +384,7 @@ public class SurveyExportService {
 				String surveyQuestionItem = null;								
 				for(String genericTypeKey : this.getGenericTypes().keySet()){
 					if(!this.getGenericTypes().get(genericTypeKey).getType().equals(ValueType.LIST)){
-						surveyQuestionItem = headers.get(genericTypeKey).get(languageService.getCurrentLanguage());
+						surveyQuestionItem = headers.get(genericTypeKey)!=null?headers.get(genericTypeKey).get(languageService.getCurrentLanguage()):"";
 						if(surveyQuestionItem != null && !surveyQuestionItem.isEmpty()) 
 							dataPoint.add(formatExportDataItem(surveyQuestionItem));						
 					}

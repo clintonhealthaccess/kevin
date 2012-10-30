@@ -390,7 +390,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def static newFormElement(def dataElement) {
-		return newFormElement(dataElement, null)
+		return newFormElement(dataElement, [:])
 	}
 	
 	def static newFormElement(def dataElement, def headers) {

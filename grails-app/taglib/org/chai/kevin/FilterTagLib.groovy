@@ -87,12 +87,17 @@ class FilterTagLib {
 	def programFilter = {attrs, body ->
 		ReportProgram.withTransaction {
 			def model = excludeLinkParams(attrs)
-			def program = attrs['selected']
+			def selectedProgram = attrs['selected']
+			def selectedClass = attrs['selectedTargetClass']
 			def programRoot = reportService.getRootProgram()
-			def programTree = reportService.collectReportProgramTree(attrs['selectedTargetClass'], programRoot)
+			def programTree = reportService.collectReportProgramTree(selectedClass, programRoot)
+			
+			if (log.isDebugEnabled()) 
+				log.debug('programFilter:'+programTree+', selectedProgram:'+selectedProgram+', selectedClass:'+selectedClass)
+				
 			model << 
 				[
-					currentProgram: program,
+					currentProgram: selectedProgram,
 					programRoot: programRoot,
 					programTree: programTree			
 				]				
@@ -127,7 +132,7 @@ class FilterTagLib {
 				[
 					currentLocationTypes: currentLocationTypes,
 					dataLocationTypes: dataLocationTypes					
-				]			
+				]
 			out << render(template:'/tags/filter/dataLocationTypeFilter', model:model)
 		}
 	}	

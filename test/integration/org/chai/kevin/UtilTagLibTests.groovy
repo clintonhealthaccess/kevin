@@ -8,9 +8,9 @@ class UtilTagLibTests extends GroovyPagesTestCase {
 
 	def grailsApplication
 	
-	def testLinkWithTargetURI() {
+def testLinkWithTargetURI() {
 		def controller = new UserController()
-		
+
 		// we assume that the query string is what's after '?'
 		controller.request.queryString = 'test=123'
 		// we assume that forwardURI is always the full URI after the hostname
@@ -18,29 +18,62 @@ class UtilTagLibTests extends GroovyPagesTestCase {
 		// contextPath is always the path to the app
 		controller.request.contextPath = '/kevin'
 		controller.request.params = ['param': '123']
-		
+
 		def url = applyTemplate(
 			'<g:createLinkWithTargetURI controller="test" action="test" params="[test: 123]"/>'
 		)
 
 		assertEquals "/test/test?targetURI=%2Ftest%2Ftest%3Ftest%3D123&test=123", url
 	}
-	
+
 	def testLinkWithTargetURIWhenNullQuery() {
 		def controller = new UserController()
-		
+
 		controller.request.queryString = null
 		// we assume that forwardURI is always the full URI after the hostname
 		controller.request.forwardURI = '/kevin/test/test'
 		// contextPath is always the path to the app
 		controller.request.contextPath = '/kevin'
 		controller.request.params = ['param': '123']
-		
+
 		def url = applyTemplate(
 			'<g:createLinkWithTargetURI controller="test" action="test" params="[test: 123]"/>'
 		)
 
 		assertEquals "/test/test?targetURI=%2Ftest%2Ftest&test=123", url
+	}
+	
+	def testLinkExcludeParams(){
+		def controller = new UserController()
+		
+		controller.request.contextPath = '/kevin'
+		controller.request.params = ['test': '123', 'more': '456']
+		def url = applyTemplate(
+			'<g:createLinkExcludeParams controller="controller" action="action" params="[test: 123, more: 456]" exclude="[\'more\']"/>'
+		)
+		assertEquals "/controller/action?test=123", url
+	}
+	
+	def testLinkExcludeParamsWhenNull(){
+		def controller = new UserController()
+		
+		controller.request.contextPath = '/kevin'
+		controller.request.params = ['test': '123', 'more': '456']
+		def url = applyTemplate(
+			'<g:createLinkExcludeParams controller="controller" action="action" params="[test: 123, more: 456]"/>'
+		)
+		assertEquals "/controller/action?more=456&test=123", url
+	}
+	
+	def testLinkExcludeParamsWhenEmptyList(){
+		def controller = new UserController()
+		
+		controller.request.contextPath = '/kevin'
+		controller.request.params = ['test': '123', 'more': '456']
+		def url = applyTemplate(
+			'<g:createLinkExcludeParams controller="controller" action="action" params="[test: 123, more: 456]" exclude="[]"/>'
+		)
+		assertEquals "/controller/action?more=456&test=123", url
 	}
 	
 	def testStripHtml() {

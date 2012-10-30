@@ -46,7 +46,7 @@ class SurveySimpleQuestion extends SurveyQuestion implements Exportable {
 	}
 	
 	SurveyElement getSurveyElement() {
-		if (surveyElements.size() > 0) return surveyElements.iterator().next()
+		if (surveyElements != null && surveyElements.size() > 0) return surveyElements.iterator().next()
 		else return null
 	}
 	

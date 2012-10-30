@@ -32,6 +32,7 @@ import i18nfields.I18nFields;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.util.Utils;
 import org.chai.location.DataLocationType;
@@ -164,10 +165,10 @@ class SurveyTableQuestion extends SurveyQuestion implements Exportable {
 		for (SurveyTableColumn tableColumn : getColumns()) {
 			SurveyTableColumn columnCopy = tableColumn.deepCopy(cloner);
 			columns.put(tableColumn.getId(), columnCopy);
-			copy.getColumns().add(columnCopy);
+			copy.addToColumns(columnCopy);
 		}
 		for (SurveyTableRow tableRow : getRows()) {
-			copy.getRows().add(tableRow.deepCopy(cloner, columns));
+			copy.addToRows(tableRow.deepCopy(cloner, columns));
 		}
 	}
 
