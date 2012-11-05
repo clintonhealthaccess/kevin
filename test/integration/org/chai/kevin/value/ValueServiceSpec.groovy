@@ -166,18 +166,22 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		then:
 		valueService.getNumberOfValues(rawDataElement, period) == 1
+		valueService.getNumberOfValues(DataLocation.findByCode(BUTARO), RawDataElementValue.class) == 1
+		valueService.getNumberOfValues(DataLocation.findByCode(KIVUYE), RawDataElementValue.class) == 0
 		
 		when:
 		def newPeriod = newPeriod(2006)
 		
 		then:
 		valueService.getNumberOfValues(rawDataElement, newPeriod) == 0
+		valueService.getNumberOfValues(DataLocation.findByCode(BUTARO), RawDataElementValue.class) == 1
 				
 		when:
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		
 		then:
 		valueService.getNumberOfValues(rawDataElement2, period) == 0
+		valueService.getNumberOfValues(DataLocation.findByCode(KIVUYE), RawDataElementValue.class) == 0
 	}
 	
 	def "test number of values with status and wrong type"() {
@@ -240,7 +244,7 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		then:
 		valueService.listDataValues(rawDataElement, null, period, [:]).equals([rawDataElementValue])
-		valueService.listDataValues(rawDataElement, null, null, [:]).equals([rawDataElementValue, rawDataElementValue2])
+		valueService.listDataValues(rawDataElement, null, null, [:]).equals([rawDataElementValue2, rawDataElementValue])
 		
 		when:
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
@@ -420,6 +424,38 @@ class ValueServiceSpec extends IntegrationTests {
 		then:
 		RawDataElementValue.count() == 1
 	}
+	
+	def "test delete all data element values of period and location"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def period2 = newPeriod(2006)
+		def rawDataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		
+		when:
+		newRawDataElementValue(rawDataElement1, period1, DataLocation.findByCode(BUTARO), v("40"))
+		newRawDataElementValue(rawDataElement1, period2, DataLocation.findByCode(KIVUYE), v("40"))
+		newRawDataElementValue(rawDataElement1, period2, DataLocation.findByCode(BUTARO), v("40"))
+		newRawDataElementValue(rawDataElement2, period1, DataLocation.findByCode(BUTARO), v("40"))
+		newRawDataElementValue(rawDataElement2, period2, DataLocation.findByCode(KIVUYE), v("40"))
+		newRawDataElementValue(rawDataElement2, period2, DataLocation.findByCode(BUTARO), v("40"))
+		
+		then:
+		RawDataElementValue.count() == 6
+		
+		when:
+		valueService.deleteValues(null, DataLocation.findByCode(BUTARO), period1)
+		
+		then:
+		RawDataElementValue.count() == 4
+		
+		when:
+		valueService.deleteValues(null, DataLocation.findByCode(BUTARO), null)
+		then:
+		RawDataElementValue.count() == 2
+	}
+	
 	
 	def "test delete data element does not set last value changed date"() {
 		setup:

@@ -32,19 +32,18 @@ package org.chai.kevin.survey;
  *
  */
 
-import i18nfields.I18nFields;
+import groovy.transform.EqualsAndHashCode
+import i18nfields.I18nFields
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.Map.Entry
 
-import org.apache.commons.lang.StringUtils;
-import org.chai.kevin.Exportable;
-import org.chai.kevin.IntegerOrderable;
-import org.chai.kevin.util.Utils;
+import org.apache.commons.lang.StringUtils
+import org.chai.kevin.Exportable
+import org.chai.kevin.util.Utils
 
 @I18nFields
-class SurveyTableRow extends IntegerOrderable implements Exportable {
+@EqualsAndHashCode(includes='code')
+class SurveyTableRow implements Exportable {
 
 	String code;
 	Integer order;
@@ -99,10 +98,21 @@ class SurveyTableRow extends IntegerOrderable implements Exportable {
 	}
 
 	public void setSurveyElements(Map surveyElements) {
-		surveyTableRowColumnMaps?.clear()
+		if (log.debugEnabled) log.debug('setSurveyElements(surveyElements='+surveyElements+')')
+		def newTableRowColumnMaps = []
 		surveyElements.each {
-			if (it.value != null) addToSurveyTableRowColumnMaps(new SurveyTableRowColumnMap(tableColumn: it.key, surveyElement: it.value))
-		} 
+			if (it.value != null) newTableRowColumnMaps.add(new SurveyTableRowColumnMap(tableColumn: it.key, surveyElement: it.value))
+		}
+		
+		if (log.debugEnabled) log.debug('setting new table row map: '+newTableRowColumnMaps)
+		def oldTableRowColumnMaps = new ArrayList(surveyTableRowColumnMaps?:[]) 
+		oldTableRowColumnMaps.each {
+			if (!newTableRowColumnMaps.contains(it)) removeFromSurveyTableRowColumnMaps(it)
+			else newTableRowColumnMaps.remove(it)
+		}
+		newTableRowColumnMaps.each {
+			addToSurveyTableRowColumnMaps(it)
+		}
 	}
 			
 	public Set<String> getTypeCodes() {
@@ -130,37 +140,6 @@ class SurveyTableRow extends IntegerOrderable implements Exportable {
     	return copy;
 	}
     
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((names == null) ? 0 : names.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SurveyTableRow other = (SurveyTableRow) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (names == null) {
-			if (other.names != null)
-				return false;
-		} else if (!names.equals(other.names))
-			return false;
-		return true;
-	}
-
 	@Override
 	public String toString() {
 		return "SurveyTableRow[getId()=" + getId() + ", getNames()=" + getNames() + "]";

@@ -83,7 +83,6 @@ public class GeneralDataImporter extends DataImporter{
 	}
 	
 	private boolean importData(String fileName,ICsvMapReader reader,Integer numberOfLinesToImport, ImportSanitizer sanitizer, String[] headers, Set<DuplicateHelper> duplicateHelpers, Map<String,Integer> positions) throws IOException{
-		Data<?> data=null;
 		// keep data location in memory between rows to optimize
 		DataLocation dataLocation = null;
 		String dataLocationCode = null;
@@ -132,11 +131,8 @@ public class GeneralDataImporter extends DataImporter{
 				dataLocation = locationService.findCalculationLocationByCode(dataLocationCode, DataLocation.class);
 				dataElementCode = newDataElementCode;
 				
-				data  = dataService.getDataByCode(dataElementCode, Data.class);
-				if(data instanceof RawDataElement)
-					dataElement=(RawDataElement) data;
-				else{
-					dataElement=null;
+				dataElement = dataService.getDataByCode(dataElementCode, RawDataElement.class);
+				if (dataElement == null) {
 					manager.getErrors().add(new ImporterError(fileName,lineNumber,ImportExportConstant.DATA_CODE,"import.error.message.not.raw.data.element"));	
 				}	
 				periodCode = newPeriodCode;

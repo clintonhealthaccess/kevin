@@ -37,13 +37,19 @@ import org.chai.location.DataLocationType
 class TableQuestionController extends AbstractEntityController {
 
 	def languageService
-	def locationService
+	def surveyService
 	
 	def getEntity(def id) {
 		return SurveyTableQuestion.get(id)
 	}
+	
 	def createEntity() {
 		return new SurveyTableQuestion();
+	}
+	
+	def deleteEntity(def entity) {
+		surveyService.deleteQuestion(entity)
+		entity.section.removeFromQuestions(entity)
 	}
 
 	def getLabel() {
@@ -55,10 +61,8 @@ class TableQuestionController extends AbstractEntityController {
 	}
 
 	def getModel(def entity) {
-		def columns = entity.columns
-		Collections.sort(columns)
-		def rows = entity.rows
-		Collections.sort(rows)
+		def columns = entity.columns?.sort({it.order})
+		def rows = entity.rows?.sort({it.order})	
 		[
 			columns: columns,
 			rows: rows,

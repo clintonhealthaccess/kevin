@@ -67,13 +67,15 @@ public abstract class AbstractController {
 		return period
 	}
 	
+	/**
+	 * Returns the program passed as parameter if it exists. Otherwise, returns the root program.
+	 * 
+	 * @param clazz
+	 * @return
+	 */
 	def getProgram(def clazz){		
 		ReportProgram program = ReportProgram.get(params.int('program'))		
 		if(program == null) program = reportService.getRootProgram()			
-		if(clazz != null){
-			def targets = reportService.collectReportTargets(clazz, program);
-			if (targets.isEmpty()) program = reportService.getRootProgram()
-		}
 		return program
 	}
 	
@@ -81,8 +83,7 @@ public abstract class AbstractController {
 		Location location = Location.get(params.int('location'))
 		//TODO add skips and types to method
 		//TODO if location != null, get location tree, and if the location tree doesn't contain the location, return root location
-		if (location == null)
-			location = locationService.getRootLocation()
+		if (location == null) location = locationService.getRootLocation()
 		return location
 	}
 	

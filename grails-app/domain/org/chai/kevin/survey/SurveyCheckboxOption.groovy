@@ -31,16 +31,15 @@ package org.chai.kevin.survey;
  * @author JeanKahigiso
  *
  */
-import i18nfields.I18nFields;
+import groovy.transform.EqualsAndHashCode;
+import i18nfields.I18nFields
 
-import java.util.Set;
-
-import org.chai.kevin.Exportable;
-import org.chai.kevin.IntegerOrderable;
-import org.chai.kevin.util.Utils;
+import org.chai.kevin.Exportable
+import org.chai.kevin.util.Utils
 
 @I18nFields
-class SurveyCheckboxOption extends IntegerOrderable implements Exportable {
+@EqualsAndHashCode(includes='code')
+class SurveyCheckboxOption implements Exportable {
 
 	String code;
 	Integer order;

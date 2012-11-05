@@ -65,30 +65,13 @@ import org.chai.kevin.value.Value;
 public class Utils {
 	
 	public final static String DEFAULT_TYPE_CODE_DELIMITER = ";";
-//	public final static String 
 	
-	public enum ReportType {
-		MAP, TABLE		
-//		TODO
-//		@Override
-//		public String toString() {
-//			return this.toString().toLowerCase();
-//		}
-//		public ReportType fromString(String reportType){
-//			return ReportType.valueOf(ReportType.class, reportType.toUpperCase());
-//		}
-	};
+	public enum ReportType {MAP, TABLE};
 	
 	private final static String DATE_FORMAT = "dd-MM-yyyy";
 	private final static String DATE_FORMAT_TIME = "dd-MM-yyyy hh:mm:ss";
 	private final static String ZIP_FILE_EXTENSION = ".zip";
 	
-	public final static String CODE_DELIMITER = "~";
-	public final static String CODE_PATTERN = 
-			CODE_DELIMITER + "[^" + CODE_DELIMITER + "]+" + CODE_DELIMITER;
-//	public final static String CODE_MISSING = "MISSING_CODE";
-	public final static String VALUE_NOT_EXPORTABLE = "VALUE_NOT_EXPORTABLE";	
-
 	public static Set<String> split(String string, String delimiter) {
 		Set<String> result = new HashSet<String>();
 		if (string != null) result.addAll(Arrays.asList(StringUtils.split(string, delimiter)));
@@ -176,7 +159,6 @@ public class Utils {
 		return "";
 	}
 	
-//	TODO get rid of this
 	public static File getZipFile(File file, String filename) throws IOException {		
 		List<File> files = new ArrayList<File>();
 		files.add(file);
@@ -233,11 +215,11 @@ public class Utils {
 	}
 	
 	public static String formatExportCode(String code){
-		//TODO relocate outer brackets to this method
+		// TODO relocate outer brackets to this method
 //		if(code == null || code.isEmpty()){
 //			code = CODE_MISSING;
 //		}
-		return CODE_DELIMITER + code + CODE_DELIMITER;
+		return ImportExportConstant.CODE_DELIMITER + code + ImportExportConstant.CODE_DELIMITER;
 	}
 	
 	public static def copyI18nField(def source, def target, def fieldName) {
@@ -245,10 +227,14 @@ public class Utils {
 		def setterName = 'set'+fieldName
 		
 		def grailsApplication = new User().domainClass.grailsApplication
-		grailsApplication.config.i18nFields.locales.each{ loc ->
-			def text = source."$getterName"(new Locale(loc))
-			if (text != null) target."$setterName"(text, new Locale(loc))
+		grailsApplication.config.i18nFields.locales.each{ language ->
+			def text = source."$getterName"(new Locale(language))
+			if (text != null) target."$setterName"(text, new Locale(language))
 		}
+	}
+	
+	public static String noNull(String possiblyNull) {
+		return possiblyNull==null?"":possiblyNull;
 	}
 	
 }

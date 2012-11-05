@@ -425,6 +425,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		def aggregation = newAggregation("\$"+dataElement1.id, CODE(3))
+		aggregation.save(flush: true)
 		
 		then:
 		AggregationPartialValue.count() == 0
@@ -436,9 +437,10 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		AggregationPartialValue.count() == 8
 		
 		when:
+		aggregation = Aggregation.findByCode(CODE(3))
 		aggregation.expression = '\$'+dataElement1.id+' + \$'+dataElement2.id
 		aggregation.refreshed = null
-		aggregation.save(failOnError: true)
+		aggregation.save(flush: true)
 		refreshValueService.refreshCalculation(aggregation, new TestProgress());
 
 		then:
@@ -718,7 +720,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def source = newSource("source");
 		def rawDataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER(), source);
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER(), source);
-		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement1.id + "+ \$"+rawDataElement2.id, (HEALTH_CENTER_GROUP):"1"]])
+		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement1.id + " + \$"+rawDataElement2.id, (HEALTH_CENTER_GROUP):"1"]])
 		
 		when:
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new TestProgress());

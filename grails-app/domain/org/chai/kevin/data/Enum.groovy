@@ -28,6 +28,8 @@ package org.chai.kevin.data;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import groovy.transform.EqualsAndHashCode;
+
 import java.util.ArrayList
 import java.util.List
 
@@ -36,6 +38,7 @@ import org.chai.kevin.Importable
 import org.chai.kevin.util.Utils
 
 @i18nfields.I18nFields
+@EqualsAndHashCode(includes='code')
 class Enum implements Exportable, Importable {
 
 	// deprecated
@@ -88,32 +91,7 @@ class Enum implements Exportable, Importable {
 	public List<EnumOption> getAllEnumOptions() {
 		return new ArrayList(enumOptions?:[])
 	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		return result;
-	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this.is(obj))
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Enum other = (Enum) obj;
-		if (code == null) {
-			if (other.code != null)
-				return false;
-		} else if (!code.equals(other.code))
-			return false;
-		return true;
-	}
-	
 	public boolean hasValue(String value) {
 		for (EnumOption enumOption : enumOptions) {
 			if (enumOption.getValue().equals(value)) return true;

@@ -1,3 +1,6 @@
+package org.chai.kevin.dsr;
+
+
 /** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
@@ -25,11 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.dsr;
+
 /**
  * @author Jean Kahigiso M.
  *
  */
+
 import org.chai.kevin.Exportable
 import org.chai.kevin.Importable
 import org.chai.kevin.data.Data
@@ -40,23 +44,27 @@ import org.chai.kevin.reports.ReportTarget
 import org.chai.kevin.util.Utils
 import org.hibernate.proxy.HibernateProxy
 
+import org.chai.kevin.Exportable
+import org.chai.kevin.Importable
+import org.chai.kevin.data.Data
+import org.chai.kevin.data.Type
+import org.chai.kevin.reports.AbstractReportTarget
+import org.chai.kevin.util.Utils
+import org.hibernate.proxy.HibernateProxy
 
-class DsrTarget extends AbstractReportTarget implements ReportTarget, Exportable, Importable {
+class DsrTarget extends AbstractReportTarget implements Exportable, Importable {
 	
 	String format;
 	Boolean average; //this can either be an average (true) or sum (null or false)
-	ReportProgram program;
 
 	static belongsTo = [category: DsrTargetCategory]
 	
 	static mapping = {
 		table 'dhsst_dsr_target'
-		program column: 'program'
 		category column: 'category'
 	}
 	
 	static constraints =  {
-		program (nullable: false)
 		format (nullable: true)
 		average (nullable: true)
 	}
@@ -71,12 +79,9 @@ class DsrTarget extends AbstractReportTarget implements ReportTarget, Exportable
 		}
 	}
 	
+	@Override
 	public Type getType() {
 		return getData().getType();
-	}
-	
-	public DsrTargetCategory getDsrTargetCategory() {
-		return category
 	}
 	
 	@Override

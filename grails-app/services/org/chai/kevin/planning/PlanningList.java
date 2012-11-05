@@ -48,7 +48,7 @@ public class PlanningList {
 			if (rawDataElementValue != null && !rawDataElementValue.getValue().isNull()) {
 				for (int i = 0; i < rawDataElementValue.getValue().getListValue().size(); i++) {
 					PlanningEntry planningEntry = getPlanningEntries().get(i);
-					if (planningEntry != null) planningBudgetEntries.add(new PlanningEntryBudget(budgetValues, dataLocation, planningType, formEnteredValue.getValidatable(), planningEntry.getLineNumber(), enums));
+					if (planningEntry != null) planningBudgetEntries.add(new PlanningEntryBudget(budgetValues, dataLocation, planningType, formEnteredValue, planningEntry.getLineNumber(), enums));
 				}
 			}
 		}
@@ -67,7 +67,7 @@ public class PlanningList {
 			planningEntries = new ArrayList<PlanningEntry>();
 			if (formEnteredValue != null && !formEnteredValue.getValue().isNull()) {
 				for (int i = 0; i < formEnteredValue.getValue().getListValue().size(); i++) {
-					planningEntries.add(new PlanningEntry(dataLocation, planningType, formEnteredValue.getValidatable(), i, enums));
+					planningEntries.add(new PlanningEntry(dataLocation, planningType, formEnteredValue, i, enums));
 				}
 			}
 		}
@@ -80,7 +80,7 @@ public class PlanningList {
 		
 		PlanningEntry result = null;
 		if (lineNumber >= getPlanningEntries().size()) {
-			result = new PlanningEntry(dataLocation, planningType, formEnteredValue.getValidatable(), lineNumber, enums);
+			result = new PlanningEntry(dataLocation, planningType, formEnteredValue, lineNumber, enums);
 			result.mergeValues(new HashMap<String, Object>());
 		}
 		else result = getPlanningEntries().get(lineNumber);

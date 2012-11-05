@@ -28,6 +28,8 @@ package org.chai.kevin.value;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import groovy.transform.EqualsAndHashCode;
+
 import javax.persistence.Basic;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -41,6 +43,7 @@ import org.chai.location.CalculationLocation;
 import org.chai.location.DataLocationType;
 import org.hibernate.annotations.NaturalId;
 
+//@EqualsAndHashCode(includes=['location', 'period', 'data', 'type'])
 abstract class CalculationPartialValue extends StoredValue {
 
 	DataLocationType type;

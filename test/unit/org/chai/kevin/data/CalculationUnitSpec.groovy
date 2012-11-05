@@ -32,8 +32,9 @@ class CalculationUnitSpec extends UnitSpec {
 		def calculation3 = new Aggregation(code: '1', expression: '1')
 		
 		then:
-		!calculation3.equals(calculation1)
-		calculation3.hashCode() != calculation1.hashCode()
+		// this is equal because code is equal
+		calculation3.equals(calculation1)
+		calculation3.hashCode() == calculation1.hashCode()
 	}
 	
 	def "partial expressions in calculation"() {
@@ -74,14 +75,14 @@ class CalculationUnitSpec extends UnitSpec {
 		def type2 = new DataLocationType(code: 'locationType2')
 		
 		when:
-		def value1 = new SumPartialValue(location: location, period: period, data: data, type: locationType1)
+		def value1 = new SumPartialValue(location: location, period: period, data: data, type: type1)
 		
 		then:
 		value1.equals(value1)
 		value1.hashCode() == value1.hashCode()
 		
 		when:
-		def value2 = new SumPartialValue(location: location, period: period, data: data, type: locationType2)
+		def value2 = new SumPartialValue(location: location, period: period, data: data, type: type2)
 		
 		then:
 		!value2.equals(value1)

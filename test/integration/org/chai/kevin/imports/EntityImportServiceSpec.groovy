@@ -66,39 +66,4 @@ class EntityImportServiceSpec extends IntegrationTests {
 		file.startsWith("SurveyQuestion_")
 	}
 	
-	def "test for entity header sort"(){
-		setup:
-		def entitySurveyQuestionFieldHeaders = []			
-		def headerClass = SurveyQuestion.class;
-		while(headerClass != null && headerClass != Object.class){				
-			Field[] classFields = headerClass.getDeclaredFields();
-			for(Field field : classFields){
-				if(field.getName().equalsIgnoreCase("id")) continue;
-				entitySurveyQuestionFieldHeaders.add(field);
-			}
-			headerClass = headerClass.getSuperclass();
-		}
-		
-		def entityDashboardTargetFieldHeaders = []
-		headerClass = DashboardTarget.class;
-		while(headerClass != null && headerClass != Object.class){
-			Field[] classFields = headerClass.getDeclaredFields();
-			for(Field field : classFields){
-				if(field.getName().equalsIgnoreCase("id")) continue;
-				entityDashboardTargetFieldHeaders.add(field);
-			}
-			headerClass = headerClass.getSuperclass();
-		}
-		
-		when:
-		Collections.sort(entitySurveyQuestionFieldHeaders, EntityHeaderSorter.BY_FIELD())
-		def surveyQuestionHeaders = entitySurveyQuestionFieldHeaders.collect { it.getName() }
-		Collections.sort(entityDashboardTargetFieldHeaders, EntityHeaderSorter.BY_FIELD())
-		def dashboardTargetHeaders = entityDashboardTargetFieldHeaders.collect { it.getName() }
-		
-		then:
-		surveyQuestionHeaders.equals(["code", "names", "order", "section", "typeCodeString", "descriptions"])
-		dashboardTargetHeaders.equals(["code", "names", "order", "program", "weight", "data", "descriptions"])
-	}
-		
 }

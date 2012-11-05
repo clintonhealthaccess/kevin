@@ -22,22 +22,27 @@ class ReportInitializer {
 	
 	static def createDsrTargetCategories() {
 		if (!DsrTargetCategory.count()) {
-			new DsrTargetCategory(code: 'sd_critical_indicators', names_en: 'Critical Indicators', order: 1).save(failOnError: true)
-			new DsrTargetCategory(code: 'ga_energy', names_en: 'Energy', order: 1).save(failOnError: true)
+			new DsrTargetCategory(code: 'sd_critical_indicators', names_en: 'Critical Indicators', program: ReportProgram.findByCode('service_delivery'), order: 1).save(failOnError: true)
+			new DsrTargetCategory(code: 'ga_energy', names_en: 'Energy', program: ReportProgram.findByCode('geographical_access'), order: 1).save(failOnError: true)
+			new DsrTargetCategory(code: 'water_plumbing', names_en: 'Water & Plumbing', program: ReportProgram.findByCode('geographical_access'), order: 1).save(failOnError: true)
 		}
 	}
 	
 	static def createDsrTargets() {
 		if (!DsrTarget.count()) {
 			// service delivery - critical indicators
-			[	new DsrTarget(code: 'dsr_in_facility_birth', names_en: 'In Facility Births', average: false, program: ReportProgram.findByCode('service_delivery'), data: RawDataElement.findByCode('in_facility_birth')),
-				new DsrTarget(code: 'dsr_out_facility_birth', names_en: 'Out of Facility Births', average: false, program: ReportProgram.findByCode('service_delivery'), data: RawDataElement.findByCode('out_facility_birth')),
-				new DsrTarget(code: 'dsr_total_facility_birth', names_en: 'Total Births', average: false, program: ReportProgram.findByCode('service_delivery'), data: NormalizedDataElement.findByCode('total_birth'))
+			[	new DsrTarget(code: 'dsr_in_facility_birth', names_en: 'In Facility Births', average: false, data: RawDataElement.findByCode('in_facility_birth')),
+				new DsrTarget(code: 'dsr_out_facility_birth', names_en: 'Out of Facility Births', average: false, data: RawDataElement.findByCode('out_facility_birth')),
+				new DsrTarget(code: 'dsr_total_facility_birth', names_en: 'Total Births', average: false, data: NormalizedDataElement.findByCode('total_birth'))
 			].each {DsrTargetCategory.findByCode('sd_critical_indicators').addToTargets(it).save(failOnError: true)}
 			
 			// geographical access - energy
-			[	new DsrTarget(code: 'dsr_use_solar', names_en: 'Use of Solar Power', program: ReportProgram.findByCode('geographical_access'), data: NormalizedDataElement.findByCode('use_solar'))
+			[	new DsrTarget(code: 'dsr_use_solar', names_en: 'Use of Solar Power', data: NormalizedDataElement.findByCode('use_solar')),
 			].each {DsrTargetCategory.findByCode('ga_energy').addToTargets(it).save(failOnError: true)}
+			
+			// geographical access - rainwater harvesting
+			[	new DsrTarget(code: 'rainwater_harvesting', names_en: 'Rainwater Harvesting', data: NormalizedDataElement.findByCode('rainwater_harvesting'))
+			].each {DsrTargetCategory.findByCode('water_plumbing').addToTargets(it).save(failOnError: true)}
 		}
 	}
 	

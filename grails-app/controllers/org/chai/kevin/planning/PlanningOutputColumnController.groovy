@@ -81,7 +81,7 @@ class PlanningOutputColumnController extends AbstractEntityController {
 			
 			render (view: '/planning/admin/list', model:[
 				template:"planningOutputColumnList",
-				entities: planningOutputColumns,
+				entities: planningOutputColumns as List,
 				entityCount: planningOutputColumns.size(),
 				code: getLabel(),
 				entityClass: getEntityClass()

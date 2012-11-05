@@ -28,10 +28,12 @@ package org.chai.kevin.data;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import groovy.transform.EqualsAndHashCode;
 import i18nfields.I18nFields
 
 
 @i18nfields.I18nFields
+@EqualsAndHashCode(includes='code')
 public class Source {
 
 	String code;
@@ -60,29 +62,4 @@ public class Source {
 		jsonNames(nullable: true)
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this.is(obj))
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof Source))
-			return false;
-		Source other = (Source) obj;
-		if (code == null) {
-			if (other.code != null)
-				return false;
-		} else if (!code.equals(other.code))
-			return false;
-		return true;
-	}
-	
 }

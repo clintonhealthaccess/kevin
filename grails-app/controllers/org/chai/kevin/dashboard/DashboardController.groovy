@@ -52,40 +52,42 @@ class DashboardController extends AbstractController {
     def view = {
 		if (log.isDebugEnabled()) log.debug("dashboard.view, params:"+params)		
 		
+		// entities from params
 		Period period = getPeriod()									
 		ReportProgram program = getProgram(DashboardTarget.class)
 		Location location = getLocation()
-		Set<DataLocationType> dataLocationTypes = getLocationTypes()		
-		def dashboardEntity = getDashboardEntity(program)
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 		
+		// other information we need in the view
+		DashboardEntity dashboardEntity = getDashboardEntity(program)
 		def locationSkipLevels = dashboardService.getSkipLocationLevels();
 		
+		// building params for redirection checks
 		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id, 'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort()]
 		
+		// we check if we should redirect
 		def newParams = redirectIfDifferent(reportParams)
+		
 		if(newParams != null && !newParams.empty) {
 			redirect(controller: 'dashboard', action: 'view', params: newParams)
 		}
 		else {
-			def programDashboard, locationDashboard
+			def dashboard
 			if (dashboardEntity != null) {
-				programDashboard = dashboardService.getProgramDashboard(location, program, period, dataLocationTypes);
-				locationDashboard = dashboardService.getLocationDashboard(location, program, period, dataLocationTypes, false);
+				dashboard = dashboardService.getDashboard(location, program, period, dataLocationTypes, false);
 			}
 						
-			if (log.isDebugEnabled()){
-				 log.debug('program dashboard: '+programDashboard+", location dashboard: "+locationDashboard+", root program: "+program+", root location: "+location)
-			}
+			if (log.isDebugEnabled()) log.debug('dashboard: '+dashboard+", root program: "+program+", root location: "+location)
 			
 			[
-				programDashboard: programDashboard,
-				locationDashboard: locationDashboard,			
 				currentPeriod: period,
-				dashboardEntity: dashboardEntity,
 				currentProgram: program,
-				selectedTargetClass: DashboardTarget.class,
-				currentLocation: location,			
+				currentLocation: location,
 				currentLocationTypes: dataLocationTypes,
+				selectedTargetClass: DashboardTarget.class,
+				
+				dashboard: dashboard,
+				dashboardEntity: dashboardEntity,
 				locationSkipLevels: locationSkipLevels			
 			]
 		}
@@ -94,35 +96,40 @@ class DashboardController extends AbstractController {
 	def compare = {
 		if (log.isDebugEnabled()) log.debug("dashboard.compare, params:"+params)							
 		
+		// entities from params
 		Period period = getPeriod()	
 		ReportProgram program = getProgram(DashboardTarget.class)
 		Location location = getLocation()
-		Set<DataLocationType> dataLocationTypes = getLocationTypes()		
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()
+		
+		// other information we need in the view
 		DashboardEntity dashboardEntity = getDashboardEntity(program)
 		
-		def dashboard = null
 		if (period != null && program != null && location != null && dataLocationTypes != null && dashboardEntity != null) {			
+			if (log.isDebugEnabled()) log.debug("compare dashboard for dashboardEntity: "+dashboardEntity+", root program: "+program+", root location: "+location)
 			
-			if (log.isDebugEnabled()){
-				log.debug("compare dashboard for dashboardEntity: "+dashboardEntity+", root program: "+program+", root location: "+location)
-			}						
-			
-			def table = (String) params.get("table")			
-			if(table == 'program')
-				dashboard = dashboardService.getProgramDashboard(location, program, period, dataLocationTypes);
-			if(table == 'location')
-				dashboard = dashboardService.getLocationDashboard(location, program, period, dataLocationTypes, true);
-						
+			def dashboard = dashboardService.getDashboard(location, program, period, dataLocationTypes, true);
 			if (log.isDebugEnabled()) log.debug('compare dashboard: '+dashboard)
-
+			
+			def table = (String) params.get("table")
 			render(contentType:"text/json") {
 				status = 'success'	
 				compareValues = array {
-					dashboard.dashboardEntities.each{ entity ->
-						obj (
-							id: entity.id,
-							value: dashboard.getPercentage(location, entity).numberValue
-						)
+					if(table == 'program') {
+						dashboard.getIndicators(dashboardEntity).each{ entity ->
+							obj (
+								id: entity.id,
+								value: dashboard.getPercentage(location, entity).numberValue
+							)
+						}
+					}
+					if(table == 'location') {
+						[
+							obj (
+								id: dashboardEntity.id,
+								value: dashboard.getPercentage(location, dashboardEntity).numberValue
+							)
+						]
 					}
 				}			
 			}

@@ -107,8 +107,8 @@ class DataServiceSpec extends IntegrationTests {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def program = newReportProgram(CODE(1))
-		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(2), 1)
-		def dsrTarget = DsrIntegrationTests.newDsrTarget(CODE(3), rawDataElement, program, category)
+		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(2), program, 1)
+		def dsrTarget = DsrIntegrationTests.newDsrTarget(CODE(3), rawDataElement, category)
 		
 		when:
 		dsrTarget = DsrTarget.findByCode(CODE(3))
@@ -174,40 +174,6 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.getData(ratio.id, Data.class).equals(ratio)
 	}
 	
-	def "list data element"() {
-		setup:
-		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [:])
-		def ratio = newSum("1", CODE(3))
-		def sum = newSum("1", CODE(4))
-		def aggregation = newAggregation("1", CODE(5))
-		
-		expect:
-		dataService.list(Summ.class, [:]).equals([ratio, sum])
-		dataService.count(Summ.class) == 2
-		dataService.list(DataElement.class, [:]).equals([rawDataElement, normalizedDataElement])
-		dataService.count(DataElement.class) == 2
-		dataService.list(NormalizedDataElement.class, [:]).equals([normalizedDataElement])
-		dataService.count(NormalizedDataElement.class) == 1
-		dataService.list(Data.class, [:]).equals([rawDataElement, normalizedDataElement, ratio, sum, aggregation])
-		dataService.count(Data.class) == 5
-	}
-	
-	def "list data element with params"() {
-		setup:
-		def rawDataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def rawDataElement3 = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def rawDataElement4 = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
-		
-		expect:
-		dataService.list(DataElement.class, [max:1]).equals([rawDataElement1])
-		dataService.list(DataElement.class, [max:1, offset:1]).equals([rawDataElement2])
-		dataService.list(DataElement.class, [max:2]).equals([rawDataElement1, rawDataElement2])
-		dataService.list(DataElement.class, [max:2, offset:2]).equals([rawDataElement3, rawDataElement4])
-		
-	}
-	
 	def "search for null"() {
 		expect:
 		dataService.searchData(RawDataElement.class, null, [], [:]).equals([])
@@ -228,7 +194,21 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.countData(RawDataElement.class, "ele some", []) == 0
 		dataService.searchData(RawDataElement.class, "info", [], [:]).equals([dataElement3])
 		dataService.countData(RawDataElement.class, "info", []) == 1
-				
+	}
+	
+	def "search with allowed types works"() {
+		setup:
+		def dataElement1 = newRawDataElement(["en": "element"], CODE(1), Type.TYPE_BOOL())
+		def dataElement2 = newRawDataElement(["en": "element"], CODE(2), Type.TYPE_ENUM('123'))
+		def dataElement3 = newRawDataElement(["en": "element"], CODE(3), Type.TYPE_NUMBER())
+		
+		expect:
+		dataService.searchData(RawDataElement.class, "ele", ['bool'], [:]).equals([dataElement1])
+		dataService.countData(RawDataElement.class, "ele", ['bool']) == 1
+		dataService.searchData(RawDataElement.class, "ele", ['number'], [:]).equals([dataElement3])
+		dataService.countData(RawDataElement.class, "ele", ['number']) == 1
+		dataService.searchData(RawDataElement.class, "ele", ['enum'], [:]).equals([dataElement2])
+		dataService.countData(RawDataElement.class, "ele", ['enum']) == 1
 	}
 	
 	def "search for normalized data element works"() {

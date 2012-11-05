@@ -29,7 +29,7 @@ class SurveySkipRule extends FormSkipRule {
 		SurveySkipRule surveyCopy = (SurveySkipRule)copy;
 		surveyCopy.setSurvey(((SurveyCloner)surveyCloner).getSurvey(getSurvey()));
 		for (SurveyQuestion question : getSkippedSurveyQuestions()) {
-			surveyCopy.getSkippedSurveyQuestions().add(((SurveyCloner)surveyCloner).getQuestion(question));
+			surveyCopy.addToSkippedSurveyQuestions(((SurveyCloner)surveyCloner).getQuestion(question));
 		}
 	}
 	
@@ -42,8 +42,8 @@ class SurveySkipRule extends FormSkipRule {
 		for (SurveyQuestion question : getSkippedSurveyQuestions()) {
 
 			SurveyEnteredQuestion enteredQuestion = surveyCalculator.getSurveyValueService().getOrCreateSurveyEnteredQuestion(dataLocation, question);
-			if (skipped) enteredQuestion.getSkippedRules().add(this);
-			else enteredQuestion.getSkippedRules().remove(this);
+			if (skipped) enteredQuestion.addToSkippedRules(this);
+			else enteredQuestion.removeFromSkippedRules(this);
 			
 			surveyCalculator.addAffectedQuestion(enteredQuestion);
 		}

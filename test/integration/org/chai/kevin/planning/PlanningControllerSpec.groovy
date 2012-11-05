@@ -23,18 +23,19 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		planningController = new PlanningController()
 		
 		when:
-		planningController.params['period.id'] = period.id
-		planningController.params['names'] = ['en': 'Name']
-		planningController.params['overviewHelps'] = ['en': 'Help - overview']
-		planningController.params['budgetHelps'] = ['en': 'Help - budget']
+		planningController.params['period.id'] = period.id+''
+		planningController.params['active'] = '0'
+		planningController.params['names_en'] = 'Name'
+		planningController.params['overviewHelps_en'] = 'Help - overview'
+		planningController.params['budgetHelps_en'] = 'Help - budget'
 		planningController.saveWithoutTokenCheck()
 
 		then:
 		Planning.count() == 1
 		Planning.list()[0].period.equals(period)
-		Planning.list()[0].names.en.equals('Name')
-		Planning.list()[0].overviewHelps.en.equals('Help - overview')
-		Planning.list()[0].budgetHelps.en.equals('Help - budget')
+		Planning.list()[0].names_en.equals('Name')
+		Planning.list()[0].overviewHelps_en.equals('Help - overview')
+		Planning.list()[0].budgetHelps_en.equals('Help - budget')
 	}
 	
 	def "create planning with active flag resets active flag on other planning"() {
@@ -42,7 +43,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def planning = newPlanning(period, [], true)
 		planningController = new PlanningController()
-
+		
 		when:
 		planningController.params['period.id'] = period.id
 		planningController.params.active = true
@@ -52,7 +53,6 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		Planning.count() == 2
 		Planning.list()[1].active == true
 		Planning.list()[0].active == false
-		
 	}
 	
 	def "create planning with active flag does not reset active flag on other planning if planning incomplete"() {
@@ -60,9 +60,9 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def planning = newPlanning(period, [], true)
 		planningController = new PlanningController()
-
+		
 		when:
-		planningController.params.active = true
+		planningController.params.active = 'true'
 		planningController.saveWithoutTokenCheck()
 		
 		then:

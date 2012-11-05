@@ -7,4 +7,8 @@ class PasswordToken {
 	
 	static constraints = {
 	}
+	
+	static mapping = {
+		table 'dhsst_security_password_token'
+	}
 }

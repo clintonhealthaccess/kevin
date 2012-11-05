@@ -31,19 +31,17 @@ package org.chai.kevin.survey;
  * @author JeanKahigiso
  *
  */
-import i18nfields.I18nFields;
+import groovy.transform.EqualsAndHashCode
+import i18nfields.I18nFields
 
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.chai.kevin.Exportable;
-import org.chai.kevin.IntegerOrderable;
-import org.chai.kevin.util.Utils;
-import org.chai.location.DataLocationType;
+import org.apache.commons.collections.CollectionUtils
+import org.chai.kevin.Exportable
+import org.chai.kevin.util.Utils
+import org.chai.location.DataLocationType
 
 @I18nFields
-class SurveySection extends IntegerOrderable implements Exportable {
+@EqualsAndHashCode(includes='code')
+class SurveySection implements Exportable {
 
 	// deprecated
 	Long id
@@ -119,31 +117,6 @@ class SurveySection extends IntegerOrderable implements Exportable {
 		return result;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this.is(obj))
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof SurveySection))
-			return false;
-		SurveySection other = (SurveySection) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
-
 	protected void deepCopy(SurveySection copy, SurveyCloner surveyCloner) {
 		copy.setCode(getCode() + " clone");
 		Utils.copyI18nField(this, copy, "Names")
@@ -151,7 +124,7 @@ class SurveySection extends IntegerOrderable implements Exportable {
 		copy.setProgram(surveyCloner.getProgram(getProgram()));
 		copy.setOrder(getOrder());
 		for (SurveyQuestion question : getQuestions()) {
-			copy.getQuestions().add(surveyCloner.getQuestion(question));
+			copy.addToQuestions(surveyCloner.getQuestion(question));
 		}
 	}
 

@@ -29,6 +29,7 @@ package org.chai.kevin.reports;
  */
 
 import org.chai.kevin.data.Data
+import org.chai.kevin.data.Type;
 
 
 abstract class AbstractReportTarget extends ReportEntity {
@@ -43,6 +44,10 @@ abstract class AbstractReportTarget extends ReportEntity {
 	
 	static constraints =  {
 		data (nullable: false)
+	}
+	
+	Type getType() {
+		return data.getType()
 	}
 	
 }

@@ -11,9 +11,6 @@
 		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${target}" field="code"/>
 		<g:input name="format" label="${message(code:'dsr.target.format.label')}" bean="${target}" field="format"/>		   		
 	
-		<g:selectFromList name="program.id" label="${message(code:'dsr.target.program.label')}" bean="${target}" field="program" optionKey="id" multiple="false"
-			from="${programs}" value="${target.program?.id}" values="${programs.collect{i18n(field:it.names)}}" />
-			
 		<g:selectFromList name="category.id" label="${message(code:'dsr.target.category.label')}" bean="${target}" field="category" optionKey="id" multiple="false"
 			from="${categories}" value="${target.category?.id}" values="${categories.collect{i18n(field:it.names)}}" />
 	

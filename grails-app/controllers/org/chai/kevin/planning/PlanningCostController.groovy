@@ -81,7 +81,7 @@ class PlanningCostController extends AbstractEntityController {
 	
 			render (view: '/planning/admin/list', model:[
 				template:"planningCostList",
-				entities: planningCosts,
+				entities: planningCosts as List,
 				entityCount: planningCosts.size(),
 				code: getLabel(),
 				entityClass: getEntityClass()

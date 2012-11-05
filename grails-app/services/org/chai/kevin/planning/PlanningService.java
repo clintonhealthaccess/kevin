@@ -83,6 +83,8 @@ public class PlanningService {
 	public PlanningEntry getOrCreatePlanningEntry(PlanningType type, DataLocation location, Integer lineNumber) {
 		PlanningList planningList = getPlanningList(type, location);
 		PlanningEntry entry = planningList.getOrCreatePlanningEntry(lineNumber);
+		
+		planningList.getFormEnteredValue().updateFromValidatable();
 		formElementService.save(planningList.getFormEnteredValue());
 		return entry;
 	}
@@ -122,6 +124,8 @@ public class PlanningService {
 		PlanningList planningList = getPlanningList(type, location);
 		PlanningEntry planningEntry = planningList.getPlanningEntries().get(lineNumber);
 		planningEntry.delete();
+		
+		planningList.getFormEnteredValue().updateFromValidatable();
 		formElementService.save(planningList.getFormEnteredValue());
 	}
 	
@@ -145,6 +149,8 @@ public class PlanningService {
 		// first we merge the values to create a new value
 		planningEntry.mergeValues(params);
 		planningEntry.getValidatable().setAttribute("", SUBMITTED, "false");
+		
+		planningList.getFormEnteredValue().updateFromValidatable();
 		formElementService.save(planningList.getFormEnteredValue());
 		
 		// second we run the validation/skip rules
@@ -155,6 +161,8 @@ public class PlanningService {
 		// last we set and save the value
 		for (FormEnteredValue formEnteredValue : affectedValues) {
 			formEnteredValue.getValidatable().setAttribute("", SUBMITTED, "false");
+			
+			formEnteredValue.updateFromValidatable();
 			formElementService.save(formEnteredValue);
 		}
 		return planningEntry;
@@ -173,6 +181,7 @@ public class PlanningService {
 				planningList.getFormEnteredValue().getValidatable().setAttribute("", SUBMITTED, "true");
 				
 				// last we save the value
+				planningList.getFormEnteredValue().updateFromValidatable();
 				formElementService.save(planningList.getFormEnteredValue());
 			}
 		}

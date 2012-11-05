@@ -33,8 +33,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		model.dashboardEntity.equals(DashboardProgram.findByCode(DASHBOARD_ROOT))
 		model.currentLocation.equals(Location.findByCode(RWANDA))
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
-		model.programDashboard.hasData() == true
-		model.locationDashboard.hasData() == true
+		model.dashboard.hasData() == true
 	}		
 	
 	def "get dashboard with no parameters redirects to period, root program, root location, location types, and dashboard entity"(){
@@ -133,8 +132,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		model.dashboardEntity == null
 		model.currentLocation.equals(Location.findByCode(RWANDA))
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
-		model.programDashboard == null
-		model.locationDashboard == null
+		model.dashboard == null
 	}
 	
 	def "get program compare dashboard"() {
@@ -192,7 +190,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		compareValues != null
 		compareValues.size() == 1
 		compareValues[0].id == DashboardProgram.findByCode(DASHBOARD_ROOT).id
-		Utils.formatNumber("#.0", compareValues[0].value.numberValue) == "16.7"
+		Utils.formatNumber("#.0", compareValues[0].value) == "16.7"
 	}
 
 }

@@ -31,18 +31,16 @@ package org.chai.kevin.survey;
  * @author JeanKahigiso
  *
  */
-import i18nfields.I18nFields;
+import groovy.transform.EqualsAndHashCode
+import i18nfields.I18nFields
 
-import java.util.List;
-import java.util.Set;
-
-import org.chai.kevin.Exportable;
-import org.chai.kevin.IntegerOrderable;
-import org.chai.kevin.util.Utils;
-import org.chai.location.DataLocationType;
+import org.chai.kevin.Exportable
+import org.chai.kevin.util.Utils
+import org.chai.location.DataLocationType
 
 @I18nFields
-class SurveyProgram extends IntegerOrderable implements Exportable {
+@EqualsAndHashCode(includes='code')
+class SurveyProgram implements Exportable {
 
 	// deprecated
 	Long id
@@ -120,40 +118,14 @@ class SurveyProgram extends IntegerOrderable implements Exportable {
 		return result;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this.is(obj))
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof SurveyProgram))
-			return false;
-		SurveyProgram other = (SurveyProgram) obj;
-		if (getId() == null) {
-			if (other.getId() != null)
-				return false;
-		} else if (!getId().equals(other.getId()))
-			return false;
-		return true;
-	}
-
 	protected void deepCopy(SurveyProgram copy, SurveyCloner cloner) {
 		copy.setCode(getCode() + " clone");
 		Utils.copyI18nField(this, copy, "Names")
-//		if (getDependency() != null) copy.setDependency(cloner.getProgram(getDependency()));
 		copy.setTypeCodeString(getTypeCodeString());
 		copy.setOrder(getOrder());
 		copy.setSurvey(cloner.getSurvey(getSurvey()));
 		for (SurveySection section : getSections()) {
-			copy.getSections().add(cloner.getSection(section));
+			copy.addToSections(cloner.getSection(section));
 		}
 	}
 

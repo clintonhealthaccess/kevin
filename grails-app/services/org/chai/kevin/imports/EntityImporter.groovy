@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.chai.kevin.Importable
 import org.chai.kevin.exports.EntityHeaderSorter
+import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.util.Utils
 import org.hibernate.SessionFactory
 import org.hibernate.criterion.Restrictions
@@ -298,13 +299,13 @@ public class EntityImporter extends FileImporter {
 		
 		private List<?> getImportValues(Importable importable, Object value, Class<?> importableClazz, String header){
 			List<?> importEntities = new ArrayList<Object>();
-			String codePattern = Utils.CODE_PATTERN;
+			String codePattern = ImportExportConstant.CODE_PATTERN;
 			Pattern pattern = Pattern.compile(codePattern);
 			Matcher matcher = pattern.matcher(value);
 			while(matcher.find()){
 				String entityCode = matcher.group();
 				if(entityCode != null && !entityCode.isEmpty()){
-					entityCode = entityCode.replaceAll(Utils.CODE_DELIMITER, "");
+					entityCode = entityCode.replaceAll(ImportExportConstant.CODE_DELIMITER, "");
 					Object importEntity = findEntityByCode(entityCode, importableClazz);
 					if(importEntity != null){
 						importEntity = getImportValue(importable, importEntity);

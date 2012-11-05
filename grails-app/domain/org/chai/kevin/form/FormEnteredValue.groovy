@@ -1,14 +1,19 @@
 package org.chai.kevin.form;
 
+import groovy.transform.EqualsAndHashCode;
+
 import org.chai.kevin.data.Type
+
 import org.chai.kevin.value.ValidatableValue
 import org.chai.kevin.value.Value
 import org.chai.location.DataLocation
 
+//@EqualsAndHashCode(includes=['formElement', 'dataLocation'])
 class FormEnteredValue {
 
 	FormElement formElement;
 	DataLocation dataLocation;
+	String valueString
 	String lastValueString
 	
 	String userUuid
@@ -28,6 +33,7 @@ class FormEnteredValue {
 		formElement (nullable: false, unique: ['formElement', 'dataLocation'])
 		value (nullable: false)
 		dataLocation (nullable: false)
+		valueString (nullable: false)
 		lastValueString (nullable: true)
 		
 		userUuid (nullable: true)
@@ -53,19 +59,23 @@ class FormEnteredValue {
 	 * Retaining backward compatibility with old getters and setters
 	 */
 	Value getValue() {
+		if (valueString != null && cachedValue == null) this.cachedValue = new Value(valueString)
 		return cachedValue
 	}
 	
 	void setValue(Value value) {
 		this.cachedValue = value
-	}
-	
-	String getValueString() {
-		return cachedValue.jsonValue
+		this.valueString = value?.jsonValue
 	}
 	
 	void setValueString(String valueString) {
-		this.cachedValue = new Value(valueString)
+		this.valueString = valueString
+		this.cachedValue = null
+	}
+	
+	void updateFromValidatable() {
+		setValue(validatable.value)
+		validatable = null
 	}
 	
 	/*
@@ -131,4 +141,5 @@ class FormEnteredValue {
 		return true;
 	}
 
+	
 }

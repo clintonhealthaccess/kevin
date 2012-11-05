@@ -151,14 +151,13 @@ class DataElementExportController extends AbstractEntityController {
 		if (log.isDebugEnabled()) log.debug("clone(exporter="+exportExisting+")")
 		if (exportExisting) {
 			def newExport= new DataElementExport()
-			for (String language : languageService.getAvailableLanguages()) {
-				newExport.getDescriptions().put(language,exportExisting.getDescriptions().get(language) + "(copy)")
-			}		
+			Utils.copyI18nField(exportExisting, newExport, "Descriptions")
 			newExport.setDate(new Date());
+			newExport.setCode(exportExisting.getCode() + ' (copy)');
 			newExport.setTypeCodeString(exportExisting.getTypeCodeString());
-			newExport.getLocations().addAll(exportExisting.getLocations());
-			newExport.getPeriods().addAll(exportExisting.getPeriods());
-			newExport.getDataElements().addAll(exportExisting.getDataElements());
+			exportExisting.getLocations().each {newExport.addToLocations(it)};
+			exportExisting.getPeriods().each {newExport.addToPeriods(it)};
+			exportExisting.getDataElements().each {newExport.addToDataElements(it)};
 			newExport.save(failOnError: true);
 			
 			if(newExport) flash.message = message(code: 'exporter.cloned')

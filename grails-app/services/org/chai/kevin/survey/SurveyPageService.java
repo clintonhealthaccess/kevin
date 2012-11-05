@@ -325,7 +325,7 @@ public class SurveyPageService {
 	
 	private void refreshQuestionForDataLocation(DataLocation dataLocation, SurveyQuestion question, boolean reset) {
 		Set<FormElement> validElements = new HashSet<FormElement>(question.getSurveyElements(dataLocation.getType()));
-		for (SurveyElement element : question.getSurveyElements()) {
+		for (SurveyElement element : question.getAllSurveyElements()) {
 			if (validElements.contains(element)) refreshElementForDataLocation(dataLocation, element, reset);
 			else if (reset) deleteSurveyEnteredValue(element, dataLocation);
 		}
@@ -403,6 +403,8 @@ public class SurveyPageService {
 				// till the end of the transaction, if in READ_COMMITTED isolation mode, a timeout
 				// is likely to occur because the transaction is quite long
 				affectedElements.put(element, enteredValue);
+				enteredValue.updateFromValidatable();
+				formElementService.save(enteredValue);
 				
 				// if it is a checkbox question, we need to reset the values to null
 				// FIXME THIS IS A HACK
@@ -496,6 +498,7 @@ public class SurveyPageService {
 		// fifth we save all the values
 		for (FormEnteredValue formEnteredValue : affectedElements.values()) {
 			SurveyService.setUserAndTimestamp(formEnteredValue);
+			formEnteredValue.updateFromValidatable();
 			formElementService.save(formEnteredValue);
 		}
 		for (SurveyEnteredQuestion surveyEnteredQuestion : affectedQuestions.values()) {
@@ -537,6 +540,8 @@ public class SurveyPageService {
 				}
 				
 				SurveyService.setUserAndTimestamp(enteredValueForElementInQuestion);
+				
+				enteredValueForElementInQuestion.updateFromValidatable();
 				formElementService.save(enteredValueForElementInQuestion);
 				affectedElements.put(elementInQuestion, enteredValueForElementInQuestion);
 			}
@@ -736,7 +741,7 @@ public class SurveyPageService {
 		SurveyEnteredQuestion enteredQuestion = surveyValueService.getSurveyEnteredQuestion(question, dataLocation);
 		if (enteredQuestion != null) surveyValueService.delete(enteredQuestion);
 		
-		for (FormElement element : question.getSurveyElements()) {
+		for (FormElement element : question.getAllSurveyElements()) {
 			deleteSurveyEnteredValue(element, dataLocation);
 		}
 	}

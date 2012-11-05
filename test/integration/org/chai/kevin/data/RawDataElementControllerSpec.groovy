@@ -4,6 +4,7 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.RawDataElementController;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.dsr.DsrIntegrationTests;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.location.DataLocation;
 import org.chai.location.Location;
@@ -18,7 +19,7 @@ import org.chai.kevin.value.Value;
 class RawDataElementControllerSpec extends IntegrationTests {
 
 	def rawDataElementController
-
+	
 	def "create new data element"() {
 		setup:
 		rawDataElementController = new RawDataElementController()
@@ -65,14 +66,10 @@ class RawDataElementControllerSpec extends IntegrationTests {
 
 	def "can delete data element"() {
 		setup:
-		setupLocationTree()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		rawDataElementController = new RawDataElementController()
-		def dataLocation = DataLocation.findByCode(BUTARO)
-		def period = newPeriod()
-		def dataElement = null
 
 		when:
-		dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		rawDataElementController.params.id = dataElement.id
 		rawDataElementController.delete()
 
@@ -100,7 +97,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		RawDataElementValue.count() == 1
 	}
 
-	def "cannot change data element type if it still has values" () {
+	def "can change data element type if it has no values" () {
 		setup:
 		setupLocationTree()
 		rawDataElementController = new RawDataElementController()
@@ -117,6 +114,15 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		then:
 		rawDataElementController.response.redirectedUrl.equals(rawDataElementController.getTargetURI())
 		dataElement.type.equals(Type.TYPE_BOOL())
+	}
+		
+	def "cannot change data element type if it has values" () {
+		setup:
+		setupLocationTree()
+		rawDataElementController = new RawDataElementController()
+		def dataLocation = DataLocation.findByCode(BUTARO)
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 
 		when:
 		newRawDataElementValue(dataElement, period, dataLocation, Value.NULL_INSTANCE())
@@ -126,7 +132,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		rawDataElementController.saveWithoutTokenCheck()
 
 		then:
-		(Type.TYPE_BOOL()).equals(dataElement.type)
+		(Type.TYPE_NUMBER()).equals(dataElement.type)
 	}
 
 	def "can save data element if it still has values and type does not change" () {
@@ -226,6 +232,22 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		RawDataElement.count() == 1
 	}
 
+	def "cannot delete data element if there are associated targets"() {
+		setup:
+		def program = newReportProgram(CODE(1))
+		def targetCategory = DsrIntegrationTests.newDsrTargetCategory(CODE(2), program, 1)
+		def dataElement = newRawDataElement(["en":"Element 1"], CODE(1), Type.TYPE_NUMBER())
+		def target = DsrIntegrationTests.newDsrTarget(CODE(3), dataElement, targetCategory)
+		rawDataElementController = new RawDataElementController()
+		
+		when:
+		rawDataElementController.params.id = dataElement.id
+		rawDataElementController.delete()
+		
+		then:
+		RawDataElement.count() == 1
+	}
+	
 	def "delete data element deletes survey element and survey entered values"() {
 		setup:
 		setupLocationTree()
@@ -288,6 +310,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		rawDataElementController.delete()
 		
 		then:
+		SurveyElement.count() == 0
 		SurveyCheckboxQuestion.count() == 1
 		SurveyCheckboxOption.count() == 2
 		RawDataElement.count() == 0

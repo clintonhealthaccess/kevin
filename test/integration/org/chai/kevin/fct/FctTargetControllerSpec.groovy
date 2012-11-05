@@ -44,7 +44,7 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 		fctTargetController = new FctTargetController()
 		
 		when:
-		fctTargetController.params.id = target.id
+		fctTargetController.params.id = target.id+''
 		fctTargetController.delete()
 		
 		then:

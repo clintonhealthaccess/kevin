@@ -1,6 +1,9 @@
 package org.chai.kevin.form;
 
+import groovy.transform.EqualsAndHashCode;
+
 import java.util.List
+
 import java.util.Map
 import java.util.Set
 import java.util.Map.Entry
@@ -17,6 +20,7 @@ import org.chai.kevin.value.Value
 import org.chai.kevin.value.ValueService
 import org.chai.location.DataLocation
 
+//@EqualsAndHashCode(includes='id')
 class FormElement implements Exportable {
 
 	public static String FIELD_DELIMITER = ",";
@@ -49,14 +53,26 @@ class FormElement implements Exportable {
 		super();
 	}
 
-	Map<String, Map<String, String>> getHeaders() {
+	Map<String, String> getHeaders(String language) {
 		Map result = [:]
 		formElementHeadersMaps?.each {
-			result.put(it.header, it.getNamesMap())
+			result.put(it.header, it.getNames(new Locale(language)))
 		}
 		return result;
 	}
-
+	
+	Map<String, Map<String, String>> getHeaders() {
+		def result = [:]
+		formElementHeadersMaps?.each {
+			def map = [:]
+			domainClass.grailsApplication.config.i18nFields.locales.each{ language ->
+				map.put(language, it.getNames(new Locale(language)))
+			}
+			result.put(it.header, map)
+		}
+		return result
+	}
+	
 	void setHeaders(Map<String, Map<String, String>> headers) {
 		formElementHeadersMaps?.clear()
 		headers.each {
@@ -80,11 +96,9 @@ class FormElement implements Exportable {
 	
 	public void copyRules(FormElement copy, FormCloner cloner) {
 		for (FormValidationRule rule : getValidationRules()) {
-			copy.getValidationRules().add(cloner.getValidationRule(rule));
+			copy.addToValidationRules(cloner.getValidationRule(rule));
 		}
-		for (Entry<String, Map<String, String>> entry : getHeaders().entrySet()) {
-			copy.getHeaders().put(entry.getKey(), entry.getValue());
-		}
+		copy.setHeaders(getHeaders())
 	}
 
 	public void validate(DataLocation dataLocation, ElementCalculator calculator) {
@@ -194,31 +208,6 @@ class FormElement implements Exportable {
 		}
 	}
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this.is(obj))
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof FormElement))
-			return false;
-		FormElement other = (FormElement) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
-
 	public String toString(){
 		return "FormElement[getId()=" + getId() + ", getDataElement()=" + getDataElement() + "]";
 	}

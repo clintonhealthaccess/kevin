@@ -56,6 +56,7 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		calculationExportController = new  CalculationExportController();
 		
 		when:
+		calculationExportController.params.code = 'code'
 		calculationExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+"",Location.findByCode(BURERA).id+""]
 		calculationExportController.params.('periodIds')=[Period.list()[0].id+""]
 		calculationExportController.params.('calculationIds')=[sum.id+"",aggregation.id+""]
@@ -84,6 +85,7 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		calculationExportController = new  CalculationExportController();
 		
 		when:
+		calculationExportController.params.code = 'code'
 		calculationExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
 		calculationExportController.params.('periodIds')=[Period.list()[0].id+""]
 		calculationExportController.params.('calculationIds')=[sum.id+"",aggregation.id+"",aggregation.id+""]
@@ -113,6 +115,7 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		calculationExportController = new  CalculationExportController();
 		
 		when:
+		calculationExportController.params.code = 'code'
 		calculationExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
 		calculationExportController.params.('periodIds')=[Period.list()[0].id+"",Period.list()[0].id+""]
 		calculationExportController.params.('calculationIds')=[sum.id+"",aggregation.id+""]
@@ -138,7 +141,7 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		
 		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def calculations=new HashSet([sum,aggregation]);
-		def dataExport = newCalculationExport("en":"Testing Seach One",periods, locationType, locations, calculations);
+		def dataExport = newCalculationExport(CODE(1), ["en":"Testing Seach One"],periods, locationType, locations, calculations);
 		
 		calculationExportController = new  CalculationExportController();
 		

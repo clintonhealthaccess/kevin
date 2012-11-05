@@ -14,6 +14,7 @@ import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 import org.hibernate.FlushMode;
+import org.hibernate.Query;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -84,6 +85,13 @@ class FormElementService {
 	
 	void delete(FormEnteredValue formEnteredValue) {
 		formEnteredValue.delete()
+	}
+	
+	void deleteEnteredValues(DataLocation dataLocation) {
+		String queryString = "delete from FormEnteredValue where dataLocation = :dataLocation";
+		Query query = sessionFactory.getCurrentSession().createQuery(queryString);
+		query.setParameter("dataLocation", dataLocation);
+		query.executeUpdate();
 	}
 	
 	FormEnteredValue getFormEnteredValue(FormElement formElement, DataLocation dataLocation) {

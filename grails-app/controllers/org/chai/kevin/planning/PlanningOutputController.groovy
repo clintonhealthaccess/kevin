@@ -88,7 +88,7 @@ class PlanningOutputController extends AbstractEntityController {
 			
 			render (view: '/planning/admin/list', model:[
 				template:"planningOutputList",
-				entities: planningOutputs,
+				entities: planningOutputs as List,
 				entityCount: planningOutputs.size(),
 				code: getLabel(),
 				entityClass: getEntityClass()

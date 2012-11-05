@@ -45,6 +45,7 @@ import org.chai.kevin.exports.SurveyExportService
 import org.chai.kevin.fct.FctService
 import org.chai.kevin.form.FormValidationService
 import org.chai.kevin.planning.PlanningService
+import org.chai.kevin.reports.ReportExportService;
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.security.ShiroSecurityBridge;
 import org.chai.kevin.survey.SurveyCopyService
@@ -146,6 +147,12 @@ beans = {
 		skipLevels = reportSkipLevels		
 	}
 	
+	reportExportService(ReportExportService){
+		languageService = ref("languageService")
+		locationService = ref("locationService")
+		skipLevels = reportSkipLevels
+	}
+	
 	dashboardService(DashboardService) {
 		reportService = ref("reportService")
 		sessionFactory = ref("sessionFactory")
@@ -196,13 +203,11 @@ beans = {
 	}
 	
 	dataElementExportService(DataElementExportService){
-		languageService = ref("languageService")
 		locationService = ref("locationService")
 		valueService = ref("valueService")
 		sessionFactory = ref("sessionFactory")
 	}
 	calculationExportService(CalculationExportService){
-		languageService = ref("languageService")
 		locationService = ref("locationService")
 		valueService = ref("valueService")
 		sessionFactory = ref("sessionFactory")

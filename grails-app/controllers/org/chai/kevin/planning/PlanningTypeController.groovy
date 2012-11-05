@@ -78,11 +78,18 @@ class PlanningTypeController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		
+
 		// headers
-		bindTranslationMap('headerList', entity.formElement?.headers)
+		if (entity.formElement != null) {
+			def headers = [:]
+			bindTranslationMap('headerList', headers)
+			entity.formElement.headers = headers
+		}
+		
 		// section description
-		bindTranslationMap('sectionList', entity.sectionDescriptions)
+		def sectionDescriptions = [:]
+		bindTranslationMap('sectionList', sectionDescriptions)
+		entity.sectionDescriptions = sectionDescriptions
 	}
 	
 	def list = {
@@ -95,7 +102,7 @@ class PlanningTypeController extends AbstractEntityController {
 	
 			render (view: '/planning/admin/list', model:[
 				template:"planningTypeList",
-				entities: planningTypes,
+				entities: planningTypes as List,
 				entityCount: planningTypes.size(),
 				code: getLabel(),
 				entityClass: getEntityClass()

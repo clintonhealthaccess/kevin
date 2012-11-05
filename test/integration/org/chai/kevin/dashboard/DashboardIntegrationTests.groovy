@@ -24,25 +24,25 @@ abstract class DashboardIntegrationTests extends IntegrationTests {
 		def program3 = ReportProgram.findByCode(PROGRAM3)
 		
 		def dashboardRoot = newDashboardProgram(DASHBOARD_ROOT, root, 0)		
-		def dashboardProgram1 = newDashboardProgram(DASHBOARD_PROGRAM1, program1, 1)
-		def dashboardProgram2 = newDashboardProgram(DASHBOARD_PROGRAM2, program2, 1)
-		def dashboardProgram3 = newDashboardProgram(DASHBOARD_PROGRAM3, program3, 1)
+		def dashboardProgram1 = newDashboardProgram(DASHBOARD_PROGRAM1, program1, 1, 1)
+		def dashboardProgram2 = newDashboardProgram(DASHBOARD_PROGRAM2, program2, 1, 2)
+		def dashboardProgram3 = newDashboardProgram(DASHBOARD_PROGRAM3, program3, 1, 3)
 		
 		def dataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"40",(HEALTH_CENTER_GROUP):"40"]])
 		def ratio1 = newSum("\$"+dataElement1.id, CODE(2))
-		def target1 = newDashboardTarget(TARGET1, ratio1, program1, 1)
+		def target1 = newDashboardTarget(TARGET1, ratio1, program1, 1, 4)
 		
 		def dataElement2 = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20"]])
 		def ratio2 = newSum("\$"+dataElement2.id, CODE(4))
-		def target2 = newDashboardTarget(TARGET2, ratio2, program1, 1)
+		def target2 = newDashboardTarget(TARGET2, ratio2, program1, 1, 5)
 		
 		def dataElement3 = newNormalizedDataElement(CODE(5), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]])
 		def ratio3 = newSum("\$"+dataElement3.id, CODE(6))
-		def target3 = newDashboardTarget(TARGET3, ratio3, program2, 1)
+		def target3 = newDashboardTarget(TARGET3, ratio3, program2, 1, 6)
 		
 		def dataElement4 = newNormalizedDataElement(CODE(7), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"0"]])
 		def ratio4 = newSum("\$"+dataElement4.id, CODE(8))
-		def target4 = newDashboardTarget(TARGET4, ratio4, program3, 1)
+		def target4 = newDashboardTarget(TARGET4, ratio4, program3, 1, 7)
 		
 	}
 	
@@ -58,12 +58,12 @@ abstract class DashboardIntegrationTests extends IntegrationTests {
 		return new DashboardProgram(code: code, program: program, weight: weight, order: order).save(failOnError: true)
 	}
 	
-	static def newDashboardTarget(def code, def calculation, def program, def weight) {
+	static def newDashboardTarget(def code, def calculation, def program, Integer weight) {
 		def dashboardTarget = new DashboardTarget(code: code, data: calculation, program: program, weight: weight).save(failOnError: true)
 		return dashboardTarget
 	}
 	
-	static def newDashboardTarget(def code, def calculation, def program, def weight, def order) {
+	static def newDashboardTarget(def code, def calculation, def program, Integer weight, def order) {
 		def dashboardTarget = new DashboardTarget(code: code, data: calculation, program: program, weight: weight, order: order).save(failOnError: true)
 		return dashboardTarget
 	}

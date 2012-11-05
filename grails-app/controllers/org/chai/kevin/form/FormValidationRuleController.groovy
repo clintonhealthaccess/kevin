@@ -76,13 +76,13 @@ class FormValidationRuleController extends AbstractEntityController {
 	}
 	
 	def saveEntity(def entity) {
-		entity.formElement.validationRules.add(entity)
+		entity.formElement.addToValidationRules(entity)
 		entity.save()
 		entity.formElement.save()
 	}
 	
 	def deleteEntity(def entity) {
-		entity.formElement.validationRules.remove(entity);
+		entity.formElement.removeFromValidationRules(entity);
 		entity.formElement.save();
 		entity.delete()
 	}

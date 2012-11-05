@@ -15,6 +15,7 @@ import org.chai.kevin.survey.SurveyIntegrationTests
 import org.chai.kevin.survey.SurveyQuestion
 import org.chai.kevin.survey.SurveySimpleQuestion
 import org.chai.kevin.survey.SurveyTableQuestion
+import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.util.Utils
 import org.chai.location.DataLocation
 
@@ -99,42 +100,6 @@ class EntityExportServiceSpec extends IntegrationTests {
 		zipFile.length() > 0
 	}
 	
-	def "test for entity header sort"(){
-		setup:		
-		def entitySurveyQuestionFieldHeaders = []		
-		Class<?> headerClass = SurveyQuestion.class;
-		while(headerClass != null && headerClass != Object.class){				
-			Field[] classFields = headerClass.getDeclaredFields();
-			for(Field field : classFields){
-				if(field.getName().equalsIgnoreCase("id")) continue;
-				entitySurveyQuestionFieldHeaders.add(field);
-			}
-			headerClass = headerClass.getSuperclass();
-		}
-		
-		def entityDashboardTargetFieldHeaders = []
-		headerClass = DashboardTarget.class;
-		while(headerClass != null && headerClass != Object.class){				
-			Field[] classFields = headerClass.getDeclaredFields();
-			for(Field field : classFields){
-				if(field.getName().equalsIgnoreCase("id")) continue;
-				entityDashboardTargetFieldHeaders.add(field);
-			}
-			headerClass = headerClass.getSuperclass();
-		}
-		
-		when:
-		Collections.sort(entitySurveyQuestionFieldHeaders, EntityHeaderSorter.BY_FIELD())
-		def surveyQuestionHeaders = entitySurveyQuestionFieldHeaders.collect { it.getName() }
-		Collections.sort(entityDashboardTargetFieldHeaders, EntityHeaderSorter.BY_FIELD())
-		def dashboardTargetHeaders = entityDashboardTargetFieldHeaders.collect { it.getName() }
-		
-		then:
-		surveyQuestionHeaders.equals(["code", "names", "order", "section", "typeCodeString", "descriptions"])
-		dashboardTargetHeaders.equals(["code", "names", "order", "program", "weight", "data", "descriptions"])
-	}	
-	
-	
 	def "test entity is exportable"(){
 		when:
 		def ie = new IsExportableEntity()
@@ -160,39 +125,6 @@ class EntityExportServiceSpec extends IntegrationTests {
 		then:
 		clazz == null		
 	}
-	
-	def "test entity fields are exportable"(){
-		when:
-		def today =new Date()
-		def ie = new IsExportableEntity("ieCode1", 1, today)		 			
-		List<Field> fields = new ArrayList<Field>();		
-		Class<?> headerClass = ie.class;
-		while(headerClass != null && headerClass != Object.class){
-			Field[]classFields = headerClass.getDeclaredFields();
-			for(Field field : classFields){
-				fields.add(field);
-			}
-			headerClass = headerClass.getSuperclass();
-		}
-		Collections.sort(fields, EntityHeaderSorter.BY_FIELD());				
-		def entityData = entityExportService.getEntityData(ie, fields)
-		
-		then:
-		entityData[0].equals("ieCode1")
-		entityData[1].equals("1")
-		entityData[2].equals(Utils.formatDate(today))
-		entityData[3].equals("")
-		
-		when:
-		ie.trans = ["en":"English", "fr":"French"]
-		entityData = entityExportService.getEntityData(ie, fields)
-		
-		then:
-		entityData[0].equals("ieCode1")
-		entityData[1].equals("1")
-		entityData[2].equals(Utils.formatDate(today))
-		entityData[3].equals(ie.trans.toExportString())
-	}	
 	
 	def "test entity fields that are exportable and not exportable"(){
 		when:
@@ -223,7 +155,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		then:
 		entityData[0].equals("testCode")
 		entityData[1].equals("[~ieCode~]")
-		entityData[2].equals(Utils.VALUE_NOT_EXPORTABLE)
+		entityData[2].equals(ImportExportConstant.VALUE_NOT_EXPORTABLE)
 	}
 	
 	def "test entity fields that are exportable lists and not exportable lists"(){
@@ -255,7 +187,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		then:
 		entityData[0].equals("testCode")
 		entityData[1].equals("[[~ieCode1~]]")
-		entityData[2].equals(Utils.VALUE_NOT_EXPORTABLE)
+		entityData[2].equals(ImportExportConstant.VALUE_NOT_EXPORTABLE)
 		
 		when:
 		te.listIee = [new IsExportableEntity("ieCode1", 1, new Date()), new IsExportableEntity("ieCode2", 2, new Date())]
@@ -265,7 +197,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		then:
 		entityData[0].equals("testCode")
 		entityData[1].equals("[[~ieCode1~], [~ieCode2~]]")
-		entityData[2].equals(Utils.VALUE_NOT_EXPORTABLE)		
+		entityData[2].equals(ImportExportConstant.VALUE_NOT_EXPORTABLE)		
 	}	
 	
 	

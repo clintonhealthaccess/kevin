@@ -31,31 +31,32 @@ package org.chai.kevin.dsr;
  *
  */
 
-import java.util.ArrayList
-import java.util.List
-
 import org.chai.kevin.Exportable
 import org.chai.kevin.reports.ReportEntity
 import org.chai.kevin.reports.ReportProgram
+import org.chai.kevin.reports.ReportTarget
 import org.chai.kevin.util.Utils
 
-class DsrTargetCategory extends ReportEntity implements Exportable {
+class DsrTargetCategory extends ReportEntity implements ReportTarget, Exportable {
 
+	ReportProgram program;
+	
 	static hasMany = [targets: DsrTarget]
 	static mappedBy = [targets: "category"]
 	
 	static mapping = {
 		table 'dhsst_dsr_target_category'
+		program column: 'program'
 	}
 	
-	public List<DsrTarget> getTargetsForProgram(ReportProgram program) {
-		List<DsrTarget> result = new ArrayList<DsrTarget>();
-		for (DsrTarget dsrTarget : getTargets()) {
-			if (dsrTarget.getProgram().equals(program)) result.add(dsrTarget);
-		}
-		return result;
+	static constraints = {
+		program (nullable: false)
 	}
 	
+	public List<DsrTarget> getAllTargets() {
+		return new ArrayList<DsrTarget>(targets?:[]);
+	}
+		
 	@Override
 	public String toExportString() {
 		return "[" + Utils.formatExportCode(getCode()) + "]";

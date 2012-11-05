@@ -189,8 +189,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		
 		then:
 		dataPoints.size() == 1
-		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","LIST","question",
-			"10.0", "header1"])
+		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","LIST","question", "10.0", "header1"])
 //		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","LIST","question",
 //			"10.0", "Line 1", "header1"])
 	}
@@ -236,7 +235,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def file = surveyExportService.getExportFilename(DataLocation.findByCode(BUTARO), section, program, survey)
 		
 		then:
-		file.startsWith("section_ButaroDH_")
+		file.startsWith("CODE1_Butaro DH_")
 	}
 		
 }

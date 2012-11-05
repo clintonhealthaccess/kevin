@@ -41,6 +41,7 @@ import org.apache.commons.lang.math.NumberUtils;
 class CheckboxOptionController extends AbstractEntityController {
 
 	def locationService
+	def surveyService
 	
 	def getEntity(def id) {
 		return SurveyCheckboxOption.get(id)
@@ -65,6 +66,17 @@ class CheckboxOptionController extends AbstractEntityController {
 		]
 	}
 	
+	def deleteEntity(def entity) {
+		entity.question.removeFromOptions(entity)
+		entity.delete()
+		surveyService.deleteSurveyElement(entity.surveyElement)
+	}
+	
+	def saveEntity(def entity) {
+		if (entity.id == null) entity.question.addToOptions(entity)
+		entity.question.save()
+	}
+	
 	def getEntityClass(){
 		return SurveyCheckboxOption.class;
 	}
@@ -72,6 +84,8 @@ class CheckboxOptionController extends AbstractEntityController {
 	def bindParams(def entity) {
 		entity.properties = params
 		
-		if (entity.surveyElement != null) entity.surveyElement.surveyQuestion = entity.question
+		if (entity.surveyElement != null && entity.surveyElement.id == null) {
+			entity.question.addToSurveyElements(entity.surveyElement)
+		}
 	}
 }

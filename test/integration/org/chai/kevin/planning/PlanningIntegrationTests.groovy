@@ -37,7 +37,7 @@ abstract class PlanningIntegrationTests extends IntegrationTests {
 	}
 	
 	static def newPlanningCost(def names, def type, def dataElement, def planningType) {
-		def planningCost = new PlanningCost(type: type, dataElement: dataElement, planningType: planningType).save(failOnError: true)
+		def planningCost = new PlanningCost(type: type, dataElement: dataElement, planningType: planningType, hideIfZero: false).save(failOnError: true)
 		setLocaleValueInMap(planningCost, names, "Names")
 		planningType.addToCosts(planningCost)
 		planningType.save(failOnError: true)
@@ -52,7 +52,7 @@ abstract class PlanningIntegrationTests extends IntegrationTests {
 	}
 	
 	static def newPlanningOutput(def planning, def dataElement, def fixedHeader) {
-		def planningOutput = new PlanningOutput(planning: planning, dataElement: dataElement, fixedHeader: fixedHeader).save(failOnError: true)
+		def planningOutput = new PlanningOutput(planning: planning, dataElement: dataElement, fixedHeader: fixedHeader, displayTotal: true).save(failOnError: true)
 		planning.addToPlanningOutputs(planningOutput)
 		planning.save(failOnError: true)
 		return planningOutput

@@ -52,7 +52,7 @@ public class StructureInitializer {
 
 		def admin = new User(
 			userType: UserType.OTHER, code:"admin", username: "admin",
-			firstname: "Super", lastname: "Admin", 
+			firstname: "Super", lastname: "Admin", defaultLanguage: 'en',
 			email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), 
 			active: true, confirmed: true, uuid:'admin_uuid', 
 			phoneNumber: '+250 11 111 11 11', organisation:'org')
@@ -60,7 +60,7 @@ public class StructureInitializer {
 		admin.save(failOnError: true)
 
 		def butaro = new User(userType: UserType.SURVEY, code:"butaro",
-			username: "butaro", firstname: "butaro", lastname: "butaro", 
+			username: "butaro", firstname: "butaro", lastname: "butaro", defaultLanguage: 'en',
 			locationId: DataLocation.findByCode("butaro_hd").id, passwordHash: new Sha256Hash("123").toHex(), 
 			active: true, confirmed: true, uuid: 'butaro_uuid', 
 			phoneNumber: '+250 11 111 11 11', organisation:'org')
@@ -72,7 +72,7 @@ public class StructureInitializer {
 		butaro.save(failOnError: true)
 		
 		def kivuye = new User(userType: UserType.PLANNING, code:"kivuye",
-			username: "kivuye", firstname: "kivuye", lastname: "kivuye",
+			username: "kivuye", firstname: "kivuye", lastname: "kivuye", defaultLanguage: 'en',
 			locationId: DataLocation.findByCode("kivuye_cs").id, passwordHash: new Sha256Hash("123").toHex(),
 			active: true, confirmed: true, uuid: 'kivuye_uuid',
 			phoneNumber: '+250 11 111 11 11', organisation:'org')

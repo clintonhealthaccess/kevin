@@ -194,7 +194,6 @@ public class ValueService {
 	
 	// if this is set readonly, it triggers an error when deleting a
 	// data element through DataElementController.deleteEntity
-	@Transactional(readOnly=true)
 	public Long getNumberOfValues(Data<?> data) {
 		return (Long)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
 		.add(Restrictions.eq("data", data))
@@ -202,7 +201,15 @@ public class ValueService {
 		.uniqueResult();
 	}
 	
-	@Transactional(readOnly=true)
+	// if this is set readonly, it triggers an error when deleting a
+	// data element through DataElementController.deleteEntity
+	public Long getNumberOfValues(DataLocation location, Class<?> clazz) {
+		return (Long)sessionFactory.getCurrentSession().createCriteria(clazz)
+		.add(Restrictions.eq("location", location))
+		.setProjection(Projections.count("id"))
+		.uniqueResult();
+	}
+	
 	public Long getNumberOfValues(Data<?> data, Status status, Period period) {
 		// TODO allow Calculation here
 		if (!(data instanceof NormalizedDataElement)) {
@@ -219,12 +226,16 @@ public class ValueService {
 	
 	@Transactional(readOnly=false)
 	public void deleteValues(Data<?> data, CalculationLocation location, Period period) {
-		String queryString = "delete from "+data.getValueClass().getName()+" where data = :data";
+		String valueClass = null;
+		if (data != null) valueClass = data.getValueClass().getName();
+		else valueClass = "StoredValue";
+		String queryString = "delete from "+valueClass+" where 1 = 1";
+		if (data != null) queryString += " and data = :data";
 		if (location != null) queryString += " and location = :location";
 		if (period != null) queryString += " and period = :period";
 		Query query = sessionFactory.getCurrentSession()
-		.createQuery(queryString)
-		.setParameter("data", data);
+		.createQuery(queryString);
+		if (data != null) query.setParameter("data", data);
 		if (location != null) query.setParameter("location", location);
 		if (period != null) query.setParameter("period", period);
 		query.executeUpdate();

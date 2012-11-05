@@ -36,8 +36,6 @@ import org.chai.location.DataLocationType
  */
 class SimpleQuestionController extends AbstractEntityController {
 
-	def languageService
-	def locationService
 	def surveyService
 	
 	def getEntity(def id) {
@@ -46,6 +44,11 @@ class SimpleQuestionController extends AbstractEntityController {
 	
 	def createEntity() {
 		return new SurveySimpleQuestion();
+	}
+	
+	def deleteEntity(def entity) {
+		surveyService.deleteQuestion(entity)
+		entity.section.removeFromQuestions(entity)
 	}
 
 	def getLabel() {
@@ -71,11 +74,15 @@ class SimpleQuestionController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		
-		// headers
-		bindTranslationMap('headerList', entity.surveyElement?.headers)
-		
-		if (entity.surveyElement != null) entity.surveyElement.surveyQuestion = entity
+				
+		if (entity.surveyElement != null) {
+			entity.surveyElement.question = entity
+			
+			// headers
+			def headers = [:]
+			bindTranslationMap('headerList', headers)
+			entity.surveyElement.headers = headers
+		}
 	}
 	
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Exportable;
+import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.util.Utils;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,8 +56,11 @@ public class EntityExportService {
 			while(headerClass != null && headerClass != Object.class){				
 				Field[] classFields = headerClass.getDeclaredFields();
 				for(Field field : classFields){
-					if(field.getName().equalsIgnoreCase(ID_HEADER)) continue;
-					entityFieldHeaders.add(field);
+					if(!field.getName().equalsIgnoreCase(ID_HEADER)
+						&& !field.getName().startsWith("$") && !field.getName().startsWith("__")
+						&& !field.isSynthetic() && !Modifier.isStatic(field.getModifiers())) {
+						entityFieldHeaders.add(field);
+					}
 				}
 				headerClass = headerClass.getSuperclass();
 			}
@@ -166,7 +171,7 @@ public class EntityExportService {
 					}
 					//value is not exportable or a primitive type
 					else{
-						exportValue = Utils.VALUE_NOT_EXPORTABLE;
+						exportValue = ImportExportConstant.VALUE_NOT_EXPORTABLE;
 					}
 				}
 				

@@ -71,10 +71,10 @@ class CalculationExportServiceSpec extends IntegrationTests {
 		
 		def calculations = new HashSet([sum,aggregation]);
 		
-		def exporter = newCalculationExport("en":"Testing Seach One",periods, locationTypes, locations, calculations);
+		def exporter = newCalculationExport(CODE(1), ["en":"Testing Seach One"],periods, locationTypes, locations, calculations);
 		
 		when:
-		def exportedFile = calculationExportService.exportData(exporter, 'en');
+		def exportedFile = calculationExportService.exportData(exporter);
 		then:
 		//TODO Best way to check
 		exportedFile!=null
@@ -84,15 +84,15 @@ class CalculationExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree();
 		def periods=new HashSet([newPeriod()]);
-		def locationTypes = s([HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP])
+		def locationTypes = [HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP]
 		def sum = newSum("1",CODE(1));
 		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def calculations=new HashSet([sum]);
-		def exporterOne = newCalculationExport("en":"Testing Seach One",periods, locationTypes, locations, calculations);
+		def exporterOne = newCalculationExport(CODE(1), ["en":"Testing Seach One"],periods, locationTypes, locations, calculations);
 		
 		when:
-		def selectedLocations = locationService.getDataLocationsOfType(locations,locationTypes.collect {DataLocationType.findByCode(it)})
-		def exportedFileOne = calculationExportService.exportCalculations("Testing",selectedLocations,exporterOne.periods,exporterOne.calculations,locationTypes.collect {DataLocationType.findByCode(it)}, 'en');
+		def selectedLocations = locationService.getDataLocationsOfType(locations, s(locationTypes.collect {DataLocationType.findByCode(it)}))
+		def exportedFileOne = calculationExportService.exportCalculations("Testing",selectedLocations,exporterOne.periods as List,exporterOne.calculations as List,s(locationTypes.collect {DataLocationType.findByCode(it)}));
 		then:
 		exportedFileOne!=null
 	}
@@ -102,19 +102,19 @@ class CalculationExportServiceSpec extends IntegrationTests {
 		setupLocationTree();
 		def date= new Date();
 		def period= newPeriod();
-		def locationTypes = s([HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP])
+		def locationTypes = [HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP]
 		def locations = [DataLocation.findByCode(KIVUYE)]
 		def calculation = newAggregation("1",CODE(1));
 			
 		when:
-		def lines = calculationExportService.getExportLineForValue(locations[0],period,calculation,locationTypes.collect {DataLocationType.findByCode(it)}, 'en')	
+		def lines = calculationExportService.getExportLineForValue(locations[0],period,calculation, s(locationTypes.collect {DataLocationType.findByCode(it)}))	
 		def periodString = "[ "+(period.startDate).toString()+" - "+(period.endDate).toString()+" ]";
 		
 		def listDataList=[];
 		listDataList.add(locations[0].code);
-		listDataList.add(locations[0].names.en);
+		listDataList.add(locations[0].names_en);
 		listDataList.add("");
-		listDataList.add(locations[0].type.names.en);
+		listDataList.add(locations[0].type.names_en);
 		listDataList.add(period.code);
 		listDataList.add(periodString);
 		listDataList.add(calculation.class.simpleName);
@@ -132,18 +132,16 @@ class CalculationExportServiceSpec extends IntegrationTests {
 		setupLocationTree();
 		def date= new Date();
 		def period= newPeriod();
-		def locationTypes = s([HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP])
+		def locationTypes = [HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP]
 		def locations = [DataLocation.findByCode(KIVUYE)]
 		
 		def calculation = null;
 		
 		when:
-		def lines = calculationExportService.getExportLineForValue(locations[0],period,calculation,locationTypes.collect {DataLocationType.findByCode(it)}, 'en')	
+		def lines = calculationExportService.getExportLineForValue(locations[0],period,calculation,s(locationTypes.collect {DataLocationType.findByCode(it)}))	
 		then:
 		lines==[];
 	}
-	
-	
 	
 }
 

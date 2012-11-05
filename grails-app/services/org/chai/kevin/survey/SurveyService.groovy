@@ -36,6 +36,7 @@ import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.math.NumberUtils
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.data.RawDataElement
+import org.chai.kevin.form.FormEnteredValue;
 import org.chai.location.DataLocation;
 import org.chai.location.DataLocationType
 import org.chai.kevin.util.Utils
@@ -51,8 +52,6 @@ import org.hibernate.criterion.Restrictions
  */
 class SurveyService {
 
-	static transactional = true
-	
 	def languageService
 	def dataService
 	def locationService
@@ -61,6 +60,22 @@ class SurveyService {
 	static void setUserAndTimestamp(def enteredValue) {
 		enteredValue.setUserUuid(SecurityUtils.getSubject().getPrincipal())
 		enteredValue.setTimestamp(new Date())
+	}
+	
+	void deleteQuestion(def question) {
+		question.surveyElements.each { element ->
+			FormEnteredValue.executeUpdate("delete from FormEnteredValue where formElement = :formElement", ['formElement': element])
+		}
+		SurveyEnteredQuestion.executeUpdate("delete from SurveyEnteredQuestion where question = :question", ['question': question])
+		
+		question.delete()
+	}
+	
+	void deleteSurveyElement(def surveyElement) {
+		def question = surveyElement.question
+		question.removeFromSurveyElements(surveyElement)
+		surveyElement.delete()
+		FormEnteredValue.executeUpdate("delete from FormEnteredValue where formElement = :formElement", ['formElement': surveyElement])
 	}
 	
 	SurveyQuestion getSurveyQuestion(Long id) {

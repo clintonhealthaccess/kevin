@@ -165,7 +165,7 @@ class DataControllerSpec extends IntegrationTests {
 		dataController.modelAndView.model.entities.equals([dataElementValue])
 	}
 	
-	def "delete values"() {
+	def "delete values for data element"() {
 		setup:
 		setupLocationTree()
 		def period1 = newPeriod()
@@ -175,6 +175,22 @@ class DataControllerSpec extends IntegrationTests {
 		
 		when:
 		dataController.params.data = dataElement.id
+		dataController.deleteValues()
+		
+		then:
+		NormalizedDataElementValue.count() == 0
+	}
+	
+	def "delete values for location"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
+		newNormalizedDataElementValue(dataElement, DataLocation.findByCode(BUTARO), period1, Status.VALID, v("1"))
+		dataController = new DataController()
+		
+		when:
+		dataController.params.location = DataLocation.findByCode(BUTARO).id
 		dataController.deleteValues()
 		
 		then:
@@ -233,8 +249,8 @@ class DataControllerSpec extends IntegrationTests {
 		then:
 		dataController.response.redirectedUrl == '/'
 		Task.count() == 2
-		Task.list()[0].dataId == normalizedDataElement.id
-		Task.list()[1].dataId == calculation.id
+		Task.list()[1].dataId == normalizedDataElement.id
+		Task.list()[0].dataId == calculation.id
 	}
 	
 	def "add referencing data element adds all references"() {
@@ -255,8 +271,8 @@ class DataControllerSpec extends IntegrationTests {
 		then:
 		dataController.response.redirectedUrl == '/'
 		Task.count() == 2
-		Task.list()[0].dataId == normalizedDataElement1.id
-		Task.list()[1].dataId == normalizedDataElement2.id
+		Task.list()[1].dataId == normalizedDataElement1.id
+		Task.list()[0].dataId == normalizedDataElement2.id
 	}
 	
 	def "add referencing data element does not add anything when task already there"() {
@@ -322,8 +338,8 @@ class DataControllerSpec extends IntegrationTests {
 		def period = newPeriod()
 		def dataElement = newRawDataElement(["en":"Element 1"], CODE(1), Type.TYPE_NUMBER())
 		def program = newReportProgram(CODE(1))
-		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(2), 1);
-		def target = DsrIntegrationTests.newDsrTarget(CODE(3), dataElement, program, category)
+		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(2), program, 1);
+		def target = DsrIntegrationTests.newDsrTarget(CODE(3), dataElement, category)
 		dataController = new DataController()
 		
 		when:

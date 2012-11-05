@@ -51,7 +51,7 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	}
 	
 	def static newSurveyEnteredQuestion(def question, def period, def dataLocation, def invalid, def complete) {
-		return new SurveyEnteredQuestion(question: question, dataLocation: dataLocation, invalid: invalid, complete: complete).save(failOnError: true, flush: true)
+		return new SurveyEnteredQuestion(question: question, dataLocation: dataLocation, invalid: invalid, complete: complete).save(failOnError: true)
 	}
 		
 	def static newSurveyEnteredSection(def section, def period, def dataLocation, def invalid, def complete) {
@@ -73,7 +73,7 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	def static newSurveySkipRule(def code, def survey, def expression, def skippedElements, def skippedQuestions) {
 		def skipRule = new SurveySkipRule(code: code, survey: survey, expression: expression, skippedFormElements: skippedElements, skippedSurveyQuestions: skippedQuestions).save(failOnError: true)
 		survey.addToSkipRules(skipRule)
-		survey.save(failOnError: true, flush: true)
+		survey.save(failOnError: true)
 		return skipRule
 	}
 	
@@ -81,7 +81,7 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		def question = new SurveySimpleQuestion(code: code, section: section, order: order, typeCodeString: Utils.unsplit(types, Utils.DEFAULT_TYPE_CODE_DELIMITER)).save(failOnError: true)
 		setLocaleValueInMap(question, names, "Names")
 		section.addToQuestions(question)
-		section.save(failOnError: true, flush: true)		
+		section.save(failOnError: true)		
 		return question
 	}
 	
@@ -135,9 +135,10 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	
 	// TODO why no code here?
 	def static newSurveyElement(def question, def dataElement, def headers) {
-		def element = new SurveyElement(question: question, dataElement: dataElement, headers: headers).save(failOnError: true, flush: true)
+		def element = new SurveyElement(question: question, dataElement: dataElement).save(failOnError: true)
+		element.setHeaders(headers)
 		question.addToSurveyElements(element)
-		question.save(failOnError: true, flush: true)
+		question.save(failOnError: true)
 		return element;
 	}
 }

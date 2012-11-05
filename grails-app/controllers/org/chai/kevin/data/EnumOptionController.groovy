@@ -86,7 +86,7 @@ class EnumOptionController extends AbstractEntityController {
 			response.sendError(404)
 		}
 		else {
-			def options = enume.enumOptions;
+			def options = enume.enumOptions.sort({it.orders});
 			options.sort({it.getOrders(languageService.currentLocale)})
 			
 			def max = Math.min(params['offset']+params['max'], options.size())

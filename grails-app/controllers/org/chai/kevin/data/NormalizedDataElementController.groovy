@@ -32,6 +32,7 @@ import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.Period
 import org.chai.location.DataLocationType
 import org.chai.kevin.planning.PlanningCost
+import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.value.Status
 
 class NormalizedDataElementController extends AbstractEntityController {
@@ -80,8 +81,6 @@ class NormalizedDataElementController extends AbstractEntityController {
 	
 	def deleteEntity(def entity) {
 		// we check if there are associated date
-		
-		
 		if (!dataService.getReferencingData(entity).isEmpty()) {
 			flash.message = message(code: "normalizeddataelement.delete.hasreferencingdata", default: "Could not delete element, some other data still reference this element.")
 		}
@@ -89,9 +88,12 @@ class NormalizedDataElementController extends AbstractEntityController {
 		else if (!PlanningCost.findAllByDataElement(entity).isEmpty()) {
 			flash.message = message(code: "normalizeddataelement.delete.hasreferencingplanningcost", default: "Could not delete element, some other data still reference this element.")
 		}
+		else if (!AbstractReportTarget.findAllByData(entity).isEmpty()) {
+			flash.message = message(code: "data.delete.hasreporttargets", default: "Could not delete element, some reports use this data element.")
+		}
 		else {
 			valueService.deleteValues(entity, null, null)
-			entity.delete()
+			super.deleteEntity(entity)
 		}
 	}
 	

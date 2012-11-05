@@ -13,10 +13,11 @@
 				<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="${message(code:'survey.question.label')}" field="names" height="100" width="400" maxHeight="150" />
 				<g:i18nRichTextarea name="descriptions" bean="${question}" value="${question.descriptions}" label="${message(code:'survey.question.description.label')}" field="descriptions" height="250" width="400" maxHeight="150" />
 
-				<input type="hidden" name="surveyElement.dataElement.id" value="${question.surveyElement?.dataElement?.id}" id="data-element-id" />
+				<input type="hidden" name="surveyElements[0].dataElement.id" value="${question.surveyElement?.dataElement?.id}" id="data-element-id" />
+				<input type="hidden" name="surveyElements[0].id" value="${question.surveyElement?.id}" />
 				<div class="row ${hasErrors(bean:question, field:'surveyElement', 'errors')}">
-					<label for="surveyElement.dataElement.name"><g:message code="dataelement.label"/>:</label>
-					<input type="text" name="surveyElement.dataElement.name" value="${i18n(field: question.surveyElement?.dataElement?.names)}" id="data-element-name" class="idle-field" disabled />
+					<label for="data-element-name"><g:message code="dataelement.label"/>:</label>
+					<input type="text" name="data-element-name" value="${i18n(field: question.surveyElement?.dataElement?.code)}" id="data-element-name" class="idle-field" disabled />
 					<g:if test="${question.surveyElement?.id != null}">
 						<span><a href="${createLink(controller:'surveyValidationRule', action:'list', params:['formElement.id': question.surveyElement?.id])}"> <g:message code="default.list.label" args="[message(code:'formelement.validationrule.label')]" /></a> </span>
 					</g:if>
@@ -49,9 +50,6 @@
 
 				<g:if test="${question.id != null}">
 					<input type="hidden" name="id" value="${question.id}"></input>
-				</g:if>
-				<g:if test="${question?.surveyElement?.id != null}">
-					<input type="hidden" name="surveyElement.id" value="${question.surveyElement.id}"></input>
 				</g:if>
 				<div class="row">
 					<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label"/></button>

@@ -28,6 +28,8 @@ package org.chai.kevin.data;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import groovy.transform.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

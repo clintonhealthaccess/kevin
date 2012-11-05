@@ -145,9 +145,9 @@ abstract class IntegrationTests extends IntegrationSpec {
 
 	static def setupProgramTree() {
 		def root = newReportProgram(ROOT)		
-		def program1 = newReportProgram(PROGRAM1, root)
-		def program2 = newReportProgram(PROGRAM2, root)
-		def program3 = newReportProgram(PROGRAM3, root)	
+		def program1 = newReportProgram(PROGRAM1, 1, root)
+		def program2 = newReportProgram(PROGRAM2, 2, root)
+		def program3 = newReportProgram(PROGRAM3, 3, root)	
 	}
 		
 	static def newPeriod() {
@@ -202,46 +202,62 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return dataLocation
 	}
 	
-	static def newDataElementExport(def descriptions,def periods, def locationType, def locations, def dataElements){
-		return new DataElementExport(descriptions:descriptions,periods:periods,typeCodeString:Utils.unsplit(locationType, Utils.DEFAULT_TYPE_CODE_DELIMITER),locations:locations,dataElements:dataElements,date:new Date()).save(failOnError: true);
+	static def newDataElementExport(def code, def descriptions, def periods, def locationType, def locations, def dataElements){
+		def export = new DataElementExport(code: code, periods:periods, typeCodeString:Utils.unsplit(locationType, Utils.DEFAULT_TYPE_CODE_DELIMITER), locations:locations, dataElements:dataElements, date:new Date())
+		setLocaleValueInMap(export, descriptions, "Descriptions")
+		export.save(failOnError: true)
+		return export
 	}
 	
-	static def newCalculationExport(def descriptions,def periods, def locationType, def locations, def calculations){
-		return new CalculationExport(descriptions:descriptions,periods:periods,typeCodeString:Utils.unsplit(locationType, Utils.DEFAULT_TYPE_CODE_DELIMITER),locations:locations,calculations:calculations,date:new Date()).save(failOnError: true);
+	static def newCalculationExport(def code, def descriptions, def periods, def locationType, def locations, def calculations){
+		def export = new CalculationExport(code: code, periods:periods,typeCodeString:Utils.unsplit(locationType, Utils.DEFAULT_TYPE_CODE_DELIMITER),locations:locations,calculations:calculations,date:new Date())
+		setLocaleValueInMap(export, descriptions, "Descriptions")
+		export.save(failOnError: true)
+		return export
 	}
 		
 	static def newUser(def username, def uuid) {
-		return new User(userType: UserType.OTHER, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
+		return new User(userType: UserType.OTHER, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newUser(def username, def active, def confirmed) {
 		return new User(userType: UserType.OTHER, code: 'not_important', username: username, email: username,
 			passwordHash: '', active: active, confirmed: confirmed, uuid: 'uuid', firstname: 'first', lastname: 'last',
-			organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
+			organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newUser(def username, def passwordHash, def active, def confirmed) {
 		return new User(userType: UserType.OTHER, code: 'not_important', username: username, email: username,
 			passwordHash: passwordHash, active: active, confirmed: confirmed, uuid: 'uuid', firstname: 'first', lastname: 'last',
-			organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
+			organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newSurveyUser(def username, def uuid, def locationId) {
-		return new User(userType: UserType.SURVEY, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
+		return new User(userType: UserType.SURVEY, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newPlanningUser(def username, def uuid, def locationId) {
-		return new User(userType: UserType.PLANNING, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11').save(failOnError: true)
+		return new User(userType: UserType.PLANNING, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newReportProgram(def code) {
-		return new ReportProgram(code: code, parent: null).save(failOnError: true, flush: true);
+		return newReportProgram(code, null, null)
+	}
+		
+	static def newReportProgram(String code, Integer order) {
+		return newReportProgram(code, order, null)
 	}
 	
-	static def newReportProgram(def code, def parent) {
-		def reportProgram = new ReportProgram(code: code, parent: parent).save(failOnError: true, flush: true);
-		parent.addToChildren(reportProgram)
-		parent.save(failOnError: true)
+	static def newReportProgram(String code, ReportProgram parent) {
+		return newReportProgram(code, null, parent)
+	}
+	
+	static def newReportProgram(String code, Integer order, def parent) {
+		def reportProgram = new ReportProgram(code: code, parent: parent, order: order).save(failOnError: true, flush: true);
+		if (parent != null) {
+			 parent.addToChildren(reportProgram)
+			 parent.save(failOnError: true)
+		}
 		return reportProgram
 	}
 	
@@ -394,7 +410,10 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def static newFormElement(def dataElement, def headers) {
-		return new FormElement(dataElement: dataElement, headers: headers).save(failOnError: true)
+		def element = new FormElement(dataElement: dataElement)
+		element.setHeaders(headers)
+		element.save(failOnError: true)
+		return element
 	}
 
 	def refresh() {

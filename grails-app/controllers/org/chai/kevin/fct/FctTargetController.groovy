@@ -81,7 +81,7 @@ class FctTargetController extends AbstractEntityController {
 	}
 
 	def deleteEntity(def entity) {
-		if(entity.targetOptions?.size() == 0){
+		if (entity.targetOptions == null || entity.targetOptions.size() == 0){
 			if (log.isInfoEnabled()) log.info("deleting target: "+entity)			
 			entity.delete()
 		}

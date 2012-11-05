@@ -32,10 +32,11 @@ class FctTargetOption extends AbstractReportTarget implements Exportable {
 		percentageFormat (nullable: true)
 	}
 	
+	@Override
 	public Type getType() {
 		return getSum().getType();
 	}
-	
+
 	public Summ getSum() {
 		if (getData() instanceof HibernateProxy) {
 			return Summ.class.cast(((HibernateProxy) getData()).getHibernateLazyInitializer().getImplementation());  
@@ -62,4 +63,5 @@ class FctTargetOption extends AbstractReportTarget implements Exportable {
 	public String toExportString() {
 		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
+
 }

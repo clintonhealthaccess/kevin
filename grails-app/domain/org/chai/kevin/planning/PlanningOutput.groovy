@@ -1,17 +1,19 @@
 package org.chai.kevin.planning;
 
+import groovy.transform.EqualsAndHashCode;
 import i18nfields.I18nFields
 
 import org.chai.kevin.data.DataElement
 import org.chai.kevin.data.Type.ValueType
 
 @I18nFields
+//@EqualsAndHashCode(includes='id')
 class PlanningOutput {
 
 	Integer order;
 	DataElement dataElement;
 	String fixedHeader;
-	Boolean displayTotal = false;
+	Boolean displayTotal;
 	
 	String names
 	String captions
@@ -22,6 +24,10 @@ class PlanningOutput {
 	String jsonCaptions
 	String jsonHelps
 
+	public Planning() {
+		displayTotal = false
+	}
+	
 	static i18nFields = ['names', 'captions', 'helps']
 	
 	Planning planning
@@ -52,26 +58,4 @@ class PlanningOutput {
 		jsonHelps (nullable: true)
 	}
 	
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	public boolean equals(Object obj) {
-		if (this.(is(obj)))
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof Planning))
-			return false;
-		Planning other = (Planning) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
 }

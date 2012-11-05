@@ -87,9 +87,9 @@ class SurveyInitializer {
 			[	new SurveyCheckboxQuestion(code: 'rainwater_harvesting', names_en: 'Which of the following rainwater harvesting structures are in place?',
 					order: 1, typeCodes: ['district_hospital', 'health_center'], section: SurveySection.findByCode('water'))
 				.addToSurveyElements(new SurveyElement(code: 'rainwater_pipes', dataElement: RawDataElement.findByCode('rainwater_pipes')))
-				.addToSurveyElements(new SurveyElement(code: 'rainwater_tanks', dataElement: RawDataElement.findByCode('rainwater_pipes')))
-				.addToSurveyElements(new SurveyElement(code: 'rainwater_gutters', dataElement: RawDataElement.findByCode('rainwater_pipes')))
-				.addToSurveyElements(new SurveyElement(code: 'rainwater_none', dataElement: RawDataElement.findByCode('rainwater_pipes'))).save(failOnError: true, flush: true)			
+				.addToSurveyElements(new SurveyElement(code: 'rainwater_tanks', dataElement: RawDataElement.findByCode('rainwater_tanks')))
+				.addToSurveyElements(new SurveyElement(code: 'rainwater_gutters', dataElement: RawDataElement.findByCode('rainwater_gutters')))
+				.addToSurveyElements(new SurveyElement(code: 'rainwater_none', dataElement: RawDataElement.findByCode('rainwater_none'))).save(failOnError: true, flush: true)			
 				.addToOptions(new SurveyCheckboxOption(code: 'rainwater_pipes', names_en: 'Pipes', order: 1, surveyElement: SurveyElement.findByCode('rainwater_pipes'), typeCodes: ['district_hospital', 'health_center']))
 				.addToOptions(new SurveyCheckboxOption(code: 'rainwater_tanks', names_en: 'Tank(s)', order: 2, surveyElement: SurveyElement.findByCode('rainwater_tanks'), typeCodes: ['district_hospital', 'health_center']))
 				.addToOptions(new SurveyCheckboxOption(code: 'rainwater_gutters', names_en: 'Gutters', order: 3, surveyElement: SurveyElement.findByCode('rainwater_gutters'), typeCodes: ['district_hospital', 'health_center']))

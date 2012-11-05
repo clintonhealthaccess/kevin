@@ -396,7 +396,7 @@ class RegisterCommand extends NewPasswordCommand {
 		lastname(nullable:false, blank:false)
 		organisation(nullable:false, blank:false)
 		phoneNumber(nullable:false, blank:false, phoneNumber: true)
-		defaultLanguage(nullable:true)
+		defaultLanguage(nullable:false)
 		email(blank:false, email:true, validator: {val, obj ->
 			return User.findByEmail(val) == null && User.findByUsername(val) == null
 		})

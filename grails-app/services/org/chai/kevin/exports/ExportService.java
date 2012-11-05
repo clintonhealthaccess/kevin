@@ -47,14 +47,10 @@ import org.hibernate.SessionFactory;
  */
 public abstract class ExportService {
 
-	public LanguageService languageService;
 	public LocationService locationService;
 	public ValueService valueService;
 	public SessionFactory sessionFactory;
 	
-	public void setLanguageService(LanguageService languageService) {
-		this.languageService = languageService;
-	}
 	public void setLocationService(LocationService locationService) {
 		this.locationService = locationService;
 	}
@@ -65,8 +61,8 @@ public abstract class ExportService {
 		this.sessionFactory = sessionFactory;
 	}
 	
-	public abstract List<String> getExportDataHeaders(String language);
-	public abstract File exportData(DataExport export, String language) throws IOException;
+	public abstract List<String> getExportDataHeaders();
+	public abstract File exportData(DataExport export) throws IOException;
 	
 	public final class DataPointVisitor extends ValueVisitor{
 		private List<String> basicInfo = new ArrayList<String>();

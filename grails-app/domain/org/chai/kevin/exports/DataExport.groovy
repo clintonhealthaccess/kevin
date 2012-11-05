@@ -27,6 +27,7 @@ package org.chai.kevin.exports;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import groovy.transform.EqualsAndHashCode;
 import i18nfields.I18nFields
 
 import java.util.Date
@@ -41,7 +42,10 @@ import org.chai.location.CalculationLocation
  *
  */
 @I18nFields
+@EqualsAndHashCode(includes='code')
 abstract class DataExport {
+	
+	String code
 	
 	Date date;
 	String typeCodeString;
@@ -75,6 +79,7 @@ abstract class DataExport {
 	}
 	
 	static constraints = {
+		code (nullable: false, unique: true, blank: false)
 		periods (nullable:false, minSize: 1)
 		locations (nullable:false, minSize: 1)
 		typeCodeString(nullable:false,blank:false)
@@ -98,30 +103,6 @@ abstract class DataExport {
 	
 	List<CalculationLocation> getAllLocations() {
 		return new ArrayList(locations?:[])
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		DataExport other = (DataExport) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
 	}
 	
 }

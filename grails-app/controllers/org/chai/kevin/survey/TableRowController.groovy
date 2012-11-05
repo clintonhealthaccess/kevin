@@ -30,6 +30,7 @@ package org.chai.kevin.survey
 import org.chai.kevin.AbstractEntityController;
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.form.FormEnteredValue;
 import org.chai.location.DataLocationType;
 import org.chai.kevin.util.Utils
 
@@ -40,6 +41,7 @@ import org.chai.kevin.util.Utils
 class TableRowController extends AbstractEntityController {
 
 	def locationService
+	def surveyService
 	
 	def getEntity(def id) {
 		return SurveyTableRow.get(id)
@@ -68,31 +70,40 @@ class TableRowController extends AbstractEntityController {
 	}
 	
 	def deleteEntity(def entity) {
-		for(Map.Entry<SurveyTableColumn, SurveyElement> surveyElement: entity.surveyElements)
-			if(surveyElement.getValue())
-				surveyElement.getValue().delete();
-
+		def surveyElements = entity.surveyElements*.value
+		entity.question.removeFromRows(entity)
 		entity.delete()
+		surveyElements.each {surveyElement ->
+			surveyService.deleteSurveyElement(surveyElement)
+		}
+	}
+	
+	def saveEntity(def entity) {
+		if (entity.id == null) entity.question.addToRows(entity)
+		entity.question.save()
 	}
 
 	def bindParams(def entity) {
 		entity.properties = params
 		
+		def surveyElements = [:]
 		params.surveyElement.each { columnId ->
 			if (columnId != '_') {
 				def column = SurveyTableColumn.get(columnId)
 				def dataElement = RawDataElement.get(params.int('surveyElement['+columnId+'].dataElement.id'))
 				if (dataElement != null) {
 					def surveyElement = SurveyElement.get(params.int('surveyElement['+columnId+'].id'))
-					if (surveyElement == null) surveyElement = new SurveyElement();
+					if (surveyElement == null) {
+						surveyElement = new SurveyElement();
+						entity.question.addToSurveyElements(surveyElement);
+					}
 					if (log.isInfoEnabled()) log.info ("binding SurveyElement "+surveyElement)
-					surveyElement.setSurveyQuestion(entity.question)
 					surveyElement.dataElement = dataElement
 					if (log.isInfoEnabled()) log.info ("binding dataElement "+dataElement)
-					entity.surveyElements[column] = surveyElement
-					
+					surveyElements[column] = surveyElement
 				}
 			}
 		}
+		entity.surveyElements = surveyElements
 	}
 }

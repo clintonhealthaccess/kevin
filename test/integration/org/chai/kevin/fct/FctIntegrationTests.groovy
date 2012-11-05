@@ -8,27 +8,34 @@ import org.chai.kevin.util.Utils;
 
 abstract class FctIntegrationTests extends IntegrationTests {
 
+//	static def newFctTarget(def names, def code, def program) {
+//		
+//	}
+	
 	static def newFctTarget(def code, def program) {
-		def target = new FctTarget(code: code, program: program).save(failOnError: true)
-		program.save(failOnError: true)
-		return target
+		return newFctTarget(code, null, program)
 	}
 	
 	static def newFctTarget(def code, def order, def program) {
-		def target = new FctTarget(code: code, order: order, program: program).save(failOnError: true)
-		program.save(failOnError: true)
-		return target
+		return new FctTarget(code: code, order: order, program: program).save(failOnError: true)
 	}
 
+	static def newFctTargetOption(def code, def order, def target, def sum) {
+		newFctTargetOption(code, null, order, target, sum)
+	}
+	
 	static def newFctTargetOption(def code, def target, def sum) {
-		def targetOption = new FctTargetOption(code: code, target: target, data: sum).save(failOnError: true)
-		target.addToTargetOptions(targetOption)
-		target.save(failOnError: true)
-		return targetOption
+		newFctTargetOption(code, null, null, target, sum)
+	}
+	
+	
+	static def newFctTargetOption(def code, Map names, def target, def sum) {
+		newFctTargetOption(code, names, null, target, sum)
 	}
 		
-	static def newFctTargetOption(def code, def order, def target, def sum) {
-		def targetOption = new FctTargetOption(order: order, code: code, target: target, data: sum).save(failOnError: true)		
+	static def newFctTargetOption(def code, def names, def order, def target, def sum) {
+		def targetOption = new FctTargetOption(order: order, code: code, target: target, data: sum).save(failOnError: true)
+		setLocaleValueInMap(targetOption, names, "Names")
 		target.addToTargetOptions(targetOption)
 		target.save(failOnError: true)
 		return targetOption

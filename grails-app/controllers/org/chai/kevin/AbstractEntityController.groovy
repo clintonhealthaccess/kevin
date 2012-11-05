@@ -33,6 +33,8 @@ import org.chai.kevin.util.Utils
 
 abstract class AbstractEntityController extends AbstractController {		
 	
+	static transactional = true
+	
 	def entityExportService
 	
 	def index = {
@@ -51,6 +53,7 @@ abstract class AbstractEntityController extends AbstractController {
 				redirect(uri: getTargetURI())
 			}
 			catch (org.springframework.dao.DataIntegrityViolationException e) {
+				if (log.debugEnabled) log.debug('could not delete entity', e)
 				flash.message = message(code: 'default.not.deleted.message', args: [message(code: getLabel(), default: 'entity'), params.id])
 				redirect(uri: getTargetURI())
 			}

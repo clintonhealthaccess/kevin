@@ -1,5 +1,6 @@
 package org.chai.kevin.form;
 
+import groovy.transform.EqualsAndHashCode;
 import i18nfields.I18nFields
 
 import java.util.HashSet
@@ -16,6 +17,7 @@ import org.chai.kevin.util.Utils
 import org.chai.location.DataLocation
 
 @I18nFields
+@EqualsAndHashCode(includes='code')
 public class FormSkipRule {
 
 	private final static Log log = LogFactory.getLog(FormSkipRule.class);
@@ -93,10 +95,13 @@ public class FormSkipRule {
 	}
 
 	public void deepCopy(FormSkipRule copy, FormCloner formCloner) {
+		copy.setCode(getCode() + ' clone')
 		copy.setExpression(formCloner.getExpression(getExpression(), copy));
+		def skippedElementsCopy = [:]
 		for (Entry<FormElement, String> entry : getSkippedFormElements().entrySet()) {
-			copy.getSkippedFormElements().put(formCloner.getElement(entry.getKey()), entry.getValue());
+			skippedElementsCopy.put(formCloner.getElement(entry.getKey()), entry.getValue());
 		}
+		copy.setSkippedFormElements(skippedElementsCopy)
 	}
 	
 	public void evaluate(DataLocation dataLocation, ElementCalculator calculator) {
@@ -112,36 +117,4 @@ public class FormSkipRule {
 		}
 	}
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this.is(obj))
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		FormSkipRule other = (FormSkipRule) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
-	
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
 }

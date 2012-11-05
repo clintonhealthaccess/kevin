@@ -72,6 +72,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion implements Exportable
 
 	@Override
 	public void removeSurveyElement(SurveyElement surveyElement) {
+		super.removeSurveyElement(surveyElement)
 		for (SurveyCheckboxOption option : getOptions()) {
 			if (option.getSurveyElement() != null && option.getSurveyElement().equals(surveyElement)) option.setSurveyElement(null);
 		}

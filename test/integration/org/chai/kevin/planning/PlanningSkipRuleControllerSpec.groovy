@@ -37,6 +37,7 @@ class PlanningSkipRuleControllerSpec extends PlanningIntegrationTests {
 		planningSkipRuleController = new PlanningSkipRuleController()
 		
 		when:
+		planningSkipRuleController.params['code'] = 'code'
 		planningSkipRuleController.params['planning.id'] = planning.id
 		planningSkipRuleController.params.expression = "true"
 		planningSkipRuleController.saveWithoutTokenCheck()

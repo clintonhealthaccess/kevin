@@ -35,7 +35,7 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		
 		then:
 		questionToTest.surveyElements.size() == 1
-		questionToTest.surveyElements[0].equals(element)
+		questionToTest.allSurveyElements[0].equals(element)
 	}
 
 	def "save survey cascades skiprule"() {
@@ -79,9 +79,9 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		def option = newCheckboxOption(CODE(1), question3, 1, [(DISTRICT_HOSPITAL_GROUP)], null)
 		
 		then:
-		question1.getSurveyElements().equals([])
-		question2.getSurveyElements().equals([])
-		question3.getSurveyElements().equals([])
+		question1.getSurveyElements() == null
+		question2.getSurveyElements() == null
+		question3.getSurveyElements() == null
 		
 		question1.getSurveyElements(DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)).equals([])
 		question2.getSurveyElements(DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)).equals([])

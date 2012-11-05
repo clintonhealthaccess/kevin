@@ -64,6 +64,15 @@ class SourceController extends AbstractEntityController {
 		entity.properties = params
 	}
 	
+	def deleteEntity(def entity) {
+		// we remove the source from all raw data element
+		RawDataElement.findAllBySource(entity).each {
+			it.source = null
+			it.save(flush: true)
+		}
+		super.deleteEntity(entity)
+	}
+	
 	def list = {
 		adaptParamsForList()
 		def sources = Source.list(params);

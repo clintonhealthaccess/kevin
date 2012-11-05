@@ -28,6 +28,8 @@ package org.chai.kevin.value
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import groovy.transform.EqualsAndHashCode;
+
 import java.util.Date;
 
 import javax.persistence.AttributeOverride;
@@ -48,6 +50,7 @@ import org.chai.kevin.data.Data;
 import org.chai.location.CalculationLocation;
 import org.hibernate.annotations.NaturalId;
 
+//@EqualsAndHashCode(includes=['location', 'period', 'data'])
 abstract class StoredValue implements DataValue {
 
 	Date timestamp = new Date();
@@ -138,5 +141,7 @@ abstract class StoredValue implements DataValue {
 			return false;
 		return true;
 	}
+	
+	
 	
 }

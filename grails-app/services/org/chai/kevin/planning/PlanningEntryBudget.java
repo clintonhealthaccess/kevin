@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.data.Enum;
+import org.chai.kevin.form.FormEnteredValue;
 import org.chai.location.DataLocation;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
@@ -15,8 +16,8 @@ public class PlanningEntryBudget extends PlanningEntry {
 	private Map<PlanningCost, NormalizedDataElementValue> budgetValues;
 	
 	public PlanningEntryBudget(Map<PlanningCost, NormalizedDataElementValue> budgetValues, DataLocation dataLocation, PlanningType type,
-			ValidatableValue validatable, Integer lineNumber, Map<String, Enum> enums) {
-		super(dataLocation, type, validatable, lineNumber, enums);
+			FormEnteredValue enteredValue, Integer lineNumber, Map<String, Enum> enums) {
+		super(dataLocation, type, enteredValue, lineNumber, enums);
 		this.budgetValues = budgetValues;
 	}
 	

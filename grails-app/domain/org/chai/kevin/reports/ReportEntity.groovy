@@ -28,11 +28,12 @@ package org.chai.kevin.reports;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.chai.kevin.IntegerOrderable
+import groovy.transform.EqualsAndHashCode
 
 
 @i18nfields.I18nFields
-abstract class ReportEntity extends IntegerOrderable {
+@EqualsAndHashCode(includes='code')
+abstract class ReportEntity {
 
 	Integer order
 	String code
@@ -63,37 +64,6 @@ abstract class ReportEntity extends IntegerOrderable {
 		// deprecated
 		jsonDescriptions(nullable: true)
 		jsonNames(nullable: true)
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this.is(obj))
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof ReportEntity))
-			return false;
-		ReportEntity other = (ReportEntity) obj;
-		if (code == null) {
-			if (other.code != null)
-				return false;
-		} else if (!code.equals(other.code))
-			return false;
-		return true;
-	}
-
-	int compareTo(IntegerOrderable arg0) {
-		if (getOrder() == null && arg0.getOrder() == null) return 0
-		if (getOrder() == null) return -1
-		else return getOrder().compareTo(arg0.getOrder())
 	}
 	
 }

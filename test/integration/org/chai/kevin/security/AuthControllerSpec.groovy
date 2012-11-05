@@ -55,7 +55,7 @@ class AuthControllerSpec extends IntegrationTests {
 		authController.signIn()
 		
 		then:
-		authController.response.redirectedUrl == '/user/list' 	
+		authController.response.redirectedUrl == '/user/list?lang=en' 	
 	}
 	
 	def "login logs get created after succesful signin"() {
@@ -71,7 +71,7 @@ class AuthControllerSpec extends IntegrationTests {
 		authController.signIn()
 		
 		then:
-		authController.response.redirectedUrl == '/user/list'
+		authController.response.redirectedUrl == '/user/list?lang=en'
 		LoginLog.count() == 1
 		LoginLog.list()[0].user.equals user
 		LoginLog.list()[0].username.equals 'test@test.com'
@@ -238,6 +238,7 @@ class AuthControllerSpec extends IntegrationTests {
 		authController = new AuthController()
 		
 		when:
+		authController.params.defaultLanguage = 'en'
 		authController.params.email = 'test@test.com'
 		authController.params.firstname = 'test'
 		authController.params.lastname = 'test'
@@ -263,6 +264,7 @@ class AuthControllerSpec extends IntegrationTests {
 		authController = new AuthController()
 		
 		when:
+		authController.params.defaultLanguage = 'en'
 		authController.params.email = 'test@test.com'
 		authController.params.firstname = 'first'
 		authController.params.lastname = 'last'

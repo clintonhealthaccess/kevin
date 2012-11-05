@@ -1,5 +1,7 @@
 package org.chai.kevin;
 
+import groovy.transform.EqualsAndHashCode;
+
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -13,6 +15,7 @@ import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+@EqualsAndHashCode(includes='code')
 class Period implements Exportable {
 
 	// TODO get rid of this
@@ -39,37 +42,6 @@ class Period implements Exportable {
 	}
 
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
-		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this.is(obj))
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof Period))
-			return false;
-		Period other = (Period) obj;
-		if (endDate == null) {
-			if (other.endDate != null)
-				return false;
-		} else if (!endDate.equals(other.endDate))
-			return false;
-		if (startDate == null) {
-			if (other.startDate != null)
-				return false;
-		} else if (!startDate.equals(other.startDate))
-			return false;
-		return true;
-	}
-
 	@Override
 	public String toString() {
 		return "Period[getId()=" + getId() + ", getStartDate()=" + getStartDate() + ", getEndDate()=" + getEndDate() + "]";

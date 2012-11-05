@@ -37,11 +37,12 @@ import org.chai.location.DataLocationType
 class CheckboxQuestionController extends AbstractEntityController {
 
 	def languageService
-	def locationService
+	def surveyService
 	
 	def getEntity(def id) {
 		return SurveyCheckboxQuestion.get(id)
 	}
+	
 	def createEntity() {
 		return new SurveyCheckboxQuestion();
 	}
@@ -53,10 +54,14 @@ class CheckboxQuestionController extends AbstractEntityController {
 	def getTemplate() {
 		return "/survey/admin/createCheckboxQuestion"
 	}
+	
+	def deleteEntity(def entity) {
+		surveyService.deleteQuestion(entity)
+		entity.section.removeFromQuestions(entity)
+	}
 
 	def getModel(def entity) {
-		def options = entity.options
-		Collections.sort(options)
+		def options = entity.options?.sort({it.order})
 		[
 			question: entity,
 			options: options,

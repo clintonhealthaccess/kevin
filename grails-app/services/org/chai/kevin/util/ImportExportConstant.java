@@ -51,4 +51,9 @@ public class ImportExportConstant {
 	public final static String DATA_VALUE_ADDRESS = "value_address";
 	public final static Integer NUMBER_OF_LINES_TO_IMPORT = 100;
 	
+	// entity import/export
+	public final static String CODE_DELIMITER = "~";
+	public final static String CODE_PATTERN =  CODE_DELIMITER + "[^" + CODE_DELIMITER + "]+" + CODE_DELIMITER;
+	public final static String VALUE_NOT_EXPORTABLE = "VALUE_NOT_EXPORTABLE";	
+
 }

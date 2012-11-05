@@ -98,9 +98,9 @@ class DataExportTaskSpec extends IntegrationTests {
 		def period = newPeriod()
 		def sum = newSum("1",CODE(1));
 		
-		def dataExport = newCalculationExport("en":"Testing Seach One", 
+		def dataExport = newCalculationExport(CODE(1), ["en":"Testing Seach One"], 
 			new HashSet([period]), 
-			DISTRICT_HOSPITAL_GROUP+','+HEALTH_CENTER_GROUP, 
+			[DISTRICT_HOSPITAL_GROUP,HEALTH_CENTER_GROUP], 
 			new HashSet([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]), 
 			new HashSet([sum]))
 		
@@ -123,9 +123,9 @@ class DataExportTaskSpec extends IntegrationTests {
 		setupLocationTree();
 		def period = newPeriod()
 		
-		def dataExport = newDataElementExport("en":"Testing Seach One",
+		def dataExport = newDataElementExport(CODE(1), ["en":"Testing Seach One"],
 			new HashSet([period]),
-			DISTRICT_HOSPITAL_GROUP+','+HEALTH_CENTER_GROUP,
+			[DISTRICT_HOSPITAL_GROUP,HEALTH_CENTER_GROUP],
 			new HashSet([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]),
 			new HashSet([newRawDataElement(CODE(1), Type.TYPE_NUMBER())]))
 		
@@ -148,9 +148,9 @@ class DataExportTaskSpec extends IntegrationTests {
 		setupLocationTree();
 		def period = newPeriod()
 		
-		def dataExport = newDataElementExport("en":"Testing Seach One",
+		def dataExport = newDataElementExport(CODE(1), ["en":"Testing Seach One"],
 			new HashSet([period]),
-			DISTRICT_HOSPITAL_GROUP+HEALTH_CENTER_GROUP,
+			[DISTRICT_HOSPITAL_GROUP,HEALTH_CENTER_GROUP],
 			new HashSet([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]),
 			new HashSet([newRawDataElement(CODE(1), Type.TYPE_NUMBER())]))
 		

@@ -1,15 +1,13 @@
 package org.chai.kevin.planning;
 
+import groovy.transform.EqualsAndHashCode
 import i18nfields.I18nFields
 
-import java.util.ArrayList
-import java.util.List
-
-import org.chai.kevin.IntegerOrderable
 import org.chai.kevin.data.NormalizedDataElement
 
 @I18nFields
-class PlanningCost extends IntegerOrderable {
+//@EqualsAndHashCode(includes='id')
+class PlanningCost {
 
 	public enum PlanningCostType {OUTGOING("planning.planningcost.type.outgoing"), INCOMING("planning.planningcost.type.incoming");
 		private String code;
@@ -24,11 +22,13 @@ class PlanningCost extends IntegerOrderable {
 		String getKey() { return name(); }
 	};
 
+	Long id
+
 	Integer order;
 	
 	PlanningCostType type;
 	NormalizedDataElement dataElement;
-	Boolean hideIfZero = false
+	Boolean hideIfZero
 	String names
 	
 	// deprecated
@@ -80,26 +80,4 @@ class PlanningCost extends IntegerOrderable {
 		return groupsInName.get(groupsInName.size() -1);
 	}
 	
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	public boolean equals(Object obj) {
-		if (this.(is(obj)))
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof Planning))
-			return false;
-		Planning other = (Planning) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
 }

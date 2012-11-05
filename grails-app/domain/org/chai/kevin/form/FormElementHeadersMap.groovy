@@ -35,12 +35,6 @@ class FormElementHeadersMap implements Serializable {
 		jsonNames (nullable: true)
 	}
 	
-	Map<String, String> getNamesMap() {
-		Map result = [:]
-		result.getMetaClass().get = {String language -> return getNames(new Locale(language))}
-		return result
-	}
-	
 	void setNamesMap(Map<String, String> namesMap) {
 		namesMap.each {
 			setNames(it.value, new Locale(it.key))

@@ -16,7 +16,7 @@ class DataExportDomainSpec extends IntegrationTests {
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER());
 		
-		def exporter = newDataElementExport("en":"Testing Seach One", 
+		def exporter = newDataElementExport(CODE(1), ["en":"Testing Seach One"], 
 			s([period]), [HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP], 
 			s([Location.findByCode(RWANDA)]), s([dataElement]));
 		
@@ -37,7 +37,7 @@ class DataExportDomainSpec extends IntegrationTests {
 		def period = newPeriod()
 		def sum = newSum("1", CODE(1))
 		
-		def exporter = newCalculationExport("en":"Testing Seach One",
+		def exporter = newCalculationExport(CODE(1), ["en":"Testing Seach One"],
 			s([period]), [HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP],
 			s([Location.findByCode(RWANDA)]), s([sum]));
 		

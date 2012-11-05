@@ -43,7 +43,7 @@ class PlanningOutputColumnControllerSpec extends PlanningIntegrationTests {
 		planningOutputColumnController = new PlanningOutputColumnController()
 		
 		when:
-		planningOutputColumnController.params['planningOutput.id'] = planningOutput.id
+		planningOutputColumnController.params['planningOutput.id'] = planningOutput.id+''
 		planningOutputColumnController.params['prefix'] = '[_]'
 		planningOutputColumnController.saveWithoutTokenCheck()
 

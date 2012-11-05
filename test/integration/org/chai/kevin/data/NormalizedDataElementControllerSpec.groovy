@@ -31,6 +31,7 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.NormalizedDataElementController;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.dsr.DsrIntegrationTests;
 import org.chai.location.DataLocation;
 import org.chai.location.Location;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
@@ -126,6 +127,22 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		then:
 		NormalizedDataElement.count() == 1
 		Summ.count() == 1
+	}
+	
+	def "cannot delete normalized data element if there are associated targets"() {
+		setup:
+		def program = newReportProgram(CODE(1))
+		def targetCategory = DsrIntegrationTests.newDsrTargetCategory(CODE(2), program, 1)
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
+		def target = DsrIntegrationTests.newDsrTarget(CODE(3), normalizedDataElement, targetCategory)
+		normalizedDataElementController = new NormalizedDataElementController()
+		
+		when:
+		normalizedDataElementController.params.id = normalizedDataElement.id
+		normalizedDataElementController.delete()
+		
+		then:
+		NormalizedDataElement.count() == 1
 	}
 	
 	def "cannot delete normalized data element if there are associated planning costs"() {

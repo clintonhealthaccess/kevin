@@ -16,9 +16,9 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
-		def category = newDsrTargetCategory(CATEGORY1, 0)
+		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(4), 1, dataElement, program, category)
+		def target = newDsrTarget(CODE(4), 1, dataElement, category)
 		def reportType = Utils.ReportType.TABLE
 		
 		when: "valid table"
@@ -48,9 +48,9 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
-		def category = newDsrTargetCategory(CATEGORY1, 0)
+		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(4), 1, dataElement, program, category)
+		def target = newDsrTarget(CODE(4), 1, dataElement, category)
 		def reportType = Utils.ReportType.MAP
 		
 		when: "valid table"
@@ -76,49 +76,14 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		model.dsrTable != null
 	}
 	
-	def "get dsr with category belonging to several programs only gets target belonging to the specified category"() {
-		setup:
-		setupLocationTree()
-		def period = newPeriod()
-		def program1 = newReportProgram(ROOT)
-		def program2 = newReportProgram(PROGRAM1, program1)
-		def category = newDsrTargetCategory(CATEGORY1, 0)
-		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target1 = newDsrTarget(CODE(4), 1, dataElement, program1, category)
-		def target2 = newDsrTarget(CODE(5), 1, dataElement, program2, category)
-		def reportType = Utils.ReportType.TABLE
-	
-		when: "valid table"
-		dsrController = new DsrController()
-		dsrController.params.period = period.id
-		dsrController.params.program = program1.id
-		dsrController.params.location = Location.findByCode(RWANDA).id
-		dsrController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
-		dsrController.params.dsrCategory = category.id
-		dsrController.params.reportType = reportType.toString().toLowerCase()
-		def model = dsrController.view()
-		
-		then:
-		model.currentPeriod.equals(period)
-		model.currentProgram.equals(program1)
-		model.currentLocation.equals(Location.findByCode(RWANDA))
-		model.currentLocationTypes.equals(s([DataLocationType.findByCode(HEALTH_CENTER_GROUP), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
-		model.locationSkipLevels.equals(s([LocationLevel.findByCode(SECTOR)]))
-		model.currentCategory.equals(category)
-		model.currentIndicators.equals(null)
-		model.currentView.equals(reportType)
-		model.dsrTable != null
-		model.dsrTable.targets == [target1]
-	}
-	
 	def "get dsr with no category, redirect"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def category = newDsrTargetCategory(CATEGORY1, 0)
-		def target = newDsrTarget(CODE(4), 1, dataElement, program, category)
+		def category = newDsrTargetCategory(CATEGORY1, program, 0)
+		def target = newDsrTarget(CODE(4), 1, dataElement, category)
 		def reportType = Utils.ReportType.TABLE
 		
 		when: "valid table"
@@ -144,8 +109,8 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def category = newDsrTargetCategory(CATEGORY1, 0)
-		def target = newDsrTarget(CODE(4), 1, dataElement, program, category)
+		def category = newDsrTargetCategory(CATEGORY1, program, 0)
+		def target = newDsrTarget(CODE(4), 1, dataElement, category)
 		def reportType = Utils.ReportType.TABLE
 		
 		when: "valid table"
@@ -170,7 +135,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
-		def category = newDsrTargetCategory(CATEGORY1, 0)
+		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def reportType = Utils.ReportType.TABLE
 		
 		when:
@@ -201,9 +166,9 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
-		def category = newDsrTargetCategory(CATEGORY1, 0)
+		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(4), 1, dataElement, program, category)
+		def target = newDsrTarget(CODE(4), 1, dataElement, category)
 		def reportType = Utils.ReportType.TABLE
 		
 		when: "no parameters"
@@ -223,9 +188,9 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
-		def category = newDsrTargetCategory(CATEGORY1, 0)
+		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(4), 1, dataElement, program, category)
+		def target = newDsrTarget(CODE(4), 1, dataElement, category)
 		def reportType = Utils.ReportType.TABLE
 		
 		when: "invalid parameters"
@@ -251,9 +216,9 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
-		def category = newDsrTargetCategory(CATEGORY1, 0)
+		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(4), 1, dataElement, program, category)
+		def target = newDsrTarget(CODE(4), 1, dataElement, category)
 		def reportType = Utils.ReportType.TABLE
 		
 		when: "valid location parameter"
@@ -279,9 +244,9 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
-		def category = newDsrTargetCategory(CATEGORY1, 0)
+		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(4), 1, dataElement, program, category)
+		def target = newDsrTarget(CODE(4), 1, dataElement, category)
 		def reportType = Utils.ReportType.MAP
 		
 		when: "invalid parameters"
@@ -292,7 +257,6 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		dsrController.params.dsrCategory = -1
 		dsrController.params.dataLocationTypes = [-1, -2]
 		dsrController.params.reportType = reportType.toString().toLowerCase()
-		dsrController.params.indicators = [-1]
 		def model = dsrController.view()
 		
 		then:
@@ -301,7 +265,6 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"/"+category.id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
-		dsrController.response.redirectedUrl.contains("indicators="+target.id)
 	}
 	
 	def "get dsr for only district hospitals"() {
@@ -309,9 +272,9 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
-		def category = newDsrTargetCategory(CATEGORY1, 0)
+		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(4), 1, dataElement, program, category)
+		def target = newDsrTarget(CODE(4), 1, dataElement, category)
 		def reportType = Utils.ReportType.TABLE
 		
 		when: "valid table"

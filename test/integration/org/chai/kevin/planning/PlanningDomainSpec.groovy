@@ -2,7 +2,9 @@ package org.chai.kevin.planning
 
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.form.FormElement;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
+import org.hibernate.cfg.annotations.reflection.XMLContext.Default;
 
 import grails.validation.ValidationException;
 
@@ -14,13 +16,13 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		
 		when:
-		new Planning(period: period).save(failOnError: true)
+		new Planning(period: period, active: true).save(failOnError: true)
 		
 		then:
 		Planning.count() == 1
 		
 		when:
-		new Planning().save(failOnError: true)
+		new Planning(active: true).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -108,6 +110,23 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		PlanningType.count() == 2
 	}
 	
+	def "save planning type cascades form element"() {
+		setup:
+		def period = newPeriod()
+		def planning = newPlanning(period, [])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))
+		
+		when:
+		def planningType = new PlanningType(planning: planning, fixedHeader: '', formElement: new FormElement(dataElement: dataElement))
+		planningType.formElement.setHeaders(['':['en':'test']])
+		planningType.save(failOnError: true)
+				
+		then:
+		PlanningType.count() == 1
+		FormElement.count() == 1
+		FormElement.list()[0].getHeaders('en')[''] == 'test'
+	}
+	
 	def "null constraints in planning cost"() {
 		setup:
 		def period = newPeriod()
@@ -116,19 +135,19 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), [:])
 		
 		when:
-		new PlanningCost(planningType: planningType, dataElement: dataElement, type: PlanningCostType.INCOMING).save(failOnError: true)
+		new PlanningCost(planningType: planningType, dataElement: dataElement, type: PlanningCostType.INCOMING, hideIfZero: false).save(failOnError: true)
 		
 		then:
 		PlanningCost.count() == 1
 		
 		when:
-		new PlanningCost(planningType: planningType, type: PlanningCostType.INCOMING).save(failOnError: true)
+		new PlanningCost(planningType: planningType, type: PlanningCostType.INCOMING, hideIfZero: false).save(failOnError: true)
 
 		then:
 		thrown ValidationException
 
 		when:
-		new PlanningCost(planningType: planningType, dataElement: dataElement).save(failOnError: true)
+		new PlanningCost(planningType: planningType, dataElement: dataElement, hideIfZero: false).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -167,25 +186,25 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		
 		when:
-		new PlanningOutput(dataElement: dataElement, fixedHeader: "[_]", planning: planning).save(failOnError:true)
+		new PlanningOutput(dataElement: dataElement, fixedHeader: "[_]", planning: planning, displayTotal: true).save(failOnError:true)
 		
 		then:
 		PlanningOutput.count() == 1
 		
 		when:
-		new PlanningOutput(dataElement: dataElement, planning: planning).save(failOnError: true)
+		new PlanningOutput(dataElement: dataElement, planning: planning, displayTotal: true).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 		
 		when:
-		new PlanningOutput(fixedHeader: "[_]", planning: planning).save(failOnError:true)
+		new PlanningOutput(fixedHeader: "[_]", planning: planning, displayTotal: true).save(failOnError:true)
 		
 		then:
 		thrown ValidationException
 		
 		when:
-		new PlanningOutput(dataElement: dataElement, fixedHeader: "[_]").save(failOnError:true)
+		new PlanningOutput(dataElement: dataElement, fixedHeader: "[_]", displayTotal: true).save(failOnError:true)
 		
 		then:
 		thrown ValidationException
@@ -245,20 +264,5 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		thrown ValidationException
 	}
 	
-	
-	def "planning column output order"() {
-		setup:
-		def period = newPeriod()
-		def planning = newPlanning(period, [])
-		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
-		def planningOutput = newPlanningOutput(planning, dataElement, '[_]')
-		
-		when:
-		def column1 = newPlanningOutputColumn(planningOutput, '[_]', 2).save(failOnError:true)
-		def column2 = newPlanningOutputColumn(planningOutput, '[_]', 1).save(failOnError:true)
-		
-		then:
-		planningOutput.columns.equals([column2, column1])
-	}
 	
 }

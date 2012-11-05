@@ -64,7 +64,7 @@ public class ReportService {
 		}
 		
 		//report target tree list
-		List<T> targets = getReportTargets(clazz, program);
+		List<T> targets = program.getReportTargets(clazz);
 		if (log.isDebugEnabled()) log.debug("collectReportTree(program="+program+",targets="+targets+")");
 		if(!targets.isEmpty()){
 			hasTargets = true;
@@ -80,18 +80,9 @@ public class ReportService {
 	public List<AbstractReportTarget> getReportTargets(Data<?> data) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AbstractReportTarget.class);
 		criteria.add(Restrictions.eq("data", data));
-		return (List<AbstractReportTarget>)criteria.list();
-	}
-	
-	// TODO check this
-	public <T extends ReportTarget> List<T> getReportTargets(Class<T> clazz, ReportProgram program) {
-		Criteria criteria = sessionFactory.getCurrentSession()
-			.createCriteria(clazz)
-			.setCacheable(true);
-		if(program != null) criteria.add(Restrictions.eq("program", program));
-		List<T> targets = (List<T>)criteria.list();
-		if (log.isDebugEnabled()) log.debug("collectReportTree(program="+program+",targets="+targets+")");
-		return targets;			
+		List<AbstractReportTarget> indicators = (List<AbstractReportTarget>)criteria.list();
+		if (log.isDebugEnabled()) log.debug("getReportTargets(data="+data+",indicators="+indicators+")");
+		return indicators;
 	}
 	
 	public void setLocationService(LocationService locationService) {

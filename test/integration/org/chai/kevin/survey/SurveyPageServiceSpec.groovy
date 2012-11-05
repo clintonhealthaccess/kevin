@@ -663,7 +663,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		enteredValue = newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), Value.VALUE_NUMBER(1d))
 		enteredValue.save(failOnError: true)
 		def enteredQuestion = SurveyEnteredQuestion.list()[0]
-		enteredQuestion.skipped = s([skipRule])
+		enteredQuestion.addToSkippedRules(skipRule)
 		enteredQuestion.save(failOnError: true)
 		surveyPageService.refreshSurveyForDataLocation(DataLocation.findByCode(KIVUYE), survey, false, false)
 		

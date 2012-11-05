@@ -46,6 +46,7 @@ class PlanningCostControllerSpec extends PlanningIntegrationTests {
 		when:
 		planningCostController.params['planningType.id'] = planningType.id
 		planningCostController.params['dataElement.id'] = dataElement.id
+		planningCostController.params['hideIfZero'] = '0'
 		planningCostController.params['type'] = 'INCOMING'
 		planningCostController.params['section'] = '[_].key'
 		planningCostController.saveWithoutTokenCheck()

@@ -122,14 +122,14 @@ class CalculationExportController extends AbstractEntityController {
 	
 	def list = {
 		adaptParamsForList()
-		List<CalculationExport> exports = CalculationExport.list(params)
-		this.getDataExportListModel(exports,list)
+		def exports = CalculationExport.list(params)
+		this.getDataExportListModel(exports, list)
 	}
 	
 	def search = {
 		adaptParamsForList()
-		List<CalculationExport> exports = dataExportService.searchDataExports(CalculationExport.class, params['q'],params);
-		getDataExportListModel(exports,search)
+		def exports = dataExportService.searchDataExports(CalculationExport.class, params['q'],params);
+		getDataExportListModel(exports, search)
 	}
 	
 	def getDataExportListModel(def exports,def method){
@@ -137,7 +137,7 @@ class CalculationExportController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			template:"dataExport/calculationExportList",
 			entities: exports,
-			entityCount: dataExportService.countDataExports(CalculationExport.class, params['q']),
+			entityCount: exports.totalCount,
 			code: getLabel(),
 			method: method,
 			q:params['q']
@@ -151,6 +151,7 @@ class CalculationExportController extends AbstractEntityController {
 			def newExport= new CalculationExport()
 			Utils.copyI18nField(exportExisting, newExport, "Descriptions")
 			newExport.setDate(new Date());
+			newExport.setCode(exportExisting.getCode() + ' (copy)');
 			newExport.setTypeCodeString(exportExisting.getTypeCodeString());
 			exportExisting.getLocations().each {newExport.addToLocations(it)};
 			exportExisting.getPeriods().each {newExport.addToPeriods(it)};

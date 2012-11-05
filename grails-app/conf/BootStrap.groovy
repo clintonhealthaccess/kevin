@@ -138,6 +138,7 @@ class BootStrap {
 			StructureInitializer.createLocations()
 			StructureInitializer.createDataLocations()
 			sessionFactory.currentSession.flush()
+			
 			// TODO review this
 			StructureInitializer.createRoles();
 			StructureInitializer.createUsers();

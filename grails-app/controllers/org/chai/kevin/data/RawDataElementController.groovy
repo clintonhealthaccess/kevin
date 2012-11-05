@@ -35,6 +35,7 @@ import org.chai.kevin.AbstractEntityController
 import org.chai.location.LocationService
 import org.chai.kevin.Period;
 import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyService
 import org.chai.kevin.survey.SurveyValueService;
@@ -100,23 +101,30 @@ class RawDataElementController extends AbstractEntityController {
 	}
 	
 	def deleteEntity(def entity) {
-		// delete all survey elements and survey entered values
-		surveyService.getSurveyElements(entity, null).each {
-			surveyValueService.deleteEnteredValues(it)
-			
-			it.question.removeSurveyElement(it)
-			it.delete() 
-		}
-		
 		// we delete the entity only if there are no associated values
 		// should we throw an exception in case we can't delete ?
 		if (valueService.getNumberOfValues(entity) != 0) {
+			if (log.debugEnabled) log.debug('not deleting data, it still has values')
 			flash.message = message(code: "rawdataelement.delete.hasvalues", default: "Could not delete element, it still has values");
 		}
 		else if (!dataService.getReferencingData(entity).isEmpty()) {
+			if (log.debugEnabled) log.debug('not deleting data, it still has referencing data elements')
 			flash.message = message(code: "rawdataelement.delete.hasreferencingdata", default: "Could not delete element, some other data still reference this element.")
 		}
+		else if (AbstractReportTarget.countByData(entity) > 0) {
+			if (log.debugEnabled) log.debug('not deleting data, it still has referencing targets')
+			flash.message = message(code: "data.delete.hasreporttargets", default: "Could not delete element, some reports use this data element.")
+		}
 		else {
+			if (log.debugEnabled) log.debug('deleting data')
+			// delete all survey elements and survey entered values
+			surveyService.getSurveyElements(entity, null).each {
+				surveyValueService.deleteEnteredValues(it)
+				
+				it.question.removeSurveyElement(it)
+				it.delete(flush: true)
+			}
+			
 			dataService.delete(entity);
 		}
 	}

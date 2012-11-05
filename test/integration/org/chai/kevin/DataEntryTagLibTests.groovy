@@ -24,7 +24,6 @@ class DataEntryTagLibTests extends GroovyPagesTestCase {
 		
 	}
 	
-	
 	// this does not work because it modifies the metaClass of languageService for all the tests
 //		languageService.metaClass.currentLanguage = { return "fr";}
 //		languageService.metaClass.getCurrentLanguage = { return "fr";}

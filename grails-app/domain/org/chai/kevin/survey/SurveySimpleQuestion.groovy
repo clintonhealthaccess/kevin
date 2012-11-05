@@ -62,11 +62,6 @@ class SurveySimpleQuestion extends SurveyQuestion implements Exportable {
 		return elements;
 	}
 
-	@Override
-	public void removeSurveyElement(SurveyElement surveyElement) {
-		surveyElements.remove(surveyElement)
-	}
-
 	@SuppressWarnings("unchecked")
 	public Set<String> getTypeApplicable(SurveyElement surveyElement) {
 		if (!surveyElement.equals(this.surveyElement)) {
@@ -87,7 +82,6 @@ class SurveySimpleQuestion extends SurveyQuestion implements Exportable {
 	protected void deepCopy(SurveyQuestion question, SurveyCloner surveyCloner) {
 		SurveySimpleQuestion copy = (SurveySimpleQuestion)question;
 		super.deepCopy(copy, surveyCloner);
-		copy.setSurveyElement(surveyCloner.getElement(getSurveyElement()));
 	}
 
 	@Override

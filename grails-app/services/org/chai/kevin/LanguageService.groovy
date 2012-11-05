@@ -34,7 +34,6 @@ import org.chai.kevin.data.Type
 import org.chai.kevin.data.Type.ValueType
 import org.chai.kevin.util.Utils
 import org.chai.kevin.value.Value
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 import org.springframework.web.context.request.RequestContextHolder
@@ -44,6 +43,7 @@ class LanguageService implements ApplicationContextAware {
 	
 	ApplicationContext applicationContext
 	
+	def grailsApplication
 	def dataServiceBean
 	
 	static transactional = false
@@ -57,8 +57,11 @@ class LanguageService implements ApplicationContextAware {
 	}
 	
 	List<String> getAvailableLanguages() {
-		List<String> languages = ConfigurationHolder.config.site.languages;
-		return languages;
+		return grailsApplication.config.i18nFields.locales;
+	}
+	
+	String getFallbackLanguage() {
+		return grailsApplication.config.site.fallback.language
 	}
 	
 	Locale getCurrentLocale() {
@@ -66,23 +69,9 @@ class LanguageService implements ApplicationContextAware {
 	}
 	
 	String getCurrentLanguage() {
-		Locale locale = RequestContextUtils.getLocale(RequestContextHolder.currentRequestAttributes().getRequest());
-		return locale.getLanguage();
+		return getCurrentLocale().getLanguage();
 	}
 	
-	String getFallbackLanguage() {
-		return ConfigurationHolder.config.site.fallback.language;
-	}
-	
-	String getText(def translation, def language = null) {
-		def text = translation?.get(language == null ? getCurrentLanguage() : language)
-		if (text != null) text = text.toString()
-		if (text == null || text.trim().equals("") || Utils.stripHtml(text).trim().equals("")) text = translation?.get(getFallbackLanguage())
-		if (text != null) text = text.toString()
-		if (text == null) return "";
-		return text.toString();
-	}
-
 	String getStringValue(Value value, Type type, def enums = null, def format = null, def zero = null) {
 		if (value == null || value.isNull()) return null
 		def result;
@@ -97,7 +86,7 @@ class LanguageService implements ApplicationContextAware {
 				else {
 					def option = enume?.getOptionForValue(value.enumValue)
 					if (option == null) result = value.enumValue
-					else result = option.names
+					else result = Utils.noNull(option.names)
 				}
 				break;
 			case (ValueType.NUMBER):

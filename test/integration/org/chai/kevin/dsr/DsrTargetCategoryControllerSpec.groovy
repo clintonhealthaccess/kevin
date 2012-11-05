@@ -38,13 +38,13 @@ class DsrTargetCategoryControllerSpec extends DsrIntegrationTests {
 	def "list target with offset works"() {
 		setup:
 		def program = newReportProgram(CODE(1))
-		def category1 = newDsrTargetCategory(CODE(2), 1)
-		newDsrTarget(CODE(3), 1, newRawDataElement(CODE(2), Type.TYPE_NUMBER()), program, category1);
-		newDsrTarget(CODE(4), 2, newRawDataElement(CODE(3), Type.TYPE_NUMBER()), program, category1);
-		newDsrTarget(CODE(5), 3, newRawDataElement(CODE(4), Type.TYPE_NUMBER()), program, category1);
+		def category1 = newDsrTargetCategory(CODE(2), program, 1)
+		newDsrTarget(CODE(3), 1, newRawDataElement(CODE(2), Type.TYPE_NUMBER()), category1);
+		newDsrTarget(CODE(4), 2, newRawDataElement(CODE(3), Type.TYPE_NUMBER()), category1);
+		newDsrTarget(CODE(5), 3, newRawDataElement(CODE(4), Type.TYPE_NUMBER()), category1);
 		
-		def category2 = newDsrTargetCategory(CODE(6), 2)
-		def category3 = newDsrTargetCategory(CODE(7), 3)
+		def category2 = newDsrTargetCategory(CODE(6), program, 2)
+		def category3 = newDsrTargetCategory(CODE(7), program, 3)
 		dsrTargetCategoryController = new DsrTargetCategoryController()
 		
 		when:
@@ -75,13 +75,13 @@ class DsrTargetCategoryControllerSpec extends DsrIntegrationTests {
 	def "search category"() {
 		setup:
 		def program = newReportProgram(CODE(1))
-		def category1 = newDsrTargetCategory(CODE(2), 1)
-		newDsrTarget(CODE(3), 1, newRawDataElement(CODE(2), Type.TYPE_NUMBER()), program, category1);
-		newDsrTarget(CODE(4), 2, newRawDataElement(CODE(3), Type.TYPE_NUMBER()), program, category1);
-		newDsrTarget(CODE(5), 3, newRawDataElement(CODE(4), Type.TYPE_NUMBER()), program, category1);
+		def category1 = newDsrTargetCategory(CODE(2), program, 1)
+		newDsrTarget(CODE(3), 1, newRawDataElement(CODE(2), Type.TYPE_NUMBER()), category1);
+		newDsrTarget(CODE(4), 2, newRawDataElement(CODE(3), Type.TYPE_NUMBER()), category1);
+		newDsrTarget(CODE(5), 3, newRawDataElement(CODE(4), Type.TYPE_NUMBER()), category1);
 		
-		def category2 = newDsrTargetCategory(CODE(6), 2)
-		def category3 = newDsrTargetCategory(CODE(7), 3)
+		def category2 = newDsrTargetCategory(CODE(6), program, 2)
+		def category3 = newDsrTargetCategory(CODE(7), program, 3)
 		dsrTargetCategoryController = new DsrTargetCategoryController()
 		
 		when:

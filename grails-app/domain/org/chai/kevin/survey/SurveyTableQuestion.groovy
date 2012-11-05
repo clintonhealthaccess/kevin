@@ -51,8 +51,6 @@ class SurveyTableQuestion extends SurveyQuestion implements Exportable {
 	
 	static mapping = {
 		table 'dhsst_survey_table_question'
-		rows cascade: "all-delete-orphan"
-		columns cascade: "all-delete-orphan"
 	}
 	
 	static constraints = {
@@ -91,6 +89,7 @@ class SurveyTableQuestion extends SurveyQuestion implements Exportable {
 
 	@Override
 	public void removeSurveyElement(SurveyElement surveyElement) {
+		super.removeSurveyElement(surveyElement)
 		for (SurveyTableRow row : getRows()) {
 			for (SurveyTableColumn column : getColumns()) {
 				if (row.getSurveyElements().get(column).equals(surveyElement)) {

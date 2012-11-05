@@ -28,6 +28,8 @@ package org.chai.kevin.data;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import groovy.transform.EqualsAndHashCode;
+
 import java.util.Date
 import java.util.Set
 
@@ -37,6 +39,7 @@ import org.chai.kevin.value.DataValue
 
 
 @i18nfields.I18nFields
+@EqualsAndHashCode(includes='code')
 abstract class Data<T extends DataValue> {
 	
 	Long id
@@ -83,29 +86,4 @@ abstract class Data<T extends DataValue> {
 	
 	public abstract Set<String> getSources();
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this.is(obj))
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof Data))
-			return false;
-		Data<?> other = (Data<?>) obj;
-		if (code == null) {
-			if (other.code != null)
-				return false;
-		} else if (!code.equals(other.code))
-			return false;
-		return true;
-	}
-
 }

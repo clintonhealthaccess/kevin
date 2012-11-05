@@ -64,18 +64,18 @@ class DataService {
 		return Enum.findByCode(code, [cache: true])
 	}
 	
-	// this exists because Groovy Calculation.list() doesn't return anything
-	public <T extends Data<?>> List<T> list(Class<T> clazz, Map<String, String> params) {
-		def criteria = sessionFactory.getCurrentSession().createCriteria(clazz)
-		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
-		if (params['max'] != null) criteria.setMaxResults(params['max'])
-		return (List<T>)criteria.addOrder(Order.asc("id")).list()
-	}
+//	// this exists because Groovy Calculation.list() doesn't return anything
+//	public <T extends Data<?>> List<T> list(Class<T> clazz, Map<String, String> params) {
+//		def criteria = sessionFactory.getCurrentSession().createCriteria(clazz)
+//		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
+//		if (params['max'] != null) criteria.setMaxResults(params['max'])
+//		return (List<T>)criteria.addOrder(Order.asc("id")).list()
+//	}
 	
-	// this exists because Groovy Calculation.list() doesn't return anything
-	public <T extends Data<?>> Integer count(Class<T> clazz) {
-		return (Integer)sessionFactory.getCurrentSession().createCriteria(clazz).setProjection(Projections.count("id")).uniqueResult()
-	}
+//	// this exists because Groovy Calculation.list() doesn't return anything
+//	public <T extends Data<?>> Integer count(Class<T> clazz) {
+//		return (Integer)sessionFactory.getCurrentSession().createCriteria(clazz).setProjection(Projections.count("id")).uniqueResult()
+//	}
 	
 	public <T extends Data<?>> T getData(Long id, Class<T> clazz) {
 		if (id == null) return null;
@@ -139,22 +139,11 @@ class DataService {
 		if (params['max'] != null) criteria.setMaxResults(params['max'])
 		else criteria.setMaxResults(500)
 		
-		List<Data<T>> data = criteria.addOrder(Order.asc("id")).list()
-		
-		// TODO review this
-//		StringUtils.split(text).each { chunk ->
-//			data.retainAll { element ->
-//				// we look in "info" if it is a data element
-//				(clazz.equals(RawDataElement.class)?Utils.matches(chunk, element.info):false) ||
-//				Utils.matches(chunk, element.id+"") ||
-//				Utils.matches(chunk, element.names[languageService.getCurrentLanguage()]) ||
-//				Utils.matches(chunk, element.code)
-//			}
-//		}
+		def data = criteria.addOrder(Order.asc("id")).list()
 		
 		if (!allowedTypes.isEmpty()) {
 			data.retainAll { element ->
-				element.type.type.name().toLowerCase() in allowedTypes 
+				element.getType().type.name().toLowerCase() in allowedTypes 
 			}
 		}
 		
@@ -180,7 +169,7 @@ class DataService {
 		if (!allowedTypes.isEmpty()) {
 			def typeRestrictions = Restrictions.disjunction()
 			allowedTypes.each { type ->
-				typeRestrictions.add(Restrictions.like("type.jsonValue", type, MatchMode.ANYWHERE))
+				typeRestrictions.add(Restrictions.ilike("typeString", type, MatchMode.ANYWHERE))
 			}
 			criteria.add(Restrictions.and(textRestrictions, typeRestrictions))
 		}

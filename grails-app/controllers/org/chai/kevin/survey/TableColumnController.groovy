@@ -38,6 +38,7 @@ import org.chai.kevin.util.Utils
 class TableColumnController extends AbstractEntityController {
 
 	def locationService
+	def surveyService
 	
 	def getEntity(def id) {
 		return SurveyTableColumn.get(id)
@@ -66,14 +67,36 @@ class TableColumnController extends AbstractEntityController {
 	}
 	
 	def deleteEntity(def entity) {
-		for(SurveyTableRow row : entity.question.rows){
-			if(row.surveyElements[entity])
-				row.surveyElements[entity].delete();
-			row.surveyElements.remove(entity)
+		def surveyElements = []
+		def question = entity.question
+		def rows = new ArrayList(question.rows?:[])
+		rows.each { row ->
+			def columnMaps = new ArrayList(row.surveyTableRowColumnMaps?:[])
+			def newElements = [:]
+			columnMaps.each { map ->
+				if (map.tableColumn.equals(entity)) {
+					surveyElements << map.surveyElement
+					row.removeFromSurveyTableRowColumnMaps(map)
+					map.delete()
+					map.tableRow = row
+				}
+			}
 		}
+		question.removeFromColumns(entity)
 		entity.delete()
+		surveyElements.each {
+			if (it != null) {
+				surveyService.deleteSurveyElement(it)
+			}
+		}
+		question.save()
 	}
-
+	
+	def saveEntity(def entity) {
+		if (entity.id == null) entity.question.addToColumns(entity)
+		entity.question.save()
+	}
+	
 	def bindParams(def entity) {
 		entity.properties = params
 	}

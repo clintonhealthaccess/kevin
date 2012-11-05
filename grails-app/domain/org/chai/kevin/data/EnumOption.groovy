@@ -35,6 +35,7 @@ import org.chai.kevin.Importable
 import org.chai.kevin.util.Utils
 
 @i18nfields.I18nFields
+//@EqualsAndHashCode(includes=['code', 'enume'])
 public class EnumOption implements Exportable, Importable {
 
 	// deprecated
@@ -85,6 +86,16 @@ public class EnumOption implements Exportable, Importable {
 	static transients = ['cachedOrderMap', 'order']
 	
 	@Override
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getCode().toString()) + "]";
+	}
+	
+	@Override
+	public EnumOption fromExportString(Object value) {
+		return (EnumOption) value;
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -113,16 +124,6 @@ public class EnumOption implements Exportable, Importable {
 		} else if (!enume.equals(other.enume))
 			return false;
 		return true;
-	}
-
-	@Override
-	public String toExportString() {
-		return "[" + Utils.formatExportCode(getCode().toString()) + "]";
-	}
-	
-	@Override
-	public EnumOption fromExportString(Object value) {
-		return (EnumOption) value;
 	}
 	
 }

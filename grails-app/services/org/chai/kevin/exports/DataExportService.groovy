@@ -27,16 +27,8 @@
  */
 package org.chai.kevin.exports
 
-import java.util.List
-import java.util.Map
-
 import org.apache.commons.lang.StringUtils
-import org.chai.kevin.util.Utils
-import org.hibernate.Criteria
-import org.hibernate.criterion.MatchMode
-import org.hibernate.criterion.Order
 import org.hibernate.criterion.Projections
-import org.hibernate.criterion.Restrictions
 
 /**
  * @author Jean Kahigiso M.
@@ -45,37 +37,18 @@ import org.hibernate.criterion.Restrictions
 public class DataExportService {
 
 	def languageService;
-	def sessionFactory;
-
-	public Integer countDataExports(Class<DataExport> clazz, String text) {
-		return getSearchCriteria(clazz,text).setProjection(Projections.count("id")).uniqueResult()
-	}
 
 	public <T extends DataExport> List<T> searchDataExports(Class<T> clazz, String text, Map<String, String> params) {
-		def exporters=[]
-		def criteria = getSearchCriteria(clazz,text)
-
-		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
-		if (params['max'] != null) criteria.setMaxResults(params['max'])
-
-		if(params['sort']!=null)
-			exporters= criteria.addOrder(Order.asc(params['sort'])).list()
-		else
-			exporters= criteria.addOrder(Order.desc("date")).list()
-
-		return exporters;
-	}
-	
-	private Criteria getSearchCriteria(Class<DataExport> clazz, String text) {
-		def criteria = sessionFactory.getCurrentSession().createCriteria(clazz);
-		def textRestrictions = Restrictions.conjunction()
-		StringUtils.split(text).each { chunk ->
-			def disjunction = Restrictions.disjunction();
-			disjunction.add(Restrictions.ilike("descriptions"+languageService.currentLanguage, chunk, MatchMode.ANYWHERE))
-			textRestrictions.add(disjunction)
+		def dbFieldName = 'descriptions_' + languageService.currentLanguage;
+		def criteria = clazz.createCriteria()
+		return  criteria.list(offset:params.offset,max:params.max,sort:params.sort ?:"id",order: params.order ?:"asc"){
+			StringUtils.split(text).each { chunk ->
+				 or{
+					 ilike("code","%"+chunk+"%")
+					 ilike(dbFieldName,"%"+chunk+"%")
+				 }
+			}
 		}
-		criteria.add(textRestrictions)
-		return criteria
 	}
 	
 }

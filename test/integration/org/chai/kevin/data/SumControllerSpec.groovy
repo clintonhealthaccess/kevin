@@ -3,6 +3,7 @@ package org.chai.kevin.data
 import org.chai.kevin.IntegrationTests;
 import org.chai.location.DataLocationType;
 import org.chai.location.Location;
+import org.chai.kevin.dsr.DsrIntegrationTests;
 import org.chai.kevin.value.SumPartialValue;
 
 class SumControllerSpec extends IntegrationTests {
@@ -11,7 +12,7 @@ class SumControllerSpec extends IntegrationTests {
 	
 	def "save works"() {
 		setup:
-		sumController = new SumController()
+		sumController = new SummController()
 		
 		when:
 		sumController.params.code = CODE(1)
@@ -27,7 +28,7 @@ class SumControllerSpec extends IntegrationTests {
 
 	def "save validates"() {
 		setup:
-		sumController = new SumController()
+		sumController = new SummController()
 		
 		when:
 		sumController.params.code = CODE(1)
@@ -43,7 +44,7 @@ class SumControllerSpec extends IntegrationTests {
 		def period = newPeriod()
 		def sum = newSum("1", CODE(1))
 		newSumPartialValue(sum, period, Location.findByCode(RWANDA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1")) 
-		sumController = new SumController()
+		sumController = new SummController()
 		
 		when:
 		sumController.params.id = sum.id
@@ -53,6 +54,22 @@ class SumControllerSpec extends IntegrationTests {
 		Summ.count() == 0
 		SumPartialValue.count() == 0 
 	}
+	
+	def "cannot delete sum if there are associated targets"() {
+		setup:
+		def program = newReportProgram(CODE(1))
+		def targetCategory = DsrIntegrationTests.newDsrTargetCategory(CODE(2), program, 1)
+		def sum = newSum("1", CODE(1))
+		def target = DsrIntegrationTests.newDsrTarget(CODE(3), sum, targetCategory)
+		sumController = new SummController()
+		
+		when:
+		sumController.params.id = sum.id
+		sumController.delete()
+		
+		then:
+		Summ.count() == 1
+	}
 
 	def "save sum deletes values"() {
 		setup:
@@ -60,7 +77,7 @@ class SumControllerSpec extends IntegrationTests {
 		def period = newPeriod()
 		def sum = newSum("1", CODE(1))
 		newSumPartialValue(sum, period, Location.findByCode(RWANDA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1"))
-		sumController = new SumController()
+		sumController = new SummController()
 		
 		when:
 		sumController.params.id = sum.id
@@ -76,7 +93,7 @@ class SumControllerSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def sum = newSum("1", CODE(1))
-		sumController = new SumController()
+		sumController = new SummController()
 		def time1 = sum.timestamp
 		
 		when:

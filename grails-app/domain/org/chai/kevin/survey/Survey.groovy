@@ -30,6 +30,7 @@ package org.chai.kevin.survey;
  * @author Jean Kahigiso M.
  *
  */
+import groovy.transform.EqualsAndHashCode;
 import i18nfields.I18nFields;
 
 import java.util.List;
@@ -40,6 +41,7 @@ import org.chai.kevin.util.Utils;
 import org.chai.location.DataLocationType;
 
 @I18nFields
+@EqualsAndHashCode(includes='code')
 class Survey implements Exportable {
 	
 	// deprecated
@@ -94,6 +96,10 @@ class Survey implements Exportable {
 		return new ArrayList<SurveyProgram>(programs?:[])
 	}
 	
+	List<SurveySkipRule> getAllSkipRules() {
+		return new ArrayList<SurveySkipRule>(skipRules?:[])
+	}
+	
 	List<SurveyProgram> getPrograms(DataLocationType type) {
 		if (log.debugEnabled) log.debug('getPrograms(type='+type+')')
 		List<SurveyProgram> result = new ArrayList<SurveyProgram>();
@@ -111,13 +117,13 @@ class Survey implements Exportable {
 		copy.setActive(getActive());
 		copy.setPeriod(getPeriod());
 		for (SurveyProgram program : getPrograms()) {
-			copy.getPrograms().add(cloner.getProgram(program));
+			copy.addToPrograms(cloner.getProgram(program));
 		}
 	}
 
 	protected void copyRules(Survey copy, SurveyCloner cloner) {
 		for (SurveySkipRule skipRule : getSkipRules()) {
-			copy.getSkipRules().add(cloner.getSkipRule(skipRule));
+			copy.addToSkipRules(cloner.getSkipRule(skipRule));
 		}
 	}
 

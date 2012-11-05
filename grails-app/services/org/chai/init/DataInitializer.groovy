@@ -280,6 +280,13 @@ class DataInitializer {
 				})]
 			})).save(failOnError: true)
 			
+			// geographical access - harvesting infrastructure
+			new NormalizedDataElement(code: 'rainwater_harvesting', type: Type.TYPE_STRING(), expressionMap: Period.list().collectEntries ([:], { period ->
+				[(period.id.toString()), DataLocationType.list().collectEntries ([:], { type ->
+					[(type.code), '"TODO"']
+				})]
+			})).save(failOnError: true)
+			
 			// geographical access - consistent energy
 			new NormalizedDataElement(code: 'energy_consistent', type: Type.TYPE_BOOL(), expressionMap: Period.list().collectEntries ([:], { period ->
 				[(period.id.toString()), DataLocationType.list().collectEntries ([:], { type ->

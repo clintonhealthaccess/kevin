@@ -1,5 +1,6 @@
 package org.chai.kevin.planning;
 
+import groovy.transform.EqualsAndHashCode;
 import i18nfields.I18nFields
 
 import java.util.ArrayList
@@ -13,6 +14,7 @@ import org.chai.kevin.data.Type.TypeVisitor
 import org.chai.kevin.form.FormElement
 
 @I18nFields
+//@EqualsAndHashCode(includes='id')
 class PlanningType {
 
 	Long id
@@ -49,15 +51,15 @@ class PlanningType {
 	static mapping = {
 		table 'dhsst_planning_type'
 		planning column: 'planning'
-		formElement column: 'formElement'
+		formElement column: 'formElement', cascade: 'all'
 	}
 	
 	static constraints = {
 		formElement (nullable:false)
-		fixedHeader (validator: {val, obj ->
-			if (val == null || val.trim().empty) return true
-			if (obj.formElement?.dataElement == null) return false
-			if (!obj.formElement.dataElement.getValuePrefixes('').contains(val)) return false
+		fixedHeader (nullable: true, validator: {val, obj ->
+			if (val == null || val.trim().empty) return true;
+			if (obj.formElement?.dataElement == null) return false;
+			if (!obj.formElement.dataElement.getValuePrefixes('').contains(val)) return false;
 		})
 		maxNumber (nullable: true)
 		
@@ -76,10 +78,10 @@ class PlanningType {
 		return new ArrayList(costs?:[])
 	}
 		
-	public Map<String, Map<String, String>> getSectionDescriptions() {
+	public Map<String, String> getSectionDescriptions(String language) {
 		Map result = [:]
 		planningTypeSectionMaps?.each {
-			result.put(it.section, it.getNamesMap())
+			result.put(it.section, it.getNames(new Locale(language)))
 		}
 		return result;
 	}
@@ -185,29 +187,6 @@ class PlanningType {
 	
 	public String toString(){
 		return "PlanningType[getId()=" + getId() + ", getNames()=" + getNames() + "]";
-	}
-	
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	public boolean equals(Object obj) {
-		if (this.(is(obj)))
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof Planning))
-			return false;
-		Planning other = (Planning) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
 	}
 	
 }

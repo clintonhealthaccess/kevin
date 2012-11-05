@@ -225,37 +225,37 @@ log4j = {
  */
 google.analytics.webPropertyID = "UA-xxxxxx-x"
 
-// TODO merge those 2
-site.languages=["en","fr"]
+// internationalization
 i18nFields {
 	locales = ["en","fr"]
 }
-
 site.fallback.language="en"
+
 site.entity.list.max=40
 site.period=0
 site.admin.email="admin@dhsst.org"
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
 
-// TODO external config
+// TODO externalize config
 site.datalocationtype.checked=["district_hospital","health_center"]
 report.skip.levels=["sector"]
-
-
-task.temp.folder='files/'
 
 dashboard.skip.levels=[]
 fct.skip.levels=[]
 dsr.skip.levels=[]
-dsr.view.map.skip.levels=["National", "Province"]
+dsr.view.map.skip.levels=["country", "province"]
 
-survey.skip.levels=["Sector"]
-survey.submit.skip.levels=["National", "Province"]
-survey.export.skip.levels=["National", "Sector"]
+survey.skip.levels=["sector"]
+survey.submit.skip.levels=["country", "province"]
+survey.export.skip.levels=["country", "sector"]
 
-info.group.level="District"
-dsr.group.level="District"
+info.group.level="district"
+dsr.group.level="district"
+
+
+
+task.temp.folder='files/'
 
 file.upload.available.charset=["UTF-8", "ISO-8859-1"]
 file.upload.delimiter=","

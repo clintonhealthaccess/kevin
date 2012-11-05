@@ -53,22 +53,23 @@ class DataElementExportControllerSpec extends IntegrationTests {
 		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
 		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
-		dataElementExportController = new  DataElementExportController();
+		dataElementExportController = new DataElementExportController();
 		
 		when:
+		dataElementExportController.params.code = 'code'
 		dataElementExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+"",Location.findByCode(BURERA).id+""]
 		dataElementExportController.params.('periodIds')=[Period.list()[0].id+""]
 		dataElementExportController.params.('dataElementIds')=[dataElementOne.id+"",dataElementTwo.id+""]
 		dataElementExportController.params.('typeCodes')="Health Center,District Hospital";
 		dataElementExportController.save()
 		def dataExports = DataElementExport.list();
+		
 		then:
 		dataExports.size()==1;
 		dataExports[0].periods==periods;
 		dataExports[0].typeCodeString.equals('Health Center,District Hospital');
 		dataExports[0].locations==locations;
 		dataExports[0].dataElements==dataElements;
-		
 	}
 	
 	
@@ -83,15 +84,17 @@ class DataElementExportControllerSpec extends IntegrationTests {
 		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
 		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
-		dataElementExportController = new  DataElementExportController();
+		dataElementExportController = new DataElementExportController();
 		
 		when:
+		dataElementExportController.params.code = 'code'
 		dataElementExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
 		dataElementExportController.params.('periodIds')=[Period.list()[0].id+""]
 		dataElementExportController.params.('dataElementIds')=[dataElementOne.id+"",dataElementTwo.id+"",dataElementTwo.id+""]
 		dataElementExportController.params.('typeCodes')="Health Center,District Hospital";
 		dataElementExportController.save()
 		def dataExports = DataElementExport.list();
+		
 		then:
 		dataExports.size()==1;
 		dataExports[0].periods==periods;
@@ -112,15 +115,17 @@ class DataElementExportControllerSpec extends IntegrationTests {
 		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
 		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
-		dataElementExportController = new  DataElementExportController();
+		dataElementExportController = new DataElementExportController();
 		
 		when:
+		dataElementExportController.params.code = 'code'
 		dataElementExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
 		dataElementExportController.params.('periodIds')=[Period.list()[0].id+"",Period.list()[0].id+""]
 		dataElementExportController.params.('dataElementIds')=[dataElementOne.id+"",dataElementTwo.id+""]
 		dataElementExportController.params.('typeCodes')="Health Center,District Hospital";
 		dataElementExportController.save()
 		def dataElementExports = DataElementExport.list();
+		
 		then:
 		dataElementExports.size()==1;
 		dataElementExports[0].periods==periods;
@@ -139,12 +144,13 @@ class DataElementExportControllerSpec extends IntegrationTests {
 		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
 		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
-		def dataElementExport = newDataElementExport("en":"Testing Seach One",periods, locationType, locations, dataElements);
+		def dataElementExport = newDataElementExport(CODE(1), ["en":"Testing Seach One"], periods, locationType, locations, dataElements);
 		dataElementExportController = new  DataElementExportController();
 		
 		when:
 		dataElementExportController.params.('export.id')=dataElementExport.id
 		dataElementExportController.clone()
+		
 		then:
 		DataElementExport.list().size()==2;
 		DataElementExport.list()[0].periods.equals(DataElementExport.list()[1].periods)

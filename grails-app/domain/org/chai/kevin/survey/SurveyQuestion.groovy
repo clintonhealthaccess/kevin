@@ -31,18 +31,16 @@ package org.chai.kevin.survey;
  * @author JeanKahigiso
  *
  */
-import i18nfields.I18nFields;
+import groovy.transform.EqualsAndHashCode
+import i18nfields.I18nFields
 
-import java.util.List;
-import java.util.Set;
-
-import org.chai.kevin.Exportable;
-import org.chai.kevin.IntegerOrderable;
-import org.chai.kevin.util.Utils;
-import org.chai.location.DataLocationType;
+import org.chai.kevin.Exportable
+import org.chai.kevin.util.Utils
+import org.chai.location.DataLocationType
 
 @I18nFields
-abstract class SurveyQuestion extends IntegerOrderable implements Exportable {
+@EqualsAndHashCode(includes='code')
+abstract class SurveyQuestion implements Exportable {
 	
 	// deprecated
 	Long id
@@ -81,7 +79,8 @@ abstract class SurveyQuestion extends IntegerOrderable implements Exportable {
 	SurveySection section
 	static belongsTo = [section: SurveySection]
 	
-	List<SurveyElement> surveyElements
+	// we need this so the binding works from forms (surveyElements[0].id)
+//	List<SurveyElement> surveyElements
 	static hasMany = [surveyElements: SurveyElement]
 	static mappedBy = [surveyElements: 'question']
 	
@@ -91,7 +90,6 @@ abstract class SurveyQuestion extends IntegerOrderable implements Exportable {
 		code unique: true
 		order column: 'ordering'
 		section column: 'section'
-		surveyElements cascade: "all-delete-orphan"
 	}
 	
 	static constraints ={
@@ -116,39 +114,20 @@ abstract class SurveyQuestion extends IntegerOrderable implements Exportable {
 
 	public abstract QuestionType getType();
 
+	public List<SurveyElement> getAllSurveyElements() {
+		return new ArrayList(surveyElements?:[])
+	}
+	
 	public abstract List<SurveyElement> getSurveyElements(DataLocationType type);
 	
-	public abstract void removeSurveyElement(SurveyElement surveyElement);
+	public void removeSurveyElement(SurveyElement surveyElement) {
+		removeFromSurveyElements(surveyElement)
+	}
 	
 	public abstract Set<String> getTypeApplicable(SurveyElement surveyElement);
 
 	public Survey getSurvey() {
 		return section.getSurvey();
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this.is(obj))
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof SurveyQuestion))
-			return false;
-		SurveyQuestion other = (SurveyQuestion) obj;
-		if (getId() == null) {
-			if (other.getId() != null)
-				return false;
-		} else if (!getId().equals(other.getId()))
-			return false;
-		return true;
 	}
 
 	protected abstract SurveyQuestion newInstance();
@@ -160,6 +139,9 @@ abstract class SurveyQuestion extends IntegerOrderable implements Exportable {
 		copy.setTypeCodeString(getTypeCodeString());
 		copy.setOrder(getOrder());
 		copy.setSection(surveyCloner.getSection(getSection()));
+		for (SurveyElement element : surveyElements) {
+			copy.addToSurveyElements(surveyCloner.getElement(element));
+		}
 	}
 
 }

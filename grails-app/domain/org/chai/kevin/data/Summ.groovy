@@ -28,6 +28,8 @@ package org.chai.kevin.data;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
   
+import groovy.transform.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +45,6 @@ import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
 
-//@Entity(name="Summ")
 class Summ extends Calculation<SumPartialValue> {
 	
 	static mapping = {

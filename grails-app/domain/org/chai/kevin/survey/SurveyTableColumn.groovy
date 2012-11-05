@@ -32,16 +32,15 @@ package org.chai.kevin.survey;
  *
  */
 
-import i18nfields.I18nFields;
+import groovy.transform.EqualsAndHashCode;
+import i18nfields.I18nFields
 
-import java.util.Set;
-
-import org.chai.kevin.Exportable;
-import org.chai.kevin.IntegerOrderable;
-import org.chai.kevin.util.Utils;
+import org.chai.kevin.Exportable
+import org.chai.kevin.util.Utils
 
 @I18nFields
-class SurveyTableColumn extends IntegerOrderable implements Exportable {
+@EqualsAndHashCode(includes='code')
+class SurveyTableColumn implements Exportable {
 
 	String code;
 	Integer order;
