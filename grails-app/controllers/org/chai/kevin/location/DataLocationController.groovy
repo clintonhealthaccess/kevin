@@ -1,10 +1,17 @@
 package org.chai.kevin.location;
 
 import org.chai.kevin.AbstractEntityController;
+import org.chai.kevin.value.RawDataElementValue;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
 
 class DataLocationController extends AbstractEntityController {
 
 	def locationService
+	def valueService
+	def formElementService
+	def surveyValueService
 	
 	def bindParams(def entity) {
 		entity.properties = params
@@ -37,6 +44,29 @@ class DataLocationController extends AbstractEntityController {
 	def getLabel() {
 		return 'datalocation.label';
 	}
+	
+	def deleteEntity(def entity) {
+		// we delete the entity only if there are no associated values
+		// should we throw an exception in case we can't delete ?
+		if (valueService.getNumberOfValues(entity, RawDataElementValue.class) != 0) {
+			flash.message = message(code: "datalocation.delete.hasvalues", default: "Could not delete data location, it still has values");
+		}
+		else {
+			// we delete all the values (there will be none of RawDataElementValue class)
+			valueService.deleteValues(null, entity, null)
+			
+			// we delete all form entered values
+			formElementService.deleteEnteredValues(entity)
+			surveyValueService.deleteEnteredQuestions(entity)
+			surveyValueService.deleteEnteredSections(entity)
+			surveyValueService.deleteEnteredPrograms(entity)
+			
+			// we delete the entity
+			entity.type.removeFromDataLocations(entity)
+			entity.location.removeFromDataLocations(entity)
+			entity.delete()
+		}
+	}
 
 	def list = {
 		adaptParamsForList()
@@ -61,12 +91,12 @@ class DataLocationController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<DataLocation> locations = locationService.searchLocation(DataLocation.class, params['q'], params)
+		def locations = locationService.searchLocation(DataLocation.class, params['q'], params)
 				
 		render (view: '/entity/list', model:[
 			template:"location/dataLocationList",
 			entities: locations,
-			entityCount: locationService.countLocation(DataLocation.class, params['q']),
+			entityCount: locations.totalCount,
 			entityClass: getEntityClass(),
 			code: getLabel()
 		])

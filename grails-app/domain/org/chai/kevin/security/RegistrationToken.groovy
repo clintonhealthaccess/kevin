@@ -8,4 +8,8 @@ class RegistrationToken {
 	
 	static constraints = {
 	}
+	
+	static mapping = {
+		table 'dhsst_security_registration_token'
+	}
 }

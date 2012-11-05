@@ -5,8 +5,8 @@ import java.util.Set;
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.ListUtils;
 import org.chai.kevin.Period;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 
 class ExpressionController {
@@ -43,7 +43,7 @@ class ExpressionController {
 			NormalizedDataElement dataElement = new NormalizedDataElement()
 			dataElement.type = cmd.type
 			
-			def expressionMap = new ExpressionMap()
+			def expressionMap = [:]
 			def typeMap = [:]
 			for (def type : dataLocationTypes) {
 				typeMap.put(type.code, cmd.expression)

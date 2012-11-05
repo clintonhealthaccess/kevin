@@ -13,7 +13,7 @@ class QuestionControllerSpec extends SurveyIntegrationTests {
 		def survey = newSurvey(CODE(1), period)
 		def program = newSurveyProgram(CODE(1), survey, 1, [])
 		def section = newSurveySection(CODE(1), program, 1, [])
-		def question = newSimpleQuestion(CODE(1), j(['en':'element']), section, 1, [])
+		def question = newSimpleQuestion(CODE(1), ['en':'element'], section, 1, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		questionController = new QuestionController()

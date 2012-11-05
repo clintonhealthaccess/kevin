@@ -10,7 +10,7 @@
 			<label for="skipped.element"><g:message code="skiprule.skippedformelement.label"/>:</label> 
 			<select name="skipped.element" class="ajax-search-field skipped-form-elements-list">
 				<option value="${formElement.id}" selected>
-					${formElement.getLabel(languageService)}[${formElement.id}]
+					${formElement.label}[${formElement.id}]
 				</option>
 			</select>
 			<label for="skipped.prefix"><g:message code="skiprule.skippedformelement.prefixes.label"/>:</label>

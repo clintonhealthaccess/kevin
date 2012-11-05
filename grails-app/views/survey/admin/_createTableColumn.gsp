@@ -15,6 +15,7 @@
 			
 			<g:i18nRichTextarea name="names" bean="${column}" value="${column.names}" label="${message(code:'survey.tablequestion.tablecolumn.name.label')}" field="names" height="150"  width="300" maxHeight="150" />
 			
+			<g:input name="code" label="${message(code:'entity.code.label')}" bean="${question}" field="code" />
 			<g:input name="order" label="${message(code:'entity.order.label')}" bean="${column}" field="order"/>
 			
 			<g:selectFromList name="typeCodes" label="${message(code:'entity.datalocationtype.label')}" bean="${column}" field="typeCodeString" 

@@ -53,7 +53,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 	
 	def testReportMapValueEnum(){
 		def enume = IntegrationTests.newEnume('enum')
-		IntegrationTests.newEnumOption(IntegrationTests.j(['en': 'VALUE']), enume, 'enum1')
+		IntegrationTests.newEnumOption(['en': 'VALUE'], enume, 'enum1')
 		
 		assertEquals applyTemplate(
 			'<g:reportMapValue value="${value}" type="${type}"/>',
@@ -194,7 +194,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 	
 	def testReportValueEnum() {
 		def enume = IntegrationTests.newEnume('enum')
-		IntegrationTests.newEnumOption(IntegrationTests.j(['en': 'VALUE']), enume, 'enum1')
+		IntegrationTests.newEnumOption(['en': 'VALUE'], enume, 'enum1')
 		
 		assertEquals applyTemplate(
 			'<g:reportValue value="${value}" type="${type}"/>',
@@ -430,7 +430,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 			[
 				'value': new Value("{\"value\":\"value\"}"),
 				'type': Type.TYPE_ENUM("code"),
-				'enums': ['code': new Enum(enumOptions: [new EnumOption(value: 'value', names: IntegrationTests.j(['en':'VALUE_EN']))])]
+				'enums': ['code': new Enum(enumOptions: [new EnumOption(value: 'value', names_en:'VALUE_EN')])]
 			]
 		), 'VALUE_EN'
 		
@@ -438,7 +438,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 	
 	def testValueWithExistingEnumAndExistingOptionAndNoEnums() {
 		def enume = IntegrationTests.newEnume('code')
-		IntegrationTests.newEnumOption(IntegrationTests.j(['en':'VALUE_EN']), enume, 'value')
+		IntegrationTests.newEnumOption(['en':'VALUE_EN'], enume, 'value')
 			
 		assertEquals applyTemplate(
 			'<g:value value="${value}" type="${type}" enums="${enums}"/>',

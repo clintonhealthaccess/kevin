@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,12 +13,15 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
+import org.chai.location.CalculationLocation;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
+import org.chai.location.LocationService;
 import org.springframework.transaction.annotation.Transactional;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.io.ICsvListWriter;
@@ -43,6 +47,14 @@ public class ReportExportService {
 		this.skipLevels = skipLevels;
 	}
 	
+	private List<LocationLevel> getSkipLevelList() {
+		List<LocationLevel> result = new ArrayList<LocationLevel>();
+		for (String level : skipLevels) {
+			result.add(locationService.findLocationLevelByCode(level));
+		}
+		return result;
+	}
+	
 	public List<LocationLevel> getLevels() {
 		List<LocationLevel> result = locationService.listLevels();
 		for (String level : skipLevels) {
@@ -55,27 +67,22 @@ public class ReportExportService {
 
 	private final static String LOCATION_HEADER = "Location";
 	
-	private String[] getExportDataHeaders(List<ReportTableIndicator> indicators) {
+	private String[] getExportDataHeaders(List<AbstractReportTarget> indicators) {
 		List<String> headers = new ArrayList<String>();		
 		headers.add(LOCATION_HEADER);
-		for(ReportTableIndicator indicator : indicators){
-			headers.add(languageService.getText(indicator.getNames()));
+		for (AbstractReportTarget indicator : indicators) {
+			headers.add(Utils.noNull(indicator.getNames()));
 		}
 		return headers.toArray(new String[0]);
 	}	
 	
 	public String getReportExportFilename(String report, CalculationLocation location, ReportProgram program, Period period){
-		String exportFilename = report.replaceAll("[^a-zA-Z0-9]", "") + "_" + period.getCode() + "_" +
-				languageService.getText(program.getNames()).replaceAll("[^a-zA-Z0-9]", "") + "_" + 
-				languageService.getText(location.getNames()).replaceAll("[^a-zA-Z0-9]", "") + "_";
+		String exportFilename = report + "_" + period.getCode() + "_" + program.getCode() + "_" + location.getCode() + "_";
 		return exportFilename;
 	}
 	
 	@Transactional(readOnly=true)
-	public File getReportExportFile(String filename, ReportTable reportTable) throws IOException { 
-		
-		//TODO sort locations
-		List<CalculationLocation> locations = reportTable.getLocations();
+	public File getReportExportFile(String filename, ReportTable reportTable, CalculationLocation currentLocation) throws IOException { 
 		
 		File csvFile = File.createTempFile(filename, CSV_FILE_EXTENSION);
 		
@@ -83,8 +90,7 @@ public class ReportExportService {
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
 		try {
 			String[] csvHeaders = null;
-			
-			List<ReportTableIndicator> indicators = reportTable.getIndicators();
+			List<AbstractReportTarget> indicators = reportTable.getIndicators();
 			
 			// headers
 			if(csvHeaders == null){
@@ -92,36 +98,8 @@ public class ReportExportService {
 				writer.writeHeader(csvHeaders);
 			}
 			
-			for(CalculationLocation location : locations){	
-				if (log.isDebugEnabled()) log.debug("getReportExportFile(location="+location+")");
-				
-				ArrayList<String> reportExportRow = new ArrayList<String>();
-				
-				//Locations
-				List<String> rowLocations = new ArrayList<String>();
-				for (LocationLevel level : getLevels()){			
-					Location parent = locationService.getParentOfLevel(location, level);
-					if (parent != null){
-						rowLocations.add(languageService.getText(parent.getNames()));
-					}
-				}
-				rowLocations.add(languageService.getText(location.getNames()));
-				String locationNames = StringUtils.join(rowLocations, "-");
-				reportExportRow.add(locationNames);
-				
-				//Indicators
-				for(ReportTableIndicator indicator: indicators){
-					 Value value = reportTable.getValue(location, indicator);
-					 if(value != null && !value.isNull())
-						 reportExportRow.add(languageService.getStringValue(value, indicator.getType()));
-					 else{
-						 reportExportRow.add("N/A");
-					 }
-				}
-				
-				writer.write(reportExportRow);
+			exportLocation(reportTable, writer, indicators, currentLocation);
 													
-			}
 		} catch (IOException ioe){
 			// TODO is this good ?
 			throw ioe;
@@ -130,5 +108,44 @@ public class ReportExportService {
 		}
 		
 		return csvFile;
+	}
+
+	private void exportLocation(ReportTable reportTable, ICsvListWriter writer,
+			List<AbstractReportTarget> indicators, CalculationLocation location)
+			throws IOException {
+		if (log.isDebugEnabled()) log.debug("getReportExportFile(location="+location+")");
+		
+		ArrayList<String> reportExportRow = new ArrayList<String>();
+		
+		//Locations
+		List<String> rowLocations = new ArrayList<String>();
+		for (LocationLevel level : getLevels()){			
+			Location parent = location.getParentOfLevel(level);
+			if (parent != null && !parent.equals(location)){
+				rowLocations.add(Utils.noNull(parent.getNames()));
+			}
+		}
+		rowLocations.add(Utils.noNull(location.getNames()));
+		String locationNames = StringUtils.join(rowLocations, "-");
+		reportExportRow.add(locationNames);
+		
+		//Indicators
+		for (AbstractReportTarget indicator: indicators){
+			DataValue value = reportTable.getTableReportValue(location, indicator);
+			if(value != null && !value.getValue().isNull())
+				reportExportRow.add(languageService.getStringValue(value.getValue(), indicator.getType()));
+			else{
+				reportExportRow.add("N/A");
+			}
+		}
+		
+		writer.write(reportExportRow);
+		
+		if (location instanceof Location) {
+			List<CalculationLocation> locations = reportTable.getLocations((Location)location, new HashSet(getSkipLevelList()), new HashSet(locationService.listTypes()));
+			for (CalculationLocation calculationLocation : locations) {
+				exportLocation(reportTable, writer, indicators, calculationLocation);
+			}
+		}
 	}
 }

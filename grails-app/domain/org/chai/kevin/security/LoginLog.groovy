@@ -12,4 +12,8 @@ class LoginLog {
 		user (nullable: true)
 		ipAddress (nullable: true)
 	}
+	
+	static mapping = {
+		table 'dhsst_security_login_log'
+	}
 }

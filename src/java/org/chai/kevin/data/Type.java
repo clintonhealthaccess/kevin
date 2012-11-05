@@ -18,9 +18,6 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Transient;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONNull;
@@ -36,7 +33,6 @@ import org.chai.kevin.json.JSONValue;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 
-@Embeddable
 public class Type extends JSONValue implements Exportable {
 	
 	private static final Log log = LogFactory.getLog(Type.class);
@@ -73,18 +69,15 @@ public class Type extends JSONValue implements Exportable {
 	}
 	
 	@Override
-	@Transient
 	protected String[] getReservedKeywords() {
 		return KEYWORDS;
 	}
 	
-	@Transient
 	@Deprecated
 	public boolean isComplexType() {
 		return getType() == ValueType.LIST || getType() == ValueType.MAP;
 	}
 	
-	@Transient
 	public ValueType getType() {
 		if (valueType == null) {
 			try {
@@ -100,7 +93,6 @@ public class Type extends JSONValue implements Exportable {
 		return valueType;
 	}
 	
-	@Transient
 	public String getEnumCode() {
 		if (enumCode == null) {
 			// TODO think that through
@@ -114,7 +106,6 @@ public class Type extends JSONValue implements Exportable {
 		return enumCode;
 	}
 	
-	@Transient
 	public Type getListType() {
 		if (listType == null) {
 			if (!getType().equals(ValueType.LIST)) throw new IllegalStateException();
@@ -127,7 +118,6 @@ public class Type extends JSONValue implements Exportable {
 		return listType;
 	}
 	
-	@Transient
 	public Map<String, Type> getElementMap() {
 		if (elementMap == null) {
 			if (!getType().equals(ValueType.MAP)) throw new IllegalStateException();
@@ -146,7 +136,6 @@ public class Type extends JSONValue implements Exportable {
 		return elementMap;
 	}
 	
-	@Transient
 	public boolean isValid() {
 		if (getType() == null) return false;
 		switch (getType()) {
@@ -163,7 +152,6 @@ public class Type extends JSONValue implements Exportable {
 		return true;
 	}
 	
-	@Transient
 	public Value getPlaceHolderValue() {
 		try {
 			JSONObject object = new JSONObject();
@@ -298,14 +286,12 @@ public class Type extends JSONValue implements Exportable {
 	 * @deprecated use mergeValueFromMap(...)
 	 * @return
 	 */
-	@Transient
 	@Deprecated
 	// TODO write javadoc
 	public Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String prefix, Set<String> attributes, Sanitizer sanitizer) {
 		return mergeValueFromMap(oldValue, map, prefix, prefix, attributes, sanitizer);
 	}
 	
-	@Transient
 	// TODO write javadoc
 	private Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String prefix, String genericPrefix, Set<String> attributes, Sanitizer sanitizer) {
 		try {
@@ -443,7 +429,6 @@ public class Type extends JSONValue implements Exportable {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Transient
 	public Value getValue(Object value) {
 		if (value == null) return Value.NULL_INSTANCE();
 		try {

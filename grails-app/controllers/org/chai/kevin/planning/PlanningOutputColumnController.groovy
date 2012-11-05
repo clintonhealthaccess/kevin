@@ -28,9 +28,8 @@
 package org.chai.kevin.planning
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.Period;
-import org.chai.kevin.PeriodSorter
-import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.Period
+import org.chai.location.DataLocationType
 /**
  * @author Jean Kahigiso M.
  *
@@ -70,10 +69,6 @@ class PlanningOutputColumnController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
 	}
 
 	def list = {
@@ -86,7 +81,7 @@ class PlanningOutputColumnController extends AbstractEntityController {
 			
 			render (view: '/planning/admin/list', model:[
 				template:"planningOutputColumnList",
-				entities: planningOutputColumns,
+				entities: planningOutputColumns as List,
 				entityCount: planningOutputColumns.size(),
 				code: getLabel(),
 				entityClass: getEntityClass()

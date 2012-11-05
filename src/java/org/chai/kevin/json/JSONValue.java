@@ -2,15 +2,9 @@ package org.chai.kevin.json;
 
 import java.util.Arrays;
 
-import javax.persistence.Column;
-import javax.persistence.Lob;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
-
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
-@MappedSuperclass
 public abstract class JSONValue {
 
 	protected String jsonValue = null;
@@ -30,8 +24,6 @@ public abstract class JSONValue {
 		this.value = object;
 	}
 	
-	@Lob
-	@Column(nullable = false)
 	public String getJsonValue() {
 		if (jsonValue == null) {
 			jsonValue = value.toString();
@@ -47,7 +39,6 @@ public abstract class JSONValue {
 		}
 	}
 	
-	@Transient
 	protected abstract String[] getReservedKeywords();
 	
 	protected abstract void clearCache();
@@ -63,7 +54,6 @@ public abstract class JSONValue {
 		this.jsonValue = value.toString();
 	}
 
-	@Transient
 	public JSONObject getJsonObject() {
 		if (value == null) {
 			try {
@@ -83,7 +73,6 @@ public abstract class JSONValue {
 		}
 	}
 
-	@Transient
 	public String getAttribute(String attribute) {
 		if (Arrays.binarySearch(getReservedKeywords(), attribute) >= 0) throw new IllegalArgumentException("trying to get a reserved attribute using getAttribute");
 		

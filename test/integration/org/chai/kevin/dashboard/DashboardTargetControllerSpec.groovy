@@ -29,7 +29,7 @@ package org.chai.kevin.dashboard
 */
 
 import org.chai.kevin.data.Calculation
-import org.chai.kevin.data.Sum
+import org.chai.kevin.data.Summ
 import org.chai.kevin.data.Type
 import org.chai.kevin.reports.ReportProgram
 
@@ -80,7 +80,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		newTarget.calculation.equals(ratio)
 		newTarget.weight == 1
 		DashboardTarget.count() == 1
-		Sum.count() == 1
+		Summ.count() == 1
 	}
 	
 	def "edit target with calculations"() {
@@ -106,7 +106,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		newTarget.calculation.equals(ratio)
 		newTarget.weight == 1
 		DashboardTarget.count() == 1
-		Sum.count() == 1
+		Summ.count() == 1
 	}
 	
 	def "search target"() {

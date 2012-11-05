@@ -39,11 +39,11 @@ class PlanningOutputColumnControllerSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def planning = newPlanning(period, [])
 		def planningOutput = newPlanningOutput(planning, newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")]))), "[_].key")
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), [:])
 		planningOutputColumnController = new PlanningOutputColumnController()
 		
 		when:
-		planningOutputColumnController.params['planningOutput.id'] = planningOutput.id
+		planningOutputColumnController.params['planningOutput.id'] = planningOutput.id+''
 		planningOutputColumnController.params['prefix'] = '[_]'
 		planningOutputColumnController.saveWithoutTokenCheck()
 

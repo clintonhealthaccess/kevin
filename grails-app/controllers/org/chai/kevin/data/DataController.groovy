@@ -1,15 +1,12 @@
 package org.chai.kevin.data
 
-import org.apache.shiro.SecurityUtils;
-import org.chai.kevin.AbstractController;
-import org.chai.kevin.Period;
-import org.chai.kevin.location.DataLocation;
-import org.chai.task.CalculateTask;
-import org.chai.task.Task.TaskStatus;
-import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.Status;
-import org.chai.kevin.value.Value;
-import org.codehaus.groovy.grails.commons.ApplicationHolder;
+import org.apache.shiro.SecurityUtils
+import org.chai.kevin.AbstractController
+import org.chai.kevin.Period
+import org.chai.kevin.value.Status
+import org.chai.location.CalculationLocation
+import org.chai.task.CalculateTask
+import org.chai.task.Task.TaskStatus
 
 class DataController extends AbstractController {
 	
@@ -107,14 +104,17 @@ class DataController extends AbstractController {
 
 	def deleteValues = {
 		def data = dataService.getData(params.int('data'), Data.class)
-		if (data == null) {
+		def location = CalculationLocation.get(params.int('location'))
+		if (data == null && location == null) {
 			response.sendError(404)
 		}
 		else {
-			valueService.deleteValues(data, null, null)
+			valueService.deleteValues(data, location, null)
 			
-			data.setLastValueChanged(new Date())
-			dataService.save(data)
+			if (data != null) {
+				data.setLastValueChanged(new Date())
+				dataService.save(data)
+			}
 			
 			refreshValueService.flushCaches()
 			

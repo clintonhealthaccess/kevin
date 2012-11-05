@@ -39,12 +39,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.util.ImportExportConstant;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.io.ICsvListWriter;
 import org.supercsv.prefs.CsvPreference;
@@ -57,7 +58,7 @@ public class DataElementExportService extends ExportService {
 	private static final Log log = LogFactory.getLog(DataElementExportService.class);
 	
 	@Override
-	public File exportData(DataExport export, String language) throws IOException{
+	public File exportData(DataExport export) throws IOException{
 		if (log.isDebugEnabled()) log.debug("exportData("+export+")");
 		Set<DataLocationType> types = new HashSet<DataLocationType>();
 		
@@ -66,34 +67,34 @@ public class DataElementExportService extends ExportService {
 			if(type!=null) types.add(type);
 		}
 		
-		List<DataLocation> dataLocations = locationService.getDataLocationsOfType(export.getLocations(),types);
+		List<DataLocation> dataLocations = locationService.getDataLocationsOfType(new HashSet(export.getAllLocations()),types);
 		
 		if (log.isDebugEnabled()) log.debug(" Exporter dataLocations "+dataLocations+")");
-		return this.exportDataElements(languageService.getText(export.getDescriptions(), language), dataLocations,export.getPeriods(),((DataElementExport) export).getDataElements(), language);
+		return this.exportDataElements(export.getCode(), dataLocations,export.getAllPeriods(),((DataElementExport) export).getAllDataElements());
 	}
 		
-	public File exportDataElements(String fileName,List<DataLocation> dataLocations,Set<Period> periods,Set<DataElement<DataValue>> dataElements, String language) throws IOException{
+	public File exportDataElements(String fileName,List<DataLocation> dataLocations,List<Period> periods,List<DataElement> dataElements) throws IOException{
 		if (log.isDebugEnabled()) log.debug(" exportDataElement(String "+fileName+" List<DataLocation>: " + dataLocations + " List<Period>: "+ periods + " Set<DataElement<DataValue>>: " + dataElements + ")");
 		File csvFile = File.createTempFile(fileName, ImportExportConstant.CSV_FILE_EXTENSION);
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
-		this.writeDataElements(writer, dataLocations, periods, dataElements, language);
+		this.writeDataElements(writer, dataLocations, periods, dataElements);
 		return csvFile;
 
 	}
 
-	private void writeDataElements(ICsvListWriter writer, List<DataLocation> dataLocations, Set<Period> periods,Set<DataElement<DataValue>> dataElements,String language) throws IOException {
+	private void writeDataElements(ICsvListWriter writer, List<DataLocation> dataLocations, List<Period> periods,List<DataElement> dataElements) throws IOException {
 		try{
 			String[] csvHeaders = null;
 			// headers
 			if(csvHeaders == null){
-				csvHeaders = this.getExportDataHeaders(language).toArray(new String[getExportDataHeaders(language).size()]);
+				csvHeaders = this.getExportDataHeaders().toArray(new String[getExportDataHeaders().size()]);
 				writer.writeHeader(csvHeaders);
 			}
 			for(DataLocation location: dataLocations)
 				for(Period period: periods)
 					for(DataElement<DataValue> dataElement: dataElements){
-						List<List<String>> lines=this.getExportLineForValue(location,period,dataElement,language);
+						List<List<String>> lines=this.getExportLineForValue(location,period,dataElement);
 						for(List<String> line: lines)
 							writer.write(line);
 					}
@@ -105,12 +106,12 @@ public class DataElementExportService extends ExportService {
 		}
 	}
 	
-	public List<List<String>> getExportLineForValue(DataLocation location,Period period, DataElement<DataValue> dataElement, String language){
+	public List<List<String>> getExportLineForValue(DataLocation location,Period period, DataElement<DataValue> dataElement){
 		DataPointVisitor dataPointVisitor = new DataPointVisitor();
 		if(dataElement!=null){
 			DataValue dataValue = valueService.getDataElementValue(dataElement, location, period);
 			if(dataValue!=null){
-				List<String> basicInfo = this.getBasicInfo(location,period,dataElement,language);
+				List<String> basicInfo = this.getBasicInfo(location,period,dataElement);
 				dataPointVisitor.setBasicInfo(basicInfo);
 				dataElement.getType().visit(dataValue.getValue(), dataPointVisitor);
 			}
@@ -120,29 +121,29 @@ public class DataElementExportService extends ExportService {
 		return dataPointVisitor.getLines();
 	}
 	
-	public List<String> getBasicInfo(DataLocation location,Period period, DataElement<DataValue> dataElement, String language){
+	public List<String> getBasicInfo(DataLocation location,Period period, DataElement<DataValue> dataElement){
 		List<String> basicInfo = new ArrayList<String>();
 		for (LocationLevel level : locationService.listLevels()){
-			Location parent = locationService.getParentOfLevel(location, level);
-			if (parent != null) basicInfo.add(languageService.getText(parent.getNames(), language));
+			Location parent = location.getParentOfLevel(level);
+			if (parent != null) basicInfo.add(Utils.noNull(parent.getNames()));
 			else basicInfo.add("");
 		}
 		basicInfo.add(location.getCode());
-		basicInfo.add(languageService.getText(location.getNames(), language));
-		basicInfo.add(languageService.getText(location.getType().getNames(), language));
+		basicInfo.add(Utils.noNull(location.getNames()));
+		basicInfo.add(Utils.noNull(location.getType().getNames()));
 		basicInfo.add(period.getCode()+"");
 		basicInfo.add("[ "+period.getStartDate().toString()+" - "+period.getEndDate().toString()+" ]");
-		basicInfo.add(dataElement.getClass().getSimpleName());
+		basicInfo.add(Utils.noNull(dataElement.getClass().getSimpleName()));
 		basicInfo.add(dataElement.getCode()+"");
-		basicInfo.add(languageService.getText(dataElement.getNames(), language));
+		basicInfo.add(Utils.noNull(dataElement.getNames()));
 		return basicInfo;
 	}
 	
 	@Override
-	public List<String> getExportDataHeaders(String language) {
+	public List<String> getExportDataHeaders() {
 		List<String> headers = new ArrayList<String>();
 		for (LocationLevel level : locationService.listLevels())
-			headers.add(languageService.getText(level.getNames(), language));
+			headers.add(Utils.noNull(level.getNames()));
 		headers.add(ImportExportConstant.DATA_LOCATION_CODE);
 		headers.add(ImportExportConstant.DATA_LOCATION_NAME);
 		headers.add(ImportExportConstant.LOCATION_TYPE);

@@ -1,8 +1,5 @@
-
-import org.chai.kevin.Period;
-
 /*
-* Copyright (c) 2011, Clinton Health Access Initiative.
+//* Copyright (c) 2011, Clinton Health Access Initiative.
 *
 * All rights reserved.
 *
@@ -207,53 +204,58 @@ log4j = {
 		   'org.chai.kevin.service.imports.NominativeDataImporter',
 		   'org.chai.kevin.service.imports.DataImporter',
 		   'org.chai.kevin.service.imports.DataImporterSpec'
+//		   'org.hibernate.type'
 		   
 }
 
-environments {
-	test {
-		log4j = {
-			root {
-				error
-			}
-			
-			off 'ExpressionLog'
-		}
-	}
-}
-
-//cloudbees.api.url='https://api.cloudbees.com/api'
-//cloudbees.api.key=System.properties['bees.key']
-//cloudbees.api.secret=System.properties['bees.secret']
+//environments {
+//	test {
+//		log4j = {
+//			root {
+//				error
+//			}
+//			
+//			off 'ExpressionLog'
+//		}
+//	}
+//}
 
 /**
  * Application specific config
  */
 google.analytics.webPropertyID = "UA-xxxxxx-x"
 
-site.languages=["en","fr","rw"]
+// internationalization
+i18nFields {
+	locales = ["en","fr"]
+}
 site.fallback.language="en"
+
 site.entity.list.max=40
 site.period=0
 site.admin.email="admin@dhsst.org"
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
-site.datalocationtype.checked=["District Hospital","Health Center"]
+
+// TODO externalize config
+site.datalocationtype.checked=["district_hospital","health_center"]
+report.skip.levels=["sector"]
+
+dashboard.skip.levels=[]
+fct.skip.levels=[]
+dsr.skip.levels=[]
+dsr.view.map.skip.levels=["country", "province"]
+
+survey.skip.levels=["sector"]
+survey.submit.skip.levels=["country", "province"]
+survey.export.skip.levels=["country", "sector"]
+
+info.group.level="district"
+dsr.group.level="district"
+
+
 
 task.temp.folder='files/'
-
-report.skip.levels=["Sector"]
-dashboard.skip.levels=[]
-dsr.skip.levels=[]
-dsr.view.map.skip.levels=["National", "Province"]
-fct.skip.levels=[]
-
-survey.skip.levels=["Sector"]
-survey.submit.skip.levels=["National", "Province"]
-survey.export.skip.levels=["National", "Sector"]
-
-info.group.level="District"
-dsr.group.level="District"
 
 file.upload.available.charset=["UTF-8", "ISO-8859-1"]
 file.upload.delimiter=","

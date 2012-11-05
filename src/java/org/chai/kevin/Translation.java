@@ -45,6 +45,10 @@ public class Translation extends JSONMap<String> implements Exportable, Importab
 		super(jsonMap);
 	}
 	
+	public Translation(String jsonText) {
+		super(jsonText);
+	}
+	
 	@Override
 	public String toString() {
 		return getJsonText();

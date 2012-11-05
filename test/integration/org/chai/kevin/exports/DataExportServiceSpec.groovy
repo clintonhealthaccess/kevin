@@ -29,6 +29,8 @@ package org.chai.kevin.exports
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 
 /**
  * @author Jean Kahigiso M.
@@ -42,19 +44,17 @@ class DataExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree();
 		def periods=new HashSet([newPeriod()]);
-		def locationType="Health Center,District Hospital";
+		def locationTypes = [HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP]
 		def typeOne = Type.TYPE_NUMBER();
 		def typeTwo = Type.TYPE_BOOL();
 		def dataElementOne = newRawDataElement(CODE(1), typeOne);
 		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
-		def locations=new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		
 		def dataElement=new HashSet([dataElementOne,dataElementTwo]);
 		
-		def exporterOne = newDataElementExport(j("en":"Testing Seach One"),periods, locationType, locations, dataElement);
-		def exporterTwo = newDataElementExport(j("en":"Testing Seach Two"),periods, locationType, locations, dataElement);
+		def exporterOne = newDataElementExport(CODE(1), ["en":"Testing Seach One"],periods, locationTypes, locations, dataElement);
+		def exporterTwo = newDataElementExport(CODE(2), ["en":"Testing Seach Two"],periods, locationTypes, locations, dataElement);
 		
 		when:
 		def searchOne = dataExportService.searchDataExports(DataElementExport.class,'One',[:]);

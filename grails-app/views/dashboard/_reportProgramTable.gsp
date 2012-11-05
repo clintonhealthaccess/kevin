@@ -11,15 +11,14 @@
 	<th></th>
   </tr>
 </thead>
-<g:if test="${dashboard != null && dashboard.dashboardEntities != null && !dashboard.dashboardEntities.empty}">
 	<tbody>
-		<g:each in="${dashboard.dashboardEntities}" var="entity">			
+		<g:each in="${dashboard.getIndicators(dashboardEntity)}" var="entity">			
 			<tr>
 				<g:set var="percentageValue" />
 				<td>
 					<g:if test="${!entity.isTarget()}">
 					 	<% def childProgramLinkParams = new HashMap(params) %>
-						<% childProgramLinkParams['program'] = entity.program.id+"" %>
+						<% childProgramLinkParams['program'] = ®.program.id+"" %>
 						<% childProgramLinkParams['dashboardEntity'] = entity.id+"" %>										
 						<a href="${createLink(controller: controllerName, action: actionName, params: childProgramLinkParams)}">
 							<g:i18n field="${entity.program.names}" />
@@ -74,5 +73,4 @@
 			</tr>
 		</g:each>
 	</tbody>
-</g:if>
 </table>

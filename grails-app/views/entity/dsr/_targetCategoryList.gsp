@@ -4,6 +4,7 @@
 			<th/>
 			<th><g:message code="entity.code.label"/></th>
 			<th><g:message code="entity.name.label"/></th>
+			<th><g:message code="dsr.target.program.label"/></th>
 			<th><g:message code="entity.order.label"/></th>
 		</tr>
 	</thead>
@@ -26,6 +27,9 @@
 				<td>${category.code}</td>
 				<td>
 					<g:i18n field="${category.names}"/>
+				</td>
+				<td>
+					<g:i18n field="${category.program.names}"/>
 				</td>
 				<td>${category.order}</td>
 			</tr>

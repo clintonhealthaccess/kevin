@@ -1,25 +1,23 @@
 package org.chai.kevin.exports
 
 import java.lang.reflect.Field
-import java.util.Date;
+import java.util.Date
 
-import org.apache.commons.lang.StringUtils;
-import org.chai.kevin.Exportable;
+import org.apache.commons.lang.StringUtils
+import org.chai.kevin.Exportable
 import org.chai.kevin.IntegrationTests
-import org.chai.kevin.Translation
 import org.chai.kevin.dashboard.DashboardTarget
-import org.chai.kevin.data.Type;
-import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.survey.SurveyQuestion
+import org.chai.kevin.data.Type
+import org.chai.kevin.form.FormEnteredValue
 import org.chai.kevin.survey.SurveyCheckboxQuestion
-import org.chai.kevin.survey.SurveySimpleQuestion
-import org.chai.kevin.survey.SurveyTableQuestion
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyIntegrationTests
-import org.chai.kevin.util.Utils;
+import org.chai.kevin.survey.SurveyQuestion
+import org.chai.kevin.survey.SurveySimpleQuestion
+import org.chai.kevin.survey.SurveyTableQuestion
+import org.chai.kevin.util.ImportExportConstant;
+import org.chai.kevin.util.Utils
+import org.chai.location.DataLocation
 
 class EntityExportServiceSpec extends IntegrationTests {
 
@@ -29,10 +27,10 @@ class EntityExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = SurveyIntegrationTests.newSurvey(CODE(10), j(["en":"survey"]), period)
-		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = SurveyIntegrationTests.newSurveySection(CODE(12), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = SurveyIntegrationTests.newSurvey(CODE(10), ["en":"survey"], period)
+		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = SurveyIntegrationTests.newSurveySection(CODE(12), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = SurveyIntegrationTests.newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))		
@@ -52,10 +50,10 @@ class EntityExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = SurveyIntegrationTests.newSurvey(CODE(10), j(["en":"survey"]), period)
-		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = SurveyIntegrationTests.newSurveySection(CODE(12), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = SurveyIntegrationTests.newSurvey(CODE(10), ["en":"survey"], period)
+		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = SurveyIntegrationTests.newSurveySection(CODE(12), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = SurveyIntegrationTests.newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))		
@@ -73,10 +71,10 @@ class EntityExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = SurveyIntegrationTests.newSurvey(CODE(10), j(["en":"survey"]), period)
-		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = SurveyIntegrationTests.newSurveySection(CODE(12), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = SurveyIntegrationTests.newSurvey(CODE(10), ["en":"survey"], period)
+		def program = SurveyIntegrationTests.newSurveyProgram(CODE(11), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = SurveyIntegrationTests.newSurveySection(CODE(12), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = SurveyIntegrationTests.newSimpleQuestion(CODE(13), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = SurveyIntegrationTests.newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))
@@ -101,42 +99,6 @@ class EntityExportServiceSpec extends IntegrationTests {
 		zipFile.exists() == true
 		zipFile.length() > 0
 	}
-	
-	def "test for entity header sort"(){
-		setup:		
-		def entitySurveyQuestionFieldHeaders = []		
-		Class<?> headerClass = SurveyQuestion.class;
-		while(headerClass != null && headerClass != Object.class){				
-			Field[] classFields = headerClass.getDeclaredFields();
-			for(Field field : classFields){
-				if(field.getName().equalsIgnoreCase("id")) continue;
-				entitySurveyQuestionFieldHeaders.add(field);
-			}
-			headerClass = headerClass.getSuperclass();
-		}
-		
-		def entityDashboardTargetFieldHeaders = []
-		headerClass = DashboardTarget.class;
-		while(headerClass != null && headerClass != Object.class){				
-			Field[] classFields = headerClass.getDeclaredFields();
-			for(Field field : classFields){
-				if(field.getName().equalsIgnoreCase("id")) continue;
-				entityDashboardTargetFieldHeaders.add(field);
-			}
-			headerClass = headerClass.getSuperclass();
-		}
-		
-		when:
-		Collections.sort(entitySurveyQuestionFieldHeaders, EntityHeaderSorter.BY_FIELD())
-		def surveyQuestionHeaders = entitySurveyQuestionFieldHeaders.collect { it.getName() }
-		Collections.sort(entityDashboardTargetFieldHeaders, EntityHeaderSorter.BY_FIELD())
-		def dashboardTargetHeaders = entityDashboardTargetFieldHeaders.collect { it.getName() }
-		
-		then:
-		surveyQuestionHeaders.equals(["code", "names", "order", "section", "typeCodeString", "descriptions"])
-		dashboardTargetHeaders.equals(["code", "names", "order", "program", "weight", "data", "descriptions"])
-	}	
-	
 	
 	def "test entity is exportable"(){
 		when:
@@ -163,39 +125,6 @@ class EntityExportServiceSpec extends IntegrationTests {
 		then:
 		clazz == null		
 	}
-	
-	def "test entity fields are exportable"(){
-		when:
-		def today =new Date()
-		def ie = new IsExportableEntity("ieCode1", 1, today)		 			
-		List<Field> fields = new ArrayList<Field>();		
-		Class<?> headerClass = ie.class;
-		while(headerClass != null && headerClass != Object.class){
-			Field[]classFields = headerClass.getDeclaredFields();
-			for(Field field : classFields){
-				fields.add(field);
-			}
-			headerClass = headerClass.getSuperclass();
-		}
-		Collections.sort(fields, EntityHeaderSorter.BY_FIELD());				
-		def entityData = entityExportService.getEntityData(ie, fields)
-		
-		then:
-		entityData[0].equals("ieCode1")
-		entityData[1].equals("1")
-		entityData[2].equals(Utils.formatDate(today))
-		entityData[3].equals("")
-		
-		when:
-		ie.trans = new Translation(j(["en":"English", "fr":"French"]))
-		entityData = entityExportService.getEntityData(ie, fields)
-		
-		then:
-		entityData[0].equals("ieCode1")
-		entityData[1].equals("1")
-		entityData[2].equals(Utils.formatDate(today))
-		entityData[3].equals(ie.trans.toExportString())
-	}	
 	
 	def "test entity fields that are exportable and not exportable"(){
 		when:
@@ -226,7 +155,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		then:
 		entityData[0].equals("testCode")
 		entityData[1].equals("[~ieCode~]")
-		entityData[2].equals(Utils.VALUE_NOT_EXPORTABLE)
+		entityData[2].equals(ImportExportConstant.VALUE_NOT_EXPORTABLE)
 	}
 	
 	def "test entity fields that are exportable lists and not exportable lists"(){
@@ -258,7 +187,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		then:
 		entityData[0].equals("testCode")
 		entityData[1].equals("[[~ieCode1~]]")
-		entityData[2].equals(Utils.VALUE_NOT_EXPORTABLE)
+		entityData[2].equals(ImportExportConstant.VALUE_NOT_EXPORTABLE)
 		
 		when:
 		te.listIee = [new IsExportableEntity("ieCode1", 1, new Date()), new IsExportableEntity("ieCode2", 2, new Date())]
@@ -268,7 +197,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		then:
 		entityData[0].equals("testCode")
 		entityData[1].equals("[[~ieCode1~], [~ieCode2~]]")
-		entityData[2].equals(Utils.VALUE_NOT_EXPORTABLE)		
+		entityData[2].equals(ImportExportConstant.VALUE_NOT_EXPORTABLE)		
 	}	
 	
 	
@@ -277,13 +206,13 @@ class EntityExportServiceSpec extends IntegrationTests {
 		public Integer num;
 		public String code;
 		public Date dat;
-		public Translation trans;
+		public Map trans;
 		
 		public IsExportableEntity() {
 			this.num = 0;
 			this.code = "";
 			this.dat = new Date();
-			this.trans = new Translation();
+			this.trans = [:];
 		}
 		
 		public IsExportableEntity(String code, Integer num, Date dat) {

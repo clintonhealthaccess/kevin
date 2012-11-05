@@ -50,7 +50,7 @@ class FormTagLibTests extends GroovyPagesTestCase {
 				bean: ['name': 'TEST']
 			]
 		)
-		assertTrue html.contains ('<textarea type="text" class="idle-field" name="name.en" rows="4"></textarea>');
+		assertTrue html.contains ('<textarea type="text" class="idle-field" name="name_en" rows="4"></textarea>');
 	}
 
 	def testFileUploadForm() {

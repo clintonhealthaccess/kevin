@@ -28,11 +28,11 @@ package org.chai.kevin.survey;
  */
 
 import org.chai.kevin.AbstractController
-import org.chai.kevin.LocationService
+import org.chai.location.LocationService
 import org.chai.kevin.form.FormValidationService
-import org.chai.kevin.location.CalculationLocation
-import org.chai.kevin.location.DataLocation
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.CalculationLocation
+import org.chai.location.DataLocation
+import org.chai.location.DataLocationType;
 import org.chai.kevin.security.UserType;
 import org.chai.kevin.survey.summary.SummaryService
 import org.chai.kevin.util.Utils
@@ -79,7 +79,7 @@ class EditSurveyController extends AbstractController {
 
 		if (location == null) valid = false
 		else {
-			if (types != null && !Utils.split(types, DataLocationType.DEFAULT_CODE_DELIMITER).contains(location.type.code)) valid = false
+			if (types != null && !Utils.split(types, Utils.DEFAULT_TYPE_CODE_DELIMITER).contains(location.type.code)) valid = false
 		}
 
 		if (!valid) {

@@ -27,27 +27,15 @@
  */
 package org.chai.kevin.exports
 
-import org.apache.commons.lang.math.NumberUtils;
-import org.chai.kevin.AbstractController
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationService;
-import org.chai.kevin.Period;
-import org.chai.kevin.PeriodSorter
-import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.Data;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.exports.DataExport;
-import org.chai.kevin.exports.SurveyExportService;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.CalculationPartialValue;
-import org.chai.kevin.value.DataValue;
+import org.apache.commons.lang.math.NumberUtils
+import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.Period
+import org.chai.kevin.data.Calculation
+import org.chai.kevin.util.Utils
+import org.chai.kevin.value.CalculationPartialValue
+import org.chai.location.CalculationLocation
+import org.chai.location.DataLocationType
+import org.chai.location.LocationService
 
 /**
  * @author Jean Kahigiso M.
@@ -58,7 +46,6 @@ class CalculationExportController extends AbstractEntityController {
 	def dataLocationService;
 	def dataExportService;
 	def calculationExportService;
-	def languageService;
 	def dataService;
 	
 	def getEntity(def id) {
@@ -113,10 +100,6 @@ class CalculationExportController extends AbstractEntityController {
 			}
 		}
 		entity.locations = dataLocations
-				
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
 	def getEntityClass() {
@@ -139,14 +122,14 @@ class CalculationExportController extends AbstractEntityController {
 	
 	def list = {
 		adaptParamsForList()
-		List<CalculationExport> exports = CalculationExport.list(params)
-		this.getDataExportListModel(exports,list)
+		def exports = CalculationExport.list(params)
+		this.getDataExportListModel(exports, list)
 	}
 	
 	def search = {
 		adaptParamsForList()
-		List<CalculationExport> exports = dataExportService.searchDataExports(CalculationExport.class, params['q'],params);
-		getDataExportListModel(exports,search)
+		def exports = dataExportService.searchDataExports(CalculationExport.class, params['q'],params);
+		getDataExportListModel(exports, search)
 	}
 	
 	def getDataExportListModel(def exports,def method){
@@ -154,7 +137,7 @@ class CalculationExportController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			template:"dataExport/calculationExportList",
 			entities: exports,
-			entityCount: dataExportService.countDataExports(CalculationExport.class, params['q']),
+			entityCount: exports.totalCount,
 			code: getLabel(),
 			method: method,
 			q:params['q']
@@ -166,14 +149,13 @@ class CalculationExportController extends AbstractEntityController {
 		if (log.isDebugEnabled()) log.debug("clone(exporter="+exportExisting+")")
 		if (exportExisting) {
 			def newExport= new CalculationExport()
-			for (String language : languageService.getAvailableLanguages()) {
-				newExport.getDescriptions().put(language,exportExisting.getDescriptions().get(language) + "(copy)")
-			}		
+			Utils.copyI18nField(exportExisting, newExport, "Descriptions")
 			newExport.setDate(new Date());
+			newExport.setCode(exportExisting.getCode() + ' (copy)');
 			newExport.setTypeCodeString(exportExisting.getTypeCodeString());
-			newExport.getLocations().addAll(exportExisting.getLocations());
-			newExport.getPeriods().addAll(exportExisting.getPeriods());
-			newExport.getCalculations().addAll(exportExisting.getCalculations());
+			exportExisting.getLocations().each {newExport.addToLocations(it)};
+			exportExisting.getPeriods().each {newExport.addToPeriods(it)};
+			exportExisting.getCalculations().each {newExport.addToCalculations(it)};
 			newExport.save(failOnError: true);
 			
 			if(newExport) flash.message = message(code: 'exporter.cloned')

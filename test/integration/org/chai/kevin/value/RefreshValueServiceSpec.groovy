@@ -35,13 +35,14 @@ import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.data.Sum;
+import org.chai.kevin.data.Source;
+import org.chai.kevin.data.Summ;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.task.Progress;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.CalculationPartialValue;
@@ -64,13 +65,14 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		NormalizedDataElement.executeUpdate("delete NormalizedDataElement")
 		SumPartialValue.executeUpdate("delete SumPartialValue")
 		AggregationPartialValue.executeUpdate("delete AggregationPartialValue")
-		Sum.executeUpdate("delete Summ")
+		Summ.executeUpdate("delete Summ")
 		Aggregation.executeUpdate("delete Aggregation")
 		DataLocation.executeUpdate("delete DataLocation")
 		Location.executeUpdate("delete Location")
 		LocationLevel.executeUpdate("delete LocationLevel")
 		DataLocationType.executeUpdate("delete DataLocationType")
 		Period.executeUpdate("delete Period")
+		Source.executeUpdate("delete Source")
 		sessionFactory.currentSession.flush()
 	} 
 	
@@ -78,7 +80,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		def date = normalizedDataElement.lastValueChanged
 		
 		then:
@@ -98,7 +100,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		def date = normalizedDataElement.lastValueChanged
 		normalizedDataElement.refreshed = date
 		normalizedDataElement.save(failOnError: true, flush: true)
@@ -124,7 +126,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		def date = normalizedDataElement.lastValueChanged
 		
 		when:
@@ -143,7 +145,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		def date = normalizedDataElement.lastValueChanged
 		normalizedDataElement.refreshed = date
 		normalizedDataElement.save(failOnError: true, flush: true)
@@ -170,7 +172,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		def date = normalizedDataElement.lastValueChanged
 		
 		when:
@@ -192,7 +194,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
 		def date = normalizedDataElement.lastValueChanged
 		
 		when:
@@ -219,7 +221,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		rawDataElement1.lastValueChanged = null
 		rawDataElement1.save(failOnError: true, flush: true)
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement1.id+" + \$"+rawDataElement2.id]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement1.id+" + \$"+rawDataElement2.id]])
 		def date = normalizedDataElement.lastValueChanged
 		
 		when:
@@ -243,7 +245,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def date = new Date()
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		
 		when:
 		normalizedDataElement.refreshed = date
@@ -261,7 +263,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
 		def date = normalizedDataElement.lastValueChanged
 		
 		when:
@@ -282,7 +284,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
 		def date = normalizedDataElement.lastValueChanged
 		
 		when:
@@ -303,7 +305,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
 		def date = normalizedDataElement.lastValueChanged
 		
 		when:
@@ -324,7 +326,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
 		def date = normalizedDataElement.lastValueChanged
 		normalizedDataElement.refreshed = date
 		normalizedDataElement.save(failOnError: true, flush: true)
@@ -348,7 +350,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		def period = newPeriod()
 		setupLocationTree()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, Value.NULL_INSTANCE())
 		def timestamp = normalizedDataElementValue.timestamp
 		
@@ -368,7 +370,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new TestProgress());
 		
 		then:
@@ -391,7 +393,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		then:
 		SumPartialValue.count() == 8
 		SumPartialValue.list()[0].timestamp != null
-		Sum.list()[0].refreshed != null
+		Summ.list()[0].refreshed != null
 	}
 	
 	def "test refresh sum refreshes all fields"() {
@@ -423,6 +425,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		def aggregation = newAggregation("\$"+dataElement1.id, CODE(3))
+		aggregation.save(flush: true)
 		
 		then:
 		AggregationPartialValue.count() == 0
@@ -434,9 +437,10 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		AggregationPartialValue.count() == 8
 		
 		when:
+		aggregation = Aggregation.findByCode(CODE(3))
 		aggregation.expression = '\$'+dataElement1.id+' + \$'+dataElement2.id
 		aggregation.refreshed = null
-		aggregation.save(failOnError: true, flush: true)
+		aggregation.save(flush: true)
 		refreshValueService.refreshCalculation(aggregation, new TestProgress());
 
 		then:
@@ -462,14 +466,14 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		RawDataElementValue.count() == 0
 		SumPartialValue.count() == 8
 		SumPartialValue.list()[0].timestamp != null
-		Sum.list()[0].refreshed != null
+		Summ.list()[0].refreshed != null
 	}
 	
 	def "test refresh calculations progress"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		def ratio = newSum("\$"+dataElement.id, CODE(2))
 		
 		when:
@@ -485,7 +489,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		setupLocationTree()
 		def period = newPeriod()
-		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		def ratio = newSum("\$"+dataElement.id, CODE(2))
 		
 		then:
@@ -502,7 +506,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		SumPartialValue.count() == 8
 		SumPartialValue.list()[0].timestamp != null
 		NormalizedDataElement.list()[0].refreshed != null
-		Sum.list()[0].refreshed != null
+		Summ.list()[0].refreshed != null
 	}
 	
 	def "test refresh calculation updates when last value changed is set after refresh"() {
@@ -520,7 +524,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		
 		then:
 		SumPartialValue.count() == 8
-		Sum.list()[0].lastValueChanged.after(date)
+		Summ.list()[0].lastValueChanged.after(date)
 	}
 	
 	def "test refresh calculations updates timestamps"() {
@@ -543,15 +547,15 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		then:
 		SumPartialValue.count() == 8
 		!SumPartialValue.list()[0].timestamp.equals(timestamp)	
-		!Sum.list()[0].refreshed.equals(refreshed)
+		!Summ.list()[0].refreshed.equals(refreshed)
 	}
 	
 	def "test refresh normalized data elements refreshes dependencies first"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
-		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]])
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]])
 		
 		when:
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement2, new TestProgress());
@@ -568,8 +572,8 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
-		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]])
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]])
 		
 		when:
 		def progress = new TestProgress()
@@ -584,8 +588,8 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
-		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]])
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]])
 		
 		when:
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement2, DataLocation.findByCode(KIVUYE), period);
@@ -599,9 +603,9 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[:]]))
-		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
-		normalizedDataElement1.expressionMap = e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement2.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement2.id]])
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[:]])
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]])
+		normalizedDataElement1.expressionMap = [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement2.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement2.id]]
 //		normalizedDataElement1.save(failOnError: true)
 		
 		when:
@@ -620,9 +624,9 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[:]]))
-		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
-		normalizedDataElement1.expressionMap = e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement2.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement2.id]])
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[:]])
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]])
+		normalizedDataElement1.expressionMap = [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement2.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement2.id]]
 //		normalizedDataElement1.save(failOnError: true)
 		
 		when:
@@ -639,8 +643,8 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
-		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]])
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]])
 		
 		when:
 		def progress = new TestProgress()
@@ -661,7 +665,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]])
 		def sum = newSum("\$"+normalizedDataElement1.id, CODE(2))
 		
 		when:
@@ -677,9 +681,9 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[:]]))
-		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
-		normalizedDataElement1.expressionMap = e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement2.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement2.id]])
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[:]])
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]])
+		normalizedDataElement1.expressionMap = [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement2.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement2.id]]
 		normalizedDataElement1.save(failOnError: true, validate: false)
 		
 		when:
@@ -699,7 +703,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		def source = newSource("source");
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER(), source);
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id, (HEALTH_CENTER_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id, (HEALTH_CENTER_GROUP):"1"]])
 		
 		when:
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new TestProgress());
@@ -716,7 +720,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def source = newSource("source");
 		def rawDataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER(), source);
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER(), source);
-		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement1.id + "+ \$"+rawDataElement2.id, (HEALTH_CENTER_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement1.id + " + \$"+rawDataElement2.id, (HEALTH_CENTER_GROUP):"1"]])
 		
 		when:
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, new TestProgress());
@@ -739,7 +743,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		refreshValueService.refreshCalculation(sum, new TestProgress());
 		
 		then:
-		s(Sum.list()[0].getSources(period, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP))) == s([source.code])
-		s(Sum.list()[0].getSources(period, DataLocationType.findByCode(HEALTH_CENTER_GROUP))) == s([source.code])
+		s(Summ.list()[0].getSources(period, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP))) == s([source.code])
+		s(Summ.list()[0].getSources(period, DataLocationType.findByCode(HEALTH_CENTER_GROUP))) == s([source.code])
 	}
 }

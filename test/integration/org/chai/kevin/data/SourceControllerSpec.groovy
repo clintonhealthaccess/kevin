@@ -44,4 +44,20 @@ class SourceControllerSpec extends IntegrationTests {
 		Source.count() == 0
 	}
 	
+	def "delete source with raw data element"() {
+		setup:
+		def source = newSource("source")
+		newRawDataElement([:], CODE(1), Type.TYPE_NUMBER(), '', source)
+		sourceController = new SourceController()
+		
+		when:
+		sourceController.params.id = source.id
+		sourceController.delete()
+		
+		then:
+		Source.count() == 0
+		RawDataElement.count() == 1
+		RawDataElement.list()[0].source == null
+	}
+	
 }

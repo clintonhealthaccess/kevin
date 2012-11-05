@@ -2,9 +2,8 @@ package org.chai.kevin.form
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.DataLocationController;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.DataLocation;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyIntegrationTests;
 
@@ -14,7 +13,7 @@ class FormElementServiceSpec extends IntegrationTests {
 	
 	def "search form element"() {
 		setup:
-		def dataElement = newRawDataElement(j(["en":"test"]), "code", Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(["en":"test"], "code", Type.TYPE_NUMBER())
 		def formElement = newFormElement(dataElement)
 		def formElements = null
 		
@@ -152,8 +151,8 @@ class FormElementServiceSpec extends IntegrationTests {
 	
 	def "test retrieve validation rules"() {
 		setup:
-		def hc = newDataLocationType(HEALTH_CENTER_GROUP);
-		def dh = newDataLocationType(DISTRICT_HOSPITAL_GROUP);
+		def hc = newDataLocationType(['en': 'Health Center'], HEALTH_CENTER_GROUP);
+		def dh = newDataLocationType(['en': 'Health Center'], DISTRICT_HOSPITAL_GROUP);
 		
 		def period = newPeriod()
 		def element = newFormElement(newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
@@ -182,8 +181,8 @@ class FormElementServiceSpec extends IntegrationTests {
 	
 	def "test retrieve validation rule - several rules"() {
 		setup:
-		def hc = newDataLocationType(HEALTH_CENTER_GROUP);
-		def dh = newDataLocationType(DISTRICT_HOSPITAL_GROUP);
+		def hc = newDataLocationType(['en': 'Health Center'], HEALTH_CENTER_GROUP);
+		def dh = newDataLocationType(['en': 'Health Center'], DISTRICT_HOSPITAL_GROUP);
 		
 		def period = newPeriod()
 		

@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.chai.kevin.LocationService;
+import org.chai.location.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.NormalizedDataElement;
@@ -20,9 +20,9 @@ import org.chai.kevin.form.FormElementService;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormValidationService;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.RefreshValueService;
@@ -63,11 +63,11 @@ public class PlanningService {
 	public PlanningSummaryPage getSummaryPage(Planning planning, Location location) {
 		List<DataLocation> dataLocations = location.collectDataLocations(null, getDataLocationTypes(planning));
 		Map<PlanningType, PlanningTypeSummary> summaries = new HashMap<PlanningType, PlanningTypeSummary>();
-		for (PlanningType planningType : planning.getPlanningTypes()) {
+		for (PlanningType planningType : planning.getAllPlanningTypes()) {
 			summaries.put(planningType, getPlanningTypeSummary(planningType, dataLocations));
 		}
 		
-		return new PlanningSummaryPage(planning.getPlanningTypes(), dataLocations, summaries);
+		return new PlanningSummaryPage(planning.getAllPlanningTypes(), dataLocations, summaries);
 	}
 	
 	// TODO move to planning type
@@ -83,6 +83,8 @@ public class PlanningService {
 	public PlanningEntry getOrCreatePlanningEntry(PlanningType type, DataLocation location, Integer lineNumber) {
 		PlanningList planningList = getPlanningList(type, location);
 		PlanningEntry entry = planningList.getOrCreatePlanningEntry(lineNumber);
+		
+		planningList.getFormEnteredValue().updateFromValidatable();
 		formElementService.save(planningList.getFormEnteredValue());
 		return entry;
 	}
@@ -95,7 +97,7 @@ public class PlanningService {
 			rawDataElementValue = new RawDataElementValue(type.getFormElement().getDataElement(), location, type.getPeriod(), Value.NULL_INSTANCE());
 		}
 		Map<PlanningCost, NormalizedDataElementValue> costValues = new HashMap<PlanningCost, NormalizedDataElementValue>();
-		for (PlanningCost planningCost : type.getCosts()) {
+		for (PlanningCost planningCost : type.getAllCosts()) {
 			costValues.put(planningCost, valueService.getDataElementValue(planningCost.getDataElement(), location, type.getPeriod()));
 		}
 		
@@ -122,6 +124,8 @@ public class PlanningService {
 		PlanningList planningList = getPlanningList(type, location);
 		PlanningEntry planningEntry = planningList.getPlanningEntries().get(lineNumber);
 		planningEntry.delete();
+		
+		planningList.getFormEnteredValue().updateFromValidatable();
 		formElementService.save(planningList.getFormEnteredValue());
 	}
 	
@@ -145,6 +149,8 @@ public class PlanningService {
 		// first we merge the values to create a new value
 		planningEntry.mergeValues(params);
 		planningEntry.getValidatable().setAttribute("", SUBMITTED, "false");
+		
+		planningList.getFormEnteredValue().updateFromValidatable();
 		formElementService.save(planningList.getFormEnteredValue());
 		
 		// second we run the validation/skip rules
@@ -155,6 +161,8 @@ public class PlanningService {
 		// last we set and save the value
 		for (FormEnteredValue formEnteredValue : affectedValues) {
 			formEnteredValue.getValidatable().setAttribute("", SUBMITTED, "false");
+			
+			formEnteredValue.updateFromValidatable();
 			formElementService.save(formEnteredValue);
 		}
 		return planningEntry;
@@ -162,7 +170,7 @@ public class PlanningService {
 	
 	@Transactional(readOnly=false)
 	public void submitIfNeeded(Planning planning, DataLocation location) {
-		for (PlanningType planningType : planning.getPlanningTypes()) {
+		for (PlanningType planningType : planning.getAllPlanningTypes()) {
 			PlanningList planningList = getPlanningList(planningType, location);
 			if (!"true".equals(planningList.getFormEnteredValue().getValidatable().getValue().getAttribute(SUBMITTED))) { 
 				// we refresh the corresponding raw data element
@@ -173,6 +181,7 @@ public class PlanningService {
 				planningList.getFormEnteredValue().getValidatable().setAttribute("", SUBMITTED, "true");
 				
 				// last we save the value
+				planningList.getFormEnteredValue().updateFromValidatable();
 				formElementService.save(planningList.getFormEnteredValue());
 			}
 		}

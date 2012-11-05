@@ -28,15 +28,12 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
-import org.chai.kevin.data.RawDataElement;
+import org.apache.commons.lang.StringUtils
 import org.chai.kevin.util.Utils
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 abstract class AbstractEntityController extends AbstractController {		
+	
+	static transactional = true
 	
 	def entityExportService
 	
@@ -56,6 +53,7 @@ abstract class AbstractEntityController extends AbstractController {
 				redirect(uri: getTargetURI())
 			}
 			catch (org.springframework.dao.DataIntegrityViolationException e) {
+				if (log.debugEnabled) log.debug('could not delete entity', e)
 				flash.message = message(code: 'default.not.deleted.message', args: [message(code: getLabel(), default: 'entity'), params.id])
 				redirect(uri: getTargetURI())
 			}
@@ -168,14 +166,14 @@ abstract class AbstractEntityController extends AbstractController {
 	 * passed as parameter.
 	 * The format for the field name is the following:
 	 * - paramName: holds the <map_key> list
-	 * - paramName[<map_key>].<language>: holds the value for that particular language
+	 * - paramName[<map_key>]_<language>: holds the value for that particular language
 	 * 
 	 * @param paramName the name of the param in the form
 	 * @param map the map to fill
 	 */
 	def bindTranslationMap(def paramName, def map) {
 		params.list(paramName).each { prefix ->
-			Translation translation = new Translation()
+			Map<String, String> translation = new HashMap<String, String>()
 			languageService.availableLanguages.each { language ->
 				translation[language] = params[paramName+'['+prefix+'].'+language]
 			}

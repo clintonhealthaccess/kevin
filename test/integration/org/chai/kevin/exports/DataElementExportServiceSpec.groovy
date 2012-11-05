@@ -37,7 +37,9 @@ import org.chai.kevin.Period;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.exports.DataElementExport;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.RawDataElementValue;
@@ -67,16 +69,14 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		def dataElementOne = newRawDataElement(CODE(1), typeOne);
 		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
 		
-		def locations=new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		
 		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
 		
-		def exporter = newDataElementExport(j("en":"Testing Seach One"),periods, [HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP], locations, dataElements);
+		def exporter = newDataElementExport(CODE(1), ["en":"Testing Seach One"],periods, [HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP], locations, dataElements);
 		
 		when:
-		def exportedFile = dataElementExportService.exportData(exporter, 'en');
+		def exportedFile = dataElementExportService.exportData(exporter);
 		then:
 		//TODO Best way to check
 		exportedFile!=null
@@ -86,21 +86,19 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree();
 		def periods=new HashSet([newPeriod()]);
-		def locationTypes = new HashSet(getDataLocationTypes([HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP]));
+		def locationTypes = [HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP];
 		
 		def typeOne = Type.TYPE_NUMBER();
 		def dataElementOne = newRawDataElement(CODE(1), typeOne);
 		
-		def locations=new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		
 		def dataElements=new HashSet([dataElementOne]);
 		
-		def exporterOne = newDataElementExport(j("en":"Testing Seach One"),periods, [HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP], locations, dataElements);
+		def exporterOne = newDataElementExport(CODE(1), ["en":"Testing Seach One"],periods, locationTypes, locations, dataElements);
 		when:
-		def dataLocations = locationService.getDataLocationsOfType(locations,locationTypes)
-		def exportedFileOne = dataElementExportService.exportDataElements("Testing",dataLocations,exporterOne.periods,exporterOne.dataElements, 'en');
+		def dataLocations = locationService.getDataLocationsOfType(locations, s(locationTypes.collect {DataLocationType.findByCode(it)}))
+		def exportedFileOne = dataElementExportService.exportDataElements("Testing", dataLocations, exporterOne.periods as List, exporterOne.dataElements as List);
 		then:
 		exportedFileOne!=null
 	}
@@ -109,19 +107,19 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree();
 		def period= newPeriod();
-		def locations= getDataLocations([KIVUYE]);
+		def locations = [DataLocation.findByCode(KIVUYE)]
 		
 		def typeListMap = Type.TYPE_LIST(Type.TYPE_MAP(["key1": Type.TYPE_STRING()]));
 		def dataElementMap = newRawDataElement(CODE(1), typeListMap);
 		RawDataElementValue valueMap = newRawDataElementValue(dataElementMap,period,locations[0],Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]));
 				
 		when:
-		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementMap, 'en')
+		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementMap)
 		def periodString = "[ "+(period.startDate).toString()+" - "+(period.endDate).toString()+" ]";
 		def listDataList=["Rwanda","North","Burera",""]
 		listDataList.add(locations[0].code);
-		listDataList.add(locations[0].names.en);
-		listDataList.add(locations[0].type.names.en);
+		listDataList.add(locations[0].names_en);
+		listDataList.add(locations[0].type.names_en);
 		listDataList.add(period.code);
 		listDataList.add(periodString);
 		listDataList.add(dataElementMap.class.simpleName);
@@ -142,7 +140,7 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		setupLocationTree();
 		def date= new Date();
 		def period= newPeriod();
-		def locations= getDataLocations([KIVUYE]);
+		def locations = [DataLocation.findByCode(KIVUYE)]
 		
 		def typeDate = Type.TYPE_DATE();
 		def dataElementDate = newRawDataElement(CODE(1), typeDate);
@@ -150,12 +148,12 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		RawDataElementValue valueDate = newRawDataElementValue(dataElementDate,period,locations[0],Value.VALUE_DATE(date));
 		
 		when:
-		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementDate, 'en')
+		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementDate)
 		def periodString = "[ "+(period.startDate).toString()+" - "+(period.endDate).toString()+" ]";
 		def listDataList=["Rwanda","North","Burera",""]
 		listDataList.add(locations[0].code);
-		listDataList.add(locations[0].names.en);
-		listDataList.add(locations[0].type.names.en);
+		listDataList.add(locations[0].names_en);
+		listDataList.add(locations[0].type.names_en);
 		listDataList.add(period.code);
 		listDataList.add(periodString);
 		listDataList.add(dataElementDate.class.simpleName);
@@ -175,19 +173,19 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		setupLocationTree();
 		def date= new Date();
 		def period= newPeriod();
-		def locations= getDataLocations([KIVUYE]);
+		def locations = [DataLocation.findByCode(KIVUYE)]
 
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(HEALTH_CENTER_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(HEALTH_CENTER_GROUP):"1"]])
 		
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, locations[0], period, Status.VALID, v("1"))
 		
 		when:
-		def lines = dataElementExportService.getExportLineForValue(locations[0],period,normalizedDataElement, 'en')
+		def lines = dataElementExportService.getExportLineForValue(locations[0],period,normalizedDataElement)
 		def periodString = "[ "+(period.startDate).toString()+" - "+(period.endDate).toString()+" ]";
 		def listDataList=["Rwanda","North","Burera",""]
 		listDataList.add(locations[0].code);
-		listDataList.add(locations[0].names.en);
-		listDataList.add(locations[0].type.names.en);
+		listDataList.add(locations[0].names_en);
+		listDataList.add(locations[0].type.names_en);
 		listDataList.add(period.code);
 		listDataList.add(periodString);
 		listDataList.add(normalizedDataElement.class.simpleName);
@@ -207,13 +205,13 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		setupLocationTree();
 		def date= new Date();
 		def period= newPeriod();
-		def locations= getDataLocations([KIVUYE]);
+		def locations = [DataLocation.findByCode(KIVUYE)]
 		
 		def typeString = Type.TYPE_STRING();
 		def dataElementString = null;
 		
 		when:
-		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementString, 'en')	
+		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementString)	
 		then:
 		lines==[];
 	}
@@ -223,13 +221,13 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		setupLocationTree();
 		def date= new Date();
 		def period= newPeriod();
-		def locations= getDataLocations([KIVUYE]);
+		def locations = [DataLocation.findByCode(KIVUYE)]
 
 		def typeNumber = Type.TYPE_NUMBER();
 		def dataElementNumber = newRawDataElement(CODE(1), typeNumber);
 			
 		when:
-		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementNumber, 'en')
+		def lines = dataElementExportService.getExportLineForValue(locations[0],period,dataElementNumber)
 		then:
 		lines==[]
 	}

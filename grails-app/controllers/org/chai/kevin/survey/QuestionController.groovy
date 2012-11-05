@@ -74,8 +74,7 @@ class QuestionController extends AbstractController {
 			response.sendError(404)
 		}
 		else {
-			List<SurveyQuestion> questions = section.questions;
-			Collections.sort(questions)
+			def questions = section.questions.sort();
 			
 			def max = Math.min(params['offset']+params['max'], questions.size())
 			

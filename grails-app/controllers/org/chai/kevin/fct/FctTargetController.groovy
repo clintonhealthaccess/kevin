@@ -34,8 +34,8 @@ package org.chai.kevin.fct;
 import grails.plugin.springcache.annotations.CacheFlush;
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.data.Sum
-import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.data.Summ
+import org.chai.location.DataLocationType;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.Utils
 
@@ -81,7 +81,7 @@ class FctTargetController extends AbstractEntityController {
 	}
 
 	def deleteEntity(def entity) {
-		if(entity.targetOptions.size() == 0){
+		if (entity.targetOptions == null || entity.targetOptions.size() == 0){
 			if (log.isInfoEnabled()) log.info("deleting target: "+entity)			
 			entity.delete()
 		}
@@ -92,11 +92,6 @@ class FctTargetController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
 	@CacheFlush("fctCache")

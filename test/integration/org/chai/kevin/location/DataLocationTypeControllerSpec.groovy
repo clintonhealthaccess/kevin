@@ -1,6 +1,7 @@
 package org.chai.kevin.location
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.location.DataLocationType;
 
 class DataLocationTypeControllerSpec extends IntegrationTests {
 
@@ -23,7 +24,7 @@ class DataLocationTypeControllerSpec extends IntegrationTests {
 	
 	def "test can delete when no locations"() {
 		setup:
-		def province = newDataLocationType(HEALTH_CENTER_GROUP)
+		def province = newDataLocationType(['en':'Health Center'], HEALTH_CENTER_GROUP)
 		dataLocationTypeController = new DataLocationTypeController()
 		
 		when:

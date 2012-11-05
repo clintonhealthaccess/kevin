@@ -28,9 +28,6 @@
 package org.chai.kevin.planning
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.Period;
-import org.chai.kevin.PeriodSorter
-import org.chai.kevin.Translation;
 /**
  * @author Jean Kahigiso M.
  *
@@ -82,17 +79,17 @@ class PlanningTypeController extends AbstractEntityController {
 	def bindParams(def entity) {
 		entity.properties = params
 
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.namesPlural!=null) entity.namesPlural = params.namesPlural
-		if (params.listHelps!=null) entity.listHelps = params.listHelps
-		if (params.newHelps!=null) entity.newHelps = params.newHelps
-		
 		// headers
-		bindTranslationMap('headerList', entity.formElement?.headers)
+		if (entity.formElement != null) {
+			def headers = [:]
+			bindTranslationMap('headerList', headers)
+			entity.formElement.headers = headers
+		}
+		
 		// section description
-		bindTranslationMap('sectionList', entity.sectionDescriptions)
+		def sectionDescriptions = [:]
+		bindTranslationMap('sectionList', sectionDescriptions)
+		entity.sectionDescriptions = sectionDescriptions
 	}
 	
 	def list = {
@@ -101,11 +98,11 @@ class PlanningTypeController extends AbstractEntityController {
 		Planning planning = Planning.get(params.int('planning.id'))
 		if (planning == null) response.sendError(404)
 		else {
-			List<PlanningType> planningTypes = planning.planningTypes
+			def planningTypes = planning.planningTypes
 	
 			render (view: '/planning/admin/list', model:[
 				template:"planningTypeList",
-				entities: planningTypes,
+				entities: planningTypes as List,
 				entityCount: planningTypes.size(),
 				code: getLabel(),
 				entityClass: getEntityClass()

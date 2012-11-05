@@ -5,20 +5,34 @@ import grails.validation.ValidationException;
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Aggregation;
-import org.chai.kevin.data.Sum;
+import org.chai.kevin.data.Summ;
 import org.chai.kevin.data.Type;
 
 class CalculationSpec extends IntegrationTests {
 	
 	def "sum expression must be valid"() {
 		when:
-		new Sum(code:CODE(1), expression: "1").save(failOnError: true)
+		new Summ(code:CODE(1), expression: "1").save(failOnError: true)
 		
 		then:
-		Sum.count() == 1
+		Summ.count() == 1
 		
 		when:
-		new Sum(code:CODE(2), expression: "1(").save(failOnError: true)
+		new Summ(code:CODE(2), expression: "1(").save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "sum code must be unique"() {
+		when:
+		new Summ(code:CODE(1), expression: "1").save(failOnError: true)
+		
+		then:
+		Summ.count() == 1
+		
+		when:
+		new Summ(code:CODE(1), expression: "1").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -27,7 +41,7 @@ class CalculationSpec extends IntegrationTests {
 	def "sum expression does not accept calculations"() {
 		when:
 		def sum = newSum("1", CODE(1))
-		new Sum(code:CODE(1), expression: "\$"+sum.id).save(failOnError: true)
+		new Summ(code:CODE(1), expression: "\$"+sum.id).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -35,13 +49,13 @@ class CalculationSpec extends IntegrationTests {
 	
 	def "ratio expression must be valid"() {
 		when:
-		new Sum(code:CODE(1), expression: "1").save(failOnError: true)
+		new Summ(code:CODE(1), expression: "1").save(failOnError: true)
 		
 		then:
-		Sum.count() == 1
+		Summ.count() == 1
 		
 		when:
-		new Sum(code:CODE(2), expression: "1(").save(failOnError: true)
+		new Summ(code:CODE(2), expression: "1(").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -72,13 +86,13 @@ class CalculationSpec extends IntegrationTests {
 	
 	def "sum code must not be null"() {
 		when:
-		new Sum(code:CODE(1), expression: "1").save(failOnError: true)
+		new Summ(code:CODE(1), expression: "1").save(failOnError: true)
 		
 		then:
-		Sum.count() == 1
+		Summ.count() == 1
 		
 		when:
-		new Sum(expression: "1").save(failOnError: true)
+		new Summ(expression: "1").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -86,13 +100,13 @@ class CalculationSpec extends IntegrationTests {
 	
 	def "ratio code must not be null"() {
 		when:
-		new Sum(code:CODE(1), expression: "1").save(failOnError: true)
+		new Summ(code:CODE(1), expression: "1").save(failOnError: true)
 		
 		then:
-		Sum.count() == 1
+		Summ.count() == 1
 		
 		when:
-		new Sum(expression: "1").save(failOnError: true)
+		new Summ(expression: "1").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -111,16 +125,5 @@ class CalculationSpec extends IntegrationTests {
 		then:
 		thrown ValidationException
 	}
-	
-//	def "cannot delete expression with associated calculation"() {
-//		when:
-//		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
-//		def ratio = new Sum(expressions: [HEALTH_CENTER_GROUP: expression], type:Type.TYPE_NUMBER()).save(failOnError: true)
-//		expression.delete(flush: true)
-//		
-//		then:
-//		thrown Exception
-//	}
-	
 	
 }

@@ -36,7 +36,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LocationService;
+import org.chai.location.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.PeriodService;
 import org.chai.kevin.data.Data;
@@ -44,7 +44,7 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.RawDataElementValue;
@@ -83,7 +83,6 @@ public class GeneralDataImporter extends DataImporter{
 	}
 	
 	private boolean importData(String fileName,ICsvMapReader reader,Integer numberOfLinesToImport, ImportSanitizer sanitizer, String[] headers, Set<DuplicateHelper> duplicateHelpers, Map<String,Integer> positions) throws IOException{
-		Data<?> data=null;
 		// keep data location in memory between rows to optimize
 		DataLocation dataLocation = null;
 		String dataLocationCode = null;
@@ -132,11 +131,8 @@ public class GeneralDataImporter extends DataImporter{
 				dataLocation = locationService.findCalculationLocationByCode(dataLocationCode, DataLocation.class);
 				dataElementCode = newDataElementCode;
 				
-				data  = dataService.getDataByCode(dataElementCode, Data.class);
-				if(data instanceof RawDataElement)
-					dataElement=(RawDataElement) data;
-				else{
-					dataElement=null;
+				dataElement = dataService.getDataByCode(dataElementCode, RawDataElement.class);
+				if (dataElement == null) {
 					manager.getErrors().add(new ImporterError(fileName,lineNumber,ImportExportConstant.DATA_CODE,"import.error.message.not.raw.data.element"));	
 				}	
 				periodCode = newPeriodCode;

@@ -11,6 +11,8 @@
 			<g:form url="[controller:'dataElementExport', action:'save', params: [targetURI: targetURI]]" useToken="true">
 				<g:i18nTextarea name="descriptions" bean="${exporter}" value="${exporter.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions" height="150"  width="300" maxHeight="150" />
 				
+				<g:input name="code" label="${message(code:'entity.code.label')}" bean="${exporter}" field="code"/>
+				
 				<g:selectFromList name="periodIds" label="${message(code:'period.label')}" bean="${exporter}" field="periods" 
 					from="${periods}" value="${exporter.periods*.id}" values="${periods.collect{Utils.formatDate(it.startDate)+' to '+Utils.formatDate(it.endDate)}}" optionKey="id" multiple="true"/>
 				

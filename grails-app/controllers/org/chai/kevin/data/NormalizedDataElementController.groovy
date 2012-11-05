@@ -30,8 +30,9 @@ package org.chai.kevin.data
 
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.Period
-import org.chai.kevin.location.DataLocationType
+import org.chai.location.DataLocationType
 import org.chai.kevin.planning.PlanningCost
+import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.value.Status
 
 class NormalizedDataElementController extends AbstractEntityController {
@@ -80,8 +81,6 @@ class NormalizedDataElementController extends AbstractEntityController {
 	
 	def deleteEntity(def entity) {
 		// we check if there are associated date
-		
-		
 		if (!dataService.getReferencingData(entity).isEmpty()) {
 			flash.message = message(code: "normalizeddataelement.delete.hasreferencingdata", default: "Could not delete element, some other data still reference this element.")
 		}
@@ -89,22 +88,20 @@ class NormalizedDataElementController extends AbstractEntityController {
 		else if (!PlanningCost.findAllByDataElement(entity).isEmpty()) {
 			flash.message = message(code: "normalizeddataelement.delete.hasreferencingplanningcost", default: "Could not delete element, some other data still reference this element.")
 		}
+		else if (!AbstractReportTarget.findAllByData(entity).isEmpty()) {
+			flash.message = message(code: "data.delete.hasreporttargets", default: "Could not delete element, some reports use this data element.")
+		}
 		else {
 			valueService.deleteValues(entity, null, null)
-			entity.delete()
+			super.deleteEntity(entity)
 		}
 	}
 	
 	def bindParams(def entity) {
 		entity.properties = params
 		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
-		
 		// bind expression map
-		entity.expressionMap = [:]
+		def expressionMap = [:]
 		Period.list([cache: true]).each { period ->
 			def periodMap = [:]
 			DataLocationType.list([cache: true]).each { group ->
@@ -112,10 +109,9 @@ class NormalizedDataElementController extends AbstractEntityController {
 				periodMap[group.code] = expression==null?'':expression
 			}
 			// we bind the expression map last so everything is refreshed
-			entity.expressionMap[period.id+''] = periodMap
+			expressionMap[period.id+''] = periodMap
 		}
-		
-		log.debug(entity.expressionMap)
+		entity.expressionMap = expressionMap
 	}
 	
 	def search = {

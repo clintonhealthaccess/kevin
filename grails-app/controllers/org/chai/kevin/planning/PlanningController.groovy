@@ -29,8 +29,7 @@ package org.chai.kevin.planning
 
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.Period;
-import org.chai.kevin.PeriodSorter
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 /**
  * @author Jean Kahigiso M.
  *
@@ -68,7 +67,6 @@ class PlanningController extends AbstractEntityController {
 	
 	def getModel(def entity) {
 		List<Period> periods = Period.list([cache: true])
-		if(periods.size()>0) Collections.sort(periods,new PeriodSorter());
 		[
 			planning: entity,
 			periods: periods,
@@ -83,12 +81,6 @@ class PlanningController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.overviewHelps!=null) entity.overviewHelps = params.overviewHelps
-		if (params.budgetHelps!=null) entity.budgetHelps = params.budgetHelps
 	}
 
 	def list = {

@@ -36,12 +36,15 @@ class PeriodController extends AbstractEntityController  {
 	def bindParams(def entity) {
 		entity.properties = params
 	}
+	
+	def deleteEntity(def entity) {
+		super.deleteEntity(entity)
+	}
 
 	def list = {
 		adaptParamsForList()
 		
 		def periods = Period.list(params)
-		Collections.sort(periods,new PeriodSorter())
 		
 		render(view:'/entity/list', model: [
 			entities: periods, 

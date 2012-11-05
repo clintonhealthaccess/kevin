@@ -47,11 +47,11 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		
 		survey != copy
 		
-		!copy.programs[0].equals(survey.programs[0])
-		copy.programs[0].survey.equals(copy)
-		survey.programs[0].survey.equals(survey)
+		!copy.allPrograms.equals(survey.allPrograms)
+		copy.allPrograms[0].survey.equals(copy)
+		survey.allPrograms[0].survey.equals(survey)
 		
-		survey.names['en']+' (copy)' == copy.names['en']
+		survey.names_en+' (copy)' == copy.names_en
 	}
 	
 	def "test clone survey with skip rule"() {
@@ -72,8 +72,8 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		then:
 		SurveySkipRule.count() == 2
 		copy.getSkipRules().size() == 1
-		copy.getSkipRules()[0].expression != survey.getSkipRules()[0].expression
-		copy.getSkipRules()[0].expression == "\$" + SurveyElement.list()[1].id + " == 1"
+		copy.allSkipRules[0].expression != survey.allSkipRules[0].expression
+		copy.allSkipRules[0].expression == "\$" + SurveyElement.list()[1].id + " == 1"
 		surveyCopy.getUnchangedSkipRules().size() == 0
 	}
 	
@@ -128,6 +128,25 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		elementCopy.validationRules.iterator().next().dependencies.size() == 1
 		elementCopy.validationRules.iterator().next().dependencies[0].equals(elementCopy)
 		surveyCopy.getUnchangedValidationRules().size() == 0
+	}
+	
+	def "test clone survey with form headers"() {
+		setup:
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [])
+		def section = newSurveySection(CODE(1), program, 1, [])
+		def question = newSimpleQuestion(CODE(1), section, 1, [])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		def element = newSurveyElement(question, dataElement, ['[_]': ['en': 'HEADER']])
+		
+		when:
+		def surveyCopy = surveyCopyService.copySurvey(survey)
+		def copy = surveyCopy.copy
+		
+		then:
+		SurveyElement.list()[0].getHeaders('en').get('[_]') == 'HEADER'
+		SurveyElement.list()[1].getHeaders('en').get('[_]') == 'HEADER'
 	}
 	
 		

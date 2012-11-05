@@ -4,7 +4,7 @@
 		<td>
 			<span style="margin-left: ${level*20}px;"><g:i18n field="${location.names}"/></span>
 		</td>
-		<g:each in="${fctTable.targetOptions}" var="targetOption">
+		<g:each in="${fctTable.indicators}" var="targetOption">
 			<td>
 				<g:reportValue
 					tooltip="${i18n(field: targetOption.names)}"
@@ -21,7 +21,7 @@
 			<td class="js_foldable-toggle ${location.id == currentLocation.id ? 'toggled': ''}">
 				<span style="margin-left: ${level*20}px;"><g:i18n field="${location.names}"/></span>
 			</td>
-			<g:each in="${fctTable.targetOptions}" var="targetOption">
+			<g:each in="${fctTable.indicators}" var="targetOption">
 				<td>
 					<g:if test="${fctTable.getTableReportValue(location, targetOption) != null}">
 						<div class="report-value-number">
@@ -49,10 +49,10 @@
 		</tr>
 		<tr class="sub-tree js_foldable-container hidden"
 			style="display:${location.id == currentLocation.id ? 'table-row': 'none'};">
-			<td class="bucket" colspan="${fctTable.targetOptions.size()+1}">				
+			<td class="bucket" colspan="${fctTable.indicators.size()+1}">				
 				<table>
 					<tbody>					
-						<g:each in="${location.getAllChildren(locationSkipLevels, currentLocationTypes)}" var="child">	
+						<g:each in="${fctTable.getLocations(location, locationSkipLevels, currentLocationTypes)}" var="child">	
 							<g:render template="/fct/reportProgramTableTree" model="[location:child, level:level+1]"/>
 						</g:each>
 					</tbody>

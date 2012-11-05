@@ -7,13 +7,14 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shiro.SecurityUtils;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.DataLocation;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 import org.hibernate.FlushMode;
+import org.hibernate.Query;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -32,17 +33,6 @@ class FormElementService {
 		else criteria.setMaxResults(500)
 		
 		List<FormElement> data = criteria.addOrder(Order.asc("id")).list()
-		
-		StringUtils.split(text).each { chunk ->
-			data.retainAll { element ->
-				// we look in "info" if it is a data element
-				Utils.matches(chunk, element.dataElement.id+"") ||
-				Utils.matches(chunk, element.dataElement.info) ||
-				Utils.matches(chunk, element.dataElement.names[languageService.getCurrentLanguage()]) ||
-				Utils.matches(chunk, element.dataElement.code) ||
-				Utils.matches(chunk, element.id+"")
-			}
-		}
 		
 		if (!allowedTypes.isEmpty()) {
 			data.retainAll { element ->
@@ -64,7 +54,7 @@ class FormElementService {
 			// data element
 			disjunction.add(Restrictions.ilike("de.info", chunk, MatchMode.ANYWHERE))
 			disjunction.add(Restrictions.ilike("de.code", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("de.names.jsonText", chunk, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("de.names_"+languageService.currentLanguage, chunk, MatchMode.ANYWHERE))
 			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("de.id", Long.parseLong(chunk)))
 			// survey element
 			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("id", Long.parseLong(chunk)))
@@ -76,7 +66,7 @@ class FormElementService {
 		if (!allowedTypes.isEmpty()) {
 			def typeRestrictions = Restrictions.disjunction()
 			allowedTypes.each { type ->
-				typeRestrictions.add(Restrictions.like("de.type.jsonValue", type, MatchMode.ANYWHERE))
+				typeRestrictions.add(Restrictions.like("de.typeString", type, MatchMode.ANYWHERE))
 			}
 			criteria.add(typeRestrictions)
 		}
@@ -90,13 +80,18 @@ class FormElementService {
 	
 	void save(FormEnteredValue formEnteredValue) {
 		if (log.isDebugEnabled()) log.debug("save(formEnteredValue=${formEnteredValue}})")
-//		formEnteredValue.setUserUuid(SecurityUtils.subject.principal)
-//		formEnteredValue.setTimestamp(new Date());
-		formEnteredValue.save();
+		formEnteredValue.save(failOnError: true);
 	}
 	
 	void delete(FormEnteredValue formEnteredValue) {
 		formEnteredValue.delete()
+	}
+	
+	void deleteEnteredValues(DataLocation dataLocation) {
+		String queryString = "delete from FormEnteredValue where dataLocation = :dataLocation";
+		Query query = sessionFactory.getCurrentSession().createQuery(queryString);
+		query.setParameter("dataLocation", dataLocation);
+		query.executeUpdate();
 	}
 	
 	FormEnteredValue getFormEnteredValue(FormElement formElement, DataLocation dataLocation) {

@@ -5,8 +5,9 @@ import org.chai.kevin.dashboard.DashboardIntegrationTests;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.dsr.DsrIntegrationTests;
 import org.chai.kevin.dsr.DsrTarget;
+import org.chai.kevin.dsr.DsrTargetCategory;
 import org.chai.kevin.fct.FctIntegrationTests;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.LocationLevel;
 
 class ReportServiceSpec extends ReportIntegrationTests {
 
@@ -33,7 +34,7 @@ class ReportServiceSpec extends ReportIntegrationTests {
 		when:
 		collectedPrograms = []
 		collectedTargets = []
-		reportService.collectReportTree(DsrTarget.class, ReportProgram.findByCode(ROOT), collectedPrograms, collectedTargets)
+		reportService.collectReportTree(DsrTargetCategory.class, ReportProgram.findByCode(ROOT), collectedPrograms, collectedTargets)
 		
 		then:
 		collectedPrograms.empty
@@ -43,22 +44,22 @@ class ReportServiceSpec extends ReportIntegrationTests {
 		collectedPrograms = []
 		collectedTargets = []
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_STRING())
-		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(2), 1)
-		def target = DsrIntegrationTests.newDsrTarget(CODE(1), 1, dataElement, ReportProgram.findByCode(PROGRAM1), category)
-		reportService.collectReportTree(DsrTarget.class, ReportProgram.findByCode(PROGRAM1), collectedPrograms, collectedTargets)
+		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(2), ReportProgram.findByCode(PROGRAM1), 1)
+		def target = DsrIntegrationTests.newDsrTarget(CODE(1), 1, dataElement, category)
+		reportService.collectReportTree(DsrTargetCategory.class, ReportProgram.findByCode(PROGRAM1), collectedPrograms, collectedTargets)
 		
 		then:
 		collectedPrograms.equals([ReportProgram.findByCode(PROGRAM1)])
-		collectedTargets.equals([target])
+		collectedTargets.equals([category])
 		
 		when:
 		collectedPrograms = []
 		collectedTargets = []
-		reportService.collectReportTree(DsrTarget.class, ReportProgram.findByCode(ROOT), collectedPrograms, collectedTargets)
+		reportService.collectReportTree(DsrTargetCategory.class, ReportProgram.findByCode(ROOT), collectedPrograms, collectedTargets)
 		
 		then:
 		collectedPrograms.equals([ReportProgram.findByCode(PROGRAM1), ReportProgram.findByCode(ROOT)])
-		collectedTargets.equals([target])
+		collectedTargets.equals([category])
 	}
 	
 	def "get report targets"() {
@@ -67,22 +68,22 @@ class ReportServiceSpec extends ReportIntegrationTests {
 		def program = newReportProgram(CODE(1))
 		
 		when:
-		def dashboardProgram = DashboardIntegrationTests.newDashboardProgram(CODE(1), program)
-		def dashboardTarget = DashboardIntegrationTests.newDashboardTarget(CODE(1), sum, program, 1)
+		def dashboardProgram = DashboardIntegrationTests.newDashboardProgram(CODE(2), program)
+		def dashboardTarget = DashboardIntegrationTests.newDashboardTarget(CODE(3), sum, program, 1)
 		
 		then:
 		reportService.getReportTargets(sum) == [dashboardTarget]
 		
 		when:
-		def dsrCategory = DsrIntegrationTests.newDsrTargetCategory(CODE(1), 1)
-		def dsrTarget = DsrIntegrationTests.newDsrTarget(CODE(1), sum, program, dsrCategory)
+		def dsrCategory = DsrIntegrationTests.newDsrTargetCategory(CODE(4), program, 1)
+		def dsrTarget = DsrIntegrationTests.newDsrTarget(CODE(5), sum, dsrCategory)
 		
 		then:
 		reportService.getReportTargets(sum) == [dashboardTarget, dsrTarget]
 		
 		when:
-		def fctTarget = FctIntegrationTests.newFctTarget(CODE(1), program)
-		def fctTargetOption = FctIntegrationTests.newFctTargetOption(CODE(1), fctTarget, sum)
+		def fctTarget = FctIntegrationTests.newFctTarget(CODE(6), program)
+		def fctTargetOption = FctIntegrationTests.newFctTargetOption(CODE(7), fctTarget, sum)
 		
 		then:
 		reportService.getReportTargets(sum) == [dashboardTarget, dsrTarget, fctTargetOption]

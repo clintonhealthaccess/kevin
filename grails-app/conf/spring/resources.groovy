@@ -33,7 +33,7 @@ import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.ExceptionHandler;
 import org.chai.kevin.JaqlService
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationService;
+import org.chai.location.LocationService;
 import org.chai.kevin.dashboard.DashboardValueService
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.data.DataService;
@@ -45,8 +45,9 @@ import org.chai.kevin.exports.SurveyExportService
 import org.chai.kevin.fct.FctService
 import org.chai.kevin.form.FormValidationService
 import org.chai.kevin.planning.PlanningService
+import org.chai.kevin.reports.ReportExportService;
 import org.chai.kevin.reports.ReportService
-import org.chai.kevin.reports.ReportExportService
+import org.chai.kevin.security.ShiroSecurityBridge;
 import org.chai.kevin.survey.SurveyCopyService
 import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.summary.SummaryService
@@ -162,7 +163,6 @@ beans = {
 	dsrService(DsrService){		
 		reportService = ref("reportService")
 		valueService = ref("valueService")
-		dataService = ref("dataService")
 		locationSkipLevels = dsrSkipLevels
 		viewMapSkipLevels = dsrViewMapSkipLevels
 	}
@@ -203,13 +203,11 @@ beans = {
 	}
 	
 	dataElementExportService(DataElementExportService){
-		languageService = ref("languageService")
 		locationService = ref("locationService")
 		valueService = ref("valueService")
 		sessionFactory = ref("sessionFactory")
 	}
 	calculationExportService(CalculationExportService){
-		languageService = ref("languageService")
 		locationService = ref("locationService")
 		valueService = ref("valueService")
 		sessionFactory = ref("sessionFactory")
@@ -221,5 +219,7 @@ beans = {
 		shared = true
 		cacheManagerName = "Springcache Plugin Cache Manager"
 	}
+	
+	grailsSecurityBridge(ShiroSecurityBridge) {}
 	
 }

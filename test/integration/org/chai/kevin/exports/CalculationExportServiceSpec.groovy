@@ -37,7 +37,9 @@ import org.chai.kevin.Period;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.exports.DataElementExport;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.RawDataElementValue;
@@ -60,21 +62,19 @@ class CalculationExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree();
 		def periods=new HashSet([newPeriod()]);
-		def locationType="Health Center,District Hospital";
+		def locationTypes = [HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP]
 		
 		def sum = newSum("",CODE(1));
 		def aggregation = newAggregation("1",CODE(2));
 		
-		def locations=new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		
 		def calculations = new HashSet([sum,aggregation]);
 		
-		def exporter = newCalculationExport(j("en":"Testing Seach One"),periods, locationType, locations, calculations);
+		def exporter = newCalculationExport(CODE(1), ["en":"Testing Seach One"],periods, locationTypes, locations, calculations);
 		
 		when:
-		def exportedFile = calculationExportService.exportData(exporter, 'en');
+		def exportedFile = calculationExportService.exportData(exporter);
 		then:
 		//TODO Best way to check
 		exportedFile!=null
@@ -84,21 +84,15 @@ class CalculationExportServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree();
 		def periods=new HashSet([newPeriod()]);
-		def locationType="Health Center,District Hospital";
-		def locationTypes = new HashSet(getDataLocationTypes([HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP]));
-		
+		def locationTypes = [HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP]
 		def sum = newSum("1",CODE(1));
-		
-		def locations=new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
-		
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def calculations=new HashSet([sum]);
+		def exporterOne = newCalculationExport(CODE(1), ["en":"Testing Seach One"],periods, locationTypes, locations, calculations);
 		
-		def exporterOne = newCalculationExport(j("en":"Testing Seach One"),periods, locationType, locations, calculations);
 		when:
-		def selectedLocations = locationService.getDataLocationsOfType(locations,locationTypes)
-		def exportedFileOne = calculationExportService.exportCalculations("Testing",selectedLocations,exporterOne.periods,exporterOne.calculations,locationTypes, 'en');
+		def selectedLocations = locationService.getDataLocationsOfType(locations, s(locationTypes.collect {DataLocationType.findByCode(it)}))
+		def exportedFileOne = calculationExportService.exportCalculations("Testing",selectedLocations,exporterOne.periods as List,exporterOne.calculations as List,s(locationTypes.collect {DataLocationType.findByCode(it)}));
 		then:
 		exportedFileOne!=null
 	}
@@ -108,19 +102,19 @@ class CalculationExportServiceSpec extends IntegrationTests {
 		setupLocationTree();
 		def date= new Date();
 		def period= newPeriod();
-		def locationTypes = new HashSet(getDataLocationTypes([HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP]));
-		def locations= getDataLocations([KIVUYE]);
+		def locationTypes = [HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP]
+		def locations = [DataLocation.findByCode(KIVUYE)]
 		def calculation = newAggregation("1",CODE(1));
 			
 		when:
-		def lines = calculationExportService.getExportLineForValue(locations[0],period,calculation,locationTypes, 'en')	
+		def lines = calculationExportService.getExportLineForValue(locations[0],period,calculation, s(locationTypes.collect {DataLocationType.findByCode(it)}))	
 		def periodString = "[ "+(period.startDate).toString()+" - "+(period.endDate).toString()+" ]";
 		
 		def listDataList=[];
 		listDataList.add(locations[0].code);
-		listDataList.add(locations[0].names.en);
+		listDataList.add(locations[0].names_en);
 		listDataList.add("");
-		listDataList.add(locations[0].type.names.en);
+		listDataList.add(locations[0].type.names_en);
 		listDataList.add(period.code);
 		listDataList.add(periodString);
 		listDataList.add(calculation.class.simpleName);
@@ -138,18 +132,16 @@ class CalculationExportServiceSpec extends IntegrationTests {
 		setupLocationTree();
 		def date= new Date();
 		def period= newPeriod();
-		def locationTypes = new HashSet(getDataLocationTypes([HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP]));
-		def locations= getDataLocations([KIVUYE]);
+		def locationTypes = [HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP]
+		def locations = [DataLocation.findByCode(KIVUYE)]
 		
 		def calculation = null;
 		
 		when:
-		def lines = calculationExportService.getExportLineForValue(locations[0],period,calculation,locationTypes, 'en')	
+		def lines = calculationExportService.getExportLineForValue(locations[0],period,calculation,s(locationTypes.collect {DataLocationType.findByCode(it)}))	
 		then:
 		lines==[];
 	}
-	
-	
 	
 }
 

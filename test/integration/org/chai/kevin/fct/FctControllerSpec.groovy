@@ -1,10 +1,10 @@
 package org.chai.kevin.fct
 
-import org.chai.kevin.LocationService
+import org.chai.location.LocationService
 import org.chai.kevin.IntegrationTests
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.util.Utils
 
 class FctControllerSpec extends FctIntegrationTests {

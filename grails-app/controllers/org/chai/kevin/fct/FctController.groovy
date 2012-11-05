@@ -6,9 +6,9 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.AbstractController
 import org.chai.kevin.LanguageService
 import org.chai.kevin.Period
-import org.chai.kevin.location.DataLocationType
-import org.chai.kevin.location.Location
-import org.chai.kevin.location.LocationLevel
+import org.chai.location.DataLocationType
+import org.chai.location.Location
+import org.chai.location.LocationLevel
 import org.chai.kevin.reports.ReportEntity
 import org.chai.kevin.reports.ReportExportService
 import org.chai.kevin.reports.ReportProgram
@@ -21,59 +21,35 @@ class FctController extends AbstractController {
 	def fctService;
 	def reportExportService;
 	
+	/**
+	* This returns the fct target passed as a parameter if it belongs to the
+	* given program. Otherwise, it returns the first fct target that has target options for the program.
+	*
+	* @param program
+	* @return
+	*/
 	public FctTarget getFctTarget(def program){
 		def fctTarget = null
 		if(params.int('fctTarget') != null){
 			fctTarget = FctTarget.get(params.int('fctTarget'))
 			
 			// reset the target if it doesn't belong to the right program
-			if(fctTarget != null){
-				if(!fctTarget.program.equals(program))
-					fctTarget = null
+			if (fctTarget != null) {
+				if (!fctTarget.program.equals(program)) fctTarget = null
 			}			
 		}
 		
 		// set the target to the first of the program if null
+		// TODO this crashes if there are no fct targets in the system
 		if(fctTarget == null){
 			def targets = fctService.getFctTargetsWithOptions(program)			
 			if(targets != null && !targets.empty){
-				Collections.sort(targets);
+				targets.sort({it.order})
 				fctTarget = targets.first()			
 			}
 		}
 		return fctTarget
 	}	
-	
-	public Set<FctTargetOption> getFctIndicators(def target, def program){
-		Set<FctTargetOption> fctIndicators = new HashSet<FctTargetOption>()
-			
-		if(params.list('indicators') != null && !params.list('indicators').empty){
-			def indicators = params.list('indicators')
-			fctIndicators.addAll(indicators.collect{ NumberUtils.isNumber(it as String) ? FctTargetOption.get(it) : null } - null)
-			
-			// reset the indicators if any of them don't belong to the right target
-			if(fctIndicators != null){
-				for(FctTargetOption fctIndicator in fctIndicators){
-					if(!fctIndicator.target.equals(target)){
-						fctIndicators = null
-						break;
-					}
-				}
-			}
-		}				
-		
-		// set the indicators to the target options if null
-		if(fctIndicators == null || fctIndicators.empty){
-			if(target == null) target = getFctTarget(program);
-			if(target != null){
-				def targetOptions = target.targetOptions
-				if(targetOptions != null && !targetOptions.empty)
-					fctIndicators.addAll(targetOptions)
-			}
-		}
-		
-		return fctIndicators
-	}
 	
 	def index = {
 		redirect (action: 'view', params: params)
@@ -82,26 +58,28 @@ class FctController extends AbstractController {
 	def view = {
 		if (log.isDebugEnabled()) log.debug("fct.view, params:"+params)
 
+		// entities form params
 		Period period = getPeriod()
 		ReportProgram program = getProgram(FctTarget.class)
 		Location location = getLocation()
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 		FctTarget fctTarget = getFctTarget(program)
-		Set<FctTargetOption> fctIndicators = getFctIndicators(fctTarget, program)
-		
 		ReportType reportType = getReportType()
-		def mapSkipLevels = []
 		
+		// skip levels
 		def locationSkipLevels = fctService.getSkipLocationLevels()
-		def locationTree = location.collectLocationTreeWithData(locationSkipLevels, dataLocationTypes, false).asList()
+		
+		// entire location tree to filter stuff that has no data for tree table
+		def locationTree = location.collectTreeWithDataLocations(locationSkipLevels, dataLocationTypes, false).asList()
 
+		// building params for redirection checks
 		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
 							'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 
 							'fctTarget':fctTarget?.id,
-							//'indicators':fctIndicators != null ? fctIndicators.collect{ it.id }.sort() : null,
 							'reportType':reportType.toString().toLowerCase()]
-		def newParams = redirectIfDifferent(reportParams)
 		
+		// we check if we should redirect
+		def newParams = redirectIfDifferent(reportParams)
 		if(newParams != null && !newParams.empty) redirect(controller: 'fct', action: 'view', params: newParams)
 		
 		else {
@@ -111,18 +89,18 @@ class FctController extends AbstractController {
 			
 			if (log.isDebugEnabled()) log.debug('fct: '+fctTable+", root program: "+program+", root location: "+location)				
 			[
-				fctTable: fctTable,
 				currentTarget: fctTarget,
-				currentIndicators: fctIndicators,
 				currentPeriod: period,
 				currentProgram: program,
-				selectedTargetClass: FctTarget.class,
 				currentLocation: location,
+				currentLocationTypes: dataLocationTypes,
+				
+				fctTable: fctTable,
+				targets: fctService.getFctTargetsWithOptions(program),
+				selectedTargetClass: FctTarget.class,
 				locationTree: locationTree,
-				currentLocationTypes: dataLocationTypes,		
 				locationSkipLevels: locationSkipLevels,
 				currentView: reportType,
-				mapSkipLevels: mapSkipLevels
 			]
 		}
 	}
@@ -157,7 +135,7 @@ class FctController extends AbstractController {
 			
 			String report = message(code:'fct.title');
 			String filename = reportExportService.getReportExportFilename(report, location, program, period);
-			File csvFile = reportExportService.getReportExportFile(filename, fctTable);
+			File csvFile = reportExportService.getReportExportFile(filename, fctTable, location);
 			def zipFile = Utils.getZipFile(csvFile, filename)
 				
 			if(zipFile.exists()){

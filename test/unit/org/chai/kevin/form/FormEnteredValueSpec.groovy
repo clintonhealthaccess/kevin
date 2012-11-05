@@ -1,7 +1,7 @@
 package org.chai.kevin.form
 
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 
 import grails.plugin.spock.UnitSpec;
 

@@ -28,7 +28,7 @@
 package org.chai.kevin.form
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.location.DataLocationType
+import org.chai.location.DataLocationType
 
 /**
  * @author Jean Kahigiso M.
@@ -76,23 +76,19 @@ class FormValidationRuleController extends AbstractEntityController {
 	}
 	
 	def saveEntity(def entity) {
-		entity.formElement.validationRules.add(entity)
+		entity.formElement.addToValidationRules(entity)
 		entity.save()
 		entity.formElement.save()
 	}
 	
 	def deleteEntity(def entity) {
-		entity.formElement.validationRules.remove(entity);
+		entity.formElement.removeFromValidationRules(entity);
 		entity.formElement.save();
 		entity.delete()
 	}
 
 	def bindParams(def entity) {
 		entity.properties = params
-		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.messages!=null) entity.messages = params.messages
 	}
 	
 	def copy = {

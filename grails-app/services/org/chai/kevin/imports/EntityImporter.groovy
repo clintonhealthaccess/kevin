@@ -1,36 +1,27 @@
 package org.chai.kevin.imports;
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.IOException
+import java.lang.reflect.Field
+import java.lang.reflect.ParameterizedType
+import java.util.ArrayList
+import java.util.Arrays
+import java.util.Collections
+import java.util.List
+import java.util.Map
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ClassUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.exports.EntityHeaderSorter;
-import org.chai.kevin.Importable;
-import org.chai.kevin.LocationService;
-import org.chai.kevin.Translation;
-import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.imports.ImporterError;
-import org.chai.kevin.imports.ImporterErrorManager;
-import org.chai.kevin.json.JSONMap;
-import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.ValueService;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
-import org.supercsv.io.CsvMapReader;
-import org.supercsv.io.ICsvMapReader;
-import org.supercsv.prefs.CsvPreference;
+import org.apache.commons.collections.CollectionUtils
+import org.apache.commons.lang.ClassUtils
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+import org.chai.kevin.Importable
+import org.chai.kevin.exports.EntityHeaderSorter
+import org.chai.kevin.util.ImportExportConstant;
+import org.chai.kevin.util.Utils
+import org.hibernate.SessionFactory
+import org.hibernate.criterion.Restrictions
+import org.supercsv.io.ICsvMapReader
 
 public class EntityImporter extends FileImporter {
 
@@ -254,10 +245,10 @@ public class EntityImporter extends FileImporter {
 					importable = (Importable) importableClazz.newInstance();
 					
 					//value is a map
-					if(importable instanceof JSONMap){
-						importValue = getImportValue(importable, value);
-					}
-					else{																		
+//					if(importable instanceof JSONMap){
+//						importValue = getImportValue(importable, value);
+//					}
+//					else{																		
 						
 						List<?> importEntities = new ArrayList<?>();
 						importEntities = getImportValues(importable, value, importableClazz, header);
@@ -275,7 +266,7 @@ public class EntityImporter extends FileImporter {
 							// TODO what is this error message ?
 							errors.add(new ImporterError(filename, lineNumber, header,"import.error.message.importentitiesinvalid"));
 						}
-					}										
+//					}										
 					
 				}
 				//value is a primitive or 'wrapper to primitive' or string type
@@ -308,13 +299,13 @@ public class EntityImporter extends FileImporter {
 		
 		private List<?> getImportValues(Importable importable, Object value, Class<?> importableClazz, String header){
 			List<?> importEntities = new ArrayList<Object>();
-			String codePattern = Utils.CODE_PATTERN;
+			String codePattern = ImportExportConstant.CODE_PATTERN;
 			Pattern pattern = Pattern.compile(codePattern);
 			Matcher matcher = pattern.matcher(value);
 			while(matcher.find()){
 				String entityCode = matcher.group();
 				if(entityCode != null && !entityCode.isEmpty()){
-					entityCode = entityCode.replaceAll(Utils.CODE_DELIMITER, "");
+					entityCode = entityCode.replaceAll(ImportExportConstant.CODE_DELIMITER, "");
 					Object importEntity = findEntityByCode(entityCode, importableClazz);
 					if(importEntity != null){
 						importEntity = getImportValue(importable, importEntity);

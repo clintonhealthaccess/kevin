@@ -7,6 +7,8 @@ class ExpressionMapValidConstraint {
 	def expressionService
 	
 	def validate = { val, obj, errors ->
+		if (log.isDebugEnabled()) log.debug('validating expression map on object: '+obj+', with val: '+val+', and expressionMap: '+obj.expressionMap+', and expressionMapString: '+obj.expressionMapString)
+		
 		def invalidExpressions = []
 		val.each { period, groupMap ->
 			groupMap.each { group, expression ->
@@ -23,6 +25,7 @@ class ExpressionMapValidConstraint {
 			}
 		}
 		
+		if (log.isDebugEnabled()) log.debug('invalid expressions found: '+invalidExpressions)
 		return invalidExpressions.isEmpty()
 	}
 	

@@ -23,6 +23,7 @@ class SurveySkipRuleControllerSpec extends SurveyIntegrationTests {
 		SurveySimpleQuestion.count() == 13
 		
 		when:
+		surveySkipRuleController.params['code'] = 'code'
 		surveySkipRuleController.params['survey.id'] = survey.id
 		surveySkipRuleController.params.skippedSurveyQuestions = SurveySimpleQuestion.findByOrder(12).id+''
 		surveySkipRuleController.params.expression = '1'

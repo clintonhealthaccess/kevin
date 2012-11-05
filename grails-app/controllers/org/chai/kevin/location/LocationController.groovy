@@ -11,11 +11,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationService;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.LocationService;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.util.Utils
 import org.supercsv.io.CsvListWriter;
@@ -26,8 +26,8 @@ class LocationController extends AbstractEntityController {
 
 	def locationService
 	def languageService;
-	def calculationLocationService
 	def surveyExportService;
+	def valueService
 	
 	def bindParams(def entity) {
 		entity.properties = params
@@ -54,13 +54,18 @@ class LocationController extends AbstractEntityController {
 	}
 
 	def deleteEntity(def entity) {
-		if (entity.children.size() != 0) {
+		if (entity.children != null && entity.children.size() != 0) {
 			flash.message = message(code: 'location.haschildren', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Location {0} still has associated children.')
 		}
-		else if (entity.dataLocations.size() != 0) {
+		else if (entity.dataLocations != null && entity.dataLocations.size() != 0) {
 			flash.message = message(code: 'location.hasdataentities', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Location {0} still has associated data entities.')
 		}
 		else {
+			// we delete all the values
+			valueService.deleteValues(null, entity, null)
+			
+			entity.level.removeFromLocations(entity)
+			entity.parent?.removeFromChildren(entity)
 			super.deleteEntity(entity)
 		}
 	}
@@ -95,7 +100,7 @@ class LocationController extends AbstractEntityController {
 	
 	def getAjaxData = {
 		def clazz = Location.class
-		if (params['class'] != null) clazz = Class.forName('org.chai.kevin.location.'+params['class'], true, Thread.currentThread().contextClassLoader)
+		if (params['class'] != null) clazz = Class.forName('org.chai.location.'+params['class'], true, Thread.currentThread().contextClassLoader)
 		
 		def locations = locationService.searchLocation(clazz, params['term'], [:])		
 		render(contentType:"text/json") {
@@ -113,12 +118,12 @@ class LocationController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<Location> locations = locationService.searchLocation(Location.class, params['q'], params)
+		def locations = locationService.searchLocation(Location.class, params['q'], params)
 				
 		render (view: '/entity/list', model:[
 			template:"location/locationList",
 			entities: locations,
-			entityCount: locationService.countLocation(Location.class, params['q']),
+			entityCount: locations.totalCount,
 			entityClass: getEntityClass(),
 			code: getLabel()
 		])

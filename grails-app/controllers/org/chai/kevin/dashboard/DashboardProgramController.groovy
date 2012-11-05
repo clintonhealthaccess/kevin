@@ -84,11 +84,11 @@ class DashboardProgramController extends AbstractEntityController {
 	def bindParams(def entity) {		
 		entity.properties = params
 		
-		if (entity.program) {
-			entity.names = entity.program.names
-			entity.descriptions = entity.program.descriptions
-			entity.code = entity.program.code
-		}
+//		if (entity.program) {
+//			entity.names = entity.program.names
+//			entity.descriptions = entity.program.descriptions
+//			entity.code = entity.program.code
+//		}
 	}
 	
 	@CacheFlush("dashboardCache")

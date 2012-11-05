@@ -7,7 +7,7 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormValidationRule;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveySection;
 import org.apache.commons.lang.NotImplementedException;
@@ -28,7 +28,7 @@ class DataEntryTagLib {
 		def enume = attrs['enum']
 		def var = attrs['var']
 		
-		def options = enume==null?[]:enume.activeEnumOptions?.sort(getOrderingComparator())
+		def options = enume==null?[]:enume.activeEnumOptions?.sort({it.getOrders(languageService.currentLocale)})
 
 		for (option in options) {
 			if (var) {
@@ -38,10 +38,6 @@ class DataEntryTagLib {
 				out << body(option)
 			}
 		}
-	}
-	
-	private Comparator<Orderable<Ordering>> getOrderingComparator() {
-		return Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage);
 	}
 	
 	def renderUserErrors = { attrs, body ->

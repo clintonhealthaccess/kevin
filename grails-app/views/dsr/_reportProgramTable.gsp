@@ -1,4 +1,4 @@
-<table class="nested push-top-10 ${dsrTable.targets.size() > 3 ? 'col4' : ''}">
+<table class="nested push-top-10 ${dsrTable.indicators.size() > 3 ? 'col4' : ''}">
 	<thead>
 		<tr>
 			<th>
@@ -6,8 +6,8 @@
 				<br/><br/>
 				<div class="left" style="margin-left:4px"><g:render template="/templates/reportLocationParent"/></div>
 			</th>
-			<g:if test="${dsrTable.targets != null && !dsrTable.targets.empty}">
-				<g:each in="${dsrTable.targets}" var="target">
+			<g:if test="${dsrTable.indicators != null && !dsrTable.indicators.empty}">
+				<g:each in="${dsrTable.indicators}" var="target">
 					<th>
 						<g:i18n field="${target.names}" />
 						<g:render template="/templates/help_tooltip" 

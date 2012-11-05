@@ -1,7 +1,7 @@
 package org.chai.kevin.exports
 
 import org.chai.kevin.AbstractController;
-import org.chai.kevin.location.CalculationLocation;
+import org.chai.location.CalculationLocation;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyProgram;
 import org.chai.kevin.survey.SurveySection;

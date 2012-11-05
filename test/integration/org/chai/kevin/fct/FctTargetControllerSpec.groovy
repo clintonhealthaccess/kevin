@@ -24,7 +24,7 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 	def "fct target list"() {
 		setup:
 		def program = newReportProgram(CODE(1))
-		def target = newFctTarget(CODE(1), 1, program)
+		def target = newFctTarget(CODE(2), 1, program)
 		fctTargetController = new FctTargetController()
 		
 		when:
@@ -40,11 +40,11 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def program = newReportProgram(CODE(1))
-		def target = newFctTarget(CODE(1), 1, program)
+		def target = newFctTarget(CODE(2), 1, program)
 		fctTargetController = new FctTargetController()
 		
 		when:
-		fctTargetController.params.id = target.id
+		fctTargetController.params.id = target.id+''
 		fctTargetController.delete()
 		
 		then:
@@ -54,11 +54,11 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 	def "search target"() {
 		setup:
 		def program = newReportProgram(CODE(1))
-		def target = newFctTarget(CODE(1), 1, program)
+		def target = newFctTarget(CODE(2), 1, program)
 		fctTargetController = new FctTargetController()
 		
 		when:
-		fctTargetController.params.q = CODE(1)
+		fctTargetController.params.q = CODE(2)
 		fctTargetController.search()
 		
 		then:

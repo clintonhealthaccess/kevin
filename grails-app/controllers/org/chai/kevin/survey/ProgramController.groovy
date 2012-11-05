@@ -28,7 +28,7 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 /**
@@ -69,10 +69,6 @@ class ProgramController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
 	}
 	
 	def list = {
@@ -83,8 +79,7 @@ class ProgramController extends AbstractEntityController {
 			response.sendError(404)
 		}
 		else {
-			List<SurveyProgram> programs = survey.programs;
-			Collections.sort(programs)
+			def programs = survey.programs.sort();
 			
 			def max = Math.min(params['offset']+params['max'], programs.size())
 			
