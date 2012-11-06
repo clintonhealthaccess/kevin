@@ -124,12 +124,10 @@ grails.project.dependency.resolution = {
 		compile ":yui-minify-resources:0.1.5"
 		compile ":rabbitmq-tasks:0.5.3-SNAPSHOT"
 		compile ':cloud-foundry:1.2.3'
-//		compile ':chai-locations:0.4-CHAI'
+		compile ':chai-locations:0.4.1-CHAI'
 		
 		test ":geb:0.7.2"
 		test ":spock:0.6"
 	}
 
 }
-
-grails.plugin.location.'chai-locations' = "../chai-locations"
