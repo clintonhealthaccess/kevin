@@ -80,7 +80,7 @@ abstract class SurveyQuestion implements Exportable {
 	static belongsTo = [section: SurveySection]
 	
 	// we need this so the binding works from forms (surveyElements[0].id)
-//	List<SurveyElement> surveyElements
+	List<SurveyElement> surveyElements
 	static hasMany = [surveyElements: SurveyElement]
 	static mappedBy = [surveyElements: 'question']
 	

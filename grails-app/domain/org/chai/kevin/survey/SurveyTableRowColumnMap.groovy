@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 public class SurveyTableRowColumnMap implements Serializable {
 
-	SurveyTableRow tableRow
 	static belongsTo = [tableRow: SurveyTableRow]
 	
 	SurveyTableColumn tableColumn

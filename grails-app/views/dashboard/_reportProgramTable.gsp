@@ -18,7 +18,7 @@
 				<td>
 					<g:if test="${!entity.isTarget()}">
 					 	<% def childProgramLinkParams = new HashMap(params) %>
-						<% childProgramLinkParams['program'] = ®.program.id+"" %>
+						<% childProgramLinkParams['program'] = entity.program.id+"" %>
 						<% childProgramLinkParams['dashboardEntity'] = entity.id+"" %>										
 						<a href="${createLink(controller: controllerName, action: actionName, params: childProgramLinkParams)}">
 							<g:i18n field="${entity.program.names}" />
