@@ -20,8 +20,8 @@ class SurveyEnteredSection {
 	static mapping = {
 		table 'dhsst_survey_entered_section'
 		
-//		section index: 'Value_Index', column: 'section'
-//		dataLocation index: 'Value_Index', column: 'dataLocation'
+		section column: 'section'
+		dataLocation column: 'dataLocation'
 	}
 	
 	static constraints = {

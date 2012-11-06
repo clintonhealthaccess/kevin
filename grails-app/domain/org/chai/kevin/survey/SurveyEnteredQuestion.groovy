@@ -20,8 +20,8 @@ class SurveyEnteredQuestion {
 	static mapping = {
 		table 'dhsst_survey_entered_question'
 		
-//		question index: 'Value_Index', column: 'question'
-//		dataLocation index: 'Value_Index', column: 'dataLocation'
+		question column: 'question'
+		dataLocation column: 'dataLocation'
 		
 		skippedRules joinTable: [
 			name: 'dhsst_survey_question_skipped',

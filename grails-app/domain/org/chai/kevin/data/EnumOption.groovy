@@ -53,11 +53,6 @@ public class EnumOption implements Exportable, Importable {
 	// enum and enum options should not be directly linked to a survey
 	Boolean inactive = false
 
-	// deprecated
-	String jsonDescriptions
-	String jsonNames
-	String jsonOrders
-	
 	static belongsTo = [enume: Enum]
 
 	static i18nFields = ['names', 'descriptions', 'orders']
@@ -74,11 +69,6 @@ public class EnumOption implements Exportable, Importable {
 		names (nullable: true)
 		descriptions (nullable: true)
 		orders (nullable: true)
-		
-		// deprecated
-		jsonDescriptions(nullable: true)
-		jsonNames(nullable: true)
-		jsonOrders(nullable: true)
 	}
 
 	Map cachedOrderMap 

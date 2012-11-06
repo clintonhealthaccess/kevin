@@ -265,6 +265,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"/"+category.id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
+		dsrController.response.redirectedUrl.contains("indicators="+target.id)
 	}
 	
 	def "get dsr for only district hospitals"() {

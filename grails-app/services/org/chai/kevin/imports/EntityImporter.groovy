@@ -244,29 +244,22 @@ public class EntityImporter extends FileImporter {
 
 					importable = (Importable) importableClazz.newInstance();
 					
-					//value is a map
-//					if(importable instanceof JSONMap){
-//						importValue = getImportValue(importable, value);
-//					}
-//					else{																		
-						
-						List<?> importEntities = new ArrayList<?>();
-						importEntities = getImportValues(importable, value, importableClazz, header);
-						
-						// value is a list
-						if(innerClazz != null){							
-							importValue = importEntities;
-						}						
-						// value is not a list
-						else if(importEntities.size() == 1){
-							importValue = importEntities.get(0);
-						}
-						else{
-							this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-							// TODO what is this error message ?
-							errors.add(new ImporterError(filename, lineNumber, header,"import.error.message.importentitiesinvalid"));
-						}
-//					}										
+					List<?> importEntities = new ArrayList<?>();
+					importEntities = getImportValues(importable, value, importableClazz, header);
+					
+					// value is a list
+					if(innerClazz != null){							
+						importValue = importEntities;
+					}						
+					// value is not a list
+					else if(importEntities.size() == 1){
+						importValue = importEntities.get(0);
+					}
+					else{
+						this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
+						// TODO what is this error message ?
+						errors.add(new ImporterError(filename, lineNumber, header,"import.error.message.importentitiesinvalid"));
+					}
 					
 				}
 				//value is a primitive or 'wrapper to primitive' or string type

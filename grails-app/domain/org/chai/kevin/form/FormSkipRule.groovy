@@ -30,9 +30,6 @@ public class FormSkipRule {
 	
 	String descriptions
 	
-	// deprecated
-	String jsonDescriptions
-	
 	static i18nFields = ['descriptions']
 	
 	static hasMany = [
@@ -59,7 +56,6 @@ public class FormSkipRule {
 		code (nullable: false, blank: false, unique: true)
 		expression (nullable: false, blank: false)
 		descriptions (nullable: true)
-		jsonDescriptions (nullable: true)
 	}
 	
 	public FormSkipRule() {

@@ -24,8 +24,8 @@
 	
 	var overlays = []
 	
-	if(${currentLocation.getLocationChildren(locationSkipLevels) != null && 
-		!currentLocation.getLocationChildren(locationSkipLevels).empty}){
+	if(${currentLocation.getChildren(locationSkipLevels) != null && 
+		!currentLocation.getChildren(locationSkipLevels).empty}){
 		
 		var mapTableIndicators = $('.js-map-table-indicator');
 		$(mapTableIndicators).each(function(index, mapTableIndicator){

@@ -32,9 +32,9 @@ public class FctService {
 	
 	@Cacheable("fctCache")
 	@Transactional(readOnly = true)
-	public FctTable getFctTable(Location location, ReportProgram program, FctTarget target, Period period, Set<DataLocationType> types, ReportType reportType) {		
+	public FctTable getFctTable(Location location, FctTarget target, Period period, Set<DataLocationType> types, ReportType reportType) {		
 		if (log.isDebugEnabled()) 
-			log.debug("getFctTable(period="+period+",location="+location+",program="+program+",target="+target+")");				
+			log.debug("getFctTable(period="+period+",location="+location+",target="+target+")");				
 				
 		List<CalculationLocation> calculationLocations = new ArrayList<CalculationLocation>();
 		

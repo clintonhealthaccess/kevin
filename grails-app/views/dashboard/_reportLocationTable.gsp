@@ -7,7 +7,7 @@
 	  </tr>
 	</thead>
 	<tbody>
-		<g:each in="${dashboard.getLocations(currentLocation)}" var="location">
+		<g:each in="${dashboard.getLocations(currentLocation, locationSkipLevels, currentLocationTypes)}" var="location">
 			<tr>
 				<g:set var="percentageValue" />
 				<td><g:if test="${!location.collectsData()}">

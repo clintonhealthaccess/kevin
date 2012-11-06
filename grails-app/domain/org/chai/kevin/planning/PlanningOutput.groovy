@@ -19,11 +19,6 @@ class PlanningOutput {
 	String captions
 	String helps
 
-	// deprecated
-	String jsonNames
-	String jsonCaptions
-	String jsonHelps
-
 	public Planning() {
 		displayTotal = false
 	}
@@ -52,10 +47,6 @@ class PlanningOutput {
 		names (nullable: true)
 		captions (nullable: true)
 		helps (nullable: true)
-		
-		jsonNames (nullable: true)
-		jsonCaptions (nullable: true)
-		jsonHelps (nullable: true)
 	}
 	
 }

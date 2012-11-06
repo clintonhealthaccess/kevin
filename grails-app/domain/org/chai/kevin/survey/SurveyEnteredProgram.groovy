@@ -22,8 +22,8 @@ class SurveyEnteredProgram {
 	static mapping = {
 		table 'dhsst_survey_entered_program'
 		
-//		program index: 'Value_Index', column: 'program'
-//		dataLocation index: 'Value_Index', column: 'dataLocation'
+		program column: 'program'
+		dataLocation column: 'dataLocation'
 	}
 	
 	static constraints = {

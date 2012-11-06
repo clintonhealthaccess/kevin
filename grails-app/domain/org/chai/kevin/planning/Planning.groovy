@@ -21,11 +21,6 @@ class Planning {
 	String overviewHelps
 	String budgetHelps
 	
-	// deprecated
-	String jsonNames
-	String jsonOverviewHelps
-	String jsonBudgetHelps
-	
 	static i18nFields = ['names', 'overviewHelps', 'budgetHelps']
 	
 	static hasMany = [
@@ -48,10 +43,6 @@ class Planning {
 		overviewHelps (nullable: true)
 		budgetHelps (nullable: true)
 		typeCodeString (nullable: true)
-		
-		jsonNames (nullable: true)
-		jsonOverviewHelps (nullable: true)
-		jsonBudgetHelps (nullable: true)
 	}
 	
 	List<PlanningType> getAllPlanningTypes() {

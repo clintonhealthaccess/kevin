@@ -10,9 +10,6 @@ class PlanningTypeSectionMap implements Serializable {
 	String section
 	String names
 	
-	// deprecated
-	String jsonNames
-	
 	static i18nFields = ['names']
 	
 	static belongsTo = [planningType: PlanningType]
@@ -31,8 +28,6 @@ class PlanningTypeSectionMap implements Serializable {
 	static constraints = {
 		section (nullable: false)
 		names (nullable: true)
-		
-		jsonNames (nullable: true)
 	}
 	
 	void setNamesMap(Map<String, String> namesMap) {

@@ -85,7 +85,7 @@ class FctController extends AbstractController {
 		else {
 			FctTable fctTable = null
 			if (fctTarget != null)		
-				fctTable = fctService.getFctTable(location, program, fctTarget, period, dataLocationTypes, reportType);
+				fctTable = fctService.getFctTable(location, fctTarget, period, dataLocationTypes, reportType);
 			
 			if (log.isDebugEnabled()) log.debug('fct: '+fctTable+", root program: "+program+", root location: "+location)				
 			[
@@ -113,13 +113,11 @@ class FctController extends AbstractController {
 		Location location = getLocation()
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 		FctTarget fctTarget = getFctTarget(program)
-		Set<FctTargetOption> fctIndicators = getFctIndicators(fctTarget, program)
 		ReportType reportType = getReportType()
 		
 		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
 							'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(),
 							'fctTarget':fctTarget?.id,
-							//'indicators':fctIndicators != null ? fctIndicators.collect{ it.id }.sort() : null,
 							'reportType':reportType.toString().toLowerCase()]
 		def newParams = redirectIfDifferent(reportParams)
 		
@@ -129,7 +127,7 @@ class FctController extends AbstractController {
 		else {
 			def fctTable = null
 			if (fctTarget != null)
-				fctTable = fctService.getFctTable(location, program, fctTarget, period, dataLocationTypes, reportType);
+				fctTable = fctService.getFctTable(location, fctTarget, period, dataLocationTypes, reportType);
 			
 			if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" program: "+program+", location: "+location)
 			

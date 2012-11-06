@@ -12,9 +12,6 @@ class PlanningOutputColumn {
 	
 	String names
 	
-	// deprecated
-	String jsonNames;
-	
 	static belongsTo = [planningOutput: PlanningOutput] 
 	
 	static i18nFields = ['names']
@@ -29,7 +26,5 @@ class PlanningOutputColumn {
 		prefix(nullable: false, blank: false)
 		order (nullable: true)
 		names (nullable: true)
-		
-		jsonNames (nullable: true)
 	}
 }

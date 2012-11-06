@@ -51,10 +51,6 @@ abstract class Data<T extends DataValue> {
 	String names
 	String descriptions
 	
-	// deprecated
-	String jsonDescriptions;
-	String jsonNames;
-	
 	static i18nFields = ['names', 'descriptions']
 	
 	static mapping = {
@@ -72,10 +68,6 @@ abstract class Data<T extends DataValue> {
 		descriptions (nullable: true)
 		
 		lastValueChanged(nullable: true)
-		
-		// deprecated
-		jsonDescriptions(nullable: true)
-		jsonNames(nullable: true)
 	}
 	
 	public abstract Type getType();

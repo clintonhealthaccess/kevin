@@ -17,8 +17,8 @@ import org.hibernate.proxy.HibernateProxy;
 
 class FctTargetOption extends AbstractReportTarget implements Exportable {
 
-	String numberFormat = "#";
-	String percentageFormat = "#%";
+	String numberFormat
+	String percentageFormat
 	
 	static belongsTo = [target: FctTarget]
 			

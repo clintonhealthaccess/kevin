@@ -1,4 +1,4 @@
-package org.chai.kevin.dsr
+	package org.chai.kevin.dsr
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -96,8 +96,9 @@ class DsrController extends AbstractController {
 		
 		if(reportType == ReportType.TABLE) return dsrIndicators
 		
-		dsrIndicators = new HashSet<DsrTarget>()			
 		if(params.list('indicators') != null && !params.list('indicators').empty){
+			dsrIndicators = new HashSet<DsrTarget>()
+			
 			def indicators = params.list('indicators')
 			dsrIndicators.addAll(indicators.collect{ NumberUtils.isNumber(it as String) ? DsrTarget.get(it) : null } - null)
 			
@@ -112,12 +113,14 @@ class DsrController extends AbstractController {
 			}
 		}
 		
-		// if it is null (doesn't belong to the right category), we take 
+		// if it is null (doesn't belong to the right category or not present in params), we take 
 		// the first one of the given category
 		if (dsrIndicators == null) {
+			dsrIndicators = new HashSet<DsrTarget>()
+			
 			def targets = category.getAllTargets()
 			if(!targets.empty){
-				dsrIndicators.addAll(targets.sort().first())
+				dsrIndicators.addAll(targets.sort({it.order}).first())
 			}			
 		}
 		
@@ -165,7 +168,7 @@ class DsrController extends AbstractController {
 		else {
 			def dsrTable = null
 			if (dsrCategory != null)
-				dsrTable = dsrService.getDsrTable(location, program, period, dataLocationTypes, dsrCategory, reportType);			
+				dsrTable = dsrService.getDsrTable(location, period, dataLocationTypes, dsrCategory, reportType);			
 			
 			if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+" root program: "+program+", root location: "+location)
 			
@@ -211,7 +214,7 @@ class DsrController extends AbstractController {
 		else{
 			def dsrTable = null
 			if (dsrCategory != null)
-				dsrTable = dsrService.getDsrTable(location, program, period, dataLocationTypes, dsrCategory, reportType);
+				dsrTable = dsrService.getDsrTable(location, period, dataLocationTypes, dsrCategory, reportType);
 			
 			if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+" program: "+program+", location: "+location)
 			

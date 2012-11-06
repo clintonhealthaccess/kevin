@@ -48,10 +48,6 @@ class Enum implements Exportable, Importable {
 	String names
 	String descriptions
 
-	// deprecated
-	String jsonDescriptions
-	String jsonNames
-	
 	static hasMany = [enumOptions: EnumOption]
 	
 	static i18nFields = ['names', 'descriptions']
@@ -67,10 +63,6 @@ class Enum implements Exportable, Importable {
 		code (nullable: false, blank: false, unique: true)
 		names (nullable: true)
 		descriptions (nullable: true)
-		
-		// deprecated
-		jsonDescriptions(nullable: true)
-		jsonNames(nullable: true)
 	}
 	
 	public List<EnumOption> getActiveEnumOptions() {

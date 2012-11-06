@@ -51,9 +51,6 @@ abstract class DataExport {
 	String typeCodeString;
 	
 	String descriptions
-	
-	// deprecated
-	String jsonDescriptions
 		
 	static i18nFields = ['descriptions']
 	
@@ -85,8 +82,6 @@ abstract class DataExport {
 		typeCodeString(nullable:false,blank:false)
 		
 		descriptions (nullable: true)
-		
-		jsonDescriptions (nullable: true)
 	}
 	
 	public Set<String> getTypeCodes() {

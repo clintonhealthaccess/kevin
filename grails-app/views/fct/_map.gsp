@@ -6,10 +6,10 @@
 		<g:reportTargetFilter linkParams="${params}" />
 	</div>
 	
-	<g:render template="/maps/legend" model="[indicators: fctTable.targetOptions]"/>
+	<g:render template="/maps/legend" model="[indicators: fctTable.indicators]"/>
 	<g:render template="/maps/colors"/>
 	<g:render template="/fct/reportProgramMap" 
-		model="[linkParams:params, reportTable: fctTable, reportLocations: fctTable.getLocations(currentLocation), reportIndicators: fctTable.indicators]"/>
+		model="[linkParams:params, reportTable: fctTable, reportLocations: fctTable.getLocations(currentLocation, locationSkipLevels, currentLocationTypes), reportIndicators: fctTable.indicators]"/>
 	<g:render template="/fct/reportProgramMapTable" 
-		model="[linkParams:params, reportTable: fctTable, reportLocations: fctTable.getLocations(currentLocation), reportIndicators: fctTable.indicators]"/>
+		model="[linkParams:params, reportTable: fctTable, reportLocations: fctTable.getLocations(currentLocation, locationSkipLevels, currentLocationTypes), reportIndicators: fctTable.indicators]"/>
 </li>

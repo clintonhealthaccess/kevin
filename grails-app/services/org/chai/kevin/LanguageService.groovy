@@ -72,7 +72,7 @@ class LanguageService implements ApplicationContextAware {
 		return getCurrentLocale().getLanguage();
 	}
 	
-	String getStringValue(Value value, Type type, def enums = null, def format = null, def zero = null) {
+	String getStringValue(Value value, Type type, def enums = null, def format = null, def zero = null, def rounded = null) {
 		if (value == null || value.isNull()) return null
 		def result;
 		switch (type.type) {
@@ -91,7 +91,7 @@ class LanguageService implements ApplicationContextAware {
 				break;
 			case (ValueType.NUMBER):
 				if (zero != null && value.numberValue == 0) result = zero
-				else result = Utils.formatNumber(format, value.numberValue)
+				else result = Utils.formatNumber(format, rounded!=null?value.numberValue.round(rounded):value.numberValue)
 				break;
 			case (ValueType.MAP):
 				// TODO

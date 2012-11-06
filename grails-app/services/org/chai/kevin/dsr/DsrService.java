@@ -1,5 +1,7 @@
 package org.chai.kevin.dsr;
 
+import grails.plugin.springcache.annotations.Cacheable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,7 +25,6 @@ import org.chai.location.DataLocation;
 import org.chai.location.DataLocationType;
 import org.chai.location.Location;
 import org.chai.location.LocationLevel;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
 public class DsrService {
@@ -36,8 +37,8 @@ public class DsrService {
 	
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
-	public ReportTable getDsrTable(Location location, ReportProgram program, Period period, Set<DataLocationType> types, DsrTargetCategory category, ReportType reportType) {
-		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",location="+location+",program="+program+",types="+types+",category="+category+",reportType="+reportType+")");
+	public ReportTable getDsrTable(Location location, Period period, Set<DataLocationType> types, DsrTargetCategory category, ReportType reportType) {
+		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",location="+location+",types="+types+",category="+category+",reportType="+reportType+")");
 
 		Set<LocationLevel> skips = reportService.getSkipReportLevels(locationSkipLevels);
 		List<CalculationLocation> calculationLocations = new ArrayList<CalculationLocation>();		

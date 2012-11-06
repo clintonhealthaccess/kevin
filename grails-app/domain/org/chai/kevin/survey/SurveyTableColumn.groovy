@@ -47,9 +47,6 @@ class SurveyTableColumn implements Exportable {
 	String typeCodeString;
 	String names
 	
-	// deprecated
-	String jsonNames
-	
 	static i18nFields = ['names']
 	
 	static belongsTo = [question: SurveyTableQuestion]
@@ -66,9 +63,6 @@ class SurveyTableColumn implements Exportable {
 		order (nullable: false)
 		typeCodeString (nullable:false /*, blank:false*/)
 		names (nullable: true)
-
-		// deprecated
-		jsonNames (nullable: true)
 	}
 	
 	public Set<String> getTypeCodes() {

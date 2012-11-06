@@ -51,9 +51,6 @@ class SurveySection implements Exportable {
 	String typeCodeString
 	String names
 	
-	// deprecated
-	String jsonNames
-	
 	static i18nFields = ['names']
 	
 	SurveyProgram program
@@ -73,9 +70,6 @@ class SurveySection implements Exportable {
 		order (nullable: false)
 		typeCodeString (nullable:false /*, blank:false*/)
 		names (nullable: true)
-
-		// deprecated
-		jsonNames (nullable: true)
 	}
 	
 	public List<SurveyQuestion> getAllQuestions() {

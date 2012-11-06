@@ -27,16 +27,18 @@
 						<div class="report-value-number">
 							<g:reportValue
 								tooltip="${i18n(field: targetOption.names)}" 
-								value="${fctTable.getTableReportValue(location, targetOption).getValue()}" 
+								value="${fctTable.getTableReportValue(location, targetOption)?.getValue()}" 
 								type="${targetOption.type}" 
 								format="${targetOption.numberFormat}"/>
 						</div>
 						<div class="report-value-percentage hidden">
-							<g:reportPercentage
+							<g:reportValue
 								tooltip="${i18n(field: targetOption.names)}"
-								value="${fctTable.getTableReportValue(location, targetOption).getAverage()}" 
+								value="${fctTable.getTableReportValue(location, targetOption)?.getAverage()}" 
 								type="${targetOption.type}" 
-								format="${targetOption.percentageFormat}"/>
+								format="${targetOption.percentageFormat?:'#%'}"
+								rounded="2"
+							/>
 						</div>
 					</g:if>
 					<g:else>

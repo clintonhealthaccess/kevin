@@ -42,9 +42,6 @@ class SurveyTableQuestion extends SurveyQuestion implements Exportable {
 
 	String tableNames
 
-	// deprecated
-	String jsonTableNames
-	
 	static i18nFields = ['tableNames']
 	
 	static hasMany = [rows: SurveyTableRow, columns: SurveyTableColumn]
@@ -55,9 +52,6 @@ class SurveyTableQuestion extends SurveyQuestion implements Exportable {
 	
 	static constraints = {
 		tableNames (nullable: true)
-		
-		// deprecated
-		jsonTableNames (nullable: true)
 	}
 	
 	@Override

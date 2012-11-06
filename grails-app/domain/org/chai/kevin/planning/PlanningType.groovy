@@ -30,12 +30,6 @@ class PlanningType {
 	String newHelps
 	String listHelps
 	
-	// deprecated
-	String jsonNames
-	String jsonNamesPlural
-	String jsonNewHelps
-	String jsonListHelps
-	
 	static transients = ['sectionDescriptions']
 
 	static i18nFields = ['names', 'namesPlural', 'newHelps', 'listHelps']
@@ -67,11 +61,6 @@ class PlanningType {
 		namesPlural (nullable: true)
 		newHelps (nullable: true)
 		listHelps (nullable: true)
-		
-		jsonNames (nullable: true)
-		jsonNamesPlural (nullable: true)
-		jsonNewHelps (nullable: true)
-		jsonListHelps (nullable: true)
 	}
 	
 	List<PlanningCost> getAllCosts() {

@@ -31,9 +31,6 @@ class PlanningCost {
 	Boolean hideIfZero
 	String names
 	
-	// deprecated
-	String jsonNames
-	
 	static i18nFields = ['names']
 	
 	PlanningType planningType
@@ -51,8 +48,6 @@ class PlanningCost {
 		type (nullable: false)
 		order (nullable: true)
 		names (nullable: true)
-		
-		jsonNames (nullable: true)
 	}
 	
 	public String toString(){

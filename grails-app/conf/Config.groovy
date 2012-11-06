@@ -208,17 +208,17 @@ log4j = {
 		   
 }
 
-//environments {
-//	test {
-//		log4j = {
-//			root {
-//				error
-//			}
-//			
-//			off 'ExpressionLog'
-//		}
-//	}
-//}
+environments {
+	test {
+		log4j = {
+			root {
+				error
+			}
+			
+			off 'ExpressionLog'
+		}
+	}
+}
 
 /**
  * Application specific config
@@ -252,8 +252,6 @@ survey.export.skip.levels=["country", "sector"]
 
 info.group.level="district"
 dsr.group.level="district"
-
-
 
 task.temp.folder='files/'
 

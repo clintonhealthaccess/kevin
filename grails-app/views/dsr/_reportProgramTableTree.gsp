@@ -27,7 +27,7 @@
 					<g:if test="${dsrTable.getTableReportValue(location, target)?.value}">
 						<g:reportValue
 							tooltip="${i18n(field: target.names)}"
-							value="${dsrTable.getValue(location, target)}" 
+							value="${dsrTable.getTableReportValue(location, target)?.value}" 
 							type="${target.type}" 
 							format="${target.format}"/>
 					</g:if>

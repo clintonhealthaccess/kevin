@@ -50,8 +50,6 @@ class SurveyTableRow implements Exportable {
 	String typeCodeString;
 	String names
 	
-	String jsonNames
-	
 	static hasMany = [surveyTableRowColumnMaps: SurveyTableRowColumnMap]	
 	
 	static i18nFields = ['names']
@@ -84,9 +82,6 @@ class SurveyTableRow implements Exportable {
 		order (nullable: false)
 		typeCodeString (nullable:false /*, blank:false*/)
 		names (nullable: true)
-
-		// deprecated
-		jsonNames (nullable: true)
 	}
 	
 	public Map<SurveyTableColumn, SurveyElement> getSurveyElements() {

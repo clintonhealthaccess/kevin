@@ -11,7 +11,8 @@ import org.chai.kevin.value.Value;
 class DsrServiceSpec extends DsrIntegrationTests {
 
 	def dsrService
-
+	def refreshValueService
+	
 	def "get dsr"() {
 		setup:
 		setupLocationTree()
@@ -28,14 +29,15 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def reportType = Utils.ReportType.TABLE
 
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, category, reportType)
+		def dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
 
 		then:
 		dsrTable.getTableReportValue(DataLocation.findByCode(BUTARO), target) == null
 
 		when:
 		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_NUMBER(10d))
-		dsrTable = dsrService.getDsrTable(location, program, period, types, category, reportType)
+		refreshValueService.flushCaches()
+		dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
 
 		then:
 		dsrTable.getTableReportValue(DataLocation.findByCode(BUTARO), target).value.getNumberValue() == 10d
@@ -59,7 +61,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refreshCalculation()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(burera, program, period, types, category, reportType)
+		def dsrTable = dsrService.getDsrTable(burera, period, types, category, reportType)
 
 		then:
 		dsrTable != null
@@ -87,7 +89,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refreshCalculation()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(burera, program, period, types, category, reportType)
+		def dsrTable = dsrService.getDsrTable(burera, period, types, category, reportType)
 
 		then:
 		dsrTable != null
@@ -114,7 +116,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refreshCalculation()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(burera, program, period, types, category, reportType)
+		def dsrTable = dsrService.getDsrTable(burera, period, types, category, reportType)
 
 		then:
 		dsrTable != null
@@ -141,7 +143,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def reportType = Utils.ReportType.TABLE
 
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, category, reportType)
+		def dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
 
 		then:
 		dsrTable != null
@@ -151,7 +153,8 @@ class DsrServiceSpec extends DsrIntegrationTests {
 
 		when:
 		newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(KIVUYE), Value.VALUE_NUMBER(10d))
-		dsrTable = dsrService.getDsrTable(location, program, period, types, category, reportType)
+		refreshValueService.flushCaches()
+		dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
 
 		then:
 		dsrTable != null
@@ -176,7 +179,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refreshNormalizedDataElement()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, category, reportType)
+		def dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
 
 		then:
 		dsrTable != null
@@ -201,7 +204,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refreshNormalizedDataElement()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, category, reportType)
+		def dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
 
 		then:
 		dsrTable != null
@@ -227,7 +230,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refreshNormalizedDataElement()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, category, reportType)
+		def dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
 
 		then:
 		dsrTable.getTableReportValue(DataLocation.findByCode(BUTARO), target).value.getNumberValue() == 10d
@@ -254,7 +257,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refresh()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, category1, reportType)
+		def dsrTable = dsrService.getDsrTable(location, period, types, category1, reportType)
 
 		then:
 		dsrTable.indicators.size == 1
@@ -280,7 +283,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refresh()
 
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, category, reportType)
+		def dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
 
 		then:
 		dsrTable.indicators[0].equals(DsrTarget.findByCode(CODE(3)))
@@ -289,7 +292,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		when:
 		DsrTarget.findByCode(CODE(3)).order = 2
 		DsrTarget.findByCode(CODE(5)).order = 1
-		dsrTable = dsrService.getDsrTable(location, program, period, types, category, reportType)
+		dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
 
 		then:
 		dsrTable.indicators[0].equals(DsrTarget.findByCode(CODE(5)))

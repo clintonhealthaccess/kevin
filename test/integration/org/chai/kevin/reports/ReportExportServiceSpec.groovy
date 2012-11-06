@@ -43,7 +43,7 @@ class ReportExportServiceSpec extends ReportIntegrationTests {
 		refresh()
 		
 		when:
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, category, reportType)
+		def dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
 		
 		then:
 		dsrTable != null
@@ -99,7 +99,7 @@ class ReportExportServiceSpec extends ReportIntegrationTests {
 		refresh()
 		
 		when:
-		fctTable = fctService.getFctTable(location, program, target, period, dataLocationTypes, reportType)
+		fctTable = fctService.getFctTable(location, target, period, dataLocationTypes, reportType)
 		
 		then:
 		fctTable != null

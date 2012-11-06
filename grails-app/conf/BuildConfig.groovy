@@ -126,8 +126,6 @@ grails.project.dependency.resolution = {
 		compile ':cloud-foundry:1.2.3'
 		compile ':chai-locations:0.4-CHAI'
 		
-		compile ":console:1.2"
-		
 		test ":geb:0.7.2"
 		test ":spock:0.6"
 	}

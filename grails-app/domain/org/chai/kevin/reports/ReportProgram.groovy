@@ -1,7 +1,5 @@
 package org.chai.kevin.reports;
 
-import java.util.List;
-
 import org.chai.kevin.Exportable
 import org.chai.kevin.util.Utils
 

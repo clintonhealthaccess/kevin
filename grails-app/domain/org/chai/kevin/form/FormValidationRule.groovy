@@ -29,9 +29,6 @@ class FormValidationRule {
 	
 	String messages 
 	
-	// deprecated
-	String jsonMessages
-
 	static i18nFields = ['messages']
 		
 	FormElement formElement
@@ -53,9 +50,6 @@ class FormValidationRule {
 		prefix (nullable: false, blank: true)
 		allowOutlier(nullable: false)
 		messages (nullable: true)
-		
-		// deprecated
-		jsonMessages(nullable: true)		
 	}
 	
 	List<FormElement> getDependencies() {

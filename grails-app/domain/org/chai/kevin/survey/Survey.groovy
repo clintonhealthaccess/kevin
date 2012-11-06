@@ -55,10 +55,6 @@ class Survey implements Exportable {
 	String names
 	String descriptions
 	
-	// deprecated
-	String jsonDescriptions;
-	String jsonNames;
-	
 	static i18nFields = ['names', 'descriptions']
 	
 	static hasMany = [programs: SurveyProgram, skipRules: SurveySkipRule]
@@ -78,10 +74,6 @@ class Survey implements Exportable {
 		names (nullable: true)
 		descriptions (nullable: true)
 		lastPeriod (nullable: true)
-		
-		// deprecated
-		jsonNames (nullable: true)
-		jsonDescriptions (nullable: true)
 	}
 	
 	List<SurveySection> getSections() {

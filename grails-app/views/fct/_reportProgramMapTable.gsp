@@ -41,7 +41,7 @@
 					<g:if test="${reportIndicators != null && !reportIndicators.empty}">
 						<g:each in="${reportIndicators}" var="indicator" status="i">
 							<td>
-								<g:set var="reportMapValue" value="${reportTable.getValue(location, indicator)}"/>
+								<g:set var="reportMapValue" value="${reportTable.getTableReportValue(location, indicator)?.value}"/>
 								<div class="js-map-table-value
 										${reportMapValue != null && !reportMapValue.isNull() && reportMapValue.numberValue > 0 ? 'js-selected-value':''}"
 										data-location-code="${location.code}" 
@@ -57,10 +57,12 @@
 									</div>
 									<g:if test="${!location.collectsData()}">
 										<div class="report-value-percentage hidden">
-											<g:reportMapPercentage 
-													value="${reportTable.getTableReportValue(location, indicator).average}" 
-													type="${indicator.type}" 
-													format="${indicator.percentageFormat}"/>
+											<g:reportMapValue
+												value="${reportTable.getTableReportValue(location, indicator)?.average}" 
+												type="${indicator.type}" 
+												format="${indicator.percentageFormat?:'#%'}"
+												rounded="2"
+											/>
 										</div>
 									</g:if>
 								</div>

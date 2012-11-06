@@ -8,7 +8,7 @@
 	
 	<g:render template="/maps/colors"/>
 	<g:render template="/dsr/reportProgramMap" 
-	model="[linkParams:params, reportTable: dsrTable, reportLocations: dsrTable.getLocations(currentLocation), reportIndicators: dsrTable.indicators]"/>
+	model="[linkParams:params, reportTable: dsrTable, reportLocations: dsrTable.getLocations(currentLocation, locationSkipLevels, currentLocationTypes), reportIndicators: dsrTable.indicators]"/>
 	<g:render template="/dsr/reportProgramMapTable" 
-		model="[linkParams:params, reportTable: dsrTable, reportLocations: dsrTable.getLocations(currentLocation), reportIndicators: dsrTable.indicators]"/>
+		model="[linkParams:params, reportTable: dsrTable, reportLocations: dsrTable.getLocations(currentLocation, locationSkipLevels, currentLocationTypes), reportIndicators: dsrTable.indicators]"/>
 </li>

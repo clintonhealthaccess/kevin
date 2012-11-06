@@ -30,10 +30,10 @@
 								<g:set var="value" value="${fctTable.getTableReportValue(location, targetOption)}"/>									
 								<g:if test="${value != null && !value.value.isNull() && !value.average.isNull()}">											
 									
-									<!-- report value number --><g:set var="barValue" value="${g.reportBarValue(value: fctTable.getTableReportValue(location, targetOption).getValue(), type: targetOption.type, format: targetOption.numberFormat)}"/>											
-									<!-- report value number 0-1 --><g:set var="barAverage" value="${fctTable.getTableReportValue(location, targetOption).getAverage().numberValue.round(2)}"/>
-									<!-- report value percentage 0%-100% --><g:set var="barPercentage" value="${g.reportBarPercentage(value: fctTable.getTableReportValue(location, targetOption).getAverage(), type: targetOption.type, format: targetOption.percentageFormat)}"/>
-									<!-- total data locations --><g:set var="totalDataLocations" value="${fctTable.getTableReportValue(location, targetOption).getNumberOfDataLocations()}"/>
+									<!-- report value number --><g:set var="barValue" value="${g.reportBarValue(value: fctTable.getTableReportValue(location, targetOption)?.getValue(), type: targetOption.type, format: targetOption.numberFormat)}"/>											
+									<!-- report value number 0-1 --><g:set var="barAverage" value="${fctTable.getTableReportValue(location, targetOption)?.getAverage().numberValue.round(2)}"/>
+									<!-- report value percentage 0%-100% --><g:set var="barPercentage" value="${g.reportBarValue(value: fctTable.getTableReportValue(location, targetOption)?.getAverage(), type: targetOption.type, format: targetOption.percentageFormat?:'#%', rounded: '2')}"/>
+									<!-- total data locations --><g:set var="totalDataLocations" value="${fctTable.getTableReportValue(location, targetOption)?.getNumberOfDataLocations()}"/>
 									
 									<!-- stacked bar -->
 									<div class="js_bar_vertical bar-vertical tooltip ${i == 0 ? 'indicator-worst': i == fctTable.indicators.size()-1 ? 'indicator-best': 'indicator-middle'}"

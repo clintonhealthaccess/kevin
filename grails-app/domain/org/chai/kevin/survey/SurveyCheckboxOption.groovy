@@ -48,9 +48,6 @@ class SurveyCheckboxOption implements Exportable {
 	
 	String names
 	
-	// deprecated
-	String jsonNames
-
 	static i18nFields = ['names']
 	
 	static belongsTo = [question: SurveyCheckboxQuestion]
@@ -74,9 +71,6 @@ class SurveyCheckboxOption implements Exportable {
 		order (nullable: false)
 		typeCodeString (nullable:false /*, blank:false*/)
 		names (nullable: true)
-
-		// deprecated
-		jsonNames (nullable: true)
 	}
 
 	public Set<String> getTypeCodes() {

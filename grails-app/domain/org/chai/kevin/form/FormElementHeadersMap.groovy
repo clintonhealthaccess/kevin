@@ -10,9 +10,6 @@ class FormElementHeadersMap implements Serializable {
 	String header
 	String names
 	
-	// deprecated
-	String jsonNames
-	
 	static i18nFields = ['names']
 	
 	static belongsTo = [formElement: FormElement]
@@ -31,8 +28,6 @@ class FormElementHeadersMap implements Serializable {
 	static constraints = {
 		header (nullable: false)
 		names (nullable: true)
-		
-		jsonNames (nullable: true)
 	}
 	
 	void setNamesMap(Map<String, String> namesMap) {

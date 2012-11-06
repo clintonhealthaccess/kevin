@@ -52,6 +52,8 @@ import org.hibernate.criterion.Restrictions
  */
 class SurveyService {
 
+	static transactional = true
+	
 	def languageService
 	def dataService
 	def locationService

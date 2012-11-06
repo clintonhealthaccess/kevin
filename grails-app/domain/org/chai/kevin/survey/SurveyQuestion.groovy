@@ -70,17 +70,13 @@ abstract class SurveyQuestion implements Exportable {
 	String names
 	String descriptions
 	
-	// deprecated
-	String jsonNames
-	String jsonDescriptions
-	
 	static i18nFields = ['names', 'descriptions']
 	
 	SurveySection section
 	static belongsTo = [section: SurveySection]
 	
 	// we need this so the binding works from forms (surveyElements[0].id)
-	List<SurveyElement> surveyElements
+//	List<SurveyElement> surveyElements
 	static hasMany = [surveyElements: SurveyElement]
 	static mappedBy = [surveyElements: 'question']
 	
@@ -98,10 +94,6 @@ abstract class SurveyQuestion implements Exportable {
 		typeCodeString (nullable:false /*, blank:false*/)
 		names (nullable: true)
 		descriptions (nullable: true)
-		
-		// deprecated
-		jsonNames (nullable: true)
-		jsonDescriptions (nullable: true)
 	}
 	
 	public Set<String> getTypeCodes() {
