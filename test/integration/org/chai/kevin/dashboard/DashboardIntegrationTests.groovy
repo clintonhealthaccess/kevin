@@ -68,4 +68,10 @@ abstract class DashboardIntegrationTests extends IntegrationTests {
 		return dashboardTarget
 	}
 	
+	static def newDashboardTarget(def names, def code, def calculation, def program, Integer weight, def order) {
+		def dashboardTarget = new DashboardTarget(code: code, data: calculation, program: program, weight: weight, order: order).save(failOnError: true)
+		setLocaleValueInMap(dashboardTarget, names, "Names")
+		return dashboardTarget
+	}
+	
 }

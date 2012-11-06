@@ -160,7 +160,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newDataLocationType(def names, def code) {
-		def dataLocationType = new DataLocationType(code: code)
+		newDataLocationType(names, code, null)
+	}
+	
+	static def newDataLocationType(def names, def code, def order) {
+		def dataLocationType = new DataLocationType(code: code, order: order)
 		setLocaleValueInMap(dataLocationType, names, "Names")
 		return dataLocationType.save(failOnError: true)
 	}
@@ -253,7 +257,12 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newReportProgram(String code, Integer order, def parent) {
+		return newReportProgram(null, code, order, parent)
+	}
+	
+	static def newReportProgram(def names, String code, Integer order, def parent) {
 		def reportProgram = new ReportProgram(code: code, parent: parent, order: order).save(failOnError: true, flush: true);
+		setLocaleValueInMap(reportProgram, names, "Names")
 		if (parent != null) {
 			 parent.addToChildren(reportProgram)
 			 parent.save(failOnError: true)
