@@ -12,6 +12,8 @@
 				<input type="hidden" name="planning.id" value="${skip.planning.id}" />
 				
 			 	<g:i18nTextarea name="descriptions" bean="${skip}" value="${skip?.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions" />
+			 	<g:input name="code" label="${message(code:'entity.code.label')}" bean="${skip}" field="code"/>
+			 	
 				<g:render template="/templates/skippedFormElements" model="[skip: skip]"/>
 			 	<g:textarea name="expression" label="${message(code:'skiprule.expression.label')}" bean="${skip}" field="expression" value="${skip.expression}" rows="5"/>
 			 

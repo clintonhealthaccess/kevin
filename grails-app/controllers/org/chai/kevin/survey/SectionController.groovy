@@ -79,16 +79,14 @@ class SectionController extends AbstractEntityController {
 			response.sendError(404)
 		}
 		else {
-			def sections = program.sections.sort();
+			def sections = SurveySection.createCriteria().list(params){eq('program', program)}
 	
-			def max = Math.min(params['offset']+params['max'], sections.size())
-			
 			render (view: '/entity/list', model:[
 				template:"survey/sectionList",
 				survey: program.survey,
 				program: program,
-				entities: sections.subList(params['offset'], max),
-				entityCount: sections.size(),
+				entities: sections,
+				entityCount: sections.totalCount,
 				code: getLabel(),
 				entityClass: getEntityClass()
 			])

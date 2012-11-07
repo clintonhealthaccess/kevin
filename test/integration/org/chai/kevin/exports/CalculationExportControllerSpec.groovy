@@ -155,5 +155,27 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		CalculationExport.list()[0].locations.equals(CalculationExport.list()[1].locations)
 		CalculationExport.list()[0].calculations.equals(CalculationExport.list()[1].calculations)
 	}
+	
+	def "dataExport list"(){
+		setup:
+		setupLocationTree();
+		def periods=new HashSet([newPeriod()]);
+		def locationType="Health Center,District Hospital";
+		
+		def sum = newSum("1",CODE(1));
+		def aggregation = newAggregation("",CODE(2));
+		
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
+		def calculations=new HashSet([sum,aggregation]);
+		def dataExport = newCalculationExport(CODE(1), ["en":"Testing Seach One"],periods, locationType, locations, calculations);
+		
+		calculationExportController = new  CalculationExportController();
+		
+		when:
+		calculationExportController.list()
+		
+		then:
+		calculationExportController.modelAndView.model.entities == [dataExport]
+	}
 
 }

@@ -3,9 +3,9 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.code.label" /></th>
-			<th><g:message code="period.startdate.label" /></th>
-			<th><g:message code="period.enddate.label" /></th>
+			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />
+			<g:sortableColumn property="startDate" params="[q:params.q]" title="${message(code: 'period.startdate.label')}" />
+			<g:sortableColumn property="endDate" params="[q:params.q]" title="${message(code: 'period.enddate.label')}" />
 		</tr>
 	</thead>
 	<tbody>

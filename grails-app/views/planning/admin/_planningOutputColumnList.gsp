@@ -2,9 +2,9 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="planning.planningoutput.planningoutputcolumn.prefix.label"/></th>
-			<th><g:message code="entity.order.label"/></th>
+			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q, 'planningOutput.id':params['planningOutput.id']]" title="${message(code: 'entity.name.label')}" />
+			<g:sortableColumn property="prefix" params="[q:params.q, 'planningOutput.id':params['planningOutput.id']]" title="${message(code: 'planning.planningoutput.planningoutputcolumn.prefix.label')}" />
+			<g:sortableColumn property="order" params="[q:params.q, 'planningOutput.id':params['planningOutput.id']]" title="${message(code: 'entity.order.label')}" />
 		</tr>
 	</thead>
 	<tbody>

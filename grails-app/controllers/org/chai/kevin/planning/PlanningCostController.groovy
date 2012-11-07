@@ -77,12 +77,12 @@ class PlanningCostController extends AbstractEntityController {
 		PlanningType planningType = PlanningType.get(params.int('planningType.id'))
 		if (planningType == null) response.sendError(404)
 		else {
-			def planningCosts = planningType.costs
-	
+			def planningCosts = PlanningCost.createCriteria().list(params){eq('planningType', planningType)}
+
 			render (view: '/planning/admin/list', model:[
 				template:"planningCostList",
-				entities: planningCosts as List,
-				entityCount: planningCosts.size(),
+				entities: planningCosts,
+				entityCount: planningCosts.totalCount,
 				code: getLabel(),
 				entityClass: getEntityClass()
 			])

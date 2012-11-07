@@ -3,15 +3,14 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.code.label"/></th>
-			<th><g:message code="survey.question.label"/></th>
-			<th><g:message code="survey.question.type.label"/></th>
-			<th><g:message code="entity.datalocationtype.label"/></th>
-			<th><g:message code="survey.period.label"/></th>
+			<g:sortableColumn property="code" params="[q:params.q, 'section.id': params['section.id']]" title="${message(code: 'entity.code.label')}" />  		    
+  			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q, 'section.id': params['section.id']]" title="${message(code: 'survey.question.label')}" />
+  			<th><g:message code="survey.question.type.label"/></th>
+			<g:sortableColumn property="typeCodeString" params="[q:params.q, 'section.id': params['section.id']]" title="${message(code: 'entity.datalocationtype.label')}" />
 			<th><g:message code="survey.label" /></th>
 			<th><g:message code="survey.program.label" /></th>
 			<th><g:message code="survey.section.label" /></th>
-			<th><g:message code="entity.order.label"/></th>
+			<g:sortableColumn property="order" params="[q:params.q, 'section.id': params['section.id']]" title="${message(code: 'entity.order.label')}" />
 		</tr>
 	</thead>
 	<tbody>
@@ -37,7 +36,6 @@
 					onclick="return false;"><g:stripHtml field="${i18n(field: question.names)}" chars="100"/></a></td>
 				<td>${question.getType()}</td>
 				<td><g:prettyList entities="${question.typeCodeString}" /></td>
-				<td>${Utils.formatDate(question.section.survey.period.startDate)}</td>
 				<td>${question.section.program.survey.code}</td>
 				<td>${question.section.program.code}</td>
 				<td>${question.section.code}</td>

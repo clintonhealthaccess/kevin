@@ -109,10 +109,8 @@ class DataElementExportController extends AbstractEntityController {
 	}
 	
 	def getModel(def entity) {
-		List<DataElement> dataElements=[]
-		List<CalculationLocation> locations=[]
-		if(entity.dataElements) dataElements = new ArrayList(entity.dataElements)
-		if(entity.locations) locations= new ArrayList(entity.locations)
+		def dataElements = entity.dataElements?:[]
+		def locations = entity.locations?:[]
 		[
 			exporter: entity,
 			periods: Period.list([cache: true]),
@@ -124,7 +122,7 @@ class DataElementExportController extends AbstractEntityController {
 		
 	def list = {
 		adaptParamsForList()
-		List<DataElementExport> exports = DataElementExport.list(params)
+		def exports = DataElementExport.list(params)
 		this.getDataExportListModel(exports,list)
 	}
 	
@@ -139,7 +137,7 @@ class DataElementExportController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			template:"dataExport/dataElementExportList",
 			entities: exports,
-			entityCount: dataExportService.countDataExports(DataElementExport.class, params['q']),
+			entityCount: exports.totalCount,
 			code: getLabel(),
 			method: method,
 			q:params['q']

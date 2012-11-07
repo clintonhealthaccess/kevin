@@ -116,6 +116,11 @@ class UtilTagLib {
 		out << text
 	}
 	
+	def i18nField = { attrs, body ->
+		def field = attrs['field']
+		out << field + '_' + languageService.currentLanguage
+	}
+	
 	def ifText = { attrs, body ->
 		def text = attrs['field'] == null?'':attrs['field']+''
 		if (!Utils.stripHtml(text).trim().isEmpty()) out << body()

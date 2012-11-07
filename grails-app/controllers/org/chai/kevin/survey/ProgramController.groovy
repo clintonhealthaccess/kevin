@@ -79,15 +79,13 @@ class ProgramController extends AbstractEntityController {
 			response.sendError(404)
 		}
 		else {
-			def programs = survey.programs.sort();
-			
-			def max = Math.min(params['offset']+params['max'], programs.size())
+			def programs = SurveyProgram.createCriteria().list(params){eq('survey', survey)}
 			
 			render (view: '/entity/list', model:[
 				template:"survey/programList",
-				survey:survey,
-				entities: programs.subList(params['offset'], max),
-				entityCount: programs.size(),
+				survey: survey,
+				entities: programs,
+				entityCount: programs.totalCount,
 				code: getLabel(),
 				entityClass: getEntityClass()
 			])

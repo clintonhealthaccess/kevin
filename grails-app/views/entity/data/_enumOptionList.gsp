@@ -2,12 +2,12 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.code.label"/></th>
-			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="entity.description.label"/></th>
-			<th><g:message code="enumoption.inactive.label"/></th>
-			<th><g:message code="enumoption.value.label"/></th>
-			<th><g:message code="entity.order.label"/></th>
+			<g:sortableColumn property="code" params="[q:params.q, 'enume.id': params['enume.id']]" title="${message(code: 'entity.code.label')}" />
+			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q, 'enume.id': params['enume.id']]" title="${message(code: 'entity.name.label')}" />
+			<g:sortableColumn property="${i18nField(field: 'descriptions')}" params="[q:params.q, 'enume.id': params['enume.id']]" title="${message(code: 'entity.description.label')}" />
+			<g:sortableColumn property="inactive" params="[q:params.q, 'enume.id': params['enume.id']]" title="${message(code: 'enumoption.inactive.label')}" />
+			<g:sortableColumn property="value" params="[q:params.q, 'enume.id': params['enume.id']]" title="${message(code: 'enumoption.value.label')}" />
+			<g:sortableColumn property="${i18nField(field: 'orders')}" params="[q:params.q, 'enume.id': params['enume.id']]" title="${message(code: 'entity.order.label')}" />
 		</tr>
 	</thead>
 	<tbody>
@@ -32,7 +32,7 @@
 				<td><g:stripHtml field="${i18n(field: option.descriptions)}" chars="40" /></td>
 				<td>${option.inactive?'\u2713':''}</td>
 				<td>${option.value}</td>
-				<td><g:i18n field="${option.order}" /></td>
+				<td><g:i18n field="${option.orders}" /></td>
 			</tr>
 		</g:each>
 	</tbody>

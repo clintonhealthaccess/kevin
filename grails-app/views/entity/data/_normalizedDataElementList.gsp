@@ -4,11 +4,11 @@
   		<tr>
   			<th/>
   			<th><g:message code="entity.id.label"/></th>
-  			<th><g:message code="entity.code.label"/></th>
-  			<th><g:message code="entity.name.label"/></th>
-  			<th><g:message code="entity.type.label"/></th>
-  			<th><g:message code="normalizeddataelement.lastrefreshed.label"/></th>
-  			<th><g:message code="normalizeddataelement.lastvaluechanged.label"/></th>
+  			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />  		    
+  			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q]" title="${message(code: 'entity.name.label')}" />
+  			<g:sortableColumn property="typeString" params="[q:params.q]" title="${message(code: 'entity.type.label')}" />
+  			<g:sortableColumn property="refreshed" params="[q:params.q]" title="${message(code: 'normalizeddataelement.lastrefreshed.label')}" />
+  			<g:sortableColumn property="lastValueChanged" params="[q:params.q]" title="${message(code: 'normalizeddataelement.lastvaluechanged.label')}" />
   			<th><g:message code="entity.list.manage.label"/></th>
   		</tr>
   	</thead>

@@ -2,11 +2,11 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="entity.code.label"/></th>
-			<th><g:message code="fct.targetoption.target.label"/></th>
-			<th><g:message code="fct.targetoption.sum.label"/></th>
-			<th><g:message code="entity.order.label"/></th>
+			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />  		    
+  			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q]" title="${message(code: 'entity.name.label')}" />
+  			<g:sortableColumn property="data.code" params="[q:params.q]" title="${message(code: 'fct.targetoption.sum.label')}" />
+  			<g:sortableColumn property="${i18nField(field: 'target.names')}" params="[q:params.q]" title="${message(code: 'fct.targetoption.target.label')}" />
+			<g:sortableColumn property="order" params="[q:params.q]" title="${message(code: 'entity.order.label')}" />
 		</tr>
 	</thead>
 	<tbody>
@@ -25,14 +25,14 @@
 						
 					</ul>
 				</td>
+				<td>${targetOption.code}</td>
 				<td>
 					<g:i18n field="${targetOption.names}"/>
 				</td>
-				<td>${targetOption.code}</td>
+				<td>${targetOption.data.code}</td>
 				<td>
 					<g:i18n field="${targetOption.target.names}"/>
 				</td>
-				<td>${targetOption.data.code}</td>
 				<td>${targetOption.order}</td>
 			</tr>
 		</g:each>

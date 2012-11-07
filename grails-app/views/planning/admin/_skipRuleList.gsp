@@ -2,9 +2,8 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="planning.label" default="Planning"/></th>
-			<th><g:message code="entity.description.label" default="Description"/></th>
-			<th><g:message code="skiprule.expression.label" default="Expression"/></th>
+			<g:sortableColumn property="${i18nField(field: 'descriptions')}" params="[q:params.q, 'planning.id': params['planning.id']]" title="${message(code: 'entity.description.label')}" />
+			<g:sortableColumn property="expression" params="[q:params.q, 'planning.id': params['planning.id']]" title="${message(code: 'skiprule.expression.label')}" />
 			<th><g:message code="default.number.label" args="[message(code:'formelement.label')]" default="Number of Form Elements"/></th>
 		</tr>
 	</thead>
@@ -25,7 +24,6 @@
 						</li>
 					</ul>
 				</td>
-				<td><g:i18n field="${skip.planning.names}" /></td>
 				<td><g:i18n field="${skip.descriptions}" /></td>
 				<td>${skip.expression}</td>
 				<td> 
