@@ -14,6 +14,7 @@ import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.security.UserController;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.data.Type;
+import org.hibernate.validator.cfg.defs.AssertTrueDef;
 
 class FilterTagLibTests extends GroovyPagesTestCase {
 
@@ -44,6 +45,24 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		assertTrue !html.contains("dashboardEntity="+3+"\"")
 		assertTrue !html.contains("dsrCategory="+4+"\"")
 		assertTrue !html.contains("fctTarget="+5+"\"")
+	}
+	
+	def testProgramFilterWithNoTargets() {
+		def period = IntegrationTests.newPeriod()
+		IntegrationTests.setupProgramTree()
+		
+		def controller = new UserController()
+		controller.request.params = [:]
+		
+		def html = applyTemplate(
+			'<g:programFilter linkParams="${params}" selectedTargetClass="${target}"/>',
+			[
+				'params': controller.request.params,
+				'target': DashboardTarget.class,
+			]
+		)
+		
+		assertTrue html.contains('No targets in system, please add some targets using the admin menu, or ask an administrator.')
 	}
 	
 	def testProgramFilterOrder() {
@@ -92,6 +111,42 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		assertTrue html.contains("Rwanda")
 	}
 	
+	def testLocationFilterWithNoSelectedLocationTypes() {
+		def hc = IntegrationTests.newDataLocationType(["en":'not in config'], 'not_in_config', 1);
+		def country = IntegrationTests.newLocationLevel(IntegrationTests.NATIONAL, 1)
+		def rwanda = IntegrationTests.newLocation(["en":IntegrationTests.RWANDA], IntegrationTests.RWANDA, country)
+		def butaro = IntegrationTests.newDataLocation(["en":IntegrationTests.BUTARO], IntegrationTests.BUTARO, rwanda, hc)
+		
+		def html = applyTemplate(
+			'<g:locationFilter selectedTypes="${types}"/>',
+			[
+				'types': []	
+			]
+		)
+		
+		assertTrue html.contains('No location type selected')
+	}
+	
+	def testLocationFilterWithNoLocations() {
+		def html = applyTemplate(
+			'<g:locationFilter/>'
+		)
+		
+		assertTrue html.contains('No locations in system, please add some locations using the admin menu, or ask an administrator.')
+	}
+	
+	def testLocationFilterWithNoDataLocations() {
+		def country = IntegrationTests.newLocationLevel(IntegrationTests.NATIONAL, 1)
+		def rwanda = IntegrationTests.newLocation(["en":IntegrationTests.RWANDA], IntegrationTests.RWANDA, country)
+		def hc = IntegrationTests.newDataLocationType(["en":IntegrationTests.HEALTH_CENTER_GROUP], IntegrationTests.HEALTH_CENTER_GROUP, 2);
+		
+		def html = applyTemplate(
+			'<g:locationFilter/>'
+		)
+		
+		assertTrue html.contains('No data locations in system, please add some locations using the admin menu, or ask an administrator.')
+	}
+	
 	def testPeriodFilter() {
 		def period = IntegrationTests.newPeriod()
 		
@@ -104,6 +159,14 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		
 		assertTrue html.contains("href=\"/test?period="+period.id+"\"")
 		assertTrue html.contains("2005")
+	}
+	
+	def testPeriodFilterWhenNoPeriod() {
+		def html = applyTemplate(
+			'<g:periodFilter/>'
+		)
+		
+		assertTrue html.contains('No periods in system, please add some targets using the admin menu, or ask an administrator.')
 	}
 	
 	def testLocationTypeFilter() {
@@ -134,6 +197,31 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		assertTrue html.indexOf(IntegrationTests.DISTRICT_HOSPITAL_GROUP) < html.indexOf(IntegrationTests.HEALTH_CENTER_GROUP)
 	}
 	
+	def testLocationTypeFilterWhenNoDefault() {
+		def hc = IntegrationTests.newDataLocationType(["en":'not in config'], 'not_in_config', 1);
+		
+		def html = applyTemplate(
+			'<g:dataLocationTypeFilter selected="${dataLocationTypes}"/>',
+			[
+				'dataLocationTypes': []
+			]
+		)
+		
+		assertTrue html.contains('not in config')
+		assertTrue html.contains('Please select location types')
+	}
+	
+	def testLocationTypeFilterWhenNoTypesInSystem() {
+		def html = applyTemplate(
+			'<g:dataLocationTypeFilter selected="${dataLocationTypes}"/>',
+			[
+				'dataLocationTypes': []
+			]
+		)
+		
+		assertTrue html.contains('No location types in system, please add some location types using the admin menu, or ask an administrator.')
+	}
+	
 	def testLocationFilterDisplaysNothingWhenNothingSelected() {
 		def hc = IntegrationTests.newDataLocationType(["en":IntegrationTests.HEALTH_CENTER_GROUP], IntegrationTests.HEALTH_CENTER_GROUP);
 		def country = IntegrationTests.newLocationLevel(IntegrationTests.NATIONAL, 1)
@@ -141,7 +229,7 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		def butaro = IntegrationTests.newDataLocation(["en":IntegrationTests.BUTARO], IntegrationTests.BUTARO, rwanda, hc)
 		
 		def html = applyTemplate('<g:locationFilter />')
-		assertTrue html.contains('select ')
+		assertTrue html.contains('Please select a location')
 	}
 	
 	def testProgramFilterDisplaysNothingWhenNothingSelected() {

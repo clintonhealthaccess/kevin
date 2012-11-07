@@ -67,9 +67,13 @@ class CheckboxOptionController extends AbstractEntityController {
 	}
 	
 	def deleteEntity(def entity) {
-		entity.question.removeFromOptions(entity)
+		def question = entity.question
+		question.removeFromOptions(entity)
+		def surveyElement = entity.surveyElement
+		entity.surveyElement = null
 		entity.delete()
-		surveyService.deleteSurveyElement(entity.surveyElement)
+		surveyService.deleteSurveyElement(surveyElement)
+		question.save()
 	}
 	
 	def saveEntity(def entity) {

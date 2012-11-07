@@ -1,4 +1,4 @@
-	package org.chai.kevin.dsr
+package org.chai.kevin.dsr
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -180,10 +180,9 @@ class DsrController extends AbstractController {
 				currentLocation: location,
 				currentLocationTypes: dataLocationTypes,
 				currentView: reportType,
-				selectedTargetClass: DsrTargetCategory.class,
 				
 				dsrTable: dsrTable,
-				targetCategories: dsrService.getDsrCategoriesWithTargets(program),
+				selectedTargetClass: DsrTargetCategory.class,
 				locationTree: locationTree,
 				locationSkipLevels: locationSkipLevels,
 				mapSkipLevels: mapSkipLevels

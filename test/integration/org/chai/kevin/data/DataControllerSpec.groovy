@@ -116,6 +116,28 @@ class DataControllerSpec extends IntegrationTests {
 		dataController.modelAndView.model.entityCount == 2
 	}
 	
+	def "get data element values - paging works with BS data"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		dataController = new DataController()
+		
+		when:
+		def dataElementValue1 = newRawDataElementValue(dataElement, period1, DataLocation.findByCode(BUTARO), Value.NULL_INSTANCE())
+		def dataElementValue2 = newRawDataElementValue(dataElement, period1, DataLocation.findByCode(KIVUYE), Value.NULL_INSTANCE())
+		dataController.params.period = period1.id
+		dataController.params.data = dataElement.id
+		dataController.params.max = 'test'
+		dataController.params.offset = 'test'
+		dataController.dataValueList()
+		
+		then:
+		dataController.modelAndView.model.entities.equals([dataElementValue1, dataElementValue2])
+		dataController.modelAndView.model.entityCount == 2
+	}
+	
+	
 	def "get data element values - raw data element"() {
 		setup:
 		setupLocationTree()

@@ -47,6 +47,9 @@ class FilterTagLib {
 	def locationService;
 	def reportService;
 	
+	def dsrService;
+	def fctService;
+	
 	def topLevelReportTabs = {attrs, body ->
 		def model = excludeLinkParams(attrs)
 		out << render(template:'/templates/topLevelReportTabs', model:model)
@@ -62,21 +65,31 @@ class FilterTagLib {
 		out << render(template:'/templates/reportExport', model:model)
 	}
 	
+	def reportValueFilter = {attrs, body ->
+		def model = excludeLinkParams(attrs)
+		out << render(template:'/fct/reportValueFilter', model:model)
+	}
+	
 	def reportCategoryFilter = {attrs, body ->
 		def model = excludeLinkParams(attrs)
+		model <<
+		[
+			currentCategory: attrs['selected'],
+			targetCategories: dsrService.getDsrCategoriesWithTargets(attrs['program']).sort({it.order}),
+		]
 		out << render(template:'/dsr/reportCategoryFilter', model:model)
 	}
 	
 	def reportTargetFilter = {attrs, body ->
 		def model = excludeLinkParams(attrs)
+		model <<
+		[
+			currentTarget: attrs['selected'],
+			targets: fctService.getFctTargetsWithOptions(attrs['program']).sort({it.order}),
+		]
 		out << render(template:'/fct/reportTargetFilter', model:model)
 	}
 	
-	def reportValueFilter = {attrs, body ->
-		def model = excludeLinkParams(attrs)
-		out << render(template:'/fct/reportValueFilter', model:model)
-	}
-			
 	def periodFilter = {attrs, body ->
 		Period.withTransaction {
 			def model = excludeLinkParams(attrs)
@@ -114,13 +127,17 @@ class FilterTagLib {
 		Location.withTransaction {
 			def model = excludeLinkParams(attrs)
 			def location = attrs['selected']
+			def selectedTypes = attrs['selectedTypes']
+			if (selectedTypes == null) selectedTypes = DataLocationType.list([cache: true])
 			def locationFilterRoot = locationService.getRootLocation()	
-			def locationFilterTree = locationFilterRoot.collectTreeWithDataLocations(attrs['skipLevels'], attrs['selectedTypes'], false)
+			def locationFilterTree = []
+			if (locationFilterRoot != null && !selectedTypes.empty) locationFilterTree.addAll locationFilterRoot.collectTreeWithDataLocations(attrs['skipLevels'], selectedTypes, false)
 			model << 
 				[
 					currentLocation: location,
 					locationFilterRoot: locationFilterRoot, 
-					locationFilterTree: locationFilterTree
+					locationFilterTree: locationFilterTree,
+					selectedTypes: selectedTypes
 				]
 			out << render(template:'/tags/filter/locationFilter', model:model)
 		}
@@ -130,7 +147,7 @@ class FilterTagLib {
 		DataLocationType.withTransaction {
 			def model = excludeLinkParams(attrs)
 			def currentLocationTypes = null
-			if(attrs['selected'] == null) currentLocationTypes = []
+			if (attrs['selected'] == null) currentLocationTypes = []
 			else currentLocationTypes = attrs['selected'].asList().sort{it.order}
 			def dataLocationTypes = DataLocationType.list([cache: true]).sort{it.order}
 			model << 

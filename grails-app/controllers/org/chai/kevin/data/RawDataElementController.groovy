@@ -143,13 +143,13 @@ class RawDataElementController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<RawDataElement> rawDataElements = dataService.searchData(RawDataElement.class, params['q'], [], params);
+		def rawDataElements = dataService.searchData(RawDataElement.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: rawDataElements,
 			template: "data/rawDataElementList",
 			code: getLabel(),
-			entityCount: dataService.countData(RawDataElement.class, params['q'], []),
+			entityCount: rawDataElements.totalCount,
 			entityClass: getEntityClass(),
 			search: true
 		])

@@ -37,6 +37,8 @@ import org.apache.commons.lang.math.NumberUtils
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.form.FormSkipRuleElementMap;
+import org.chai.kevin.form.FormValidationRuleDependency;
 import org.chai.location.DataLocation;
 import org.chai.location.DataLocationType
 import org.chai.kevin.util.Utils
@@ -65,19 +67,43 @@ class SurveyService {
 	}
 	
 	void deleteQuestion(def question) {
-		question.surveyElements.each { element ->
-			FormEnteredValue.executeUpdate("delete from FormEnteredValue where formElement = :formElement", ['formElement': element])
-		}
 		SurveyEnteredQuestion.executeUpdate("delete from SurveyEnteredQuestion where question = :question", ['question': question])
-		
+		// we delete all the referenced survey skip rule
+		SurveySkipRule.withCriteria{skippedSurveyQuestions {eq('id', question.id)}}.each { skipRule ->
+			skipRule.removeFromSkippedSurveyQuestions(question)
+			skipRule.save()
+		}
+		question.section.removeFromQuestions(question)
+		// we delete all the survey elements
+		question.surveyElements.each { element ->
+			deleteSurveyElement(element)
+		}
 		question.delete()
 	}
 	
 	void deleteSurveyElement(def surveyElement) {
+		// we delete the form entered value
+		FormEnteredValue.executeUpdate("delete from FormEnteredValue where formElement = :formElement", ['formElement': surveyElement])
+		// we delete all the survey elements on all the skip rules they are referenced from
+		FormSkipRuleElementMap.findAllByFormElement(surveyElement).each { map ->
+			def skipRule = map.skipRule
+			skipRule.removeFromFormSkipRuleElementMaps(map)
+			map.delete()
+			map.skipRule = skipRule
+			skipRule.save()
+		}
+		// we delete all the dependencies
+		FormValidationRuleDependency.findAllByFormElement(surveyElement).each { dependency ->
+			def validationRule = dependency.validationRule
+			validationRule.removeFromValidationRuleDependencies(dependency)
+			dependency.delete()
+			dependency.validationRule = validationRule
+			validationRule.save()
+		}
+		// we delete the survey element from the question
 		def question = surveyElement.question
 		question.removeFromSurveyElements(surveyElement)
 		surveyElement.delete()
-		FormEnteredValue.executeUpdate("delete from FormEnteredValue where formElement = :formElement", ['formElement': surveyElement])
 	}
 	
 	SurveyQuestion getSurveyQuestion(Long id) {

@@ -51,6 +51,24 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 		FctTarget.count() == 0
 	}
 	
+	def "delete target deletes option" () {
+		setup:
+		setupLocationTree()
+		def program = newReportProgram(CODE(1))
+		def target = newFctTarget(CODE(2), 1, program)
+		def sum = newSum('1', CODE(1))
+		def option = newFctTargetOption(CODE(3), target, sum)
+		fctTargetController = new FctTargetController()
+		
+		when:
+		fctTargetController.params.id = target.id+''
+		fctTargetController.delete()
+		
+		then:
+		FctTarget.count() == 0
+		FctTargetOption.count() == 0
+	}
+	
 	def "search target"() {
 		setup:
 		def program = newReportProgram(CODE(1))

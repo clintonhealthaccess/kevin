@@ -96,7 +96,6 @@ class FctController extends AbstractController {
 				currentLocationTypes: dataLocationTypes,
 				
 				fctTable: fctTable,
-				targets: fctService.getFctTargetsWithOptions(program),
 				selectedTargetClass: FctTarget.class,
 				locationTree: locationTree,
 				locationSkipLevels: locationSkipLevels,

@@ -133,8 +133,8 @@ public abstract class AbstractController {
 	}
 	
 	def adaptParamsForList() {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		params.offset = params.offset ? params.int('offset'): 0
+		params.max = Math.min(params.int('max') ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
+		params.offset = params.int('offset') ? params.int('offset'): 0
 	}	
 	
 	protected def redirectIfDifferent(def redirectParams) {

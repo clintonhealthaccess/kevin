@@ -187,13 +187,13 @@ class DataServiceSpec extends IntegrationTests {
 		
 		expect:
 		dataService.searchData(RawDataElement.class, "ele", [], [:]).equals([dataElement1])
-		dataService.countData(RawDataElement.class, "ele", []) == 1
+		dataService.searchData(RawDataElement.class, "ele", [], [:]).totalCount == 1
 		dataService.searchData(RawDataElement.class, "some", [], [:]).equals([dataElement2])
-		dataService.countData(RawDataElement.class, "some", []) == 1
+		dataService.searchData(RawDataElement.class, "some", [], [:]).totalCount == 1
 		dataService.searchData(RawDataElement.class, "ele some", [], [:]).equals([])
-		dataService.countData(RawDataElement.class, "ele some", []) == 0
+		dataService.searchData(RawDataElement.class, "ele some", [], [:]).totalCount == 0
 		dataService.searchData(RawDataElement.class, "info", [], [:]).equals([dataElement3])
-		dataService.countData(RawDataElement.class, "info", []) == 1
+		dataService.searchData(RawDataElement.class, "info", [], [:]).totalCount == 1
 	}
 	
 	def "search with allowed types works"() {
@@ -204,11 +204,11 @@ class DataServiceSpec extends IntegrationTests {
 		
 		expect:
 		dataService.searchData(RawDataElement.class, "ele", ['bool'], [:]).equals([dataElement1])
-		dataService.countData(RawDataElement.class, "ele", ['bool']) == 1
+		dataService.searchData(RawDataElement.class, "ele", ['bool'], [:]).totalCount == 1
 		dataService.searchData(RawDataElement.class, "ele", ['number'], [:]).equals([dataElement3])
-		dataService.countData(RawDataElement.class, "ele", ['number']) == 1
+		dataService.searchData(RawDataElement.class, "ele", ['number'], [:]).totalCount == 1
 		dataService.searchData(RawDataElement.class, "ele", ['enum'], [:]).equals([dataElement2])
-		dataService.countData(RawDataElement.class, "ele", ['enum']) == 1
+		dataService.searchData(RawDataElement.class, "ele", ['enum'], [:]).totalCount == 1
 	}
 	
 	def "search for normalized data element works"() {
@@ -218,11 +218,11 @@ class DataServiceSpec extends IntegrationTests {
 		
 		expect:
 		dataService.searchData(NormalizedDataElement.class, "expr", [], [:]).equals([dataElement1])
-		dataService.countData(NormalizedDataElement.class, "expr", []) == 1
+		dataService.searchData(NormalizedDataElement.class, "expr", [], [:]).totalCount == 1
 		dataService.searchData(NormalizedDataElement.class, "some", [], [:]).equals([dataElement2])
-		dataService.countData(NormalizedDataElement.class, "some", []) == 1
+		dataService.searchData(NormalizedDataElement.class, "some", [], [:]).totalCount == 1
 		dataService.searchData(NormalizedDataElement.class, "expr some", [], [:]).equals([])
-		dataService.countData(NormalizedDataElement.class, "expr some", []) == 0
+		dataService.searchData(NormalizedDataElement.class, "expr some", [], [:]).totalCount == 0
 		
 	}
 	
