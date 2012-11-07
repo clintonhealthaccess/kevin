@@ -3,9 +3,9 @@
 		<thead>
 			<tr>
 				<th/>
-				<th><g:message code="user.username.label"/></th>
-				<th><g:message code="user.email.label"/></th>
-				<th><g:message code="user.permission.label"/></th>
+				<g:sortableColumn property="username" params="[q:params.q]" title="${message(code: 'user.username.label')}" />
+				<g:sortableColumn property="email" params="[q:params.q]" title="${message(code: 'user.email.label')}" />
+				<g:sortableColumn property="permissionString" params="[q:params.q]" title="${message(code: 'user.permission.label')}" />
 				<th><g:message code="user.roles.label"/></th>
 				<g:sortableColumn property="confirmed" params="[q:q]" title="${message(code: 'user.confirmed.label')}" />
 				<g:sortableColumn property="active" params="[q:q]" title="${message(code: 'user.active.label')}" />

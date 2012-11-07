@@ -2,10 +2,10 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="entity.code.label"/></th>
-			<th><g:message code="fct.target.program.label"/></th>
-			<th><g:message code="entity.order.label"/></th>
+			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />  		    
+  			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q]" title="${message(code: 'entity.name.label')}" />
+  			<g:sortableColumn property="${i18nField(field: 'program.names')}" params="[q:params.q]" title="${message(code: 'fct.target.program.label')}" />
+			<g:sortableColumn property="order" params="[q:params.q]" title="${message(code: 'entity.order.label')}" />
 		</tr>
 	</thead>
 	<tbody>
@@ -24,10 +24,10 @@
 						
 					</ul>
 				</td>
+				<td>${target.code}</td>
 				<td>
 					<g:i18n field="${target.names}"/>
 				</td>
-				<td>${target.code}</td>
 				<td>
 					<g:i18n field="${target.program.names}"/>
 				</td>

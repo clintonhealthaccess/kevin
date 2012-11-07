@@ -46,7 +46,7 @@ class FormValidationRule {
 	static constraints = {
 		code (nullable: false, blank: false, unique: true)
 		typeCodeString (nullable:false /*, blank:false*/)
-		expression (nullable: false)
+		expression (nullable: false, blank: false)
 		prefix (nullable: false, blank: true)
 		allowOutlier(nullable: false)
 		messages (nullable: true)

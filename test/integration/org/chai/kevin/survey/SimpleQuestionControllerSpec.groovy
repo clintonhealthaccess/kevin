@@ -113,7 +113,7 @@ class SimpleQuestionControllerSpec extends SurveyIntegrationTests {
 		newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), Value.VALUE_NUMBER(1))
 		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(BUTARO), false, false)
 		newSurveySkipRule(CODE(1), survey, "true", [(element): ''], [])
-		newFormValidationRule(CODE(1), element, "", [(DISTRICT_HOSPITAL_GROUP)], "true", [element])
+		newFormValidationRule(CODE(1), element, "", [(DISTRICT_HOSPITAL_GROUP)], "true", [])
 		simpleQuestionController = new SimpleQuestionController()
 		
 		when:

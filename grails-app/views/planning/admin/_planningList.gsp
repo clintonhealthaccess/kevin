@@ -1,11 +1,13 @@
+<%@page import="org.chai.kevin.util.Utils"%>
+
 <table class="listing">
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="entity.datalocationtype.label"/></th>
-			<th><g:message code="planning.active.label"/></th>
-			<th><g:message code="period.label"/></th>
+			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q]" title="${message(code: 'entity.name.label')}" />
+			<g:sortableColumn property="typeCodeString" params="[q:params.q]" title="${message(code: 'entity.datalocationtype.label')}" />
+			<g:sortableColumn property="active" params="[q:params.q]" title="${message(code: 'planning.active.label')}" />
+			<g:sortableColumn property="period.startDate" params="[q:params.q]" title="${message(code: 'period.label')}" />
 			<th><g:message code="default.number.label" args="[message(code:'planning.planningtype.label')]"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
@@ -30,7 +32,7 @@
 				<td><g:i18n field="${planning.names}" /></td>
 				<td>${planning.typeCodeString}</td>
 				<td>${planning?.active?'\u2713':''}</td>
-				<td>[${planning.period.startDate} - ${planning.period.startDate}]</td>
+				<td>${Utils.formatDate(planning.period.startDate)}</td>
 				<td>${planning.planningTypes.size()}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 

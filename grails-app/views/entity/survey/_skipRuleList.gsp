@@ -2,9 +2,9 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="survey.label"/></th>
-			<th><g:message code="entity.description.label"/></th>
-			<th><g:message code="skiprule.expression.label"/></th>
+			<g:sortableColumn property="${i18nField(field: 'survey.names')}" params="[q:params.q, 'survey.id': params['survey.id']]" title="${message(code: 'survey.label')}" />
+			<g:sortableColumn property="${i18nField(field: 'descriptions')}" params="[q:params.q, 'survey.id': params['survey.id']]" title="${message(code: 'entity.description.label')}" />
+			<g:sortableColumn property="expression" params="[q:params.q, 'survey.id': params['survey.id']]" title="${message(code: 'skiprule.expression.label')}" />
 			<th><g:message code="default.number.label" args="[message(code:'formelement.label')]"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'survey.question.label')]"/></th>
 		</tr>

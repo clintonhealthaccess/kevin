@@ -2,11 +2,11 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="planning.planningoutput.dataelement.label"/></th>
-			<th><g:message code="planning.planningoutput.fixedheader.label"/></th>
+			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q, 'planning.id':params['planning.id']]" title="${message(code: 'entity.name.label')}" />
+			<g:sortableColumn property="dataElement" params="[q:params.q, 'planning.id':params['planning.id']]" title="${message(code: 'planning.planningoutput.dataelement.label')}" />
+			<g:sortableColumn property="fixedHeader" params="[q:params.q, 'planning.id':params['planning.id']]" title="${message(code: 'planning.planningoutput.fixedheader.label')}" />
 			<th><g:message code="default.number.label" args="[message(code:'planning.planningoutput.planningoutputcolumn.label')]"/></th>
-			<th><g:message code="entity.order.label"/></th>
+			<g:sortableColumn property="order" params="[q:params.q, 'planning.id':params['planning.id']]" title="${message(code: 'entity.order.label')}" />
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
 	</thead>

@@ -133,6 +133,7 @@ class DataElementExportControllerSpec extends IntegrationTests {
 		dataElementExports[0].locations==locations;
 		dataElementExports[0].dataElements==dataElements;
 	}
+	
 	def "dataExport clone successfull"(){
 		setup:
 		setupLocationTree();
@@ -158,6 +159,27 @@ class DataElementExportControllerSpec extends IntegrationTests {
 		DataElementExport.list()[0].locations.equals(DataElementExport.list()[1].locations)
 		DataElementExport.list()[0].dataElements.equals(DataElementExport.list()[1].dataElements)
 		
+	}
+	
+	def "dataExport list"(){
+		setup:
+		setupLocationTree();
+		def periods=new HashSet([newPeriod()]);
+		def locationType="Health Center,District Hospital";
+		def typeOne = Type.TYPE_NUMBER();
+		def typeTwo = Type.TYPE_BOOL();
+		def dataElementOne = newRawDataElement(CODE(1), typeOne);
+		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
+		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
+		def dataElementExport = newDataElementExport(CODE(1), ["en":"Testing Seach One"], periods, locationType, locations, dataElements);
+		dataElementExportController = new  DataElementExportController();
+		
+		when:
+		dataElementExportController.list()
+		
+		then:
+		dataElementExportController.modelAndView.model.entities == [dataElementExport]
 	}
 
 }

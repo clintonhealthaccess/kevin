@@ -85,15 +85,12 @@ class PlanningSkipRuleController extends AbstractEntityController {
 			response.sendError(404)
 		}
 		else {
-			List<PlanningSkipRule> skipRules = new ArrayList(planning.skipRules);
-			skipRules.sort {it.id}
-			
-			def max = Math.min(params['offset']+params['max'], skipRules.size())
+			def skipRules = PlanningSkipRule.createCriteria().list(params) {eq ('planning', planning)}
 			
 			render(view: '/planning/admin/list', model:[
 				template: "skipRuleList",
-				entities: skipRules.subList(params['offset'], max),
-				entityCount: skipRules.size(),
+				entities: skipRules,
+				entityCount: skipRules.totalCount,
 				code: getLabel(),
 				entityClass: getEntityClass()
 			])

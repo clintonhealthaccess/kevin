@@ -2,11 +2,11 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.code.label"/></th>
-			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="datalocation.type.label"/></th>
-			<th><g:message code="datalocation.location.label"/></th>
-			<th><g:message code="locationlevel.label"/></th>
+			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />  		    
+  			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q]" title="${message(code: 'entity.name.label')}" />
+  			<g:sortableColumn property="${i18nField(field: 'type.names')}" params="[q:params.q]" title="${message(code: 'datalocation.type.label')}" />
+  			<g:sortableColumn property="${i18nField(field: 'location.names')}" params="[q:params.q]" title="${message(code: 'datalocation.location.label')}" />  		    
+  			<g:sortableColumn property="${i18nField(field: 'location.level.names')}" params="[q:params.q]" title="${message(code: 'locationlevel.label')}" />  		    
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
 	</thead>
