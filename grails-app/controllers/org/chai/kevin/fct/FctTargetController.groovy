@@ -81,13 +81,7 @@ class FctTargetController extends AbstractEntityController {
 	}
 
 	def deleteEntity(def entity) {
-		if (entity.targetOptions == null || entity.targetOptions.size() == 0){
-			if (log.isInfoEnabled()) log.info("deleting target: "+entity)			
-			entity.delete()
-		}
-		else {
-			flash.message = message(code: 'fct.target.haschildren', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Fct Target {0} still has associated children.')
-		}				
+		entity.delete()
 	}
 	
 	def bindParams(def entity) {
@@ -112,11 +106,11 @@ class FctTargetController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<FctTarget> targets = dataService.searchData(FctTarget.class, params['q'], [], params);
+		def targets = dataService.searchData(FctTarget.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: targets,
-			entityCount: dataService.countData(FctTarget.class, params['q'], []),
+			entityCount: targets.totalCount,
 			entityClass: getEntityClass(),
 			template: "fct/targetList",
 			code: getLabel(),

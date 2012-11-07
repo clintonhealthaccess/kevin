@@ -109,11 +109,11 @@ class DashboardTargetController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<DashboardTarget> targets = dataService.searchData(DashboardTarget.class, params['q'], [], params);
+		def targets = dataService.searchData(DashboardTarget.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: targets,
-			entityCount: dataService.countData(DashboardTarget.class, params['q'], []),
+			entityCount: targets.totalCount,
 			entityClass: getEntityClass(),
 			template: "dashboard/targetList",
 			code: getLabel(),

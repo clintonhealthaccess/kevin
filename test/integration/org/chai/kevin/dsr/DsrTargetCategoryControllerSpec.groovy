@@ -93,4 +93,20 @@ class DsrTargetCategoryControllerSpec extends DsrIntegrationTests {
 		dsrTargetCategoryController.modelAndView.model.entities[0].equals(category3)
 		dsrTargetCategoryController.modelAndView.model.entityCount == 1
 	}
+	
+	def "delete category with targets deletes all targets"() {
+		setup:
+		def program = newReportProgram(CODE(1))
+		def category1 = newDsrTargetCategory(CODE(2), program, 1)
+		newDsrTarget(CODE(3), 1, newRawDataElement(CODE(2), Type.TYPE_NUMBER()), category1);
+		dsrTargetCategoryController = new DsrTargetCategoryController()
+		
+		when:
+		dsrTargetCategoryController.params.id = category1.id
+		dsrTargetCategoryController.delete()
+		
+		then:
+		DsrTargetCategory.count() == 0
+		DsrTarget.count() == 0
+	}
 }

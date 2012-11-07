@@ -122,11 +122,11 @@ class DashboardProgramController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<DashboardProgram> programs = dataService.searchData(DashboardProgram.class, params['q'], [], params);
+		def programs = dataService.searchData(DashboardProgram.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: programs,
-			entityCount: dataService.countData(DashboardProgram.class, params['q'], []),
+			entityCount: programs.totalCount,
 			entityClass: getEntityClass(),
 			template: "dashboard/programList",
 			code: getLabel(),

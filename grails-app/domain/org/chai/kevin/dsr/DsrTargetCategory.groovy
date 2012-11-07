@@ -42,7 +42,6 @@ class DsrTargetCategory extends ReportEntity implements ReportTarget, Exportable
 	ReportProgram program;
 	
 	static hasMany = [targets: DsrTarget]
-	static mappedBy = [targets: "category"]
 	
 	static mapping = {
 		table 'dhsst_dsr_target_category'

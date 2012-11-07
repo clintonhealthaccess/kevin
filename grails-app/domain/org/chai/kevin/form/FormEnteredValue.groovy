@@ -74,7 +74,7 @@ class FormEnteredValue {
 	}
 	
 	void updateFromValidatable() {
-		setValue(validatable.value)
+		if (validatable != null) setValue(validatable.value)
 		validatable = null
 	}
 	

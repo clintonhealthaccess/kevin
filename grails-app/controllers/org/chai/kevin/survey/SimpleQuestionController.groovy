@@ -48,7 +48,6 @@ class SimpleQuestionController extends AbstractEntityController {
 	
 	def deleteEntity(def entity) {
 		surveyService.deleteQuestion(entity)
-		entity.section.removeFromQuestions(entity)
 	}
 
 	def getLabel() {

@@ -77,11 +77,11 @@ class FctTargetOptionController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<FctTargetOption> targetOptions = dataService.searchData(FctTargetOption.class, params['q'], [], params);
+		def targetOptions = dataService.searchData(FctTargetOption.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: targetOptions,
-			entityCount: dataService.countData(FctTargetOption.class, params['q'], []),
+			entityCount: targetOptions.totalCount,
 			entityClass: getEntityClass(),
 			template: "fct/targetOptionList",
 			code: getLabel(),
