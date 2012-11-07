@@ -3,7 +3,7 @@
 	<g:reportExport linkParams="${params}" />
 	<g:reportView linkParams="${params}"/>                            																
 	<div class="selector">
-		<g:reportTargetFilter linkParams="${params}"/>
+		<g:reportTargetFilter selected="${currentTarget}" program="${currentProgram}" linkParams="${params}" />
 		<g:reportValueFilter linkParams="${params}"/>
 	</div>
 	<g:render template="/fct/reportProgramTable" model="[linkParams:params]"/>

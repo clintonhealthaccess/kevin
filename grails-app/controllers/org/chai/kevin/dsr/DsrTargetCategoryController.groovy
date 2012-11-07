@@ -62,11 +62,6 @@ class DsrTargetCategoryController extends AbstractEntityController {
 	}
 	
 	def deleteEntity(def entity) {
-		//TODO delete target from category
-		for (def target : entity.targets) {
-			target.category = null
-			target.save()
-		}
 		entity.delete();
 	}
 	
@@ -92,11 +87,11 @@ class DsrTargetCategoryController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<DsrTargetCategory> categories = dataService.searchData(DsrTargetCategory.class, params['q'], [], params);
+		def categories = dataService.searchData(DsrTargetCategory.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: categories,
-			entityCount: dataService.countData(DsrTargetCategory.class, params['q'], []),
+			entityCount: categories.totalCount,
 			entityClass: getEntityClass(),
 			template: "dsr/targetCategoryList",
 			code: getLabel(),

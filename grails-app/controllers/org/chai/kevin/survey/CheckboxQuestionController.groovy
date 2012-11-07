@@ -57,7 +57,6 @@ class CheckboxQuestionController extends AbstractEntityController {
 	
 	def deleteEntity(def entity) {
 		surveyService.deleteQuestion(entity)
-		entity.section.removeFromQuestions(entity)
 	}
 
 	def getModel(def entity) {

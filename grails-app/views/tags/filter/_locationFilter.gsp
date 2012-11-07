@@ -14,7 +14,7 @@
 			</g:else> 
 		</a>
 		<div class="dropdown-list js_dropdown-list push-top-10">
-			<g:if test="${locationFilterTree != null && !locationFilterTree.empty}">
+			<g:if test="${!locationFilterTree.empty}">
 				<ul>
 					<g:render template="/tags/filter/locationTree"
 						model="[
@@ -27,6 +27,17 @@
 						]" />
 				</ul>
 			</g:if>
+			<g:else>
+				<g:if test="${locationFilterRoot == null}">
+					<div><g:message code="filter.location.no.locations"/></div>
+				</g:if>
+				<g:if test="${selectedTypes.empty}">
+					<div><g:message code="filter.location.no.locationtype"/></div>
+				</g:if>
+				<g:else>
+					<div><g:message code="filter.location.no.datalocations"/></div>
+				</g:else>
+			</g:else>
 		</div>
 	</span>
 </div>

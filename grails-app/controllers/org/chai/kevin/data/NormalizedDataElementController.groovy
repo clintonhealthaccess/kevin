@@ -117,11 +117,11 @@ class NormalizedDataElementController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<NormalizedDataElement> normalizedDataElements = dataService.searchData(NormalizedDataElement.class, params['q'], [], params);
+		def normalizedDataElements = dataService.searchData(NormalizedDataElement.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: normalizedDataElements,
-			entityCount: dataService.countData(NormalizedDataElement.class, params['q'], []),
+			entityCount: normalizedDataElements.totalCount,
 			entityClass: getEntityClass(),
 			template: "data/normalizedDataElementList",
 			code: getLabel(),

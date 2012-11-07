@@ -72,11 +72,11 @@ class ReportProgramController extends AbstractEntityController{
 	def search = {
 		adaptParamsForList()
 		
-		List<ReportProgram> programs = dataService.searchData(ReportProgram.class, params['q'], [], params);
+		def programs = dataService.searchData(ReportProgram.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: programs,
-			entityCount: dataService.countData(ReportProgram.class, params['q'], []),
+			entityCount: programs.totalCount,
 			entityClass: getEntityClass(),
 			template: "reports/programList",
 			code: getLabel(),

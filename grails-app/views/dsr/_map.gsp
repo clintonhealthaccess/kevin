@@ -3,7 +3,7 @@
 	<g:reportExport linkParams="${params}" />
 	<g:reportView linkParams="${params}" exclude="${['indicators']}"/>
 	<div class="selector">
-		<g:reportCategoryFilter linkParams="${params}" exclude="${['indicators']}"/>
+		<g:reportCategoryFilter selected="${currentCategory}" program="${currentProgram}" linkParams="${params}" exclude="${['indicators']}"/>
 	</div>
 	
 	<g:render template="/maps/colors"/>

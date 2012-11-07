@@ -93,11 +93,11 @@ class DsrTargetController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<DsrTarget> targets = dataService.searchData(DsrTarget.class, params['q'], [], params);
+		def targets = dataService.searchData(DsrTarget.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: targets,
-			entityCount: dataService.countData(DsrTarget.class, params['q'], []),
+			entityCount: targets.totalCount,
 			entityClass: getEntityClass(),
 			template: "dsr/targetList",
 			code: getLabel(),

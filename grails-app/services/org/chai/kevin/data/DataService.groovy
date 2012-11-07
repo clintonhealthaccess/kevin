@@ -116,17 +116,28 @@ class DataService {
 		}
 	}
 	
-	public Integer countData(Class<Data> clazz, String text, List<String> allowedTypes) {
-		return getSearchCriteria(clazz, text, allowedTypes).setProjection(Projections.count("id")).uniqueResult()
-	}
-	
     public <T extends Data> List<T> searchData(Class<T> clazz, String text, List<String> allowedTypes, Map<String, String> params) {
-		def criteria = getSearchCriteria(clazz, text, allowedTypes)
-		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
-		if (params['max'] != null) criteria.setMaxResults(params['max'])
-		else criteria.setMaxResults(500)
-		
-		def data = criteria.addOrder(Order.asc("id")).list()
+		def dbFieldName = 'names_' + languageService.currentLanguage;
+		def criteria = clazz.createCriteria()
+		def data = criteria.list(offset:params.offset, max:params.max, sort:params.sort ?:"id", order: params.order ?:"asc"){
+			StringUtils.split(text).each { chunk ->
+				 or{
+					 ilike("code","%"+chunk+"%")
+					 ilike(dbFieldName,"%"+chunk+"%")
+					 if (NumberUtils.isNumber(chunk)) {
+						 eq("id", Long.parseLong(chunk))
+					 }
+					 if (clazz.equals(RawDataElement.class)) {
+						 ilike("info", "%"+chunk+"%")
+					 }
+				 }
+			}
+			if (!allowedTypes.isEmpty()) {
+				allowedTypes.each { type ->
+					ilike("typeString", "%"+type+"%")
+				}
+			}
+		}
 		
 		if (!allowedTypes.isEmpty()) {
 			data.retainAll { element ->
@@ -137,34 +148,4 @@ class DataService {
 		return data
     }
 	
-	private def getSearchCriteria(Class<Data> clazz, String text, List<String> allowedTypes) {
-		def criteria = sessionFactory.currentSession.createCriteria(clazz)
-		
-		def textRestrictions = Restrictions.conjunction()
-		StringUtils.split(text).each { chunk ->
-			def disjunction = Restrictions.disjunction();
-			
-			// we look in "info" if it is a data element
-			if (clazz.equals(RawDataElement.class)) disjunction.add(Restrictions.ilike("info", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("code", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("names_"+languageService.currentLanguage, chunk, MatchMode.ANYWHERE))
-			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("id", Long.parseLong(chunk)))
-			
-			textRestrictions.add(disjunction)
-		}
-		
-		if (!allowedTypes.isEmpty()) {
-			def typeRestrictions = Restrictions.disjunction()
-			allowedTypes.each { type ->
-				typeRestrictions.add(Restrictions.ilike("typeString", type, MatchMode.ANYWHERE))
-			}
-			criteria.add(Restrictions.and(textRestrictions, typeRestrictions))
-		}
-		else {
-			criteria.add(textRestrictions)
-		}
-		
-		return criteria
-	}
-	    
 }
