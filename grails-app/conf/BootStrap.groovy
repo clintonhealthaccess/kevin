@@ -117,19 +117,6 @@ class BootStrap {
 				surveyAllReadonly.save()
 			}
 			
-//			if (User.findByUsername('admin') == null) {
-//				def user = new User(username: "admin", passwordHash: new Sha256Hash("123admin!").toHex())
-//				user.addToPermissions("*")
-//				user.save()
-//			}
-			
-//			if (User.findByUsername('dhsst') == null) {
-//				def user = new User(username: "dhsst", passwordHash: new Sha256Hash("123chai!").toHex())
-////				user.addToRoles(Role.findByName('survey-all-readonly'))
-//				user.addToRoles(Role.findByName('reports-all-readonly'))
-//				user.save()
-//			}
-			
 			break;
 		case "development":
 			// we initialize the structure
@@ -171,17 +158,6 @@ class BootStrap {
 			
 			// refresh
 			surveyPageService.refresh(Location.findByCode('rwanda'), Survey.findByCode('survey_period2'), false, true, null);
-			
-//			Initializer.createDummyStructure();
-//			Initializer.createUsers();
-//			Initializer.createDataElementsAndExpressions();
-//			Initializer.createDashboard();
-//			Initializer.createDsr();
-//			Initializer.createFct();
-//			Initializer.createQuestionaire();
-//			Initializer.createPlanning();
-//			Initializer.createDataElementExport();
-//			Initializer.createCalculationExport();
 			
 			break;
 		}
