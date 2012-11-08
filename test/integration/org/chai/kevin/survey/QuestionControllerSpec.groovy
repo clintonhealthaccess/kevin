@@ -55,4 +55,23 @@ class QuestionControllerSpec extends SurveyIntegrationTests {
 		questionController.modelAndView.model.entities.equals([question])
 	}
 	
+	def "question search"() {
+		setup:
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [])
+		def section = newSurveySection(CODE(1), program, 1, [])
+		def question = newSimpleQuestion(CODE(1), section, 1, [])
+		questionController = new QuestionController()
+		
+		when:
+		questionController.params['survey'] = survey.id
+		questionController.params['q'] = 'code'
+		questionController.search()
+		
+		then:
+		questionController.modelAndView.model.entities.equals([question])
+		questionController.modelAndView.model.entityCount == 1
+	}
+	
 }

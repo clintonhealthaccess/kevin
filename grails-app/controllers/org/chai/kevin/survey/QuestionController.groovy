@@ -48,13 +48,13 @@ class QuestionController extends AbstractController {
 		adaptParamsForList()
 		
 		Survey survey = Survey.get(params.int('survey'))
-		List<SurveyQuestion> questions = surveyService.searchSurveyQuestions(params['q'], survey, params);
+		def questions = surveyService.searchSurveyQuestions(params['q'], survey, params);
 		
 		render (view: '/entity/list', model:[
 			template:"survey/questionList",
 			survey: survey,
 			entities: questions,
-			entityCount: surveyService.countSurveyQuestions(params['q'], survey),
+			entityCount: questions.totalCount,
 			entityClass: getEntityClass(),
 			code: 'survey.question.label',
 			search: true
