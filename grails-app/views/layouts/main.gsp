@@ -63,15 +63,15 @@
 			</ul>
 			
 			<h2>
-				<span class="right"><img src="${resource(dir:'images',file:'rwanda.png')}" alt="Rwanda coat of arms" width="33" /></span>
-				<span><g:message code="header.labels.moh"/></span>
+				<span class="right"><img src="${grailsApplication.config.site.icon}" width="33"/></span>
+				<span>${i18n(field: grailsApplication.config.site.tagline)}</span>
 				<g:message code="header.labels.dhsst"/>
 			</h2>
 			
 			<ul id="logout">
 				<shiro:hasPermission permission="admin">
 					<li>
-						<a class="redmine follow" target="_blank" href="http://districthealth.moh.gov.rw/redmine"><g:message code="header.labels.redmine"/></a>
+						<a class="redmine follow" target="_blank" href="${grailsApplication.config.site.bugtracker.url}"><g:message code="header.labels.redmine"/></a>
 	   				</li>
 				</shiro:hasPermission>
 				<li>

@@ -18,8 +18,8 @@ class Period implements Exportable {
 	static mapping = {
 		table 'dhsst_period'
 		cache true
-		startDate sqlType: "datetime"
-		endDate sqlType: "datetime"
+//		startDate sqlType: "datetime"
+//		endDate sqlType: "datetime"
 	}
 	
 	static constraints =  {

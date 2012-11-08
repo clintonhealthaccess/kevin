@@ -108,7 +108,6 @@ grails.project.dependency.resolution = {
 		build ":tomcat:$grailsVersion"
 		
 		compile ":hibernate:$grailsVersion"
-		compile ":i18n-fields:0.6.1-CHAI"
 		compile ":jquery:1.7.1"
 		compile ":resources:1.2-RC1"
 		compile ":shiro:1.1.5"
@@ -125,10 +124,13 @@ grails.project.dependency.resolution = {
 		compile ":build-info-tag:0.3.1"
 		compile ":yui-minify-resources:0.1.5"
 		compile ":rabbitmq-tasks:0.5.3-SNAPSHOT"
-		compile ':chai-locations:0.4.1-CHAI'
-		compile ':heroku:1.0.1'
-		compile ':cloud-support:1.0.11'
+		compile ":i18n-fields:0.6.3-CHAI"
+		compile ':chai-locations:0.4.2-CHAI'
 		
+		// cloud foundry support
+		compile ":cloud-foundry:1.2.3"
+		
+		// tests
 		test ":geb:0.7.2"
 		test ":spock:0.6"
 	}

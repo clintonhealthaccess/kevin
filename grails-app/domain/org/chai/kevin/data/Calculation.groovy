@@ -58,7 +58,7 @@ abstract class Calculation<T extends CalculationPartialValue> extends Data<T> im
 	static mapping = {
 		table 'dhsst_data_calculation'
 		tablePerHierarchy false
-		refreshed sqlType: "datetime"
+//		refreshed sqlType: "datetime"
 	}
 	
 	static constraints =  {

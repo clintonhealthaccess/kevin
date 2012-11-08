@@ -119,6 +119,7 @@ class BootStrap {
 			
 			break;
 		case "development":
+		case "demo":
 			// we initialize the structure
 			StructureInitializer.createLocationLevels()
 			StructureInitializer.createDataLocationTypes()

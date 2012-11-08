@@ -88,7 +88,6 @@ public class SurveyPageService {
 	
 	private TransactionTemplate transactionTemplate;
 	
-	private Set<String> submitSkipLevels;
 	private Set<String> locationSkipLevels;
 
 	private TransactionTemplate getTransactionTemplate() {
@@ -783,20 +782,8 @@ public class SurveyPageService {
 		this.locationService = locationService;
 	}
 	
-	public void setSubmitSkipLevels(Set<String> submitSkipLevels) {
-		this.submitSkipLevels = submitSkipLevels;
-	}
-	
 	public void setLocationSkipLevels(Set<String> locationSkipLevels) {
 		this.locationSkipLevels = locationSkipLevels;
-	}
-	
-	public Set<LocationLevel> getSkipSubmitLevels() {
-		Set<LocationLevel> levels = new HashSet<LocationLevel>();
-		for (String skipLevel : this.submitSkipLevels) {
-			levels.add(locationService.findLocationLevelByCode(skipLevel));
-		}
-		return levels;
 	}
 	
 	public Set<LocationLevel> getSkipLocationLevels() {
