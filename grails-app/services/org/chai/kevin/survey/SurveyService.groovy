@@ -133,10 +133,6 @@ class SurveyService {
 		}
 	}
 	
-	Integer countSurveyQuestions(String text, Survey survey) {
-		return getQuestionSearchCriteria(text, survey).setProjection(Projections.count("id")).uniqueResult()
-	}
-	
 	Set<SurveyElement> getSurveyElements(RawDataElement dataElement, Survey survey) {
 		if (log.isDebugEnabled()) log.debug("getSurveyElements(dataElement=${dataElement}, survey=${survey})")
 		def c = sessionFactory.currentSession.createCriteria(SurveyElement.class)
