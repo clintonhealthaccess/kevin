@@ -141,7 +141,7 @@ class SurveyService {
 		if (log.isDebugEnabled()) log.debug("getSurveyElements(dataElement=${dataElement}, survey=${survey})")
 		def c = sessionFactory.currentSession.createCriteria(SurveyElement.class)
 		if (survey != null) {
-			c.createAlias("surveyQuestion", "sq")
+			c.createAlias("question", "sq")
 			.createAlias("sq.section", "ss")
 			.createAlias("ss.program", "so")
 			.add(Restrictions.eq("so.survey", survey))

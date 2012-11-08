@@ -2,9 +2,9 @@
 	<thead>
 		<tr>
 			<th/>
-			<g:sortableColumn property="code" params="[q:q]" title="${message(code: 'entity.code.label')}" />
-			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="entity.description.label"/></th>
+			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />
+			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q]" title="${message(code: 'entity.name.label')}" />
+			<g:sortableColumn property="${i18nField(field: 'descriptions')}" params="[q:params.q]" title="${message(code: 'entity.description.label')}" />
 		</tr>
 	</thead>
 	<tbody>

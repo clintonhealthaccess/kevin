@@ -11,6 +11,8 @@
 				<input type="hidden" name="survey.id" value="${skip.survey.id}" />
 				
 			 	<g:i18nTextarea name="descriptions" bean="${skip}" value="${skip?.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions" />
+			 	<g:input name="code" label="${message(code:'entity.code.label')}" bean="${skip}" field="code"/>
+		
 				<g:render template="/templates/skippedFormElements" model="[skip: skip]"/>
 				<g:selectFromList name="skippedSurveyQuestions" label="${message(code:'survey.skiprule.skippedquestions.label')}" field="skippedSurveyQuestions" 
 						optionKey="id" multiple="true" ajaxLink="${createLink(controller:'question', action:'getAjaxData', params:[survey: skip.survey.id])}" 

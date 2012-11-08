@@ -2,11 +2,11 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="planning.planningcost.type.label"/></th>
-			<th><g:message code="planning.planningcost.dataelement.label"/></th>
-			<th><g:message code="planning.planningcost.hideifzero.label"/></th>
-			<th><g:message code="entity.order.label"/></th>
+			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q, 'planningType.id':params['planningType.id']]" title="${message(code: 'entity.name.label')}" />
+			<g:sortableColumn property="type" params="[q:params.q, 'planningType.id':params['planningType.id']]" title="${message(code: 'planning.planningcost.type.label')}" />
+			<g:sortableColumn property="dataElement" params="[q:params.q, 'planningType.id':params['planningType.id']]" title="${message(code: 'planning.planningcost.dataelement.label')}" />
+			<g:sortableColumn property="hideIfZero" params="[q:params.q, 'planningType.id':params['planningType.id']]" title="${message(code: 'planning.planningcost.hideifzero.label')}" />
+			<g:sortableColumn property="order" params="[q:params.q, 'planningType.id':params['planningType.id']]" title="${message(code: 'entity.order.label')}" />
 		</tr>
 	</thead>
 	<tbody>

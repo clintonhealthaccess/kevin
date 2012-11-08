@@ -9,8 +9,7 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 
 	def surveyValidationRuleController
 	
-	
-	def "test list"() {
+	def "test list on form element"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -26,6 +25,28 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		
 		when:
 		surveyValidationRuleController.params['formElement.id'] = element.id
+		surveyValidationRuleController.list()
+		
+		then:
+		surveyValidationRuleController.modelAndView.model.entities.size() == 1
+	}
+	
+	def "test list on survey"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		
+		def validationRule = newFormValidationRule(CODE(1), element, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+" > 0")
+		surveyValidationRuleController = new SurveyValidationRuleController()
+		
+		when:
+		surveyValidationRuleController.params['survey.id'] = survey.id
 		surveyValidationRuleController.list()
 		
 		then:
