@@ -89,6 +89,13 @@ class FormValidationRuleController extends AbstractEntityController {
 
 	def bindParams(def entity) {
 		entity.properties = params
+		
+		def dependencies = []
+		params['dependencies.id'].each {
+			FormElement element = FormElement.get(it)
+			if (element != null) dependencies << element
+		}
+		entity.dependencies = dependencies
 	}
 	
 	def copy = {

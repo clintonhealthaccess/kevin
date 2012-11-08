@@ -21,7 +21,7 @@ class SurveyInitializer {
 
 	static def createSurveys() {
 		if (!Survey.count()) {
-			new Survey(code: 'survey_period1', names_en: 'Survey 2005',  period: Period.findByCode('period2'), active: false).save(failOnError: true)
+			new Survey(code: 'survey_period1', names_en: 'Survey 2005',  period: Period.findByCode('period1'), active: false).save(failOnError: true)
 			new Survey(code: 'survey_period2', names_en: 'Survey 2006',  period: Period.findByCode('period2'), lastPeriod: Period.findByCode('period1'), active: true).save(failOnError: true)
 		}
 	}

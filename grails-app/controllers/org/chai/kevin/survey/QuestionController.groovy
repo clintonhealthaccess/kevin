@@ -74,17 +74,15 @@ class QuestionController extends AbstractController {
 			response.sendError(404)
 		}
 		else {
-			def questions = section.questions.sort();
-			
-			def max = Math.min(params['offset']+params['max'], questions.size())
+			def questions = SurveyQuestion.createCriteria().list(params){eq('section', section)}
 			
 			render (view: '/entity/list', model:[
 				template:"survey/questionList",
 				survey: section.program.survey,
 				program: section.program,
 				section: section,
-				entities: questions.subList(params['offset'], max),
-				entityCount: questions.size(),
+				entities: questions,
+				entityCount: questions.totalCount,
 				code: 'survey.question.label',
 				addTemplate: '/survey/admin/addQuestion',
 				entityClass: getEntityClass()
@@ -94,7 +92,7 @@ class QuestionController extends AbstractController {
 	
 	def getAjaxData = {
 		Survey survey = Survey.get(params.int('survey'));
-		Set<SurveyQuestion> surveyQuestions = surveyService.searchSurveyQuestions(params['term'], survey);
+		def surveyQuestions = surveyService.searchSurveyQuestions(params['term'], survey);
 
 		render(contentType:"text/json") {
 			elements = array {
