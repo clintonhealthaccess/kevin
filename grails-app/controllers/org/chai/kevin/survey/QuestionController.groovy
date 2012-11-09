@@ -27,16 +27,15 @@
  */
 package org.chai.kevin.survey
 
-import org.chai.kevin.AbstractController;
+import org.chai.kevin.AbstractExportController
 import org.chai.kevin.util.Utils
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 /**
  * @author Jean Kahigiso M.
  *
  */
 
-class QuestionController extends AbstractController {
+class QuestionController extends AbstractExportController {
 
 	def surveyService
 	
