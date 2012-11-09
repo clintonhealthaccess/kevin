@@ -226,13 +226,13 @@ environments {
 			off 'ExpressionLog'
 		}
 	}
-//	demo {
-//		log4j = {
-//			rootLogger="error,stdout"
-//			
-//			off 'ExpressionLog'
-//		}
-//	}
+	demo {
+		log4j = {
+			rootLogger="error,stdout"
+			
+			off 'ExpressionLog'
+		}
+	}
 }
 
 /**

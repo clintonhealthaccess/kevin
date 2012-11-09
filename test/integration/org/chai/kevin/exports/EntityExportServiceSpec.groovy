@@ -9,6 +9,7 @@ import org.chai.kevin.IntegrationTests
 import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.Type
 import org.chai.kevin.form.FormEnteredValue
+import org.chai.kevin.security.User;
 import org.chai.kevin.survey.SurveyCheckboxQuestion
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyIntegrationTests
@@ -22,6 +23,14 @@ import org.chai.location.DataLocation
 class EntityExportServiceSpec extends IntegrationTests {
 
 	def entityExportService
+	
+	def "test domain has id"(){
+		when:
+		User.class.getDeclaredField('id')
+		
+		then:
+		notThrown NoSuchFieldException
+	}
 	
 	def "test for export entity"(){
 		setup:
@@ -99,33 +108,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		zipFile.exists() == true
 		zipFile.length() > 0
 	}
-	
-	def "test entity is exportable"(){
-		when:
-		def ie = new IsExportableEntity()
-		def clazz = Utils.isExportable(ie.class)
-		
-		then:
-		clazz != null
-	}
-	
-	def "test entity is exportable primitive"(){
-		when:
-		def clazz = Utils.isExportablePrimitive(Integer.class)
-		
-		then:
-		clazz != null
-	}
-	
-	def "test entity is not exportable"(){
-		when:
-		def ne = new IsNotExportableEntity()
-		def clazz = Utils.isExportable(ne.class)
-		
-		then:
-		clazz == null		
-	}
-	
+
 	def "test entity fields that are exportable and not exportable"(){
 		when:
 		def te = new TestExportableEntity("testCode")					 
@@ -154,8 +137,8 @@ class EntityExportServiceSpec extends IntegrationTests {
 		
 		then:
 		entityData[0].equals("testCode")
-		entityData[1].equals("[~ieCode~]")
-		entityData[2].equals(ImportExportConstant.VALUE_NOT_EXPORTABLE)
+		entityData[2].equals("ieCode")
+		entityData[3].equals(ImportExportConstant.VALUE_NOT_EXPORTABLE)
 	}
 	
 	def "test entity fields that are exportable lists and not exportable lists"(){
@@ -186,8 +169,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		
 		then:
 		entityData[0].equals("testCode")
-		entityData[1].equals("[[~ieCode1~]]")
-		entityData[2].equals(ImportExportConstant.VALUE_NOT_EXPORTABLE)
+		entityData[2].equals("[ieCode1]")
 		
 		when:
 		te.listIee = [new IsExportableEntity("ieCode1", 1, new Date()), new IsExportableEntity("ieCode2", 2, new Date())]
@@ -196,10 +178,8 @@ class EntityExportServiceSpec extends IntegrationTests {
 		
 		then:
 		entityData[0].equals("testCode")
-		entityData[1].equals("[[~ieCode1~], [~ieCode2~]]")
-		entityData[2].equals(ImportExportConstant.VALUE_NOT_EXPORTABLE)		
+		entityData[2].equals("[ieCode1, ieCode2]")
 	}	
-	
 	
 	public class IsExportableEntity extends Object implements Exportable {
 		
@@ -232,6 +212,8 @@ class EntityExportServiceSpec extends IntegrationTests {
 	
 	public class TestExportableEntity extends Object implements Exportable {
 		
+		Long id;
+		
 		public String code;
 		public IsExportableEntity iee;
 		public IsNotExportableEntity inee;
@@ -246,6 +228,8 @@ class EntityExportServiceSpec extends IntegrationTests {
 	}
 	
 	public class TestExportableEntities extends Object implements Exportable {
+		
+		Long id;
 		
 		public String code;
 		public List<IsExportableEntity> listIee;

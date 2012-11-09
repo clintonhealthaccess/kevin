@@ -89,8 +89,6 @@ grails.project.dependency.resolution = {
 		compile 'net.sf.ezmorph:ezmorph:1.0.6'
 		
         runtime 'mysql:mysql-connector-java:5.1.13'
-		// for heroku support
-		runtime 'postgresql:postgresql:8.4-702.jdbc3'
 		
 		test "org.codehaus.geb:geb-spock:0.7.2"
 		test("org.seleniumhq.selenium:selenium-support:2.25.0")

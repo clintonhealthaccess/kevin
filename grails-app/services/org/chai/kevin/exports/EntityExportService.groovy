@@ -5,19 +5,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.Exportable;
 import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.util.Utils;
 import org.hibernate.SessionFactory;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.transaction.annotation.Transactional;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.io.ICsvListWriter;
@@ -28,7 +29,6 @@ public class EntityExportService {
 	private static final Log log = LogFactory.getLog(EntityExportService.class);
 	
 	private SessionFactory sessionFactory;
-	private static final String ID_HEADER = "id";	
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -56,8 +56,8 @@ public class EntityExportService {
 			while(headerClass != null && headerClass != Object.class){				
 				Field[] classFields = headerClass.getDeclaredFields();
 				for(Field field : classFields){
-					if(!field.getName().equalsIgnoreCase(ID_HEADER)
-						&& !field.getName().startsWith("$") && !field.getName().startsWith("__")
+					if(	!field.getName().equals("errors") && !field.getName().equals("version") 
+						&& !field.getName().startsWith("\$") && !field.getName().startsWith("__") 
 						&& !field.isSynthetic() && !Modifier.isStatic(field.getModifiers())) {
 						entityFieldHeaders.add(field);
 					}
@@ -101,108 +101,111 @@ public class EntityExportService {
 		return csvFile;
 	}	
 	
+	@SuppressWarnings("unchecked")
 	private List<Object> getEntities(Class<?> clazz){
 		return (List<Object>) sessionFactory.getCurrentSession().createCriteria(clazz).list();
 	}
 	
 	public List<String> getEntityData(Object entity, List<Field> fields){
 		List<String> entityData = new ArrayList<String>();
-		for(Field field : fields){			
-			
-			Object value = null;			
-			
+		for (Field field : fields) {			
 			try {
 				boolean isNotAccessible = false;
-				if(!field.isAccessible()){ 
+				if (!field.isAccessible()) { 
 					field.setAccessible(true);
 					isNotAccessible = true;
 				}
 				
-				value = field.get(entity);								
+				Object value = field.get(entity);								
+				if (log.isDebugEnabled()) log.debug("header: " + field.getName() + ", field: " + value);
 				
-				if (log.isDebugEnabled()) 
-					log.debug("header: " + field.getName() + ", field: " + value);
-				
-				String exportValue = "";	
-				
-				if(value != null){
-					
-					Class<?> valueClazz = field.getType();
-					Class<?> innerClazz = null;
-					
-					//value is not a list					
-					Class<?> exportableClazz = valueClazz;					
-					
-					//value is a list
-					List<Object> listValues = null;
-					if(valueClazz.equals(List.class)){
-						listValues = (List<Object>) value;			
-						ParameterizedType type = (ParameterizedType) field.getGenericType();
-						innerClazz = (Class<?>) type.getActualTypeArguments()[0];
-						exportableClazz = innerClazz;
-					}					
-					
-					//value is exportable
-					if(Utils.isExportable(exportableClazz) != null){
-						
-						//value is a list
-						if(listValues != null){
-							exportValue = getExportValues(listValues);
-						}
-						//value is not a list
-						else{
-							if(value instanceof Exportable){
-								Exportable exportable = (Exportable) value;
-								exportValue = getExportValue(exportable);	
-							}						
-						}		
-					}
-					//value is a primitive or 'wrapper to primitive' or string type
-					else if(Utils.isExportablePrimitive(exportableClazz) != null){
-						exportValue = value.toString();
-					}
-					//value is a string
-					else if (exportableClazz.equals(String.class)){
-						exportValue = value.toString();
-					}
-					//value is a date
-					else if(exportableClazz.equals(Date.class)){
-						exportValue = Utils.formatDate((Date) value);
-					}
-					//value is not exportable or a primitive type
-					else{
-						exportValue = ImportExportConstant.VALUE_NOT_EXPORTABLE;
-					}
+				if (value != null){
+					if (log.isDebugEnabled()) log.debug("exporting value of class: "+field.getType());
+					entityData.add(exportValue(value));
+				}
+				else {
+					entityData.add("");
 				}
 				
-				entityData.add(exportValue);
-				
-				if(isNotAccessible)
-					field.setAccessible(false);	
+				if(isNotAccessible) field.setAccessible(false);	
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				if (log.isWarnEnabled()) log.warn("could not read field value: "+field+", on value: "+entity, e);
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				if (log.isWarnEnabled()) log.warn("could not access field value: "+field+", on value: "+entity, e);
 			}
 		}
 		return entityData;
 	}
 
-	public String getExportValue(Exportable exportable){
-		String result = exportable.toExportString();
-		return result;
-	}
-	
-	public String getExportValues(List<Object> values){
-		List<String> exportValues = new ArrayList<String>();
-		for(Object value : values){
-			if(value instanceof Exportable){
-				Exportable exportableValue = (Exportable) value;
-				String exportValue = getExportValue(exportableValue);
-				exportValues.add(exportValue);
+	private String exportValue(Object value) {
+		String exportValue = "";
+		
+		Class<?> valueClazz = null;
+		if (value instanceof HibernateProxy) {
+			valueClazz = ((HibernateProxy) value).getHibernateLazyInitializer().getImplementation().getClass();
+			value = valueClazz.cast(value);
+		}
+		else {
+			valueClazz = value.getClass();
+		}
+		
+		if (log.isDebugEnabled()) log.debug("exporting value for value: "+value+", class: "+valueClazz);
+		
+		//value is a primitive or 'wrapper to primitive' or string type
+		if (isExportablePrimitive(valueClazz) != null){
+			exportValue = value.toString();
+		}
+		//value is a string
+		else if (valueClazz.equals(String.class)){
+			exportValue = value.toString();
+		}
+		//value is a date
+		else if(valueClazz.equals(Date.class)){
+			exportValue = Utils.formatDate((Date) value);
+		}
+		else if (Collection.class.isAssignableFrom(valueClazz)){
+			//value is a collection
+			List<String> collectionExportValue = new ArrayList<String>();
+			value.each { element ->
+				collectionExportValue.add(
+					this.exportValue(element)
+				);
+			}
+			exportValue = "[" + StringUtils.join(collectionExportValue, ", ") + "]";
+		}					
+		//value is exportable
+		else if (hasField(value, "id") || hasField(value, "code")) {
+			if (hasField(value, "id")) {
+				exportValue += (Long)getValue(value, "id");
+			}
+			if (hasField(value, "code")) {
+				if (!exportValue.isEmpty()) exportValue += ImportExportConstant.CODE_DELIMITER;
+				exportValue += (String)getValue(value, "code");
 			}
 		}
-		String result = "[" + StringUtils.join(exportValues, ", ") + "]";
-		return result;
+		//value is not exportable or a primitive type
+		else {
+			exportValue = ImportExportConstant.VALUE_NOT_EXPORTABLE;
+		}
+		
+		if (log.isDebugEnabled()) log.debug("export value: "+exportValue);
+		return exportValue;
 	}
+
+	private static Object getValue(Object object, String fieldName) {
+		return object."$fieldName"
+	}
+	
+	private static boolean hasField(def object, String field) {
+		return object.hasProperty(field);
+	}						
+	
+	private static Class<?> isExportablePrimitive(Class<?> clazz) {
+		Class<?> exportableClazz = null;		
+		if(clazz.isPrimitive() || ClassUtils.wrapperToPrimitive(clazz) != null){
+			exportableClazz = clazz;
+		}
+		return exportableClazz;
+	}
+	
 }
