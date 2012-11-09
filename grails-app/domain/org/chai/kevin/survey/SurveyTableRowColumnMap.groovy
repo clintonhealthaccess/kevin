@@ -4,9 +4,8 @@ import java.io.Serializable;
 
 public class SurveyTableRowColumnMap implements Serializable {
 
-	static belongsTo = [tableRow: SurveyTableRow]
+	static belongsTo = [tableRow: SurveyTableRow, tableColumn: SurveyTableColumn]
 	
-	SurveyTableColumn tableColumn
 	SurveyElement surveyElement
 	
 	static mapping = {
@@ -21,7 +20,7 @@ public class SurveyTableRowColumnMap implements Serializable {
 	
 	static constraints = {
 		tableColumn (nullable: false)
-		surveyElement (nullable: false)
+		surveyElement (nullable: true)
 	}
 
 	@Override

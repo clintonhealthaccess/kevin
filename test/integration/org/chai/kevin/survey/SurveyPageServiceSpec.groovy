@@ -346,15 +346,6 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		then:
 		locationSkipLevels.size() == 1
 		locationSkipLevels.contains(LocationLevel.findByCode(SECTOR))
-		
-		//survey and program submit skip levels
-		when:
-		def submitSkipLevels = surveyPageService.getSkipSubmitLevels()
-		
-		then:
-		submitSkipLevels.size() == 2
-		submitSkipLevels.contains(LocationLevel.findByCode(NATIONAL))
-		submitSkipLevels.contains(LocationLevel.findByCode(PROVINCE))
 	}	
 	
 	def "test modify"() {

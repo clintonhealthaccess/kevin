@@ -425,6 +425,34 @@ class ValueServiceSpec extends IntegrationTests {
 		RawDataElementValue.count() == 1
 	}
 	
+	def "test delete data element values of period"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def period2 = newPeriod(2006)
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		
+		when:
+		def rawDataElementValue1 = newRawDataElementValue(rawDataElement, period1, DataLocation.findByCode(BUTARO), v("40"))
+		def rawDataElementValue2 = newRawDataElementValue(rawDataElement, period2, DataLocation.findByCode(KIVUYE), v("40"))
+		def rawDataElementValue3 = newRawDataElementValue(rawDataElement, period2, DataLocation.findByCode(BUTARO), v("40"))
+		
+		then:
+		RawDataElementValue.count() == 3
+		
+		when:
+		valueService.deleteValues(null, null, period1)
+		
+		then:
+		RawDataElementValue.count() == 2
+		
+		when:
+		valueService.deleteValues(null, null, period2)
+		then:
+		RawDataElementValue.count() == 0
+	}
+	
+	
 	def "test delete all data element values of period and location"() {
 		setup:
 		setupLocationTree()

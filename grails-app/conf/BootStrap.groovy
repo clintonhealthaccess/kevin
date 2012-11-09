@@ -32,6 +32,7 @@ import org.chai.task.Progress;
 */
 
 import org.chai.init.DataInitializer;
+import org.chai.init.ExportInitializer;
 import org.chai.init.ReportInitializer;
 import org.chai.init.StructureInitializer;
 import org.chai.init.SurveyInitializer;
@@ -159,6 +160,9 @@ class BootStrap {
 			
 			// refresh
 			surveyPageService.refresh(Location.findByCode('rwanda'), Survey.findByCode('survey_period2'), false, true, null);
+			
+			// exports
+			ExportInitializer.createDataElementExports()
 			
 			break;
 		}

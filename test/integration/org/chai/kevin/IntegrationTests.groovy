@@ -151,11 +151,15 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 		
 	static def newPeriod() {
-		newPeriod(2005)
-	} 
+		newPeriod(2005, true)
+	}
 	
 	static def newPeriod(def code) {
-		def period = new Period(code: code, startDate: mar01, endDate: mar31)
+		newPeriod(code, false)
+	}
+	
+	static def newPeriod(def code, def defaultSelected) {
+		def period = new Period(code: code, startDate: mar01, endDate: mar31, defaultSelected: defaultSelected)
 		return period.save(failOnError: true, flush: true)
 	}
 	
@@ -503,6 +507,22 @@ abstract class IntegrationTests extends IntegrationSpec {
 			if(map.get(loc) != null) object."$methodName"(map.get(loc)+'', new Locale(loc))
 			else object."$methodName"("", new Locale(loc))
 		}
+	}
+	
+	static List<String> readLines(File file) {
+		List<String> result = []
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			BufferedReader d = new BufferedReader(new InputStreamReader(fis));
+			String line
+			while ((line = d.readLine()) != null) {
+				result << line;
+			}
+			d.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result
 	}
 	
 }

@@ -11,6 +11,7 @@ class Period implements Exportable {
 	String code;
 	Date startDate;
 	Date endDate;
+	Boolean defaultSelected
 
 	// deprecated
 	Long id;
@@ -28,6 +29,7 @@ class Period implements Exportable {
 		endDate(nullable: false, blank: false, validator: { val, obj ->
 			if (obj.startDate && val) return val?.after(obj.startDate)
 		})
+		defaultSelected (nullable: false)
 	}
 
 	

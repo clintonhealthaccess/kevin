@@ -63,7 +63,7 @@ public abstract class AbstractController {
 
 	def getPeriod() {
 		Period period = Period.get(params.int('period'))
-		if (period == null)  period = Period.findAll()[ConfigurationHolder.config.site.period]
+		if (period == null) period = Period.findByDefaultSelected(true) 
 		return period
 	}
 	
@@ -142,7 +142,7 @@ public abstract class AbstractController {
 			log.debug("redirectIfDifferent(redirectParams="+redirectParams+")")
 			log.debug("request params: "+params)
 		}
-				
+		
 		boolean redirect = false
 		def newParams = [:]
 		for(def param : redirectParams){
@@ -156,8 +156,7 @@ public abstract class AbstractController {
 			else 
 				urlValue = params[key].toString()
 			
-			if(redirectValue != null && urlValue != redirectValue)
-				redirect = true
+			if(redirectValue != null && urlValue != redirectValue) redirect = true
 			if(redirectParams[key] != null) newParams.put(key, redirectParams[key])
 		}
 		

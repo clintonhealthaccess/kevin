@@ -32,6 +32,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -42,6 +43,7 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
+import org.chai.location.CalculationLocation;
 import org.chai.location.DataLocation;
 import org.chai.location.DataLocationType;
 import org.chai.location.Location;
@@ -67,20 +69,20 @@ public class DataElementExportService extends ExportService {
 			if(type!=null) types.add(type);
 		}
 		
-		List<DataLocation> dataLocations = locationService.getDataLocationsOfType(new HashSet(export.getAllLocations()),types);
-		
-		if (log.isDebugEnabled()) log.debug(" Exporter dataLocations "+dataLocations+")");
-		return this.exportDataElements(export.getCode(), dataLocations,export.getAllPeriods(),((DataElementExport) export).getAllDataElements());
+		Set<DataLocation> dataLocations = new LinkedHashSet<DataLocation>();
+		for (CalculationLocation location : export.getAllLocations()) {
+			dataLocations.addAll(location.collectDataLocations(null, types));
+		}
+		return this.exportDataElements(export.getCode(), new ArrayList<DataLocation>(dataLocations), export.getAllPeriods(), ((DataElementExport) export).getAllDataElements());
 	}
 		
 	public File exportDataElements(String fileName,List<DataLocation> dataLocations,List<Period> periods,List<DataElement> dataElements) throws IOException{
-		if (log.isDebugEnabled()) log.debug(" exportDataElement(String "+fileName+" List<DataLocation>: " + dataLocations + " List<Period>: "+ periods + " Set<DataElement<DataValue>>: " + dataElements + ")");
+		if (log.isDebugEnabled()) log.debug(" exportDataElements(String "+fileName+" List<DataLocation>: " + dataLocations + " List<Period>: "+ periods + " Set<DataElement<DataValue>>: " + dataElements + ")");
 		File csvFile = File.createTempFile(fileName, ImportExportConstant.CSV_FILE_EXTENSION);
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
 		this.writeDataElements(writer, dataLocations, periods, dataElements);
 		return csvFile;
-
 	}
 
 	private void writeDataElements(ICsvListWriter writer, List<DataLocation> dataLocations, List<Period> periods,List<DataElement> dataElements) throws IOException {
@@ -143,7 +145,7 @@ public class DataElementExportService extends ExportService {
 	public List<String> getExportDataHeaders() {
 		List<String> headers = new ArrayList<String>();
 		for (LocationLevel level : locationService.listLevels())
-			headers.add(Utils.noNull(level.getNames()));
+			headers.add(level.getCode());
 		headers.add(ImportExportConstant.DATA_LOCATION_CODE);
 		headers.add(ImportExportConstant.DATA_LOCATION_NAME);
 		headers.add(ImportExportConstant.LOCATION_TYPE);

@@ -35,11 +35,13 @@ import org.apache.commons.io.output.StringBuilderWriter;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Data;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.exports.DataElementExport;
 import org.chai.location.DataLocation;
 import org.chai.location.DataLocationType;
 import org.chai.location.Location;
+import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.RawDataElementValue;
@@ -61,25 +63,27 @@ class DataElementExportServiceSpec extends IntegrationTests {
 	def "test exportData(exporter) return file"(){
 		setup:
 		setupLocationTree();
-		def periods=new HashSet([newPeriod()]);
+		def period = newPeriod()
 		
-		def typeOne = Type.TYPE_NUMBER();
-		def typeTwo = Type.TYPE_BOOL();
-		
-		def dataElementOne = newRawDataElement(CODE(1), typeOne);
-		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
+		def dataElementOne = newRawDataElement(CODE(1), Type.TYPE_NUMBER());
+		def dataElementTwo = newRawDataElement(CODE(2), Type.TYPE_BOOL());
+		newRawDataElementValue(dataElementOne, period, DataLocation.findByCode(BUTARO), Value.VALUE_NUMBER(1))
 		
 		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
-		
-		def dataElements=new HashSet([dataElementOne,dataElementTwo]);
-		
-		def exporter = newDataElementExport(CODE(1), ["en":"Testing Seach One"],periods, [HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP], locations, dataElements);
+		def dataElements = new HashSet([dataElementOne,dataElementTwo]);
+		def exporter = newDataElementExport(CODE(1), ["en":"Testing Seach One"], s([period]), [HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP], locations, dataElements);
 		
 		when:
 		def exportedFile = dataElementExportService.exportData(exporter);
+		def lines = IntegrationTests.readLines(exportedFile)
+		
 		then:
-		//TODO Best way to check
-		exportedFile!=null
+		lines[0] == [NATIONAL, PROVINCE, DISTRICT, SECTOR, ImportExportConstant.DATA_LOCATION_CODE, ImportExportConstant.DATA_LOCATION_NAME,
+			ImportExportConstant.LOCATION_TYPE, ImportExportConstant.PERIOD_CODE, ImportExportConstant.PERIOD, ImportExportConstant.DATA_CLASS,
+			ImportExportConstant.DATA_CODE, ImportExportConstant.DATA_NAME, ImportExportConstant.DATA_VALUE, ImportExportConstant.DATA_VALUE_ADDRESS].join(',')
+		lines[1] == ["Rwanda", "North", "Burera", "", BUTARO, "Butaro DH", DISTRICT_HOSPITAL_GROUP, period.code, 
+			"[ "+(period.startDate).toString()+" - "+(period.endDate).toString()+" ]", RawDataElement.class.simpleName, dataElementOne.code, 
+			'', Value.VALUE_NUMBER(1).numberValue, ''].join(',')
 	}
 	
 	def "test exportDataElements() return file"(){
@@ -88,17 +92,15 @@ class DataElementExportServiceSpec extends IntegrationTests {
 		def periods=new HashSet([newPeriod()]);
 		def locationTypes = [HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP];
 		
-		def typeOne = Type.TYPE_NUMBER();
-		def dataElementOne = newRawDataElement(CODE(1), typeOne);
+		def dataElementOne = newRawDataElement(CODE(1), Type.TYPE_NUMBER());
 		
 		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
-		
 		def dataElements=new HashSet([dataElementOne]);
-		
 		def exporterOne = newDataElementExport(CODE(1), ["en":"Testing Seach One"],periods, locationTypes, locations, dataElements);
+		
 		when:
-		def dataLocations = locationService.getDataLocationsOfType(locations, s(locationTypes.collect {DataLocationType.findByCode(it)}))
-		def exportedFileOne = dataElementExportService.exportDataElements("Testing", dataLocations, exporterOne.periods as List, exporterOne.dataElements as List);
+		def exportedFileOne = dataElementExportService.exportDataElements("Testing", [DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)], exporterOne.periods as List, exporterOne.dataElements as List);
+		
 		then:
 		exportedFileOne!=null
 	}

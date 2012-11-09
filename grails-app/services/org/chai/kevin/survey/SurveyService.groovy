@@ -66,43 +66,78 @@ class SurveyService {
 		enteredValue.setTimestamp(new Date())
 	}
 	
+	void deleteSurvey(def survey) {
+		if (log.debugEnabled) log.debug('deleteSurvey(survey='+survey+')')
+		new ArrayList(survey.programs?:[]).each { program ->
+			deleteProgram(program)
+		}
+		survey.delete()
+	}
+	
+	void deleteProgram(def program) {
+		if (log.debugEnabled) log.debug('deleteProgram(program='+program+')')
+		SurveyEnteredSection.executeUpdate("delete from SurveyEnteredProgram where program = :program", ['program': program])
+		// we delete all the questions
+		new ArrayList(program.sections?:[]).each { section ->
+			deleteSection(section)
+		}
+		program.survey.removeFromPrograms(program)
+		program.delete()
+	} 
+	
+	void deleteSection(def section) {
+		if (log.debugEnabled) log.debug('deleteSection(section='+section+')')
+		SurveyEnteredSection.executeUpdate("delete from SurveyEnteredSection where section = :section", ['section': section])
+		// we delete all the questions
+		new ArrayList(section.questions?:[]).each { question ->
+			deleteQuestion(question)
+		}
+		section.program.removeFromSections(section)
+		section.delete()
+	}
+	
 	void deleteQuestion(def question) {
+		if (log.debugEnabled) log.debug('deleteQuestion(question='+question+')')
 		SurveyEnteredQuestion.executeUpdate("delete from SurveyEnteredQuestion where question = :question", ['question': question])
 		// we delete all the referenced survey skip rule
 		SurveySkipRule.withCriteria{skippedSurveyQuestions {eq('id', question.id)}}.each { skipRule ->
 			skipRule.removeFromSkippedSurveyQuestions(question)
 			skipRule.save()
 		}
-		question.section.removeFromQuestions(question)
 		// we delete all the survey elements
-		question.surveyElements.each { element ->
+		new ArrayList(question.surveyElements?:[]).each { element ->
 			deleteSurveyElement(element)
 		}
+		question.section.removeFromQuestions(question)
 		question.delete()
 	}
 	
 	void deleteSurveyElement(def surveyElement) {
+		if (log.debugEnabled) log.debug('deleteSurveyElement(surveyElement='+surveyElement+')')
 		// we delete the form entered value
 		FormEnteredValue.executeUpdate("delete from FormEnteredValue where formElement = :formElement", ['formElement': surveyElement])
 		// we delete all the survey elements on all the skip rules they are referenced from
+		if (log.debugEnabled) log.debug('deleting survey elements on skip rules')
 		FormSkipRuleElementMap.findAllByFormElement(surveyElement).each { map ->
 			def skipRule = map.skipRule
 			skipRule.removeFromFormSkipRuleElementMaps(map)
 			map.delete()
-			map.skipRule = skipRule
 			skipRule.save()
+			map.skipRule = skipRule
 		}
 		// we delete all the dependencies
+		if (log.debugEnabled) log.debug('deleting survey elements on validation rule dependencies')
 		FormValidationRuleDependency.findAllByFormElement(surveyElement).each { dependency ->
 			def validationRule = dependency.validationRule
 			validationRule.removeFromValidationRuleDependencies(dependency)
 			dependency.delete()
-			dependency.validationRule = validationRule
 			validationRule.save()
+			dependency.validationRule = validationRule
 		}
 		// we delete the survey element from the question
+		if (log.debugEnabled) log.debug('deleting survey elements from question')
 		def question = surveyElement.question
-		question.removeFromSurveyElements(surveyElement)
+		question.removeSurveyElement(surveyElement)
 		surveyElement.delete()
 	}
 	

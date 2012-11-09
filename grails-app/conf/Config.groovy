@@ -148,9 +148,9 @@ environments {
 	demo {
 		grails.serverURL = 'http://kevin.cloudfoundry.com'
 		grails.resources.cdn.enabled = false
-		grails.resources.processing.enabled = true
-		grails.resources.mappers.yuicssminify.disable=false
-		grails.resources.mappers.yuijsminify.disable=false
+		grails.resources.processing.enabled = false
+		grails.resources.mappers.yuicssminify.disable = false
+		grails.resources.mappers.yuijsminify.disable = false
 	}
 }
 
@@ -221,22 +221,18 @@ log4j = {
 environments {
 	test {
 		log4j = {
-			root {
-				error
-			}
+			rootLogger="error,stdout"
 			
 			off 'ExpressionLog'
 		}
 	}
-	demo {
-		log4j = {
-			root {
-				error
-			}
-			
-			off 'ExpressionLog'
-		}
-	}
+//	demo {
+//		log4j = {
+//			rootLogger="error,stdout"
+//			
+//			off 'ExpressionLog'
+//		}
+//	}
 }
 
 /**
@@ -258,12 +254,18 @@ site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
 site.tagline.en="Ministry of Health"
 site.tagline.fr="Ministère de la santé"
-site.icon="http://localhost:8080/kevin/images/apple-touch-icon.png"
 site.bugtracker.url = "#"
+environments {
+	development {
+		site.icon="http://localhost:8080/kevin/images/apple-touch-icon.png"
+	}
+	demo {
+		site.icon="http://kevin.cloudfoundry.com/images/apple-touch-icon.png"
+	}
+}
 
 // TODO put in database on datalocation and period
 site.datalocationtype.checked=["district_hospital","health_center"]
-site.period=0
 
 report.skip.levels=["sector"]
 dashboard.skip.levels=[]

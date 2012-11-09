@@ -62,16 +62,22 @@ class DashboardController extends AbstractController {
 		DashboardEntity dashboardEntity = getDashboardEntity(program)
 		def locationSkipLevels = dashboardService.getSkipLocationLevels();
 		
-		// building params for redirection checks
-		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id, 'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort()]
-		
-		// we check if we should redirect
-		def newParams = redirectIfDifferent(reportParams)
-		
-		if(newParams != null && !newParams.empty) {
-			redirect(controller: 'dashboard', action: 'view', params: newParams)
+		def redirected = false
+		// we check if we need to redirect, but only when some of the high level filters are null
+		if (period != null && program != null && location != null) {
+			// building params for redirection checks
+			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id, 'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort()]
+			
+			// we check if we should redirect
+			def newParams = redirectIfDifferent(reportParams)
+			
+			if(newParams != null && !newParams.empty) {
+				redirected = true
+				redirect(controller: 'dashboard', action: 'view', params: newParams)
+			}
 		}
-		else {
+		
+		if (!redirected) {
 			def dashboard
 			if (dashboardEntity != null) {
 				dashboard = dashboardService.getDashboard(location, program, period, dataLocationTypes, false);
@@ -90,7 +96,7 @@ class DashboardController extends AbstractController {
 				dashboardEntity: dashboardEntity,
 				locationSkipLevels: locationSkipLevels			
 			]
-		}
+    	}
 	}
 	
 	def compare = {

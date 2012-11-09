@@ -59,17 +59,6 @@ class SurveyTableQuestion extends SurveyQuestion implements Exportable {
 		return QuestionType.TABLE;
 	}
 
-//	@Override
-//	public List<SurveyElement> getSurveyElements() {
-//		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
-//		for (SurveyTableRow row : getRows()) {
-//			for (SurveyTableColumn column : getColumns()) {
-//				if (row.getSurveyElements().get(column) != null) dataElements.add(row.getSurveyElements().get(column));
-//			}
-//		}
-//		return dataElements;
-//	}
-
 	@Override
 	public List<SurveyElement> getSurveyElements(DataLocationType type) {
 		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
