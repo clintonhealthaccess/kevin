@@ -64,9 +64,9 @@ import org.chai.kevin.value.Value;
  */
 public class Utils {
 	
-	public final static String DEFAULT_TYPE_CODE_DELIMITER = ";";
-	
 	public enum ReportType {MAP, TABLE};
+	
+	public final static String DEFAULT_TYPE_CODE_DELIMITER = ";";
 	
 	private final static String DATE_FORMAT = "dd-MM-yyyy";
 	private final static String DATE_FORMAT_TIME = "dd-MM-yyyy hh:mm:ss";
@@ -194,24 +194,6 @@ public class Utils {
 		list.clear();
 		list.addAll(set);
 		return list;
-	}
-	
-	public static Class<?> isExportable(Class<?> clazz){
-		Class<?> exportableClazz = null;		
-		boolean isAssignable = Exportable.class.isAssignableFrom(clazz);				
-		Class<?>[] clazzInterfaces = clazz.getInterfaces();							
-		if(isAssignable && Arrays.asList(clazzInterfaces).contains(Exportable.class)){
-			exportableClazz = clazz;
-		}
-		return exportableClazz;
-	}						
-	
-	public static Class<?> isExportablePrimitive(Class<?> clazz){
-		Class<?> exportableClazz = null;		
-		if(clazz.isPrimitive() || ClassUtils.wrapperToPrimitive(clazz) != null){
-			exportableClazz = clazz;
-		}
-		return exportableClazz;
 	}
 	
 	public static String formatExportCode(String code){

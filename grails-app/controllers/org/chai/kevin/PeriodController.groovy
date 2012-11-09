@@ -1,10 +1,8 @@
 package org.chai.kevin
 
-import org.chai.kevin.exports.DataExport;
-import org.chai.kevin.planning.Planning;
-import org.chai.kevin.survey.Survey;
-import org.chai.kevin.value.ValueService;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.chai.kevin.exports.DataExport
+import org.chai.kevin.planning.Planning
+import org.chai.kevin.survey.Survey
 
 class PeriodController extends AbstractEntityController  {
 
@@ -69,7 +67,7 @@ class PeriodController extends AbstractEntityController  {
 		else {
 			def exports = DataExport.withCriteria{periods {eq('id', entity.id)}}.each {export ->
 				export.removeFromPeriods(entity)
-				export.save()
+				export.save(validate: false)
 			}
 			
 			super.deleteEntity(entity)

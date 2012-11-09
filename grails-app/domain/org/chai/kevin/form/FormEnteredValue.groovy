@@ -23,8 +23,8 @@ class FormEnteredValue {
 		table 'dhsst_form_entered_value'
 		cache true
 		
-		formElement index: 'Value_Index', column: 'formElement'
-		dataLocation index: 'Value_Index', column: 'dataLocation'
+		formElement index: 'Form_Value_Index', column: 'formElement'
+		dataLocation index: 'Form_Value_Index', column: 'dataLocation'
 		valueString column: 'value', sqlType: 'text'
 		lastValueString column: 'last_value', sqlType: 'text'
 	}
