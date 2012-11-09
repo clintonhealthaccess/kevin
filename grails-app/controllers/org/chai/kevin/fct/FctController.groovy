@@ -30,6 +30,9 @@ class FctController extends AbstractController {
 	*/
 	public FctTarget getFctTarget(def program){
 		def fctTarget = null
+		
+		if (program == null) return null
+		
 		if(params.int('fctTarget') != null){
 			fctTarget = FctTarget.get(params.int('fctTarget'))
 			
@@ -69,24 +72,33 @@ class FctController extends AbstractController {
 		// skip levels
 		def locationSkipLevels = fctService.getSkipLocationLevels()
 		
-		// entire location tree to filter stuff that has no data for tree table
-		def locationTree = location.collectTreeWithDataLocations(locationSkipLevels, dataLocationTypes, false).asList()
-
-		// building params for redirection checks
-		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
-							'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 
-							'fctTarget':fctTarget?.id,
-							'reportType':reportType.toString().toLowerCase()]
-		
-		// we check if we should redirect
-		def newParams = redirectIfDifferent(reportParams)
-		if(newParams != null && !newParams.empty) redirect(controller: 'fct', action: 'view', params: newParams)
-		
-		else {
-			FctTable fctTable = null
-			if (fctTarget != null)		
-				fctTable = fctService.getFctTable(location, fctTarget, period, dataLocationTypes, reportType);
+		def redirected = false
+		// we check if we need to redirect, but only when some of the high level filters are null
+		if (period != null && program != null && location != null) {
 			
+			// building params for redirection checks
+			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,
+								'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 
+								'fctTarget':fctTarget?.id,
+								'reportType':reportType.toString().toLowerCase()]
+			
+			// we check if we should redirect
+			def newParams = redirectIfDifferent(reportParams)
+			if(newParams != null && !newParams.empty) redirect(controller: 'fct', action: 'view', params: newParams)
+		}
+		
+		if (!redirected) {
+			def fctTable = null
+			if (fctTarget != null) {	
+				fctTable = fctService.getFctTable(location, fctTarget, period, dataLocationTypes, reportType);
+			}	
+		
+			def locationTree = null
+			if (location != null) {	
+				// entire location tree to filter stuff that has no data for tree table
+				locationTree = location.collectTreeWithDataLocations(locationSkipLevels, dataLocationTypes, false).asList()
+			}
+				
 			if (log.isDebugEnabled()) log.debug('fct: '+fctTable+", root program: "+program+", root location: "+location)				
 			[
 				currentTarget: fctTarget,

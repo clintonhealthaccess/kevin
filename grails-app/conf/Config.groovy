@@ -117,6 +117,9 @@ environments {
 	test {
 		grails.mail.disabled = true
 	}
+	demo {
+		grails.mail.disabled = true
+	}
 }
 
 //RESOURCES
@@ -141,6 +144,13 @@ environments {
 		grails.resources.processing.enabled = false
 		grails.resources.mappers.yuicssminify.disable=true
 		grails.resources.mappers.yuijsminify.disable=true
+	}
+	demo {
+		grails.serverURL = 'http://kevin.cloudfoundry.com'
+		grails.resources.cdn.enabled = false
+		grails.resources.processing.enabled = false
+		grails.resources.mappers.yuicssminify.disable = false
+		grails.resources.mappers.yuijsminify.disable = false
 	}
 }
 
@@ -211,13 +221,18 @@ log4j = {
 environments {
 	test {
 		log4j = {
-			root {
-				error
-			}
+			rootLogger="error,stdout"
 			
 			off 'ExpressionLog'
 		}
 	}
+//	demo {
+//		log4j = {
+//			rootLogger="error,stdout"
+//			
+//			off 'ExpressionLog'
+//		}
+//	}
 }
 
 /**
@@ -228,30 +243,37 @@ google.analytics.webPropertyID = "UA-xxxxxx-x"
 // internationalization
 i18nFields {
 	locales = ["en","fr"]
+	withlocale.disabled = true
 }
-site.fallback.language="en"
 
+site.fallback.language="en"
 site.entity.list.max=40
-site.period=0
+
 site.admin.email="admin@dhsst.org"
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
+site.tagline.en="Ministry of Health"
+site.tagline.fr="Ministère de la santé"
+site.bugtracker.url = "#"
+environments {
+	development {
+		site.icon="http://localhost:8080/kevin/images/apple-touch-icon.png"
+	}
+	demo {
+		site.icon="http://kevin.cloudfoundry.com/images/apple-touch-icon.png"
+	}
+}
 
-// TODO externalize config
+// TODO put in database on datalocation and period
 site.datalocationtype.checked=["district_hospital","health_center"]
-report.skip.levels=["sector"]
 
+report.skip.levels=["sector"]
 dashboard.skip.levels=[]
 fct.skip.levels=[]
 dsr.skip.levels=[]
 dsr.view.map.skip.levels=["country", "province"]
-
 survey.skip.levels=["sector"]
-survey.submit.skip.levels=["country", "province"]
 survey.export.skip.levels=["country", "sector"]
-
-info.group.level="district"
-dsr.group.level="district"
 
 task.temp.folder='files/'
 

@@ -166,6 +166,7 @@ public class CalculationExportService extends ExportService {
 		headers.add(ImportExportConstant.DATA_CLASS);
 		headers.add(ImportExportConstant.DATA_CODE);
 		headers.add(ImportExportConstant.DATA_VALUE);
+		headers.add(ImportExportConstant.DATA_VALUE_ADDRESS);
 		return headers;
 	}
 

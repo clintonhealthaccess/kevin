@@ -11,6 +11,18 @@ class FctControllerSpec extends FctIntegrationTests {
 
 	def fctController
 	
+	def "view fct with nothing"() {
+		setup:
+		fctController = new FctController()
+		
+		when:
+		def model = fctController.view()
+		
+		then:
+		fctController.response.redirectedUrl == null
+		model.fctTable == null
+	}
+	
 	def "get fct"() {
 		setup:
 		setupLocationTree()

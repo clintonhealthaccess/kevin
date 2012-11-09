@@ -18,6 +18,12 @@
 			<g:datePicker name="endDate" value="${period.endDate}" precision="day"  years="${Calendar.getInstance().get(Calendar.YEAR)+10..1990}"/>
 			<div class="error-list"><g:renderErrors bean="${period}" field="endDate" /></div>
 		</div>
+		
+		<div class="row">
+			<label><g:message code="period.defaultselected.label"/></label>
+			<g:checkBox name="defaultSelected" value="${period.defaultSelected}" />
+		</div>
+		
 		<g:if test="${period.id != null}">
 			<input type="hidden" name="id" value="${period.id}"></input>
 		</g:if>

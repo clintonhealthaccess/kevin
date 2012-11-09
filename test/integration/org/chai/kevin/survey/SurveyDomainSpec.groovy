@@ -264,4 +264,44 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		SurveySkipRule.count() == 0
 	}
 	
+	def "delete survey skip rule does not delete skipped questions"() {
+		setup:
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def element = newSurveyElement(question, dataElement)
+		def skipRule = newSurveySkipRule(CODE(1), survey, "true", [:], [question])
+		
+		when:
+		skipRule.delete()
+		survey.removeFromSkipRules(skipRule)
+		
+		then:
+		SurveySkipRule.count() == 0
+		SurveyQuestion.count() == 1
+	}
+	
+	def "delete validation rule does not delete form element"() {
+		setup:
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def element = newSurveyElement(question, dataElement)
+		def validationRule = newFormValidationRule(CODE(1), element, "", [(DISTRICT_HOSPITAL_GROUP)], "true", [])
+		
+		when:
+		validationRule.delete()
+		element.removeFromValidationRules(validationRule)
+		
+		then:
+		FormValidationRule.count() == 0
+		SurveyElement.count() == 1
+	}
+	
 }

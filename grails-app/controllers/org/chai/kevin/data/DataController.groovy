@@ -105,11 +105,12 @@ class DataController extends AbstractController {
 	def deleteValues = {
 		def data = dataService.getData(params.int('data'), Data.class)
 		def location = CalculationLocation.get(params.int('location'))
-		if (data == null && location == null) {
+		def period = Period.get(params.int('period'))
+		if (data == null && location == null && period == null) {
 			response.sendError(404)
 		}
 		else {
-			valueService.deleteValues(data, location, null)
+			valueService.deleteValues(data, location, period)
 			
 			if (data != null) {
 				data.setLastValueChanged(new Date())

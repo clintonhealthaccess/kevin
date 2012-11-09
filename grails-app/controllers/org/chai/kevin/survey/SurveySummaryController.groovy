@@ -47,7 +47,6 @@ class SurveySummaryController extends AbstractController {
 		}
 
 		def locationSkipLevels = surveyPageService.getSkipLocationLevels()
-		def submitSkipLevels = surveyPageService.getSkipSubmitLevels()
 		
 		if (summaryPage != null) summaryPage.sort(params.sort, params.order, languageService.currentLanguage)
 			
@@ -61,7 +60,6 @@ class SurveySummaryController extends AbstractController {
 			surveys: Survey.list(),
 			template: template,
 			locationSkipLevels: locationSkipLevels,
-			submitSkipLevels: submitSkipLevels
 		])
 	}
 

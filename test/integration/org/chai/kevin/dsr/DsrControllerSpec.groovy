@@ -11,6 +11,19 @@ class DsrControllerSpec extends DsrIntegrationTests {
 
 	def dsrController
 	
+	def "view dashboard with nothing"() {
+		setup:
+		dsrController = new DsrController()
+		
+		when:
+		def model = dsrController.view()
+		
+		then:
+		dsrController.response.redirectedUrl == null
+		model.dsrTable == null
+	}
+
+	
 	def "get dsr for table"() {
 		setup:
 		setupLocationTree()
