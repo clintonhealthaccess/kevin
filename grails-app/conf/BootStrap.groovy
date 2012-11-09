@@ -32,6 +32,7 @@ import org.chai.task.Progress;
 */
 
 import org.chai.init.DataInitializer;
+import org.chai.init.ExportInitializer;
 import org.chai.init.ReportInitializer;
 import org.chai.init.StructureInitializer;
 import org.chai.init.SurveyInitializer;
@@ -117,21 +118,9 @@ class BootStrap {
 				surveyAllReadonly.save()
 			}
 			
-//			if (User.findByUsername('admin') == null) {
-//				def user = new User(username: "admin", passwordHash: new Sha256Hash("123admin!").toHex())
-//				user.addToPermissions("*")
-//				user.save()
-//			}
-			
-//			if (User.findByUsername('dhsst') == null) {
-//				def user = new User(username: "dhsst", passwordHash: new Sha256Hash("123chai!").toHex())
-////				user.addToRoles(Role.findByName('survey-all-readonly'))
-//				user.addToRoles(Role.findByName('reports-all-readonly'))
-//				user.save()
-//			}
-			
 			break;
 		case "development":
+		case "demo":
 			// we initialize the structure
 			StructureInitializer.createLocationLevels()
 			StructureInitializer.createDataLocationTypes()
@@ -172,16 +161,8 @@ class BootStrap {
 			// refresh
 			surveyPageService.refresh(Location.findByCode('rwanda'), Survey.findByCode('survey_period2'), false, true, null);
 			
-//			Initializer.createDummyStructure();
-//			Initializer.createUsers();
-//			Initializer.createDataElementsAndExpressions();
-//			Initializer.createDashboard();
-//			Initializer.createDsr();
-//			Initializer.createFct();
-//			Initializer.createQuestionaire();
-//			Initializer.createPlanning();
-//			Initializer.createDataElementExport();
-//			Initializer.createCalculationExport();
+			// exports
+			ExportInitializer.createDataElementExports()
 			
 			break;
 		}

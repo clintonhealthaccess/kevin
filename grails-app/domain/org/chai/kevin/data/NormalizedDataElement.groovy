@@ -49,7 +49,7 @@ class NormalizedDataElement extends DataElement<NormalizedDataElementValue> {
 	
 	static mapping = {
 		table 'dhsst_data_normalized_element'
-		refreshed sqlType: "datetime"
+//		refreshed sqlType: "datetime"
 		expressionMapString sqlType: 'text'
 	}
 	

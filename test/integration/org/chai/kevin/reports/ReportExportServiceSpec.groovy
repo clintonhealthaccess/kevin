@@ -58,28 +58,13 @@ class ReportExportServiceSpec extends ReportIntegrationTests {
 		zipFile.length() > 0
 		
 		when:
-		String headers = null
-		String exportData1 = null
-		String exportData2 = null
-		String exportData3 = null
-		try {
-			FileInputStream fis = new FileInputStream(csvFile);
-			BufferedReader d = new BufferedReader(new InputStreamReader(fis));
-			headers = d.readLine();
-			exportData1 = d.readLine();
-			exportData2 = d.readLine();
-			exportData3 = d.readLine();
-			fis.close();
-			d.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		def lines = IntegrationTests.readLines(csvFile)
 		  
 		then:
-		headers == "Location,Target"
-		exportData1 == "Rwanda-North-Burera,N/A"
-		exportData2 == "Rwanda-North-Burera-Butaro DH,50"
-		exportData3 == "Rwanda-North-Burera-Kivuye HC,30"
+		lines[0] == "Location,Target"
+		lines[1] == "Rwanda-North-Burera,N/A"
+		lines[2] == "Rwanda-North-Burera-Butaro DH,50"
+		lines[3] == "Rwanda-North-Burera-Kivuye HC,30"
 	}
 	
 	def "test for get fct zip file"(){
@@ -114,31 +99,14 @@ class ReportExportServiceSpec extends ReportIntegrationTests {
 		zipFile.length() > 0
 		
 		when:
-		String headers = null
-		String exportData1 = null
-		String exportData2 = null
-		String exportData3 = null
-		String exportData4 = null
-		try {
-			FileInputStream fis = new FileInputStream(csvFile);
-			BufferedReader d = new BufferedReader(new InputStreamReader(fis));
-			headers = d.readLine();
-			exportData1 = d.readLine();
-			exportData2 = d.readLine();
-			exportData3 = d.readLine();
-			exportData4 = d.readLine();
-			fis.close();
-			d.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		def lines = IntegrationTests.readLines(csvFile)
 		  
 		then:
-		headers == "Location,Option"
-		exportData1 == "Rwanda-North,2"
-		exportData2 == "Rwanda-North-Burera,2"
-		exportData3 == "Rwanda-North-Burera-Butaro DH,1"
-		exportData4 == "Rwanda-North-Burera-Kivuye HC,1"
+		lines[0] == "Location,Option"
+		lines[1] == "Rwanda-North,2"
+		lines[2] == "Rwanda-North-Burera,2"
+		lines[3] == "Rwanda-North-Burera-Butaro DH,1"
+		lines[4] == "Rwanda-North-Burera-Kivuye HC,1"
 		
 	}
 	

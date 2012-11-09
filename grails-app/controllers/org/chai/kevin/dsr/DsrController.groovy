@@ -57,7 +57,9 @@ class DsrController extends AbstractController {
 	 */
 	public DsrTargetCategory getDsrTargetCategory(def program){
 		DsrTargetCategory dsrTargetCategory = null
-			
+		
+		if (program == null) return null	
+		
 		if(params.int('dsrCategory') != null){
 			dsrTargetCategory = DsrTargetCategory.get(params.int('dsrCategory'))
 			if (log.debugEnabled) log.debug('found DsrTargetCategory in params: '+dsrTargetCategory)
@@ -147,29 +149,39 @@ class DsrController extends AbstractController {
 		def mapSkipLevels = dsrService.getSkipViewLevels(reportType)
 		def locationSkipLevels = dsrService.getSkipLocationLevels()
 		
-		// entire location tree to filter stuff that has no data for tree table
-		def locationTree = location.collectTreeWithDataLocations(locationSkipLevels, dataLocationTypes, false).asList()
-		
-		// building params for redirection checks
-		def reportParams = ['period':period.id, 'program':program.id, 'location':location.id, 
-							'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 							
-							'dsrCategory':dsrCategory?.id,							
-							'reportType':reportType.toString().toLowerCase()]
-		
-		// this is for maps, we add the selected indicators 
-		if(dsrIndicators != null) reportParams['indicators'] = dsrIndicators.collect{ it.id }
-		
-		// we check if we should redirect
-		def newParams = redirectIfDifferent(reportParams)
-		
-		if(newParams != null && !newParams.empty) {
-			redirect(action: 'view', params: newParams)
-		}
-		else {
-			def dsrTable = null
-			if (dsrCategory != null)
-				dsrTable = dsrService.getDsrTable(location, period, dataLocationTypes, dsrCategory, reportType);			
+		def redirected = false
+		// we check if we need to redirect, but only when some of the high level filters are null
+		if (period != null && program != null && location != null) {
+			// building params for redirection checks
+			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id, 
+								'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 							
+								'dsrCategory':dsrCategory?.id,							
+								'reportType':reportType.toString().toLowerCase()]
 			
+			// this is for maps, we add the selected indicators 
+			if(dsrIndicators != null) reportParams['indicators'] = dsrIndicators.collect{ it.id }
+			
+			// we check if we should redirect
+			def newParams = redirectIfDifferent(reportParams)
+			
+			if(newParams != null && !newParams.empty) {
+				redirected = true
+				redirect(action: 'view', params: newParams)
+			}
+		}
+		
+		if (!redirected) {
+			def dsrTable = null
+			if (dsrCategory != null) {
+				dsrTable = dsrService.getDsrTable(location, period, dataLocationTypes, dsrCategory, reportType);
+			}			
+		
+			def locationTree = null
+			if (location != null) {	
+				// entire location tree to filter stuff that has no data for tree table
+				locationTree = location.collectTreeWithDataLocations(locationSkipLevels, dataLocationTypes, false).asList()
+			}
+		
 			if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+" root program: "+program+", root location: "+location)
 			
 			[

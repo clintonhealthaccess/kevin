@@ -37,6 +37,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 class SurveyController extends AbstractEntityController {
 	
 	def surveyCopyService
+	def surveyService
 	
 	def getEntity(def id) {
 		return Survey.get(id)
@@ -77,6 +78,10 @@ class SurveyController extends AbstractEntityController {
 
 	def getEntityClass(){
 		return Survey.class;
+	}
+	
+	def deleteEntity(def entity) {
+		surveyService.deleteSurvey(entity)
 	}
 	
 	def bindParams(def entity) {

@@ -87,8 +87,8 @@ public class StructureInitializer {
 	static def createPeriods() {
 		if (!Period.count()) {
 			// periods
-			new Period(code:"period1", startDate: getDate( 2005, 3, 1 ), endDate: getDate( 2005, 3, 31 )).save(failOnError: true)
-			new Period(code:"period2", startDate: getDate( 2006, 3, 1 ), endDate: getDate( 2006, 3, 31 )).save(failOnError: true)
+			new Period(code:"period1", startDate: getDate( 2005, 3, 1 ), endDate: getDate( 2005, 3, 31 ), defaultSelected: false).save(failOnError: true)
+			new Period(code:"period2", startDate: getDate( 2006, 3, 1 ), endDate: getDate( 2006, 3, 31 ), defaultSelected: true).save(failOnError: true)
 		}
 	}
 

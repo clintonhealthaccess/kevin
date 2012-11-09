@@ -108,7 +108,7 @@ public class SurveyExportService {
 		
 		headers.add(SURVEY_HEADER);		
 		for(LocationLevel level : getLevels()){
-			headers.add(Utils.noNull(level.getNames()));
+			headers.add(level.getCode());
 		}
 		headers.add(DATA_LOCATION_HEADER);
 		headers.add(DATA_LOCATION_TYPE_HEADER);

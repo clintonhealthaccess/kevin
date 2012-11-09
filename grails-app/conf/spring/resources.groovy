@@ -67,9 +67,7 @@ Set<String> dsrSkipLevels = config.dsr.skip.levels
 Set<String> dsrViewMapSkipLevels = config.dsr.view.map.skip.levels
 Set<String> fctSkipLevels = config.fct.skip.levels
 Set<String> surveySkipLevels = config.survey.skip.levels
-Set<String> surveySubmitSkipLevels = config.survey.submit.skip.levels
 Set<String> surveyExportSkipLevels = config.survey.export.skip.levels
-String dsrGroupLevel= config.dsr.group.level
 
 beans = {
 	
@@ -117,7 +115,6 @@ beans = {
 		transactionManager = ref("transactionManager")
 		sessionFactory = ref("sessionFactory")
 		locationSkipLevels = surveySkipLevels
-		submitSkipLevels = surveySubmitSkipLevels
 	}
 	
 	summaryService(SummaryService){

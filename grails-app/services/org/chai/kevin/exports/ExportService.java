@@ -32,13 +32,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.chai.kevin.LanguageService;
-import org.chai.location.LocationService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueVisitor;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
+import org.chai.location.LocationService;
 import org.hibernate.SessionFactory;
 
 /**

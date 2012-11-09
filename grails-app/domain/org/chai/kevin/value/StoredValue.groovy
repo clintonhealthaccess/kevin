@@ -66,7 +66,7 @@ abstract class StoredValue implements DataValue {
 		location index: 'Value_Index'
 		
 		valueString sqlType: 'text'
-		timestamp sqlType: "datetime"
+//		timestamp sqlType: "datetime"
 	}
 	
 	static constraints = {

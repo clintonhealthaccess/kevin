@@ -49,6 +49,7 @@ class SurveyTableColumn implements Exportable {
 	
 	static i18nFields = ['names']
 	
+	static hasMany = [surveyTableRowColumnMaps: SurveyTableRowColumnMap]
 	static belongsTo = [question: SurveyTableQuestion]
 	
 	static mapping = {

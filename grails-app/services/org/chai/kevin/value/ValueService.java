@@ -183,10 +183,16 @@ public class ValueService {
 		.add(Restrictions.in("type", types)).list();
 	}
 	
-	@Transactional(readOnly=true)
 	public Long getNumberOfValues(Data<?> data, Period period) {
 		return (Long)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
 		.add(Restrictions.eq("data", data))
+		.add(Restrictions.eq("period", period))
+		.setProjection(Projections.count("id"))
+		.uniqueResult();
+	}
+	
+	public Long getNumberOfValues(Period period) {
+		return (Long)sessionFactory.getCurrentSession().createCriteria(StoredValue.class)
 		.add(Restrictions.eq("period", period))
 		.setProjection(Projections.count("id"))
 		.uniqueResult();

@@ -56,8 +56,8 @@ abstract class Data<T extends DataValue> {
 	static mapping = {
 		table 'dhsst_data'
 		tablePerHierarchy false
-		timestamp sqlType: "datetime"
-		lastValueChanged sqlType: "datetime"
+//		timestamp sqlType: "datetime"
+//		lastValueChanged sqlType: "datetime"
 		code unique: true
 		cache true
 	}

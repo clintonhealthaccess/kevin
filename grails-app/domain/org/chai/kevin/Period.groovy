@@ -11,6 +11,7 @@ class Period implements Exportable {
 	String code;
 	Date startDate;
 	Date endDate;
+	Boolean defaultSelected
 
 	// deprecated
 	Long id;
@@ -18,8 +19,8 @@ class Period implements Exportable {
 	static mapping = {
 		table 'dhsst_period'
 		cache true
-		startDate sqlType: "datetime"
-		endDate sqlType: "datetime"
+//		startDate sqlType: "datetime"
+//		endDate sqlType: "datetime"
 	}
 	
 	static constraints =  {
@@ -28,6 +29,7 @@ class Period implements Exportable {
 		endDate(nullable: false, blank: false, validator: { val, obj ->
 			if (obj.startDate && val) return val?.after(obj.startDate)
 		})
+		defaultSelected (nullable: false)
 	}
 
 	

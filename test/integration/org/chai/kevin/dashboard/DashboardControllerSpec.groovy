@@ -12,6 +12,18 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 
 	def dashboardController
 	
+	def "view dashboard with nothing"() {
+		setup:
+		dashboardController = new DashboardController()
+		
+		when:
+		def model = dashboardController.view()
+		
+		then:
+		dashboardController.response.redirectedUrl == null
+		model.dashboard == null
+	}
+	
 	def "get dashboard"() {
 		setup:
 		def period = newPeriod()

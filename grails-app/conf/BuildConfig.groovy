@@ -89,6 +89,8 @@ grails.project.dependency.resolution = {
 		compile 'net.sf.ezmorph:ezmorph:1.0.6'
 		
         runtime 'mysql:mysql-connector-java:5.1.13'
+		// for heroku support
+		runtime 'postgresql:postgresql:8.4-702.jdbc3'
 		
 		test "org.codehaus.geb:geb-spock:0.7.2"
 		test("org.seleniumhq.selenium:selenium-support:2.25.0")
@@ -106,7 +108,6 @@ grails.project.dependency.resolution = {
 		build ":tomcat:$grailsVersion"
 		
 		compile ":hibernate:$grailsVersion"
-		compile ":i18n-fields:0.6.1-CHAI"
 		compile ":jquery:1.7.1"
 		compile ":resources:1.2-RC1"
 		compile ":shiro:1.1.5"
@@ -123,9 +124,13 @@ grails.project.dependency.resolution = {
 		compile ":build-info-tag:0.3.1"
 		compile ":yui-minify-resources:0.1.5"
 		compile ":rabbitmq-tasks:0.5.3-SNAPSHOT"
-		compile ':cloud-foundry:1.2.3'
-		compile ':chai-locations:0.4.1-CHAI'
+		compile ":i18n-fields:0.6.3-CHAI"
+		compile ':chai-locations:0.4.2-CHAI'
 		
+		// cloud foundry support
+		compile ":cloud-foundry:1.2.3"
+		
+		// tests
 		test ":geb:0.7.2"
 		test ":spock:0.6"
 	}

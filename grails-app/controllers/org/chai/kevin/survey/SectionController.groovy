@@ -36,7 +36,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
  */
 class SectionController extends AbstractEntityController {
 
-	def locationService
+	def surveyService
 	
 	def getEntity(def id) {
 		return SurveySection.get(id)
@@ -70,6 +70,9 @@ class SectionController extends AbstractEntityController {
 		entity.properties = params
 	}
 	
+	def deleteEntity(def entity) {
+		surveyService.deleteSection(entity)
+	}
 	
 	def list = {
 		adaptParamsForList()

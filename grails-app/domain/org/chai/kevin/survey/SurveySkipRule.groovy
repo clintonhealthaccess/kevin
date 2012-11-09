@@ -18,7 +18,7 @@ class SurveySkipRule extends FormSkipRule {
 			name: 'dhsst_survey_skipped_survey_questions',
 			key: 'dhsst_survey_skip_rule',
 			column: 'skippedSurveyQuestions'
-		]
+		], cascade: 'save-update'
 		survey column: 'survey'
 	}
 	

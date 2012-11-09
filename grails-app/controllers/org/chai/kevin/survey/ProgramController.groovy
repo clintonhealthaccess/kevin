@@ -37,8 +37,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
  */
 class ProgramController extends AbstractEntityController {
 
-	def languageService
-	def locationService
+	def surveyService
 	
 	def getEntity(def id) {
 		return SurveyProgram.get(id)
@@ -65,6 +64,10 @@ class ProgramController extends AbstractEntityController {
 
 	def getEntityClass(){
 		return SurveyProgram.class;
+	}
+	
+	def deleteEntity(def entity) {
+		surveyService.deleteProgram(entity)
 	}
 	
 	def bindParams(def entity) {
