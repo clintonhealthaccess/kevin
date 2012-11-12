@@ -109,8 +109,8 @@ public class StructureInitializer {
 	
 	static def createDataLocationTypes() {
 		if (!DataLocationType.count()) {
-			new DataLocationType(code: 'health_center', names_en: "Health Center").save(failOnError: true)
-			new DataLocationType(code: 'district_hospital', names_en: "District Hospital").save(failOnError: true)
+			new DataLocationType(code: 'health_center', names_en: "Health Center", defaultSelected: true).save(failOnError: true)
+			new DataLocationType(code: 'district_hospital', names_en: "District Hospital", defaultSelected: true).save(failOnError: true)
 		}
 	}
 	

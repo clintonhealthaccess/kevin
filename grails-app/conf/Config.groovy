@@ -245,13 +245,14 @@ i18nFields {
 	locales = ["en","fr"]
 	withlocale.disabled = true
 }
-
 site.fallback.language="en"
+
 site.entity.list.max=40
 
 site.admin.email="admin@dhsst.org"
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
+
 site.tagline.en="Ministry of Health"
 site.tagline.fr="Ministère de la santé"
 site.bugtracker.url = "#"
@@ -263,9 +264,6 @@ environments {
 		site.icon="http://kevin.cloudfoundry.com/images/apple-touch-icon.png"
 	}
 }
-
-// TODO put in database on datalocation and period
-site.datalocationtype.checked=["district_hospital","health_center"]
 
 report.skip.levels=["sector"]
 dashboard.skip.levels=[]
