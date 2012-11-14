@@ -72,7 +72,7 @@ public class RefreshValueService {
 		Set<Data> dependencySet = new HashSet<Data>();
 		collectOrderedDependencies(normalizedDataElement, dependencySet, NormalizedDataElement.class);
 		removeNulls(dependencySet);
-		progress.setMaximum(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class));
+		if(progress != null) progress.setMaximum(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class));
 		
 		List<NormalizedDataElement> uptodateElements = refreshNormalizedDataElementWithoutSettingProgress(normalizedDataElement, progress);
 		return uptodateElements;
@@ -134,7 +134,7 @@ public class RefreshValueService {
 			}
 			
 			else {
-				progress.incrementProgress(periodService.listPeriods().size() * countLocations(DataLocation.class));
+				if(progress != null) progress.incrementProgress(periodService.listPeriods().size() * countLocations(DataLocation.class));
 			}
 			
 			return normalizedDataElement.getLastValueChanged();
@@ -225,7 +225,7 @@ public class RefreshValueService {
 					
 					// TODO improve performance by getting all values at the same time
 					updateNormalizedDataElementValue(newNormalizedDataElement, dataLocation, period);
-					progress.incrementProgress();
+					if(progress != null) progress.incrementProgress();
 				}
 				
 				updateSources(newNormalizedDataElement);
@@ -335,15 +335,20 @@ public class RefreshValueService {
 		}
 		removeNulls(dataElementDependencySet);
 		if (log.isDebugEnabled()) log.debug("dependencies of normalized data elements size: " + dataElementDependencySet.size());
-	
-		progress.setMaximum(
-			// all dependencies of NDEs
-			(dataElementDependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
-			// all dependent NDEs of calculations
-			(calculationDependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
-			// all calculations
-			(periodService.listPeriods().size() * countLocations(CalculationLocation.class)) * calculations.size()
-		);
+		
+		if(progress != null){
+			progress.setMaximum(
+					// all dependencies of NDEs
+					(dataElementDependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
+					// all dependent NDEs of calculations
+					(calculationDependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
+					// all calculations
+					(periodService.listPeriods().size() * countLocations(CalculationLocation.class)) * calculations.size()
+				);	
+		}
+		else{
+			//TODO
+		}
 		
 		// refresh normalized data elements
 		while (!normalizedDataElements.isEmpty()) {
@@ -366,12 +371,17 @@ public class RefreshValueService {
 		collectOrderedDependencies(calculation, dependencySet, NormalizedDataElement.class);
 		dependencySet.remove(calculation);
 		removeNulls(dependencySet);
-		progress.setMaximum(
-			// all dependent NDEs
-			(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
-			// the calculation itself
-			(periodService.listPeriods().size() * countLocations(CalculationLocation.class))
-		);
+		if(progress != null){
+			progress.setMaximum(
+					// all dependent NDEs
+					(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
+					// the calculation itself
+					(periodService.listPeriods().size() * countLocations(CalculationLocation.class))
+				);	
+		}
+		else{
+			//TODO
+		}
 		
 		refreshCalculationWithoutSettingProgress(calculation, progress);
 	}
@@ -407,7 +417,7 @@ public class RefreshValueService {
 		}
 		
 		else {
-			progress.incrementProgress(periodService.listPeriods().size() * countLocations(CalculationLocation.class));
+			if(progress != null) progress.incrementProgress(periodService.listPeriods().size() * countLocations(CalculationLocation.class));
 		}
 	}
 	
@@ -436,7 +446,7 @@ public class RefreshValueService {
 					
 					// TODO improve performance by getting all values at the same time
 					updateCalculationPartialValues(newCalculation, location, period);
-					progress.incrementProgress();
+					if(progress != null) progress.incrementProgress();
 				}
 				
 				updateSources(newCalculation);

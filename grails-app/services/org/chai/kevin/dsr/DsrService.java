@@ -15,7 +15,9 @@ import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
+import org.chai.kevin.data.Mode;
 import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.data.Sum;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -25,6 +27,7 @@ import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.util.Utils.ReportType;
 import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.ModeValue;
 import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
@@ -102,17 +105,23 @@ public class DsrService {
 		Value value = null;
 		DataValue dataValue = valueService.getDataElementValue(dataElement, dataLocation, period);
 		if (dataValue != null) value = dataValue.getValue();
-		
 		return value;
 	}
 	
 	private Value getDsrValue(DsrTarget target, Calculation calculation, CalculationLocation location, Period period, Set<DataLocationType> types) {
 		Value value = null;
-		SumValue calculationValue = (SumValue) valueService.getCalculationValue(calculation, location, period, types);
-		if(calculationValue != null){
-			if(target.getAverage() != null && target.getAverage()) value = calculationValue.getAverage();
-			else value = calculationValue.getValue();
+		if(calculation instanceof Mode){
+			ModeValue calculationValue = (ModeValue) valueService.getCalculationValue(calculation, location, period, types);
+			if(calculationValue != null) value = calculationValue.getValue();
 		}
+		else if(calculation instanceof Sum){
+			SumValue calculationValue = (SumValue) valueService.getCalculationValue(calculation, location, period, types);
+			if(calculationValue != null){
+				if(target.getAverage() != null && target.getAverage()) value = calculationValue.getAverage();
+				else value = calculationValue.getValue();
+			}	
+		}
+		if (log.isDebugEnabled())  log.debug("getDsrValue(calculationValue="+value+")");
 		return value;
 	}
 	

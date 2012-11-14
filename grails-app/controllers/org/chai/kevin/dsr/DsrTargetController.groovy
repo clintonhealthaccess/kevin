@@ -98,6 +98,7 @@ class DsrTargetController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
+		//TODO add data & data type to allowedTypes
 		List<DsrTarget> targets = dataService.searchData(DsrTarget.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[

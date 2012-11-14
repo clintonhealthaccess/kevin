@@ -44,6 +44,7 @@ import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Mode
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
@@ -64,6 +65,7 @@ import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.CalculationPartialValue
+import org.chai.kevin.value.ModePartialValue
 import org.chai.kevin.value.RawDataElementValue
 import org.chai.kevin.value.NormalizedDataElementValue
 import org.chai.kevin.value.SumPartialValue;
@@ -271,6 +273,14 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new SumPartialValue(data: sum, period: period, location: location, type: type, numberOfDataLocations:0, value: value).save(failOnError: true)
 	}
 	
+	static ModePartialValue newModePartialValue(def mode, def period, def location, def type, def modeMap, def value) {
+		return new ModePartialValue(data: mode, period: period, location: location, type: type, modeMap: modeMap, value: value).save(failOnError: true)
+	}
+	
+	static ModePartialValue newModePartialValue(def mode, def period, def location, def type, def value) {
+		return new ModePartialValue(data: mode, period: period, location: location, type: type, modeMap:null, value: value).save(failOnError: true)
+	}
+	
 	static RawDataElement newRawDataElement(def code, def type) {
 		return newRawDataElement(j([:]), code, type)
 	}
@@ -337,6 +347,18 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return newSum([:], expression, code)
 	}
 	
+	static def newMode(String expression, def code) {
+		return newMode([:], expression, code)
+	}
+	
+	static Mode newMode(def names, def expression, def code) {
+		return new Mode(names: names, expression: expression, code: code).save(failOnError: true, flush: true)
+	}
+
+	static Mode newMode(def expression, def code) {
+		return newMode([:], expression, code)
+	}
+		
 	static Enum newEnume(def code) {
 		return new Enum(code: code).save(failOnError: true, flush: true)
 	}

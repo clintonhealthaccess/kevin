@@ -13,6 +13,7 @@
 	    <mapping class="org.chai.kevin.data.Calculation" />
 	    <mapping class="org.chai.kevin.data.Aggregation" />
 	    <mapping class="org.chai.kevin.data.Sum" />
+	    <mapping class="org.chai.kevin.data.Mode" />
 	    <mapping class="org.chai.kevin.data.RawDataElement" />
 	    <mapping class="org.chai.kevin.data.Enum" />
 	    <mapping class="org.chai.kevin.data.EnumOption" />
@@ -21,6 +22,7 @@
 	    <mapping class="org.chai.kevin.value.NormalizedDataElementValue" />
 	    <mapping class="org.chai.kevin.value.AggregationPartialValue" />
 	    <mapping class="org.chai.kevin.value.SumPartialValue" />
+	    <mapping class="org.chai.kevin.value.ModePartialValue" />
 	    
 	    <mapping class="org.chai.kevin.reports.ReportProgram" />	
 	    <mapping class="org.chai.kevin.dsr.DsrTarget"/>	

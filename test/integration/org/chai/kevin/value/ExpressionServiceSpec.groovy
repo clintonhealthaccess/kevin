@@ -228,7 +228,51 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		result.size() == 2
 		s(result*.value).equals(s([v("2"), v("1")]))
 	}
-	
+
+	def "test mode calculation"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"2",(HEALTH_CENTER_GROUP):"1"]]))
+		def mode = newMode("\$"+normalizedDataElement.id, CODE(2))
+		def result = null
+		refreshNormalizedDataElement()
+		
+		when:
+		result = expressionService.calculatePartialValues(mode, DataLocation.findByCode(BUTARO), period)
+		
+		then:
+		result.size() == 1
+		result*.value.equals([v("2")])
+
+		when:
+		result = expressionService.calculatePartialValues(mode, Location.findByCode(BURERA), period)
+		
+		then:
+		result.size() == 2
+		result*.value.equals([v("2"), , v("1")])
+		
+		when:
+		result = expressionService.calculatePartialValues(mode, Location.findByCode(NORTH), period)
+		
+		then:
+		result.size() == 2
+		result*.value.equals([v("2"), v("1")])
+		
+		when:
+		def burera = Location.findByCode(BURERA)
+		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
+		newDataLocation("dummy", burera, dh)
+		normalizedDataElement.timestamp = new Date()
+		normalizedDataElement.save(failOnError: true)
+		refreshNormalizedDataElement()
+		result = expressionService.calculatePartialValues(sum, Location.findByCode(BURERA), period)
+		
+		then:
+		result.size() == 2
+		s(result*.value).equals(s([v("2"), v("1")]))
+	}
+		
 	def "test calculation with missing value"() {
 		setup:
 		setupLocationTree()

@@ -1,4 +1,8 @@
-/**
+package org.chai.kevin
+
+import org.chai.kevin.value.RefreshValueService
+
+/*
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -13,7 +17,7 @@
  *     * Neither the name of the <organization> nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,60 +29,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.data
 
-import org.chai.kevin.AbstractController;
-import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.util.Utils
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-
-/**
- * @author Jean Kahigiso M.
- *
- */
-class CalculationController extends AbstractController {
-
-	def dataService
+class RefreshController {
+	
+	def refreshValueService
 	
 	def index = {
-		redirect (action: "list", params: params)
+		if (log.isDebugEnabled()) log.debug("refresh.index, params:"+params)
+		redirect (action: 'view', params: params)
 	}
 	
-	def getLabel() {
-		return "calculation.label"
+	def view = {
+		refreshValueService.refreshAll(null)
+		refreshValueService.flushCaches()
 	}
-	
-	def Class getEntityClass(){
-		return Calculation.class;
-//		return [Aggregation.class, Sum.class];
-	}
-	
-	def search = {
-		adaptParamsForList()
-		
-		List<Calculation> calculations = dataService.searchData(Calculation.class, params['q'], [], params);
-		
-		render (view: '/entity/list', model:[
-			entities: calculations,
-			entityCount: dataService.countData(Calculation.class, params['q'], []),
-			entityClass: getEntityClass(),
-			template: "data/calculationList",
-			code: getLabel(),
-			search: true
-		])
-	}
-	
-	def list = {
-		adaptParamsForList()
-		List<Calculation<?>> calculations = dataService.list(Calculation.class, params)
-		
-		render (view: '/entity/list', model:[
-			entities: calculations,
-			template: "data/calculationList",
-			entityCount: dataService.count(Calculation.class),
-			code: 'calculation.label',
-			addTemplate: '/entity/data/addCalculation'
-		])
-	}
-	
 }

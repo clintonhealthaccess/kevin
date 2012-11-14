@@ -6,6 +6,7 @@ import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.ExpressionMap
+import org.chai.kevin.data.Mode
 import org.chai.kevin.data.NormalizedDataElement
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Source;
@@ -673,7 +674,8 @@ public class Initializer {
 			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expressionMap: e([(period1.id+''):[(hc.code):"10", (dh.code):"10"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 			new NormalizedDataElement(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expressionMap: e([(period1.id+''):[(hc.code):"20", (dh.code):"20"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 			new NormalizedDataElement(names:j(["en":"Constant 30"]), descriptions:j([:]), code:"Constant 30", expressionMap: e([(period1.id+''):[(hc.code):"30", (dh.code):"30"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
-			new NormalizedDataElement(names:j(["en":"Constant 40"]), descriptions:j([:]), code:"Constant 40", expressionMap: e([(period1.id+''):[(hc.code):"40", (dh.code):"40"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"Constant 40"]), descriptions:j([:]), code:"Constant 40", expressionMap: e([(period1.id+''):[(hc.code):"40", (dh.code):"40"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)			
+			new NormalizedDataElement(names:j(["en":"hc10dh20"]), descriptions:j([:]), code:"hc10dh20", expressionMap: e([(period1.id+''):[(hc.code):"10", (dh.code):"20"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 			
 			def rd1 = RawDataElement.findByCode("CODE1").id
 			new NormalizedDataElement(names:j(["en":"Element 1"]), descriptions:j([:]), 
@@ -825,7 +827,9 @@ public class Initializer {
 			def dsrSum = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Dsr Sum constant 10", timestamp:new Date());
 			dsrSum.save(failOnError: true);			
 			
-
+			def dsrMode = new Mode(expression:"\$"+NormalizedDataElement.findByCode("hc10dh20").id, code:"Dsr Mode hc 10 dh 20", timestamp:new Date());
+			dsrMode.save(failOnError: true);
+			
 			new DsrTarget(
 					names:j(["en":"A0"]), descriptions:j(["en":"A0"]),
 					program: hmr,
@@ -872,7 +876,16 @@ public class Initializer {
 					code: "A4",
 					category: nursesCat,
 					).save(failOnError:true)
-					
+
+			new DsrTarget(
+				names:j(["en":"A5"]), descriptions:j(["en":"A5"]),
+				program: hmr,
+				data: dsrMode,
+				order: 6,
+				code: "A5",
+				category: nursesCat,
+				).save(failOnError:true)
+										
 			new DsrTarget(
 					names:j(["en":"Mental Health Service"]), descriptions:j(["en":"Mental Health Service"]),
 					program: servDeliv,

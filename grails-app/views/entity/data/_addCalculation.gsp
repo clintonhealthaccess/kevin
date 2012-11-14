@@ -8,6 +8,11 @@
 				</a>
 			</li>
 			<li>
+				<a href="${createLinkWithTargetURI(controller:'mode', action:'create')}">
+					<g:message code="default.new.label" args="[message(code:'mode.label')]"/>
+				</a>
+			</li>
+			<li>
 				<a href="${createLinkWithTargetURI(controller:'aggregation', action:'create')}">
 					<g:message code="default.new.label" args="[message(code:'aggregation.label')]"/>
 				</a>
