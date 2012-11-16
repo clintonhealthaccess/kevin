@@ -136,7 +136,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 	
 	def testReportBarPercentage() {
 		assertEquals applyTemplate(
-			'<g:reportBarValue value="${value}" type="${type}" format="${format}"/>',
+			'<g:reportBarPercentage value="${value}" type="${type}" format="${format}" rounded="${rounded}"/>',
 			[
 				'value': Value.VALUE_NUMBER(0.579),
 				'type': Type.TYPE_NUMBER(),

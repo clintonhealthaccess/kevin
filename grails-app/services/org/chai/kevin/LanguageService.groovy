@@ -91,7 +91,7 @@ class LanguageService implements ApplicationContextAware {
 				break;
 			case (ValueType.NUMBER):
 				if (zero != null && value.numberValue == 0) result = zero
-				else result = Utils.formatNumber(format, rounded!=null?value.numberValue.round(rounded):value.numberValue)
+				else result = Utils.formatNumber(format, rounded!=null?value.numberValue.round(Integer.parseInt(rounded)):value.numberValue)
 				break;
 			case (ValueType.MAP):
 				// TODO

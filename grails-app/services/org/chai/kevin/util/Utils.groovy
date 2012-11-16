@@ -101,7 +101,11 @@ public class Utils {
 		if (format == null) format = "#";
 		
 		DecimalFormat frmt = new DecimalFormat(format);
-		return frmt.format(value.doubleValue()).toString();
+		return frmt.format(value.doubleValue());
+	}
+	
+	public static String parseNumber(String string){
+		return string.replaceAll("[^0-9]", "");
 	}
 	
 	public static String formatDate(Date date) {
