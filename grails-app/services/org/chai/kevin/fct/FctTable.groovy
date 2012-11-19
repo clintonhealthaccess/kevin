@@ -44,17 +44,5 @@ public class FctTable extends ReportTable {
 	public FctTable(Map valueMap, List targetOptions) {
 		super(valueMap, targetOptions);
 	}
-	
-	public Double getTotalAverage(CalculationLocation topLevelLocation){
-		Double totalAverage = 0d;
-		for(FctTargetOption targetOption : indicators){
-			if(getTableReportValue(topLevelLocation, targetOption) != null && !getTableReportValue(topLevelLocation, targetOption).getAverage().isNull()){
-				Value average = getTableReportValue(topLevelLocation, targetOption).getAverage();
-					totalAverage += average.getNumberValue().doubleValue();
-			}
-		}
-		DecimalFormat frmt = new DecimalFormat("#.##");
-		return Double.parseDouble(frmt.format(totalAverage));		
-	}
 
 }

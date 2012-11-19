@@ -83,57 +83,6 @@ class ValueTagLib {
 		}
 	}
 	
-	def reportBarPercentage = { attrs, body ->
-		def reportAverages = attrs['values']
-		def reportAverage = attrs['value']
-		def type = attrs['type']
-		def format = attrs['format']
-		def rounded = attrs['rounded']
-		
-		if (value == null || value.isNull()) {
-			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
-		}
-		else {
-			def totalValue = reportBarTotalPercentage(reportAverages, type, format, rounded)
-			if(totalValue < 100 || totalValue > 100){
-				
-				Value maxReportAverage = null;
-				Double maxBarValue = 0d;
-				for(value in reportAverages){
-					def reportValue = languageService.getStringValue(value, type, null, format, null, rounded)
-					Double barValue = Double.parseDouble(Utils.parseNumber(reportValue))
-					if(barValue > maxBarValue){
-						maxReportAverage = value;
-						maxBarValue = barValue;
-					}
-				}
-				
-				if(maxReportAverage == reportAverage){
-					if(totalValue < 100) maxBarValue += 100-totalValue
-					if(totalValue > 100) maxBarValue -= totalValue-100
-					DecimalFormat percentFormat = new DecimalFormat(format)
-					out << percentFormat.format(maxBarValue/100)
-				}
-			}
-			else
-				out << languageService.getStringValue(reportAverage, type, null, format, null, rounded)
-		}
-	}	
-
-	def reportBarTotalPercentage = { attrs, body ->
-		def rawValues = ["values"]
-		def type = attrs['type']
-		def format = attrs['format']
-		def rounded = attrs['rounded']
-		Double totalValue = 0d;
-		for(value in rawValues){
-			String reportValue = languageService.getStringValue(value, type, null, format, null, rounded)
-			Double barValue = Double.parseDouble(Utils.parseNumber(reportValue))
-			totalValue += barValue
-		}
-		return totalValue
-	}
-	
 	def reportBarTooltip = { attrs, body ->
 		def percentage = attrs['percentage']
 		def value = attrs['value']
