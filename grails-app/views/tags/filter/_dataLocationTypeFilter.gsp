@@ -7,15 +7,18 @@
 	<g:form name="report-filters" method="get" url="${[controller:controllerName, action:actionName, params: newLinkParams]}">			
 		<span class="js_dropdown dropdown">
 			<a class="datalocation js_dropdown-link nice-button with-highlight" href="#">
-				<g:if test="${currentLocationTypes != null && !currentLocationTypes.empty}">
+				<g:if test="${!currentLocationTypes.empty}">
 					<g:each in="${currentLocationTypes}" var="currentLocationType" status="i">					
-							<g:if test="${i < currentLocationTypes.size() && i < 3}">
-								<g:i18n field="${currentLocationType.names}"/><g:if test="${i < currentLocationTypes.size()-1 && i < 2}">, </g:if>
-							</g:if>
+						<g:if test="${i < currentLocationTypes.size() && i < 3}">
+							<g:i18n field="${currentLocationType.names}"/><g:if test="${i < currentLocationTypes.size()-1 && i < 2}">, </g:if>
+						</g:if>
 					</g:each><g:if test="${currentLocationTypes.size() > 3}">...</g:if>
 				</g:if>
+				<g:else>
+					<span class="italic"><g:message code="filter.datalocationtype.noselection.label"/></span>
+				</g:else>
 			</a>
-			<g:if test="${dataLocationTypes != null && !dataLocationTypes.empty}">
+			<g:if test="${!dataLocationTypes.empty}">
 				<div class="js_dropdown-list dropdown-list push-top-10" id="js_location-type-filter">
 					<ul>
 						<li>
@@ -34,7 +37,7 @@
 				</div>
 			</g:if>
 		    <g:else>
-				<span class="italic"><g:message code="filter.datalocationtype.empty.label"/></span>
+				<span class="italic"><g:message code="filter.datalocationtype.no.locationtypes"/></span>
 			</g:else>	
 	    </span>
 	    <r:script>

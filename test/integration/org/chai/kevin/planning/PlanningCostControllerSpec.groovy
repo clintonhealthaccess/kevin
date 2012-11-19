@@ -12,7 +12,7 @@ class PlanningCostControllerSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def planning = newPlanning(period, [])
 		def planningType = newPlanningType(newFormElement(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))), "[_].key", planning)
-		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
+		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), [:])
 		def planningCost = newPlanningCost(PlanningCostType.INCOMING, dataElement, planningType)
 		planningCostController = new PlanningCostController()
 		
@@ -40,12 +40,13 @@ class PlanningCostControllerSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def planning = newPlanning(period, [])
 		def planningType = newPlanningType(newFormElement(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))), "[_].key", planning)
-		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
+		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), [:])
 		planningCostController = new PlanningCostController()
 		
 		when:
 		planningCostController.params['planningType.id'] = planningType.id
 		planningCostController.params['dataElement.id'] = dataElement.id
+		planningCostController.params['hideIfZero'] = '0'
 		planningCostController.params['type'] = 'INCOMING'
 		planningCostController.params['section'] = '[_].key'
 		planningCostController.saveWithoutTokenCheck()

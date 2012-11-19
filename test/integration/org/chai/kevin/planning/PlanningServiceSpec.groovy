@@ -4,9 +4,8 @@ import org.apache.tomcat.util.bcel.classfile.ElementValue;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.DataLocationController;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.RawDataElementValue;
@@ -107,7 +106,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		
 		when:
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()), 
-			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
+			[(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']])
 		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		refreshNormalizedDataElement()
 		planningTypeBudget = planningService.getPlanningList(planningType, DataLocation.findByCode(BUTARO))
@@ -131,7 +130,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
-			e([(period.id+''):[(HEALTH_CENTER_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
+			[(period.id+''):[(HEALTH_CENTER_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']])
 		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		def planningTypeBudget = null
 		
@@ -168,7 +167,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def formValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO), value)
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), value)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
-			e([(period.id+''):[(HEALTH_CENTER_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
+			[(period.id+''):[(HEALTH_CENTER_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']])
 		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		refreshNormalizedDataElement()
 		planningTypeBudget = planningService.getPlanningList(planningType, DataLocation.findByCode(BUTARO))
@@ -200,7 +199,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		value.listValue[0].setAttribute("submitted", "true")
 		value.listValue[1].setAttribute("submitted", "true")
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
-			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '$'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0)']]))
+			[(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '$'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0)']])
 		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		refreshNormalizedDataElement()
 		planningTypeBudget = planningService.getPlanningList(planningType, DataLocation.findByCode(BUTARO))
@@ -331,7 +330,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
-			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
+			[(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']])
 		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		
 		def value = new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}],\"uuid\":\"uuid\"}]}")
@@ -360,7 +359,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
-			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
+			[(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']])
 		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		
 		when:
@@ -387,7 +386,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
-			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
+			[(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']])
 		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		
 		def elementValue = newNormalizedDataElementValue(element, DataLocation.findByCode(BUTARO), period, Status.VALID, Value.VALUE_LIST([Value.VALUE_NUMBER(2d)]))
@@ -413,7 +412,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
-			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '2.0']]))
+			[(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '2.0']])
 		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		
 		def elementValue = newNormalizedDataElementValue(element, DataLocation.findByCode(BUTARO), period, Status.VALID, Value.VALUE_LIST([Value.VALUE_NUMBER(2d)]))
@@ -439,7 +438,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
-			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '2.0']]))
+			[(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '2.0']])
 		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		def elementValue = newNormalizedDataElementValue(element, DataLocation.findByCode(BUTARO), period, Status.VALID, Value.VALUE_LIST([Value.VALUE_NUMBER(2d)]))
 		def date = new Date()

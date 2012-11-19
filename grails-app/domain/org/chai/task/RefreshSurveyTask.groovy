@@ -4,7 +4,7 @@ import org.chai.task.Task.TaskStatus;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.location.Location;
+import org.chai.location.Location;
 import org.chai.kevin.security.User;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyProgram;

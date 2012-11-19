@@ -34,13 +34,13 @@ import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Sum;
+import org.chai.kevin.data.Summ;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.dsr.DsrIntegrationTests;
 import org.chai.kevin.dsr.DsrTarget;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocationType;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
@@ -62,7 +62,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "get data element by id"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [:])
 		def ratio = newSum("1", CODE(3))
 		def sum = newSum("1", CODE(4))
 		def aggregation = newAggregation("1", CODE(5))
@@ -81,13 +81,13 @@ class DataServiceSpec extends IntegrationTests {
 		result.equals(normalizedDataElement)
 
 		when:
-		result = dataService.getData(ratio.id, Sum.class)
+		result = dataService.getData(ratio.id, Summ.class)
 		
 		then:
 		result.equals(ratio)
 
 		when:
-		result = dataService.getData(sum.id, Sum.class)
+		result = dataService.getData(sum.id, Summ.class)
 		
 		then:
 		result.equals(sum)
@@ -97,8 +97,8 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.getData(ratio.id, RawDataElement.class) == null
 		dataService.getData(sum.id, NormalizedDataElement.class) == null
 		dataService.getData(sum.id, RawDataElement.class) == null
-		dataService.getData(rawDataElement.id, Sum.class) == null				
-		dataService.getData(normalizedDataElement.id, Sum.class) == null
+		dataService.getData(rawDataElement.id, Summ.class) == null				
+		dataService.getData(normalizedDataElement.id, Summ.class) == null
 		dataService.getData(normalizedDataElement.id, RawDataElement.class) == null
 		
 	}
@@ -107,11 +107,11 @@ class DataServiceSpec extends IntegrationTests {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def program = newReportProgram(CODE(1))
-		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(1), 1)
-		def dsrTarget = DsrIntegrationTests.newDsrTarget(CODE(1), rawDataElement, program, category)
+		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(2), program, 1)
+		def dsrTarget = DsrIntegrationTests.newDsrTarget(CODE(3), rawDataElement, category)
 		
 		when:
-		dsrTarget = DsrTarget.findByCode(CODE(1))
+		dsrTarget = DsrTarget.findByCode(CODE(3))
 		
 		then:
 		dataService.getData(dsrTarget.getData().id, Calculation.class) == null 
@@ -120,7 +120,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "get data element by code"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [:])
 		def ratio = newSum("1", CODE(3))
 		def sum = newSum("1", CODE(4))
 		def aggregation = newAggregation("1", CODE(5))
@@ -139,13 +139,13 @@ class DataServiceSpec extends IntegrationTests {
 		result.equals(normalizedDataElement)
 
 		when:
-		result = dataService.getDataByCode(ratio.code, Sum.class)
+		result = dataService.getDataByCode(ratio.code, Summ.class)
 		
 		then:
 		result.equals(ratio)
 
 		when:
-		result = dataService.getDataByCode(sum.code, Sum.class)
+		result = dataService.getDataByCode(sum.code, Summ.class)
 		
 		then:
 		result.equals(sum)
@@ -155,9 +155,9 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.getDataByCode(ratio.code, RawDataElement.class) == null
 		dataService.getDataByCode(sum.code, NormalizedDataElement.class) == null
 		dataService.getDataByCode(sum.code, RawDataElement.class) == null
-		dataService.getDataByCode(rawDataElement.code, Sum.class) == null
+		dataService.getDataByCode(rawDataElement.code, Summ.class) == null
 		dataService.getDataByCode(rawDataElement.code, NormalizedDataElement.class) == null
-		dataService.getDataByCode(normalizedDataElement.code, Sum.class) == null
+		dataService.getDataByCode(normalizedDataElement.code, Summ.class) == null
 		dataService.getDataByCode(normalizedDataElement.code, RawDataElement.class) == null
 		
 	}
@@ -174,40 +174,6 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.getData(ratio.id, Data.class).equals(ratio)
 	}
 	
-	def "list data element"() {
-		setup:
-		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
-		def ratio = newSum("1", CODE(3))
-		def sum = newSum("1", CODE(4))
-		def aggregation = newAggregation("1", CODE(5))
-		
-		expect:
-		dataService.list(Sum.class, [:]).equals([ratio, sum])
-		dataService.count(Sum.class) == 2
-		dataService.list(DataElement.class, [:]).equals([rawDataElement, normalizedDataElement])
-		dataService.count(DataElement.class) == 2
-		dataService.list(NormalizedDataElement.class, [:]).equals([normalizedDataElement])
-		dataService.count(NormalizedDataElement.class) == 1
-		dataService.list(Data.class, [:]).equals([rawDataElement, normalizedDataElement, ratio, sum, aggregation])
-		dataService.count(Data.class) == 5
-	}
-	
-	def "list data element with params"() {
-		setup:
-		def rawDataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def rawDataElement3 = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def rawDataElement4 = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
-		
-		expect:
-		dataService.list(DataElement.class, [max:1]).equals([rawDataElement1])
-		dataService.list(DataElement.class, [max:1, offset:1]).equals([rawDataElement2])
-		dataService.list(DataElement.class, [max:2]).equals([rawDataElement1, rawDataElement2])
-		dataService.list(DataElement.class, [max:2, offset:2]).equals([rawDataElement3, rawDataElement4])
-		
-	}
-	
 	def "search for null"() {
 		expect:
 		dataService.searchData(RawDataElement.class, null, [], [:]).equals([])
@@ -215,43 +181,57 @@ class DataServiceSpec extends IntegrationTests {
 	
 	def "search for data element works"() {
 		setup:
-		def dataElement1 = newRawDataElement(j(["en": "element"]), CODE(1), Type.TYPE_NUMBER())
-		def dataElement2 = newRawDataElement(j(["en": "something"]), CODE(2), Type.TYPE_NUMBER())
-		def dataElement3 = newRawDataElement(j(["en": ""]), CODE(3), Type.TYPE_NUMBER(), "info")
+		def dataElement1 = newRawDataElement(["en": "element"], CODE(1), Type.TYPE_NUMBER())
+		def dataElement2 = newRawDataElement(["en": "something"], CODE(2), Type.TYPE_NUMBER())
+		def dataElement3 = newRawDataElement(["en": ""], CODE(3), Type.TYPE_NUMBER(), "info")
 		
 		expect:
 		dataService.searchData(RawDataElement.class, "ele", [], [:]).equals([dataElement1])
-		dataService.countData(RawDataElement.class, "ele", []) == 1
+		dataService.searchData(RawDataElement.class, "ele", [], [:]).totalCount == 1
 		dataService.searchData(RawDataElement.class, "some", [], [:]).equals([dataElement2])
-		dataService.countData(RawDataElement.class, "some", []) == 1
+		dataService.searchData(RawDataElement.class, "some", [], [:]).totalCount == 1
 		dataService.searchData(RawDataElement.class, "ele some", [], [:]).equals([])
-		dataService.countData(RawDataElement.class, "ele some", []) == 0
+		dataService.searchData(RawDataElement.class, "ele some", [], [:]).totalCount == 0
 		dataService.searchData(RawDataElement.class, "info", [], [:]).equals([dataElement3])
-		dataService.countData(RawDataElement.class, "info", []) == 1
-				
+		dataService.searchData(RawDataElement.class, "info", [], [:]).totalCount == 1
+	}
+	
+	def "search with allowed types works"() {
+		setup:
+		def dataElement1 = newRawDataElement(["en": "element"], CODE(1), Type.TYPE_BOOL())
+		def dataElement2 = newRawDataElement(["en": "element"], CODE(2), Type.TYPE_ENUM('123'))
+		def dataElement3 = newRawDataElement(["en": "element"], CODE(3), Type.TYPE_NUMBER())
+		
+		expect:
+		dataService.searchData(RawDataElement.class, "ele", ['bool'], [:]).equals([dataElement1])
+		dataService.searchData(RawDataElement.class, "ele", ['bool'], [:]).totalCount == 1
+		dataService.searchData(RawDataElement.class, "ele", ['number'], [:]).equals([dataElement3])
+		dataService.searchData(RawDataElement.class, "ele", ['number'], [:]).totalCount == 1
+		dataService.searchData(RawDataElement.class, "ele", ['enum'], [:]).equals([dataElement2])
+		dataService.searchData(RawDataElement.class, "ele", ['enum'], [:]).totalCount == 1
 	}
 	
 	def "search for normalized data element works"() {
 		setup:
-		def dataElement1 = newNormalizedDataElement(j(["en": "expression"]), CODE(1), Type.TYPE_NUMBER(), e([:]))
-		def dataElement2 = newNormalizedDataElement(j(["en": "something"]), CODE(2), Type.TYPE_NUMBER(), e([:]))
+		def dataElement1 = newNormalizedDataElement(["en": "expression"], CODE(1), Type.TYPE_NUMBER(), [:])
+		def dataElement2 = newNormalizedDataElement(["en": "something"], CODE(2), Type.TYPE_NUMBER(), [:])
 		
 		expect:
 		dataService.searchData(NormalizedDataElement.class, "expr", [], [:]).equals([dataElement1])
-		dataService.countData(NormalizedDataElement.class, "expr", []) == 1
+		dataService.searchData(NormalizedDataElement.class, "expr", [], [:]).totalCount == 1
 		dataService.searchData(NormalizedDataElement.class, "some", [], [:]).equals([dataElement2])
-		dataService.countData(NormalizedDataElement.class, "some", []) == 1
+		dataService.searchData(NormalizedDataElement.class, "some", [], [:]).totalCount == 1
 		dataService.searchData(NormalizedDataElement.class, "expr some", [], [:]).equals([])
-		dataService.countData(NormalizedDataElement.class, "expr some", []) == 0
+		dataService.searchData(NormalizedDataElement.class, "expr some", [], [:]).totalCount == 0
 		
 	}
 	
 	def "search for calculations work"() {
 		setup:
-		def ratio1 = newSum(j(["en": "sum"]), "1", CODE(1));
+		def ratio1 = newSum(["en": "sum"], "1", CODE(1));
 		
 		expect:
-		dataService.searchData(Sum.class, "su", [], [:]).equals([ratio1])
+		dataService.searchData(Summ.class, "su", [], [:]).equals([ratio1])
 		dataService.searchData(Data.class, "su", [], [:]).equals([ratio1])
 		
 	}
@@ -274,7 +254,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "delete normalized data elements with associated values throws exception"() {
 		when:
 		setupLocationTree()
-		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
 		def period = newPeriod()
 		newNormalizedDataElementValue(dataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, Value.NULL_INSTANCE())
 		
@@ -297,7 +277,7 @@ class DataServiceSpec extends IntegrationTests {
 		
 		then:
 		thrown IllegalArgumentException
-		Sum.count() == 1
+		Summ.count() == 1
 		SumPartialValue.count() == 1
 		
 	}
@@ -305,7 +285,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "delete normalized data element with associated expression throws exception"() {
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
 		
 		dataService.delete(rawDataElement)
 		
@@ -323,13 +303,13 @@ class DataServiceSpec extends IntegrationTests {
 		
 		then:
 		thrown IllegalArgumentException
-		Sum.count() == 1
+		Summ.count() == 1
 	}
 	
 	def "get referencing normalized data element"() {
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
 		
 		then:
 		dataService.getReferencingNormalizedDataElements(rawDataElement).equals([normalizedDataElement])
@@ -356,7 +336,7 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.getReferencingCalculations(rawDataElement).equals([sum])
 		
 		when:
-		newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [(1):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
+		newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
 		
 		then:
 		dataService.getReferencingCalculations(rawDataElement).equals([sum])

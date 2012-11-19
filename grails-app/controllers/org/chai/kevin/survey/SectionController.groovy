@@ -27,7 +27,7 @@
  */
 package org.chai.kevin.survey
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 /**
@@ -36,7 +36,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
  */
 class SectionController extends AbstractEntityController {
 
-	def locationService
+	def surveyService
 	
 	def getEntity(def id) {
 		return SurveySection.get(id)
@@ -68,12 +68,11 @@ class SectionController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
 	}
 	
+	def deleteEntity(def entity) {
+		surveyService.deleteSection(entity)
+	}
 	
 	def list = {
 		adaptParamsForList()
@@ -83,17 +82,14 @@ class SectionController extends AbstractEntityController {
 			response.sendError(404)
 		}
 		else {
-			List<SurveySection> sections = program.sections;
-			Collections.sort(sections)
+			def sections = SurveySection.createCriteria().list(params){eq('program', program)}
 	
-			def max = Math.min(params['offset']+params['max'], sections.size())
-			
 			render (view: '/entity/list', model:[
 				template:"survey/sectionList",
 				survey: program.survey,
 				program: program,
-				entities: sections.subList(params['offset'], max),
-				entityCount: sections.size(),
+				entities: sections,
+				entityCount: sections.totalCount,
 				code: getLabel(),
 				entityClass: getEntityClass()
 			])

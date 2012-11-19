@@ -11,9 +11,8 @@
 	<th></th>
   </tr>
 </thead>
-<g:if test="${dashboard != null && dashboard.dashboardEntities != null && !dashboard.dashboardEntities.empty}">
 	<tbody>
-		<g:each in="${dashboard.dashboardEntities}" var="entity">			
+		<g:each in="${dashboard.getIndicators(dashboardEntity)}" var="entity">			
 			<tr>
 				<g:set var="percentageValue" />
 				<td>
@@ -74,5 +73,4 @@
 			</tr>
 		</g:each>
 	</tbody>
-</g:if>
 </table>

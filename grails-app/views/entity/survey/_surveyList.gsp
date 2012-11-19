@@ -4,11 +4,11 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.code.label"/></th>
-			<th><g:message code="entity.name.label"/></th>		
-			<th><g:message code="entity.description.label"/></th>
-			<th><g:message code="survey.period.label"/></th>
-			<th><g:message code="survey.active.label"/></th>
+			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />  		    
+  			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q]" title="${message(code: 'entity.name.label')}" />
+  			<g:sortableColumn property="${i18nField(field: 'descriptions')}" params="[q:params.q]" title="${message(code: 'entity.description.label')}" />
+  			<g:sortableColumn property="period.startDate" params="[q:params.q]" title="${message(code: 'survey.period.label')}" />
+  			<g:sortableColumn property="active" params="[q:params.q]" title="${message(code: 'survey.active.label')}" />  		    
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
 	</thead>

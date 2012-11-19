@@ -1,8 +1,5 @@
-
-import org.chai.kevin.Period;
-
 /*
-* Copyright (c) 2011, Clinton Health Access Initiative.
+//* Copyright (c) 2011, Clinton Health Access Initiative.
 *
 * All rights reserved.
 *
@@ -120,6 +117,9 @@ environments {
 	test {
 		grails.mail.disabled = true
 	}
+	demo {
+		grails.mail.disabled = true
+	}
 }
 
 //RESOURCES
@@ -144,6 +144,13 @@ environments {
 		grails.resources.processing.enabled = false
 		grails.resources.mappers.yuicssminify.disable=true
 		grails.resources.mappers.yuijsminify.disable=true
+	}
+	demo {
+		grails.serverURL = 'http://kevin.cloudfoundry.com'
+		grails.resources.cdn.enabled = false
+		grails.resources.processing.enabled = false
+		grails.resources.mappers.yuicssminify.disable = false
+		grails.resources.mappers.yuijsminify.disable = false
 	}
 }
 
@@ -207,53 +214,68 @@ log4j = {
 		   'org.chai.kevin.service.imports.NominativeDataImporter',
 		   'org.chai.kevin.service.imports.DataImporter',
 		   'org.chai.kevin.service.imports.DataImporterSpec'
+//		   'org.hibernate.type'
 		   
 }
 
 environments {
 	test {
 		log4j = {
-			root {
-				error
-			}
+			rootLogger="error,stdout"
+			
+			off 'ExpressionLog'
+		}
+	}
+	demo {
+		log4j = {
+			rootLogger="error,stdout"
 			
 			off 'ExpressionLog'
 		}
 	}
 }
 
-//cloudbees.api.url='https://api.cloudbees.com/api'
-//cloudbees.api.key=System.properties['bees.key']
-//cloudbees.api.secret=System.properties['bees.secret']
-
 /**
  * Application specific config
  */
 google.analytics.webPropertyID = "UA-xxxxxx-x"
 
-site.languages=["en","fr","rw"]
+// internationalization
+i18nFields {
+	locales = ["en","fr"]
+	withlocale.disabled = true
+}
+
 site.fallback.language="en"
 site.entity.list.max=40
-site.period=0
+
 site.admin.email="admin@dhsst.org"
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
-site.datalocationtype.checked=["District Hospital","Health Center"]
+site.tagline.en="Ministry of Health"
+site.tagline.fr="Ministère de la santé"
+site.bugtracker.url = "#"
+environments {
+	development {
+		site.icon="http://localhost:8080/kevin/images/apple-touch-icon.png"
+	}
+	demo {
+		site.icon="http://kevin.cloudfoundry.com/images/apple-touch-icon.png"
+	}
+}
+
+// TODO put in database on datalocation and period
+site.datalocationtype.checked=["district_hospital","health_center"]
+
+report.skip.levels=["sector"]
+dashboard.skip.levels=[]
+fct.skip.levels=[]
+dsr.skip.levels=[]
+dsr.view.map.skip.levels=["country", "province"]
+survey.skip.levels=["sector"]
+survey.export.skip.levels=["country", "sector"]
 
 task.temp.folder='files/'
-
-report.skip.levels=["Sector"]
-dashboard.skip.levels=[]
-dsr.skip.levels=[]
-dsr.view.map.skip.levels=["National", "Province"]
-fct.skip.levels=[]
-
-survey.skip.levels=["Sector"]
-survey.submit.skip.levels=["National", "Province"]
-survey.export.skip.levels=["National", "Sector"]
-
-info.group.level="District"
-dsr.group.level="District"
 
 file.upload.available.charset=["UTF-8", "ISO-8859-1"]
 file.upload.delimiter=","

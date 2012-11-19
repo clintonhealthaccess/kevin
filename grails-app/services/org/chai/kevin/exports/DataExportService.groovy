@@ -27,27 +27,8 @@
  */
 package org.chai.kevin.exports
 
-import java.io.File;
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LocationService;
-import org.chai.kevin.Period;
-import org.chai.kevin.util.ImportExportConstant;
-import org.chai.kevin.Translation;
-import org.chai.kevin.exports.DataExport;
 import org.apache.commons.lang.StringUtils
-import org.hibernate.Criteria;
-import org.hibernate.SessionFactory;
-import org.chai.kevin.util.Utils
-import org.hibernate.criterion.MatchMode
-import org.hibernate.criterion.Order
 import org.hibernate.criterion.Projections
-import org.hibernate.criterion.Restrictions
 
 /**
  * @author Jean Kahigiso M.
@@ -56,43 +37,18 @@ import org.hibernate.criterion.Restrictions
 public class DataExportService {
 
 	def languageService;
-	def sessionFactory;
-
-	public Integer countDataExports(Class<DataExport> clazz, String text) {
-		return getSearchCriteria(clazz,text).setProjection(Projections.count("id")).uniqueResult()
-	}
 
 	public <T extends DataExport> List<T> searchDataExports(Class<T> clazz, String text, Map<String, String> params) {
-		def exporters=[]
-		def criteria = getSearchCriteria(clazz,text)
-
-		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
-		if (params['max'] != null) criteria.setMaxResults(params['max'])
-
-		if(params['sort']!=null)
-			exporters= criteria.addOrder(Order.asc(params['sort'])).list()
-		else
-			exporters= criteria.addOrder(Order.desc("date")).list()
-
-		StringUtils.split(text).each { chunk ->
-			exporters.retainAll { exporter ->
-				Utils.matches(chunk, exporter.descriptions[languageService.getCurrentLanguage()]);
+		def dbFieldName = 'descriptions_' + languageService.currentLanguage;
+		def criteria = clazz.createCriteria()
+		return  criteria.list(offset:params.offset,max:params.max,sort:params.sort ?:"id",order: params.order ?:"asc"){
+			StringUtils.split(text).each { chunk ->
+				 or{
+					 ilike("code","%"+chunk+"%")
+					 ilike(dbFieldName,"%"+chunk+"%")
+				 }
 			}
 		}
-
-		return exporters;
-	}
-	
-	private Criteria getSearchCriteria(Class<DataExport> clazz, String text) {
-		def criteria = sessionFactory.getCurrentSession().createCriteria(clazz);
-		def textRestrictions = Restrictions.conjunction()
-		StringUtils.split(text).each { chunk ->
-			def disjunction = Restrictions.disjunction();
-			disjunction.add(Restrictions.ilike("descriptions.jsonText", chunk, MatchMode.ANYWHERE))
-			textRestrictions.add(disjunction)
-		}
-		criteria.add(textRestrictions)
-		return criteria
 	}
 	
 }

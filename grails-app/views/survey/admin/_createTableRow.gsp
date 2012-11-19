@@ -24,9 +24,10 @@
 							<span class="bold"><g:message code="survey.tablequestion.tablecolumn.label"/>:</span><span> ${i18n(field: column.names)}</span>
 							<div>
 								<label for="dataElement[${column.id}]"><g:message code="dataelement.label"/>:</label> 
-								<input type="text" name="dataElement[${column.id}]" class="data-element-name idle-field" value="${i18n(field:row.surveyElements[column]?.dataElement?.names)}" /> 
+								<input type="text" name="dataElement[${column.id}]" class="data-element-name idle-field" value="${row.surveyElements[column]?.dataElement?.code}" /> 
 								<input type="hidden" name="surveyElement[${column.id}].dataElement.id" class="data-element-id idle-field " value="${row.surveyElements[column]?.dataElement?.id}" /> 
-								<input type="hidden" name="surveyElement[${column.id}].id" class="idle-field" value="${row.surveyElements[column]?.id}" /> <input type="hidden" name="surveyElement" value="${column.id}" />
+								<input type="hidden" name="surveyElement[${column.id}].id" class="idle-field" value="${row.surveyElements[column]?.id}" /> 
+								<input type="hidden" name="surveyElement" value="${column.id}" />
 							</div>
 						</div>
 					</g:each>
@@ -34,8 +35,9 @@
 						<g:renderErrors bean="${row}" field="surveyElements" />
 					</div>
 				</div>
-
 				<div class="clear"></div>
+				
+				<g:input name="code" label="${message(code:'entity.code.label')}" bean="${row}" field="code" />
 				<g:input name="order" label="${message(code:'entity.order.label')}" bean="${row}" field="order" />
 
 				<g:selectFromList name="typeCodes" label="${message(code:'entity.datalocationtype.label')}" bean="${row}" field="typeCodeString" 

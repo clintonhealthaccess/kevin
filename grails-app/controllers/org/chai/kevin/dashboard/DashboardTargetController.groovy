@@ -76,11 +76,6 @@ class DashboardTargetController extends AbstractEntityController {
 	def bindParams(def entity) {
 		bindData(entity, params, [exclude:'data.id'])
 		if (params.int('data.id') != null) entity.data = dataService.getData(params.int('data.id'), Calculation.class)
-		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 
 	@CacheFlush("dashboardCache")
@@ -114,11 +109,11 @@ class DashboardTargetController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<DashboardTarget> targets = dataService.searchData(DashboardTarget.class, params['q'], [], params);
+		def targets = dataService.searchData(DashboardTarget.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: targets,
-			entityCount: dataService.countData(DashboardTarget.class, params['q'], []),
+			entityCount: targets.totalCount,
 			entityClass: getEntityClass(),
 			template: "dashboard/targetList",
 			code: getLabel(),

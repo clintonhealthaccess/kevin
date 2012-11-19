@@ -32,13 +32,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueVisitor;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
+import org.chai.location.LocationService;
 import org.hibernate.SessionFactory;
 
 /**
@@ -47,14 +46,10 @@ import org.hibernate.SessionFactory;
  */
 public abstract class ExportService {
 
-	public LanguageService languageService;
 	public LocationService locationService;
 	public ValueService valueService;
 	public SessionFactory sessionFactory;
 	
-	public void setLanguageService(LanguageService languageService) {
-		this.languageService = languageService;
-	}
 	public void setLocationService(LocationService locationService) {
 		this.locationService = locationService;
 	}
@@ -65,8 +60,8 @@ public abstract class ExportService {
 		this.sessionFactory = sessionFactory;
 	}
 	
-	public abstract List<String> getExportDataHeaders(String language);
-	public abstract File exportData(DataExport export, String language) throws IOException;
+	public abstract List<String> getExportDataHeaders();
+	public abstract File exportData(DataExport export) throws IOException;
 	
 	public final class DataPointVisitor extends ValueVisitor{
 		private List<String> basicInfo = new ArrayList<String>();

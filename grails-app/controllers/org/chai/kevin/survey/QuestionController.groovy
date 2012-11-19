@@ -27,16 +27,15 @@
  */
 package org.chai.kevin.survey
 
-import org.chai.kevin.AbstractController;
+import org.chai.kevin.AbstractExportController
 import org.chai.kevin.util.Utils
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 /**
  * @author Jean Kahigiso M.
  *
  */
 
-class QuestionController extends AbstractController {
+class QuestionController extends AbstractExportController {
 
 	def surveyService
 	
@@ -48,13 +47,13 @@ class QuestionController extends AbstractController {
 		adaptParamsForList()
 		
 		Survey survey = Survey.get(params.int('survey'))
-		List<SurveyQuestion> questions = surveyService.searchSurveyQuestions(params['q'], survey, params);
+		def questions = surveyService.searchSurveyQuestions(params['q'], survey, params);
 		
 		render (view: '/entity/list', model:[
 			template:"survey/questionList",
 			survey: survey,
 			entities: questions,
-			entityCount: surveyService.countSurveyQuestions(params['q'], survey),
+			entityCount: questions.totalCount,
 			entityClass: getEntityClass(),
 			code: 'survey.question.label',
 			search: true
@@ -74,18 +73,15 @@ class QuestionController extends AbstractController {
 			response.sendError(404)
 		}
 		else {
-			List<SurveyQuestion> questions = section.questions;
-			Collections.sort(questions)
-			
-			def max = Math.min(params['offset']+params['max'], questions.size())
+			def questions = SurveyQuestion.createCriteria().list(params){eq('section', section)}
 			
 			render (view: '/entity/list', model:[
 				template:"survey/questionList",
 				survey: section.program.survey,
 				program: section.program,
 				section: section,
-				entities: questions.subList(params['offset'], max),
-				entityCount: questions.size(),
+				entities: questions,
+				entityCount: questions.totalCount,
 				code: 'survey.question.label',
 				addTemplate: '/survey/admin/addQuestion',
 				entityClass: getEntityClass()
@@ -95,7 +91,7 @@ class QuestionController extends AbstractController {
 	
 	def getAjaxData = {
 		Survey survey = Survey.get(params.int('survey'));
-		Set<SurveyQuestion> surveyQuestions = surveyService.searchSurveyQuestions(params['term'], survey);
+		def surveyQuestions = surveyService.searchSurveyQuestions(params['term'], survey);
 
 		render(contentType:"text/json") {
 			elements = array {

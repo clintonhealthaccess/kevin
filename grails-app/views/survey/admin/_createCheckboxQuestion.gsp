@@ -11,10 +11,9 @@
 		<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="${message(code:'survey.question.label')}" field="names" height="100" width="400" maxHeight="250" />
 		<g:i18nRichTextarea name="descriptions" bean="${question}" value="${question.descriptions}" label="${message(code:'survey.question.description.label')}" field="descriptions" height="250" width="400" maxHeight="150" />
 		
-		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${question}" field="order"/>
-		
 		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${question}" field="code" />
-		
+		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${question}" field="order"/>
+				
 		<g:if test="${question.id != null}">
 			<div class="row">
 				<a href="#" onclick="$(this).next().toggle();return false;"><g:message code="survey.checkboxquestion.checkboxoption.label"/>:</a>

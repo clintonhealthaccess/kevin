@@ -2,7 +2,7 @@ package org.chai.kevin.data;
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.dsr.DsrIntegrationTests;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.task.CalculateTask;
 import org.chai.task.Task;
 import org.chai.task.Task.TaskStatus;
@@ -17,7 +17,7 @@ class DataControllerSpec extends IntegrationTests {
 	
 	def "get data elements"() {
 		setup:
-		newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
+		newRawDataElement(["en":"Element 1"], CODE(1), Type.TYPE_NUMBER())
 		
 		when:
 		dataController = new DataController()
@@ -34,7 +34,7 @@ class DataControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(["en":"Element 1"], CODE(1), Type.TYPE_NUMBER())
 		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), v("1"))
 
 		when:
@@ -52,7 +52,7 @@ class DataControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
 		newNormalizedDataElementValue(dataElement, DataLocation.findByCode(BUTARO), period, Status.ERROR, Value.NULL_INSTANCE())
 		
 		when:
@@ -116,6 +116,28 @@ class DataControllerSpec extends IntegrationTests {
 		dataController.modelAndView.model.entityCount == 2
 	}
 	
+	def "get data element values - paging works with BS data"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		dataController = new DataController()
+		
+		when:
+		def dataElementValue1 = newRawDataElementValue(dataElement, period1, DataLocation.findByCode(BUTARO), Value.NULL_INSTANCE())
+		def dataElementValue2 = newRawDataElementValue(dataElement, period1, DataLocation.findByCode(KIVUYE), Value.NULL_INSTANCE())
+		dataController.params.period = period1.id
+		dataController.params.data = dataElement.id
+		dataController.params.max = 'test'
+		dataController.params.offset = 'test'
+		dataController.dataValueList()
+		
+		then:
+		dataController.modelAndView.model.entities.equals([dataElementValue1, dataElementValue2])
+		dataController.modelAndView.model.entityCount == 2
+	}
+	
+	
 	def "get data element values - raw data element"() {
 		setup:
 		setupLocationTree()
@@ -145,7 +167,7 @@ class DataControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period1 = newPeriod()
-		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
 		dataController = new DataController()
 		
 		when:
@@ -165,11 +187,11 @@ class DataControllerSpec extends IntegrationTests {
 		dataController.modelAndView.model.entities.equals([dataElementValue])
 	}
 	
-	def "delete values"() {
+	def "delete values for data element"() {
 		setup:
 		setupLocationTree()
 		def period1 = newPeriod()
-		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
 		newNormalizedDataElementValue(dataElement, DataLocation.findByCode(BUTARO), period1, Status.VALID, v("1"))
 		dataController = new DataController()
 		
@@ -181,11 +203,27 @@ class DataControllerSpec extends IntegrationTests {
 		NormalizedDataElementValue.count() == 0
 	}
 	
+	def "delete values for location"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
+		newNormalizedDataElementValue(dataElement, DataLocation.findByCode(BUTARO), period1, Status.VALID, v("1"))
+		dataController = new DataController()
+		
+		when:
+		dataController.params.location = DataLocation.findByCode(BUTARO).id
+		dataController.deleteValues()
+		
+		then:
+		NormalizedDataElementValue.count() == 0
+	}
+	
 	def "delete values set last value changed"() {
 		setup:
 		setupLocationTree()
 		def period1 = newPeriod()
-		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
 		def date = dataElement.lastValueChanged
 		newNormalizedDataElementValue(dataElement, DataLocation.findByCode(BUTARO), period1, Status.VALID, v("1"))
 		dataController = new DataController()
@@ -222,7 +260,7 @@ class DataControllerSpec extends IntegrationTests {
 		def period = newPeriod()
 		setupLocationTree()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '\$'+dataElement.id]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '\$'+dataElement.id]])
 		def calculation = newSum("\$"+dataElement.id, CODE(3))
 		dataController = new DataController()
 		
@@ -233,8 +271,8 @@ class DataControllerSpec extends IntegrationTests {
 		then:
 		dataController.response.redirectedUrl == '/'
 		Task.count() == 2
-		Task.list()[0].dataId == normalizedDataElement.id
-		Task.list()[1].dataId == calculation.id
+		Task.list()[1].dataId == normalizedDataElement.id
+		Task.list()[0].dataId == calculation.id
 	}
 	
 	def "add referencing data element adds all references"() {
@@ -244,8 +282,8 @@ class DataControllerSpec extends IntegrationTests {
 		def period = newPeriod()
 		setupLocationTree()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement1 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '\$'+dataElement.id]]))
-		def normalizedDataElement2 = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '\$'+normalizedDataElement1.id]]))
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '\$'+dataElement.id]])
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '\$'+normalizedDataElement1.id]])
 		dataController = new DataController()
 		
 		when:
@@ -255,8 +293,8 @@ class DataControllerSpec extends IntegrationTests {
 		then:
 		dataController.response.redirectedUrl == '/'
 		Task.count() == 2
-		Task.list()[0].dataId == normalizedDataElement1.id
-		Task.list()[1].dataId == normalizedDataElement2.id
+		Task.list()[1].dataId == normalizedDataElement1.id
+		Task.list()[0].dataId == normalizedDataElement2.id
 	}
 	
 	def "add referencing data element does not add anything when task already there"() {
@@ -266,7 +304,7 @@ class DataControllerSpec extends IntegrationTests {
 		def period = newPeriod()
 		setupLocationTree()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '\$'+dataElement.id]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '\$'+dataElement.id]])
 		def task = new CalculateTask(user: user, status: TaskStatus.NEW, dataId: normalizedDataElement.id).save(failOnError:true)
 		dataController = new DataController()
 		
@@ -304,8 +342,8 @@ class DataControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id]]))
+		def dataElement = newRawDataElement(["en":"Element 1"], CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id]])
 		dataController = new DataController()
 		
 		when:
@@ -320,10 +358,10 @@ class DataControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(["en":"Element 1"], CODE(1), Type.TYPE_NUMBER())
 		def program = newReportProgram(CODE(1))
-		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(1), 1);
-		def target = DsrIntegrationTests.newDsrTarget(CODE(1), dataElement, program, category)
+		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(2), program, 1);
+		def target = DsrIntegrationTests.newDsrTarget(CODE(3), dataElement, category)
 		dataController = new DataController()
 		
 		when:

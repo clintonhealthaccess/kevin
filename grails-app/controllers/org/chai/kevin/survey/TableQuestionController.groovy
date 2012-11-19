@@ -27,14 +27,8 @@
  */
 package org.chai.kevin.survey
 
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.LanguageService;
-import org.chai.kevin.Translation;
-import org.chai.kevin.util.Utils
-import org.chai.kevin.data.DataService;
-import org.chai.kevin.data.RawDataElement
-import org.chai.kevin.location.DataLocationType;
-import org.apache.commons.lang.math.NumberUtils
+import org.chai.kevin.AbstractEntityController
+import org.chai.location.DataLocationType
 
 /**
  * @author Jean Kahigiso M.
@@ -43,13 +37,18 @@ import org.apache.commons.lang.math.NumberUtils
 class TableQuestionController extends AbstractEntityController {
 
 	def languageService
-	def locationService
+	def surveyService
 	
 	def getEntity(def id) {
 		return SurveyTableQuestion.get(id)
 	}
+	
 	def createEntity() {
 		return new SurveyTableQuestion();
+	}
+	
+	def deleteEntity(def entity) {
+		surveyService.deleteQuestion(entity)
 	}
 
 	def getLabel() {
@@ -61,10 +60,8 @@ class TableQuestionController extends AbstractEntityController {
 	}
 
 	def getModel(def entity) {
-		def columns = entity.columns
-		Collections.sort(columns)
-		def rows = entity.rows
-		Collections.sort(rows)
+		def columns = entity.columns?.sort({it.order})
+		def rows = entity.rows?.sort({it.order})	
 		[
 			columns: columns,
 			rows: rows,
@@ -80,15 +77,10 @@ class TableQuestionController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
-		if (params.tableNames!=null) entity.tableNames = params.tableNames
 		
 		['row', 'column'].each { type ->
 			params[type+'Names'].each { i ->
-				Translation translation = new Translation()
+				Map<String, String> translation = new HashMap<String, String>()
 				languageService.availableLanguages.each { language ->
 					translation[language] = params[type+'Names['+i+'].names.'+language]
 				}

@@ -4,12 +4,10 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.description.label"/></th>
-			<th><g:message code="exporter.locations"/></th>
-			<th><g:message code="exporter.periods"/></th>
-			<th><g:message code="exporter.location.types"/></th>
-			<th><g:message code="exporter.dataelement.label"/></th>
-			<th><g:message code="exporter.create.on"/></th>
+			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />  		    
+  			<g:sortableColumn property="${i18nField(field: 'descriptions')}" params="[q:params.q]" title="${message(code: 'entity.description.label')}" />
+  			<g:sortableColumn property="typeCodeString" params="[q:params.q]" title="${message(code: 'exporter.location.types')}" />
+  			<g:sortableColumn property="date" params="[q:params.q]" title="${message(code: 'exporter.create.on')}" />  		    
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
 	</thead>
@@ -26,28 +24,10 @@
 						</li>
 	           		</ul>
 				</td>
+				<td>${export.code}</td>
 				<td><g:i18n field="${export.descriptions}"/></td>
-				<td>
-					<g:each in="${export.locations}" status="l" var="location">
-						<g:i18n field="${location.parent?.names}"/> - <g:i18n field="${location.names}"/>
-						${(l < export.locations.size()-1)? ',' : ''}
-					</g:each>
-				</td>
-  				<td>
-	  				<g:each in="${export.periods}" status="p" var="period">
-						[${Utils.formatDate(period.startDate)} - ${Utils.formatDate(period.endDate)}]
-						${(p < export.periods.size()-1)? ',' : ''}
-					</g:each>
-  				</td>
   				<td>
   					${export.typeCodeString}
-  				</td>
-  				<td>
-	  				<g:each in="${export.dataElements}" status="d" var="dataElement">
-	  				 	<g:i18n field="${dataElement.names}"/>
-						${(d < export.dataElements.size()-1)? ',' : ''}
-					</g:each>
-
   				</td>
   				<td>${Utils.formatDateWithTime(export.date)}</td>
   				<td>

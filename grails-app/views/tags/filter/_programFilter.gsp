@@ -9,7 +9,7 @@
 			</g:else>
 		</a>		
 		<div class="dropdown-list js_dropdown-list push-top-10">
-			<g:if test="${programTree != null && !programTree.empty}">
+			<g:if test="${!programTree.empty}">
 				<ul>
 					<g:render template="/tags/filter/programTree"
 						model="[				
@@ -21,6 +21,9 @@
 						linkParams:linkParams]" />
 				</ul>
 			</g:if>
+			<g:else>
+				<div><g:message code="filter.program.no.targets"/></div>
+			</g:else>
 		</div>		
 	</span>
 </div>

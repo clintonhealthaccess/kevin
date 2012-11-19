@@ -38,18 +38,18 @@ class FormValidationRuleControllerSpec extends IntegrationTests {
 		
 		when:
 		formValidationRuleController.params['formElement.id'] = element.id
+		formValidationRuleController.params['code'] = "rule"
 		formValidationRuleController.params['prefix'] = ""
 		formValidationRuleController.params['typeCodes'] = [HEALTH_CENTER_GROUP]
 		formValidationRuleController.params['expression'] = "true"
 		formValidationRuleController.params['allowOutlier'] = false
-		formValidationRuleController.params.messages = [:]
-		formValidationRuleController.params.messages['en'] = "Validation rule"
+		formValidationRuleController.params.messages_en = "Validation rule"
 		formValidationRuleController.saveWithoutTokenCheck()
 		
 		then:
 		FormValidationRule.count() == 1
 		FormValidationRule.list()[0].typeCodeString == HEALTH_CENTER_GROUP
-		FormValidationRule.list()[0].messages['en'] == "Validation rule"
+		FormValidationRule.list()[0].messages_en == "Validation rule"
 		
 	}
 	

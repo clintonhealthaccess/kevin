@@ -4,19 +4,16 @@ import grails.plugin.springcache.annotations.CacheFlush;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.PeriodService;
 import org.chai.kevin.data.Calculation;
@@ -25,21 +22,17 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.SourceMap;
-import org.chai.kevin.json.JSONMap;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.LocationService;
 import org.chai.task.Progress;
 import org.hibernate.Criteria;
-import org.hibernate.LockMode;
-import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -72,7 +65,7 @@ public class RefreshValueService {
 		Set<Data> dependencySet = new HashSet<Data>();
 		collectOrderedDependencies(normalizedDataElement, dependencySet, NormalizedDataElement.class);
 		removeNulls(dependencySet);
-		if(progress != null) progress.setMaximum(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class));
+		progress.setMaximum(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class));
 		
 		List<NormalizedDataElement> uptodateElements = refreshNormalizedDataElementWithoutSettingProgress(normalizedDataElement, progress);
 		return uptodateElements;
@@ -134,7 +127,7 @@ public class RefreshValueService {
 			}
 			
 			else {
-				if(progress != null) progress.incrementProgress(periodService.listPeriods().size() * countLocations(DataLocation.class));
+				if (progress != null) progress.incrementProgress(periodService.listPeriods().size() * countLocations(DataLocation.class));
 			}
 			
 			return normalizedDataElement.getLastValueChanged();
@@ -225,7 +218,7 @@ public class RefreshValueService {
 					
 					// TODO improve performance by getting all values at the same time
 					updateNormalizedDataElementValue(newNormalizedDataElement, dataLocation, period);
-					if(progress != null) progress.incrementProgress();
+					if (progress != null) progress.incrementProgress();
 				}
 				
 				updateSources(newNormalizedDataElement);
@@ -269,19 +262,14 @@ public class RefreshValueService {
 			originalSourceMap.put(period.getId()+"", jsonMap);
 		}
 		
-		SourceMap sourceMap = new SourceMap();
-		for (Entry<String, Map<String, List<String>>> entry : originalSourceMap.entrySet()) {
-			sourceMap.put(entry.getKey(), entry.getValue());
-		}
-		
 		
 		if (data instanceof NormalizedDataElement) {
 			NormalizedDataElement normalizedDataElement = (NormalizedDataElement)data;
-			normalizedDataElement.setSourceMap(sourceMap);
+			normalizedDataElement.setSourceMap(originalSourceMap);
 		}
 		else if (data instanceof Calculation) {
 			Calculation calculation = (Calculation)data;
-			calculation.setSourceMap(sourceMap);
+			calculation.setSourceMap(originalSourceMap);
 		}
 	}
 	
@@ -335,20 +323,15 @@ public class RefreshValueService {
 		}
 		removeNulls(dataElementDependencySet);
 		if (log.isDebugEnabled()) log.debug("dependencies of normalized data elements size: " + dataElementDependencySet.size());
-		
-		if(progress != null){
-			progress.setMaximum(
-					// all dependencies of NDEs
-					(dataElementDependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
-					// all dependent NDEs of calculations
-					(calculationDependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
-					// all calculations
-					(periodService.listPeriods().size() * countLocations(CalculationLocation.class)) * calculations.size()
-				);	
-		}
-		else{
-			//TODO
-		}
+	
+		if (progress != null) progress.setMaximum(
+			// all dependencies of NDEs
+			(dataElementDependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
+			// all dependent NDEs of calculations
+			(calculationDependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
+			// all calculations
+			(periodService.listPeriods().size() * countLocations(CalculationLocation.class)) * calculations.size()
+		);
 		
 		// refresh normalized data elements
 		while (!normalizedDataElements.isEmpty()) {
@@ -371,17 +354,12 @@ public class RefreshValueService {
 		collectOrderedDependencies(calculation, dependencySet, NormalizedDataElement.class);
 		dependencySet.remove(calculation);
 		removeNulls(dependencySet);
-		if(progress != null){
-			progress.setMaximum(
-					// all dependent NDEs
-					(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
-					// the calculation itself
-					(periodService.listPeriods().size() * countLocations(CalculationLocation.class))
-				);	
-		}
-		else{
-			//TODO
-		}
+		progress.setMaximum(
+			// all dependent NDEs
+			(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
+			// the calculation itself
+			(periodService.listPeriods().size() * countLocations(CalculationLocation.class))
+		);
 		
 		refreshCalculationWithoutSettingProgress(calculation, progress);
 	}
@@ -417,7 +395,7 @@ public class RefreshValueService {
 		}
 		
 		else {
-			if(progress != null) progress.incrementProgress(periodService.listPeriods().size() * countLocations(CalculationLocation.class));
+			progress.incrementProgress(periodService.listPeriods().size() * countLocations(CalculationLocation.class));
 		}
 	}
 	
@@ -446,7 +424,7 @@ public class RefreshValueService {
 					
 					// TODO improve performance by getting all values at the same time
 					updateCalculationPartialValues(newCalculation, location, period);
-					if(progress != null) progress.incrementProgress();
+					if (progress != null) progress.incrementProgress();
 				}
 				
 				updateSources(newCalculation);

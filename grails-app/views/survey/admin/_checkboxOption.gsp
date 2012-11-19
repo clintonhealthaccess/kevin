@@ -13,7 +13,7 @@
 </div>
 <div>
 	<span class="bold"><g:message code="dataelement.label"/>:</span>
-	<span>${i18n(field:option.surveyElement?.dataElement?.names)}</span>
+	<span>${option.surveyElement?.dataElement?.code}</span>
 </div>
 <div>
 	<span class="bold"><g:message code="entity.datalocationtype.label"/>:</span>

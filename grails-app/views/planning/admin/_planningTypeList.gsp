@@ -2,9 +2,9 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.name.label"/></th>
+			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q, 'planning.id':params['planning.id']]" title="${message(code: 'entity.name.label')}" />
 			<th><g:message code="planning.planningtype.rawdataelement.label"/></th>
-			<th><g:message code="planning.planningtype.maxnumber.label"/></th>
+			<g:sortableColumn property="maxNumber" params="[q:params.q, 'planning.id':params['planning.id']]" title="${message(code: 'planning.planningtype.maxnumber.label')}" />
 			<th><g:message code="default.number.label" args="[message(code:'planning.planningcost.label')]"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
@@ -27,7 +27,7 @@
 					</ul>
 				</td>
 				<td><g:i18n field="${planningType.names}"/></td>
-				<td><g:i18n field="${planningType.formElement.dataElement.names}"/></td>
+				<td><g:i18n field="${planningType.formElement.dataElement.code}"/></td>
 				<td>${planningType.maxNumber}</td>
 				<td>${planningType.costs.size()}</td>
 				<td>

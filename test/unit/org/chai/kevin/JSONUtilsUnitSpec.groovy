@@ -16,4 +16,12 @@ class JSONUtilsUnitSpec extends UnitSpec {
 		
 	}
 	
+	def "get json from empty map"() {
+		when:
+		def map = [:]
+		
+		then:
+		JSONUtils.getJSONFromMap(map) == '{}'
+	}
+	
 }

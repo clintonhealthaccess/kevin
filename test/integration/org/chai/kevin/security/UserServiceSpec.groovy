@@ -28,7 +28,7 @@
 package org.chai.kevin.security
 
 import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 
 /**
  * @author Jean Kahigiso M.

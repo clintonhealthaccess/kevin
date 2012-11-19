@@ -56,11 +56,11 @@ class CalculationController extends AbstractController {
 	def search = {
 		adaptParamsForList()
 		
-		List<Calculation> calculations = dataService.searchData(Calculation.class, params['q'], [], params);
+		def calculations = dataService.searchData(Calculation.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: calculations,
-			entityCount: dataService.countData(Calculation.class, params['q'], []),
+			entityCount: calculations.totalCount,
 			entityClass: getEntityClass(),
 			template: "data/calculationList",
 			code: getLabel(),
@@ -70,12 +70,12 @@ class CalculationController extends AbstractController {
 	
 	def list = {
 		adaptParamsForList()
-		List<Calculation<?>> calculations = dataService.list(Calculation.class, params)
+		def calculations = Calculation.list(params)		
 		
 		render (view: '/entity/list', model:[
 			entities: calculations,
 			template: "data/calculationList",
-			entityCount: dataService.count(Calculation.class),
+			entityCount: calculations.totalCount,
 			code: 'calculation.label',
 			addTemplate: '/entity/data/addCalculation'
 		])

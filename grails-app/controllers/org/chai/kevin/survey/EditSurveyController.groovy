@@ -28,11 +28,11 @@ package org.chai.kevin.survey;
  */
 
 import org.chai.kevin.AbstractController
-import org.chai.kevin.LocationService
+import org.chai.location.LocationService
 import org.chai.kevin.form.FormValidationService
-import org.chai.kevin.location.CalculationLocation
-import org.chai.kevin.location.DataLocation
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.CalculationLocation
+import org.chai.location.DataLocation
+import org.chai.location.DataLocationType;
 import org.chai.kevin.security.UserType;
 import org.chai.kevin.survey.summary.SummaryService
 import org.chai.kevin.util.Utils
@@ -74,12 +74,13 @@ class EditSurveyController extends AbstractController {
 		}
 	}
 
-	def validateParameters(def location, def types) {
+	def validateParameters(def location, def types, def page) {
 		def valid = true;
 
-		if (location == null) valid = false
+		if (page == null) valid = false
+		else if (location == null) valid = false
 		else {
-			if (types != null && !Utils.split(types, DataLocationType.DEFAULT_CODE_DELIMITER).contains(location.type.code)) valid = false
+			if (types != null && !Utils.split(types, Utils.DEFAULT_TYPE_CODE_DELIMITER).contains(location.type.code)) valid = false
 		}
 
 		if (!valid) {
@@ -92,9 +93,9 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.section, params:"+params)
 
 		DataLocation dataLocation = DataLocation.get(params.int('location'))
-		SurveySection currentSection =  SurveySection.get(params.int('section'));
+		SurveySection currentSection = SurveySection.get(params.int('section'));
 
-		if (validateParameters(dataLocation, currentSection?.typeCodeString)) {
+		if (validateParameters(dataLocation, currentSection?.typeCodeString, currentSection)) {
 			def surveyPage = surveyPageService.getSurveyPage(dataLocation,currentSection)
 
 			render (view: '/survey/sectionPage', model: [surveyPage: surveyPage])
@@ -107,7 +108,7 @@ class EditSurveyController extends AbstractController {
 		DataLocation dataLocation = DataLocation.get(params.int('location'))
 		SurveyProgram currentProgram = SurveyProgram.get(params.int('program'));
 
-		if (validateParameters(dataLocation, currentProgram?.typeCodeString)) {
+		if (validateParameters(dataLocation, currentProgram?.typeCodeString, currentProgram)) {
 			def surveyPage = surveyPageService.getSurveyPage(dataLocation, currentProgram)
 
 			render (view: '/survey/programPage', model: [surveyPage: surveyPage])
@@ -118,10 +119,9 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.survey, params:"+params)
 
 		DataLocation dataLocation = DataLocation.get(params.int('location'))
-
-		if (validateParameters(dataLocation, null)) {
-			Survey survey = Survey.get(params.int('survey'))
-
+		Survey survey = Survey.get(params.int('survey'))
+		
+		if (validateParameters(dataLocation, null, survey)) {
 			def surveyPage = surveyPageService.getSurveyPage(dataLocation, survey)
 
 			render (view: '/survey/surveyPage', model: [surveyPage: surveyPage])
@@ -134,7 +134,7 @@ class EditSurveyController extends AbstractController {
 		DataLocation dataLocation = DataLocation.get(params.int('location'))
 		SurveyProgram currentProgram = SurveyProgram.get(params.int('program'));
 
-		if (validateParameters(dataLocation, currentProgram?.typeCodeString)) {
+		if (validateParameters(dataLocation, currentProgram?.typeCodeString, currentProgram)) {
 			surveyPageService.reopen(dataLocation, currentProgram);
 
 			redirect (action: "programPage", params: [location: dataLocation.id, program: currentProgram.id])
@@ -147,7 +147,7 @@ class EditSurveyController extends AbstractController {
 		DataLocation dataLocation = DataLocation.get(params.int('location'))
 		SurveyProgram currentProgram = SurveyProgram.get(params.int('program'));
 
-		if (validateParameters(dataLocation, currentProgram?.typeCodeString)) {
+		if (validateParameters(dataLocation, currentProgram?.typeCodeString, currentProgram)) {
 			boolean success = surveyPageService.submit(dataLocation, currentProgram);
 
 			if (success) {
@@ -271,7 +271,7 @@ class EditSurveyController extends AbstractController {
 		DataLocation currentLocation = DataLocation.get(params.int('location'))
 		def currentSection = SurveySection.get(params.int('section'));
 
-		if (validateParameters(currentLocation, currentSection?.typeCodeString)) {
+		if (validateParameters(currentLocation, currentSection?.typeCodeString, currentSection)) {
 			def surveyElements = getSurveyElements()
 			surveyPageService.modify(currentLocation, currentSection.program, surveyElements, params);
 			def sectionPage = surveyPageService.getSurveyPage(currentLocation, currentSection)

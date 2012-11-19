@@ -64,7 +64,8 @@ grails.project.dependency.resolution = {
 		mavenRepo "http://maven.glassfish.org/content/groups/public"
 		mavenRepo "http://repo.opennms.org/maven2/"
 		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
-				
+		mavenRepo "http://maven.springframework.org/milestone/"
+		
 		/**
 		 * Configure our resolver.
 		 */
@@ -118,10 +119,16 @@ grails.project.dependency.resolution = {
 		compile ":svn:1.0.2"
 		compile ":cdn-resources:0.2.1"
 		compile ":mail:1.0"
-		compile ":build-info-tag:0.1"
+		compile ":build-info-tag:0.3.1"
 		compile ":yui-minify-resources:0.1.5"
 		compile ":rabbitmq-tasks:0.5.3-SNAPSHOT"
+		compile ":i18n-fields:0.6.3-CHAI"
+		compile ':chai-locations:0.4.2-CHAI'
 		
+		// cloud foundry support
+		compile ":cloud-foundry:1.2.3"
+		
+		// tests
 		test ":geb:0.7.2"
 		test ":spock:0.6"
 	}

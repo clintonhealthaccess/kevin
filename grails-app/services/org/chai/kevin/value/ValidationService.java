@@ -12,7 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.JaqlService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 
 public class ValidationService {
 	

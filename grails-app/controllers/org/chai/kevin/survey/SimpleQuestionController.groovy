@@ -27,14 +27,8 @@
  */
 package org.chai.kevin.survey
 
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.LanguageService;
-import org.chai.kevin.Translation;
-import org.chai.kevin.util.Utils
-import org.chai.kevin.data.DataService;
-import org.chai.kevin.data.RawDataElement
-import org.chai.kevin.location.DataLocationType;
-import org.apache.commons.lang.math.NumberUtils;
+import org.chai.kevin.AbstractEntityController
+import org.chai.location.DataLocationType
 
 /**
  * @author Jean Kahigiso M.
@@ -42,8 +36,6 @@ import org.apache.commons.lang.math.NumberUtils;
  */
 class SimpleQuestionController extends AbstractEntityController {
 
-	def languageService
-	def locationService
 	def surveyService
 	
 	def getEntity(def id) {
@@ -52,6 +44,10 @@ class SimpleQuestionController extends AbstractEntityController {
 	
 	def createEntity() {
 		return new SurveySimpleQuestion();
+	}
+	
+	def deleteEntity(def entity) {
+		surveyService.deleteQuestion(entity)
 	}
 
 	def getLabel() {
@@ -77,15 +73,15 @@ class SimpleQuestionController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
-		
-		// headers
-		bindTranslationMap('headerList', entity.surveyElement?.headers)
-		
-		if (entity.surveyElement != null) entity.surveyElement.surveyQuestion = entity
+				
+		if (entity.surveyElement != null) {
+			entity.surveyElement.question = entity
+			
+			// headers
+			def headers = [:]
+			bindTranslationMap('headerList', headers)
+			entity.surveyElement.headers = headers
+		}
 	}
 	
 }

@@ -2,9 +2,9 @@ package org.chai.kevin.exports
 
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocationType;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyIntegrationTests;
 import org.chai.kevin.util.Utils;
@@ -17,10 +17,10 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(CODE(1), j(["en":"survey"]), period)
-		def program = newSurveyProgram(CODE(1), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(CODE(1), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = newSimpleQuestion(CODE(1), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = newSurvey(CODE(1), ["en":"survey"], period)
+		def program = newSurveyProgram(CODE(1), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))		
@@ -39,10 +39,10 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(CODE(1), j(["en":"survey"]), period)
-		def program = newSurveyProgram(CODE(1), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(CODE(1), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = newSimpleQuestion(CODE(1), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = newSurvey(CODE(1), ["en":"survey"], period)
+		def program = newSurveyProgram(CODE(1), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_ENUM('MISSING')
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))
@@ -61,10 +61,10 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(CODE(1), j(["en":"survey"]), period)
-		def program = newSurveyProgram(CODE(1), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(CODE(1), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = newSimpleQuestion(CODE(1), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = newSurvey(CODE(1), ["en":"survey"], period)
+		def program = newSurveyProgram(CODE(1), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def enume = newEnume("ENUM")
 		def type = Type.TYPE_ENUM('ENUM')
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
@@ -84,10 +84,10 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(CODE(1), j(["en":"survey"]), period)
-		def program = newSurveyProgram(CODE(1), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(CODE(1), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = newSimpleQuestion(CODE(1), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = newSurvey(CODE(1), ["en":"survey"], period)
+		def program = newSurveyProgram(CODE(1), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))		
@@ -106,10 +106,10 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(CODE(1), j(["en":"survey"]), period)
-		def program = newSurveyProgram(CODE(1), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(CODE(1), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = newSimpleQuestion(CODE(1), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = newSurvey(CODE(1), ["en":"survey"], period)
+		def program = newSurveyProgram(CODE(1), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))		
@@ -127,12 +127,12 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 	def "test for export survey with data location not attached to lowest level"(){
 		setup:
 		setupLocationTree()
-		def dataLocation = newDataLocation(j(["en":"Test"]), "TEST", Location.findByCode(NORTH), DataLocationType.findByCode(HEALTH_CENTER_GROUP))
+		def dataLocation = newDataLocation(["en":"Test"], "TEST", Location.findByCode(NORTH), DataLocationType.findByCode(HEALTH_CENTER_GROUP))
 		def period = newPeriod()
-		def survey = newSurvey(CODE(1), j(["en":"survey"]), period)
-		def program = newSurveyProgram(CODE(1), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(CODE(1), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = newSimpleQuestion(CODE(1), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = newSurvey(CODE(1), ["en":"survey"], period)
+		def program = newSurveyProgram(CODE(1), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, dataLocation, v("10"))
@@ -151,10 +151,10 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(CODE(1), j(["en":"survey"]), period)
-		def program = newSurveyProgram(CODE(1), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(CODE(1), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = newSimpleQuestion(CODE(1), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = newSurvey(CODE(1), ["en":"survey"], period)
+		def program = newSurveyProgram(CODE(1), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))		
@@ -174,12 +174,12 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(CODE(1), j(["en":"survey"]), period)
-		def program = newSurveyProgram(CODE(1), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(CODE(1), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = newSimpleQuestion(CODE(1), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = newSurvey(CODE(1), ["en":"survey"], period)
+		def program = newSurveyProgram(CODE(1), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()]))
-		def element = newSurveyElement(question, newRawDataElement(CODE(1), type), ['[_].key1':j(['en':'header1'])])
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), type), ['[_].key1':['en':'header1']])
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), type.getValue([['key1':10]]))
 		Map<SurveyElement, FormEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, FormEnteredValue>()
 		surveyElementValueMap.put(formEnteredValue.getFormElement(), formEnteredValue)
@@ -189,8 +189,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		
 		then:
 		dataPoints.size() == 1
-		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","LIST","question",
-			"10.0", "header1"])
+		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","LIST","question", "10.0", "header1"])
 //		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","LIST","question",
 //			"10.0", "Line 1", "header1"])
 	}
@@ -199,10 +198,10 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(CODE(1), j(["en":"survey"]), period)
-		def program = newSurveyProgram(CODE(1), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(CODE(1), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = newSimpleQuestion(CODE(1), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = newSurvey(CODE(1), ["en":"survey"], period)
+		def program = newSurveyProgram(CODE(1), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))		
@@ -222,10 +221,10 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def survey = newSurvey(CODE(1), j(["en":"survey"]), period)
-		def program = newSurveyProgram(CODE(1), j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(CODE(1), j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def question = newSimpleQuestion(CODE(1), j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def survey = newSurvey(CODE(1), ["en":"survey"], period)
+		def program = newSurveyProgram(CODE(1), ["en":"program"], survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), ["en":"section"], program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(CODE(1), ["en":"question"], section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
 		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))		
@@ -236,7 +235,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def file = surveyExportService.getExportFilename(DataLocation.findByCode(BUTARO), section, program, survey)
 		
 		then:
-		file.startsWith("section_ButaroDH_")
+		file.startsWith("CODE1_Butaro DH_")
 	}
 		
 }

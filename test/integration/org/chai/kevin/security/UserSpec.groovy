@@ -3,8 +3,8 @@ package org.chai.kevin.security
 import grails.validation.ValidationException;
 
 import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 import org.chai.kevin.security.UserType;
 
 class UserSpec extends IntegrationTests {
@@ -14,7 +14,7 @@ class UserSpec extends IntegrationTests {
 		new User(
 			username: 'test', code: 'test', uuid: 'test', permissionString: '',
 			passwordHash: '', email: 'test@test.com', firstname: 'test', lastname: 'test',
-			phoneNumber: '123', organisation: 'test'
+			phoneNumber: '123', organisation: 'test', defaultLanguage: 'en'
 		).save(failOnError: true)
 		
 		then:
@@ -24,7 +24,8 @@ class UserSpec extends IntegrationTests {
 		new User(
 			username: 'test', code: 'test', uuid: 'test', permissionString: '',
 			passwordHash: '', email: 'test@test.com', firstname: 'test', lastname: 'test',
-			phoneNumber: '123', organisation: 'test', userType: UserType.OTHER
+			phoneNumber: '123', organisation: 'test', userType: UserType.OTHER,
+			defaultLanguage: 'en'
 		).save(failOnError: true)
 		
 		then:
@@ -40,7 +41,8 @@ class UserSpec extends IntegrationTests {
 		new User(
 			username: 'test', code: 'test', uuid: 'test', permissionString: '', userType: UserType.PLANNING, 
 			passwordHash: '', email: 'test@test.com', firstname: 'test', lastname: 'test',
-			phoneNumber: '123', organisation: 'test', locationId: location.id 
+			phoneNumber: '123', organisation: 'test', locationId: location.id,
+			defaultLanguage: 'en'
 		).save(failOnError: true)
 		
 		then:
@@ -50,7 +52,8 @@ class UserSpec extends IntegrationTests {
 		new User(
 			username: 'test', code: 'test', uuid: 'test', permissionString: '', userType: UserType.PLANNING,
 			passwordHash: '', email: 'test@test.com', firstname: 'test', lastname: 'test',
-			phoneNumber: '123', organisation: 'test', locationId: DataLocation.findByCode(BUTARO).id
+			phoneNumber: '123', organisation: 'test', locationId: DataLocation.findByCode(BUTARO).id,
+			defaultLanguage: 'en'
 		).save(failOnError: true)
 		
 		then:
@@ -62,7 +65,8 @@ class UserSpec extends IntegrationTests {
 		new User(
 			username: 'test', code: 'test', uuid: 'test', permissionString: '',
 			passwordHash: '', email: 'test@test.com', firstname: 'test', lastname: 'test',
-			phoneNumber: '123', organisation: 'test', userType: UserType.PLANNING	
+			phoneNumber: '123', organisation: 'test', userType: UserType.PLANNING,
+			defaultLanguage: 'en'
 		).save(failOnError: true)
 		
 		then:
@@ -72,7 +76,8 @@ class UserSpec extends IntegrationTests {
 		new User(
 			username: 'test', code: 'test', uuid: 'test', permissionString: '',
 			passwordHash: '', email: 'test@test.com', firstname: 'test', lastname: 'test',
-			phoneNumber: '123', organisation: 'test', userType: UserType.OTHER
+			phoneNumber: '123', organisation: 'test', userType: UserType.OTHER,
+			defaultLanguage: 'en'
 		).save(failOnError: true)
 		
 		then:
@@ -84,7 +89,8 @@ class UserSpec extends IntegrationTests {
 		new User(
 			username: 'test', code: 'test', uuid: 'test', permissionString: '',
 			passwordHash: '', email: 'test@test.com', firstname: 'test', lastname: 'test',
-			phoneNumber: '123', organisation: 'test', userType: UserType.SURVEY	
+			phoneNumber: '123', organisation: 'test', userType: UserType.SURVEY	,
+			defaultLanguage: 'en'
 		).save(failOnError: true)
 		
 		then:
@@ -94,7 +100,8 @@ class UserSpec extends IntegrationTests {
 		new User(
 			username: 'test', code: 'test', uuid: 'test', permissionString: '',
 			passwordHash: '', email: 'test@test.com', firstname: 'test', lastname: 'test',
-			phoneNumber: '123', organisation: 'test', userType: UserType.OTHER
+			phoneNumber: '123', organisation: 'test', userType: UserType.OTHER,
+			defaultLanguage: 'en'
 		).save(failOnError: true)
 		
 		then:

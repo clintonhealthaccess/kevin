@@ -34,8 +34,8 @@ package org.chai.kevin.fct;
 import grails.plugin.springcache.annotations.CacheFlush;
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.data.Sum
-import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.data.Summ
+import org.chai.location.DataLocationType;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.Utils
 
@@ -81,22 +81,11 @@ class FctTargetController extends AbstractEntityController {
 	}
 
 	def deleteEntity(def entity) {
-		if(entity.targetOptions.size() == 0){
-			if (log.isInfoEnabled()) log.info("deleting target: "+entity)			
-			entity.delete()
-		}
-		else {
-			flash.message = message(code: 'fct.target.haschildren', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Fct Target {0} still has associated children.')
-		}				
+		entity.delete()
 	}
 	
 	def bindParams(def entity) {
 		entity.properties = params
-
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
 	@CacheFlush("fctCache")
@@ -117,11 +106,11 @@ class FctTargetController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<FctTarget> targets = dataService.searchData(FctTarget.class, params['q'], [], params);
+		def targets = dataService.searchData(FctTarget.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: targets,
-			entityCount: dataService.countData(FctTarget.class, params['q'], []),
+			entityCount: targets.totalCount,
 			entityClass: getEntityClass(),
 			template: "fct/targetList",
 			code: getLabel(),

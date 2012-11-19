@@ -1,6 +1,7 @@
-import java.nio.channels.Channel;
-
-import org.chai.kevin.security.Role;
+import org.chai.kevin.survey.Survey;
+import org.chai.location.CalculationLocation;
+import org.chai.location.Location;
+import org.chai.task.Progress;
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -30,13 +31,16 @@ import org.chai.kevin.security.Role;
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.Initializer;
-import org.chai.kevin.cost.CostRampUpYear;
+import org.chai.init.DataInitializer;
+import org.chai.init.ExportInitializer;
+import org.chai.init.ReportInitializer;
+import org.chai.init.StructureInitializer;
+import org.chai.init.SurveyInitializer;
 
 import java.util.Date;
-
+import java.nio.channels.Channel;
+import org.chai.kevin.security.Role;
 import grails.util.GrailsUtil;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.chai.kevin.dashboard.DashboardTarget;
@@ -55,9 +59,12 @@ import com.ibm.jaql.lang.expr.core.TimeoutExpr.TaskState;
 
 class BootStrap {
 	
+	def sessionFactory
 	def rabbitTemplate
 	def taskService
-
+	def refreshValueService
+	def surveyPageService
+	
     def init = { servletContext ->
 
 		// we clear the queue
@@ -111,45 +118,57 @@ class BootStrap {
 				surveyAllReadonly.save()
 			}
 			
-//			if (User.findByUsername('admin') == null) {
-//				def user = new User(username: "admin", passwordHash: new Sha256Hash("123admin!").toHex())
-//				user.addToPermissions("*")
-//				user.save()
-//			}
-			
-//			if (User.findByUsername('dhsst') == null) {
-//				def user = new User(username: "dhsst", passwordHash: new Sha256Hash("123chai!").toHex())
-////				user.addToRoles(Role.findByName('survey-all-readonly'))
-//				user.addToRoles(Role.findByName('reports-all-readonly'))
-//				user.save()
-//			}
-			
 			break;
 		case "development":
-			Initializer.createDummyStructure();
-			Initializer.createUsers();
-			Initializer.createDataElementsAndExpressions();
-			Initializer.createDashboard();
-			Initializer.createDsr();
-			Initializer.createFct();
-			Initializer.createQuestionaire();
-			Initializer.createPlanning();
-			Initializer.createDataElementExport();
-			Initializer.createCalculationExport();
+		case "demo":
+			// we initialize the structure
+			StructureInitializer.createLocationLevels()
+			StructureInitializer.createDataLocationTypes()
+			StructureInitializer.createLocations()
+			StructureInitializer.createDataLocations()
+			sessionFactory.currentSession.flush()
+			
+			// TODO review this
+			StructureInitializer.createRoles();
+			StructureInitializer.createUsers();
+			StructureInitializer.createPeriods();
+			StructureInitializer.createSources();
+
+			// we initialize the data
+			DataInitializer.createEnums();
+			DataInitializer.createRawDataElements();
+			DataInitializer.createRawDataElementValues();
+			DataInitializer.createNormalizedDataElements();
+			DataInitializer.createSums();
+						
+			refreshValueService.refreshAll(null)
+			
+			// we initialize the reports
+			ReportInitializer.createReportPrograms();
+			ReportInitializer.createDsrTargetCategories();
+			ReportInitializer.createDsrTargets();
+			ReportInitializer.createFctTargets();
+			ReportInitializer.createFctTargetOptions();
+			
+			// we initialize the survey
+			SurveyInitializer.createSurveys()
+			SurveyInitializer.createSurveyPrograms()
+			SurveyInitializer.createSurveySections()
+			SurveyInitializer.createSurveyQuestions()
+			SurveyInitializer.createValidationRules()
+			SurveyInitializer.createSurveySkipRules()
+			
+			// refresh
+			surveyPageService.refresh(Location.findByCode('rwanda'), Survey.findByCode('survey_period2'), false, true, null);
+			
+			// exports
+			ExportInitializer.createDataElementExports()
 			
 			break;
 		}
 		
     }
 
-    def destroy = {
-//		switch (GrailsUtil.environment) {
-//			case "production":
-//				break;
-//			case "development":
-////				deleteAll();
-//				break;
-//		}
-    }
-
+    def destroy = { }
+	
 }

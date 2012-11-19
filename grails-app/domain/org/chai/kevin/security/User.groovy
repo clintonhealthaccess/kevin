@@ -1,7 +1,7 @@
 package org.chai.kevin.security
 
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.security.PasswordToken;
 import org.chai.kevin.security.RegistrationToken;
@@ -31,6 +31,12 @@ class User {
 	UserType userType
 	
 	static hasMany = [ roles: Role ]
+	
+	static mapping = {
+		table 'dhsst_security_user'
+		cache true
+		roles joinTable: [name: 'dhsst_security_user_roles' ]
+	}
 	
 	User() {
 		roles = []
@@ -119,7 +125,8 @@ class User {
 		lastname(nullable: false, blank: false)
 		phoneNumber(phoneNumber: true, nullable: false, blank: false)
 		organisation(nullable: false, blank: false)
-		defaultLanguage(nullable: true)
+		defaultLanguage(nullable: false)
+		
 		registrationToken(nullable: true)
 		passwordToken(nullable: true)
 		
@@ -137,8 +144,4 @@ class User {
 			}
 		)
     }
-	
-	static mapping = {
-		cache true
-	}
 }

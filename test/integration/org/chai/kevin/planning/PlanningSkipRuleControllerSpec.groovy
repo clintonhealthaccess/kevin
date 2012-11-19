@@ -8,7 +8,7 @@ class PlanningSkipRuleControllerSpec extends PlanningIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def planning = newPlanning(period, [])
-		def planningSkipRule = newPlanningSkipRule(planning, "true")
+		def planningSkipRule = newPlanningSkipRule('skip', planning, "true")
 		planningSkipRuleController = new PlanningSkipRuleController()
 		
 		when:
@@ -37,6 +37,7 @@ class PlanningSkipRuleControllerSpec extends PlanningIntegrationTests {
 		planningSkipRuleController = new PlanningSkipRuleController()
 		
 		when:
+		planningSkipRuleController.params['code'] = 'code'
 		planningSkipRuleController.params['planning.id'] = planning.id
 		planningSkipRuleController.params.expression = "true"
 		planningSkipRuleController.saveWithoutTokenCheck()

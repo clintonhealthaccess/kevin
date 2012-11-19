@@ -28,13 +28,10 @@ package org.chai.kevin.value;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.persistence.Entity;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -45,10 +42,9 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.util.Utils;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -97,20 +93,8 @@ public class ValueService {
 		addSearchCriteria(criteria, text);
 		
 		List<T> result = criteria.list();
-		filterList(result, text);
-		
 		if (log.isDebugEnabled()) log.debug("searchDataValues(...)=");
 		return result;
-	}
-	
-	private <T extends DataValue> void filterList(List<T> list, String text) {
-		for (String chunk : StringUtils.split(text)) {
-			for (DataValue element : new ArrayList<T>(list)) {
-				if (!Utils.matches(chunk, element.getLocation().getNames().get(languageService.getCurrentLanguage())) 
-					&&
-					!Utils.matches(chunk, element.getLocation().getCode())) list.remove(element);
-			}
-		}
 	}
 	
 	private void addSearchCriteria(Criteria criteria, String text) {
@@ -118,7 +102,7 @@ public class ValueService {
 		for (String chunk : StringUtils.split(text)) {
 			Disjunction disjunction = Restrictions.disjunction();		
 			disjunction.add(Restrictions.ilike("location.code", chunk, MatchMode.ANYWHERE));
-			disjunction.add(Restrictions.ilike("location.names.jsonText", chunk, MatchMode.ANYWHERE));
+			disjunction.add(Restrictions.ilike("location.names_"+languageService.getCurrentLanguage(), chunk, MatchMode.ANYWHERE));
 			textRestrictions.add(disjunction);
 		}
 		criteria.add(textRestrictions);
@@ -167,6 +151,7 @@ public class ValueService {
 		criteria.add(Restrictions.eq("data", data));
 		if (period != null) criteria.add(Restrictions.eq("period", period));
 		if (dataLocation != null) criteria.add(Restrictions.eq("location", dataLocation));
+//		criteria.add(Restrictions.isNull("type"));
 		
 		return criteria;
 	}
@@ -198,7 +183,6 @@ public class ValueService {
 		.add(Restrictions.in("type", types)).list();
 	}
 	
-	@Transactional(readOnly=true)
 	public Long getNumberOfValues(Data<?> data, Period period) {
 		return (Long)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
 		.add(Restrictions.eq("data", data))
@@ -207,9 +191,15 @@ public class ValueService {
 		.uniqueResult();
 	}
 	
+	public Long getNumberOfValues(Period period) {
+		return (Long)sessionFactory.getCurrentSession().createCriteria(StoredValue.class)
+		.add(Restrictions.eq("period", period))
+		.setProjection(Projections.count("id"))
+		.uniqueResult();
+	}
+	
 	// if this is set readonly, it triggers an error when deleting a
 	// data element through DataElementController.deleteEntity
-	@Transactional(readOnly=true)
 	public Long getNumberOfValues(Data<?> data) {
 		return (Long)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
 		.add(Restrictions.eq("data", data))
@@ -217,7 +207,15 @@ public class ValueService {
 		.uniqueResult();
 	}
 	
-	@Transactional(readOnly=true)
+	// if this is set readonly, it triggers an error when deleting a
+	// data element through DataElementController.deleteEntity
+	public Long getNumberOfValues(DataLocation location, Class<?> clazz) {
+		return (Long)sessionFactory.getCurrentSession().createCriteria(clazz)
+		.add(Restrictions.eq("location", location))
+		.setProjection(Projections.count("id"))
+		.uniqueResult();
+	}
+	
 	public Long getNumberOfValues(Data<?> data, Status status, Period period) {
 		// TODO allow Calculation here
 		if (!(data instanceof NormalizedDataElement)) {
@@ -234,12 +232,16 @@ public class ValueService {
 	
 	@Transactional(readOnly=false)
 	public void deleteValues(Data<?> data, CalculationLocation location, Period period) {
-		String queryString = "delete from "+data.getValueClass().getAnnotation(Entity.class).name()+" where data = :data";
+		String valueClass = null;
+		if (data != null) valueClass = data.getValueClass().getName();
+		else valueClass = "StoredValue";
+		String queryString = "delete from "+valueClass+" where 1 = 1";
+		if (data != null) queryString += " and data = :data";
 		if (location != null) queryString += " and location = :location";
 		if (period != null) queryString += " and period = :period";
 		Query query = sessionFactory.getCurrentSession()
-		.createQuery(queryString)
-		.setParameter("data", data);
+		.createQuery(queryString);
+		if (data != null) query.setParameter("data", data);
 		if (location != null) query.setParameter("location", location);
 		if (period != null) query.setParameter("period", period);
 		query.executeUpdate();

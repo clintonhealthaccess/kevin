@@ -13,14 +13,13 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationService;
-import org.chai.kevin.LocationSorter;
+import org.chai.location.LocationService;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataService;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.CalculationLocation;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.value.ValueService;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
@@ -60,12 +59,12 @@ public class ReportService {
 	
 	public <T extends ReportTarget> boolean collectReportTree(Class<T> clazz, ReportProgram program, List<ReportProgram> collectedPrograms, List<T> collectedTargets) {
 		boolean hasTargets = false;
-		for (ReportProgram child : program.getChildren()) {
+		for (ReportProgram child : program.getAllChildren()) {
 			hasTargets = hasTargets | collectReportTree(clazz, child, collectedPrograms, collectedTargets);
 		}
 		
 		//report target tree list
-		List<T> targets = getReportTargets(clazz, program);
+		List<T> targets = program.getReportTargets(clazz);
 		if (log.isDebugEnabled()) log.debug("collectReportTree(program="+program+",targets="+targets+")");
 		if(!targets.isEmpty()){
 			hasTargets = true;
@@ -84,17 +83,6 @@ public class ReportService {
 		List<AbstractReportTarget> indicators = (List<AbstractReportTarget>)criteria.list();
 		if (log.isDebugEnabled()) log.debug("getReportTargets(data="+data+",indicators="+indicators+")");
 		return indicators;
-	}
-	
-	// TODO check this
-	public <T extends ReportTarget> List<T> getReportTargets(Class<T> clazz, ReportProgram program) {
-		Criteria criteria = sessionFactory.getCurrentSession()
-			.createCriteria(clazz)
-			.setCacheable(true);
-		if(program != null) criteria.add(Restrictions.eq("program", program));
-		List<T> targets = (List<T>)criteria.list();
-		if (log.isDebugEnabled()) log.debug("collectReportTree(program="+program+",targets="+targets+")");
-		return targets;			
 	}
 	
 	public void setLocationService(LocationService locationService) {

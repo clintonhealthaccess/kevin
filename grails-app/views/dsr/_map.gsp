@@ -3,12 +3,12 @@
 	<g:reportExport linkParams="${params}" />
 	<g:reportView linkParams="${params}" exclude="${['indicators']}"/>
 	<div class="selector">
-		<g:reportCategoryFilter linkParams="${params}" exclude="${['indicators']}"/>
+		<g:reportCategoryFilter selected="${currentCategory}" program="${currentProgram}" linkParams="${params}" exclude="${['indicators']}"/>
 	</div>
 	
 	<g:render template="/maps/colors"/>
 	<g:render template="/dsr/reportProgramMap" 
-	model="[linkParams:params, reportTable: dsrTable, reportLocations: dsrTable.locations, reportIndicators: dsrTable.targets]"/>
+	model="[linkParams:params, reportTable: dsrTable, reportLocations: dsrTable.getLocations(currentLocation, locationSkipLevels, currentLocationTypes), reportIndicators: dsrTable.indicators]"/>
 	<g:render template="/dsr/reportProgramMapTable" 
-		model="[linkParams:params, reportTable: dsrTable, reportLocations: dsrTable.locations, reportIndicators: dsrTable.targets]"/>
+		model="[linkParams:params, reportTable: dsrTable, reportLocations: dsrTable.getLocations(currentLocation, locationSkipLevels, currentLocationTypes), reportIndicators: dsrTable.indicators]"/>
 </li>

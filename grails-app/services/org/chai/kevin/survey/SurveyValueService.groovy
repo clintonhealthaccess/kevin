@@ -3,16 +3,14 @@ package org.chai.kevin.survey;
 import javax.persistence.Entity;
 
 import org.apache.shiro.SecurityUtils
-import org.chai.kevin.LocationService
+import org.chai.location.LocationService
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.survey.validation.SurveyEnteredProgram
-import org.chai.kevin.survey.validation.SurveyEnteredQuestion
-import org.chai.kevin.survey.validation.SurveyEnteredSection
+import org.chai.location.DataLocation;
 import org.hibernate.Criteria
 import org.hibernate.FlushMode
+import org.hibernate.Query;
 import org.hibernate.criterion.Projections
 import org.hibernate.criterion.Restrictions
 
@@ -27,9 +25,7 @@ class SurveyValueService {
 	
 	void save(SurveyEnteredProgram surveyEnteredProgram) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredProgram=${surveyEnteredProgram}})")
-//		surveyEnteredProgram.setUserUuid(SecurityUtils.subject.principal)
-//		surveyEnteredProgram.setTimestamp(new Date());
-		surveyEnteredProgram.save();
+		surveyEnteredProgram.save(failOnError: true);
 	}
 
 	void delete(SurveyEnteredProgram surveyEnteredProgram) {
@@ -45,9 +41,7 @@ class SurveyValueService {
 	
 	void save(SurveyEnteredQuestion surveyEnteredQuestion) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredQuestion=${surveyEnteredQuestion}})")
-//		surveyEnteredQuestion.setUserUuid(SecurityUtils.subject.principal)
-//		surveyEnteredQuestion.setTimestamp(new Date());
-		surveyEnteredQuestion.save();
+		surveyEnteredQuestion.save(failOnError: true);
 	}
 	
 	void delete(SurveyEnteredQuestion surveyEnteredQuestion) {
@@ -56,13 +50,32 @@ class SurveyValueService {
 	
 	void save(SurveyEnteredSection surveyEnteredSection) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredSection=${surveyEnteredSection}})")
-//		surveyEnteredSection.setUserUuid(SecurityUtils.subject.principal)
-//		surveyEnteredSection.setTimestamp(new Date());
-		surveyEnteredSection.save();
+		surveyEnteredSection.save(failOnError: true);
 	}
 	
 	void delete(SurveyEnteredSection surveyEnteredSection) {
 		surveyEnteredSection.delete()
+	}
+	
+	void deleteEnteredQuestions(DataLocation dataLocation) {
+		String queryString = "delete from SurveyEnteredQuestion where dataLocation = :dataLocation";
+		Query query = sessionFactory.getCurrentSession().createQuery(queryString);
+		query.setParameter("dataLocation", dataLocation);
+		query.executeUpdate();
+	}
+	
+	void deleteEnteredSections(DataLocation dataLocation) {
+		String queryString = "delete from SurveyEnteredSection where dataLocation = :dataLocation";
+		Query query = sessionFactory.getCurrentSession().createQuery(queryString);
+		query.setParameter("dataLocation", dataLocation);
+		query.executeUpdate();
+	}
+	
+	void deleteEnteredPrograms(DataLocation dataLocation) {
+		String queryString = "delete from SurveyEnteredProgram where dataLocation = :dataLocation";
+		Query query = sessionFactory.getCurrentSession().createQuery(queryString);
+		query.setParameter("dataLocation", dataLocation);
+		query.executeUpdate();
 	}
 	
 	Integer getNumberOfSurveyEnteredPrograms(Survey survey, DataLocation dataLocation, Boolean closed, Boolean complete, Boolean invalid) {
@@ -79,41 +92,6 @@ class SurveyValueService {
 		c.setFlushMode(FlushMode.COMMIT)
 		c.uniqueResult();
 	}
-	
-//	Integer getNumberOfSurveyEnteredQuestions(Survey survey, DataLocation dataLocation, 
-//		SurveyProgram program, SurveySection section, Boolean complete, Boolean invalid, Boolean skippedAsComplete) {
-//		def c = SurveyEnteredQuestion.createCriteria()
-//		c.add(Restrictions.eq("dataLocation", dataLocation))
-//		
-//		if (complete!=null) {
-//			if (skippedAsComplete!=null) {
-//				def or = Restrictions.disjunction();
-//				or.add(Restrictions.eq("complete", complete))
-//				if (!skippedAsComplete) or.add(Restrictions.isEmpty("skippedRules"))
-//				else or.add(Restrictions.isNotEmpty("skippedRules"))
-//				c.add(or)
-//			}
-//			else {
-//				c.add(Restrictions.eq("complete", complete))
-//			}
-//		}
-//		if (invalid!=null) c.add(Restrictions.eq("invalid", invalid))
-//		
-//		
-//		c.createAlias("question", "sq")
-//		.createAlias("sq.section", "ss")
-//		.createAlias("ss.program", "so")
-//		.add(Restrictions.eq("so.survey", survey))
-//		
-//		if (section != null) c.add(Restrictions.eq("sq.section", section))
-//		if (program != null) c.add(Restrictions.eq("ss.program", program))
-//		
-//		c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-//		c.setProjection(Projections.rowCount())
-//		c.setCacheable(false);
-//		c.setFlushMode(FlushMode.COMMIT)
-//		c.uniqueResult();
-//	}
 	
 	SurveyEnteredSection getSurveyEnteredSection(SurveySection surveySection, DataLocation dataLocation) {
 		def c = SurveyEnteredSection.createCriteria()
@@ -167,7 +145,7 @@ class SurveyValueService {
 		c.add(Restrictions.eq("dataLocation", dataLocation))
 		
 		if (survey != null || program != null || section != null) c.createAlias("formElement", "se")
-		if (survey != null || program != null || section != null) c.createAlias("se.surveyQuestion", "sq")
+		if (survey != null || program != null || section != null) c.createAlias("se.question", "sq")
 		if (survey != null || program != null) c.createAlias("sq.section", "ss")
 		if (survey != null) c.createAlias("ss.program", "so")
 

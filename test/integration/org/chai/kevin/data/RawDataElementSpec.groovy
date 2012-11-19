@@ -18,20 +18,19 @@ class RawDataElementSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 	
-	// TODO uncomment when GRAILS-8615 is fixed 
-//	def "data element code is unique"() {
-//		when:
-//		new RawDataElement(code: CODE(1), type: Type.TYPE_NUMBER()).save(failOnError: true)
-//		
-//		then:
-//		RawDataElement.count() == 1;
-//		
-//		when:
-//		new RawDataElement(code: CODE(1), type: Type.TYPE_NUMBER()).save(failOnError: true)
-//		
-//		then:
-//		thrown ValidationException
-//	}
+	def "data element code is unique"() {
+		when:
+		new RawDataElement(code: CODE(1), type: Type.TYPE_NUMBER()).save(failOnError: true)
+		
+		then:
+		RawDataElement.count() == 1;
+		
+		when:
+		new RawDataElement(code: CODE(1), type: Type.TYPE_NUMBER()).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
 	
 	def "data element enum is present when type is enum"() {
 		when:
@@ -50,10 +49,12 @@ class RawDataElementSpec extends IntegrationTests {
 	
 	def "data element type must be valid"() {
 		when:
-		new RawDataElement(code: CODE(1), type: INVALID_TYPE).save(failOnError: true)
+		def dataElement = new RawDataElement(code: CODE(1), type: INVALID_TYPE)
+		dataElement.save(failOnError: true)
 		
 		then:
 		thrown ValidationException
+		dataElement.errors.getFieldErrors('type').size() == 1
 		
 		when:
 		new RawDataElement(code: CODE(1), type: Type.TYPE_NUMBER()).save(failOnError: true)
@@ -68,5 +69,21 @@ class RawDataElementSpec extends IntegrationTests {
 		
 		then:
 		RawDataElement.count() == 1
+	}
+	
+	def "deleting data element does not delete source"() {
+		when:
+		def source = newSource(CODE(1))
+		def dataElement = new RawDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), source: source).save(failOnError: true)
+		
+		then:
+		RawDataElement.count() == 1
+		
+		when:
+		dataElement.delete()
+		
+		then:
+		RawDataElement.count() == 0
+		Source.count() == 1
 	}
 }

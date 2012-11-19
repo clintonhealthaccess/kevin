@@ -4,9 +4,9 @@ import grails.validation.ValidationException;
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
+import org.chai.location.Location;
 import org.chai.kevin.value.RawDataElementValue;
 
 class StoredValueSpec extends IntegrationTests {

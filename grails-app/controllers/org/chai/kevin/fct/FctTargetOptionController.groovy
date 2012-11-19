@@ -57,11 +57,6 @@ class FctTargetOptionController extends AbstractEntityController {
 	def bindParams(def entity) {
 		entity.properties = params
 		if (params.int('data.id')) entity.data = dataService.getData(params.int('data.id'), Data.class)
-		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
 	@CacheFlush("fctCache")
@@ -82,11 +77,11 @@ class FctTargetOptionController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<FctTargetOption> targetOptions = dataService.searchData(FctTargetOption.class, params['q'], [], params);
+		def targetOptions = dataService.searchData(FctTargetOption.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: targetOptions,
-			entityCount: dataService.countData(FctTargetOption.class, params['q'], []),
+			entityCount: targetOptions.totalCount,
 			entityClass: getEntityClass(),
 			template: "fct/targetOptionList",
 			code: getLabel(),

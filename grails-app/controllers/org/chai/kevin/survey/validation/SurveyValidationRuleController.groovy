@@ -31,7 +31,7 @@ import org.chai.kevin.AbstractController;
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.form.FormCloner;
 import org.chai.kevin.form.FormValidationRule;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyElement
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
@@ -59,6 +59,7 @@ class SurveyValidationRuleController extends AbstractController {
 			response.sendError(404)
 		}
 		else {
+			
 			List<FormValidationRule> validationRules = new ArrayList<FormValidationRule>();
 			if (surveyElement != null) {		
 				surveyElement = SurveyElement.get(params.int('formElement.id'))
@@ -70,7 +71,15 @@ class SurveyValidationRuleController extends AbstractController {
 					validationRules.addAll(element.getValidationRules())	
 				}
 			}
-			validationRules.sort {it.id}
+			
+			if (params.sort) {
+				def sortProperty = params.sort
+				validationRules.sort {
+					if (sortProperty == 'formElement.dataElement.code') it.formElement.dataElement.code 
+					else it."$sortProperty"
+				}
+				if (params['order'] == 'desc') validationRules = validationRules.reverse()
+			}
 	
 			def max = Math.min(params['offset']+params['max'], validationRules.size())
 			

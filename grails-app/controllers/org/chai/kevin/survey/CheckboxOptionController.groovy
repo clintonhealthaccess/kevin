@@ -31,7 +31,7 @@ import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.util.Utils
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.apache.commons.lang.math.NumberUtils;
 
 /**
@@ -41,6 +41,7 @@ import org.apache.commons.lang.math.NumberUtils;
 class CheckboxOptionController extends AbstractEntityController {
 
 	def locationService
+	def surveyService
 	
 	def getEntity(def id) {
 		return SurveyCheckboxOption.get(id)
@@ -65,16 +66,30 @@ class CheckboxOptionController extends AbstractEntityController {
 		]
 	}
 	
+	def deleteEntity(def entity) {
+		def question = entity.question
+		question.removeFromOptions(entity)
+		def surveyElement = entity.surveyElement
+		entity.surveyElement = null
+		entity.delete()
+		surveyService.deleteSurveyElement(surveyElement)
+		question.save()
+	}
+	
+	def saveEntity(def entity) {
+		if (entity.id == null) entity.question.addToOptions(entity)
+		entity.question.save()
+	}
+	
 	def getEntityClass(){
 		return SurveyCheckboxOption.class;
 	}
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
 		
-		if (entity.surveyElement != null) entity.surveyElement.surveyQuestion = entity.question
+		if (entity.surveyElement != null && entity.surveyElement.id == null) {
+			entity.question.addToSurveyElements(entity.surveyElement)
+		}
 	}
 }

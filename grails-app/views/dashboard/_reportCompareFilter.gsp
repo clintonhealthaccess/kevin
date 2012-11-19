@@ -5,8 +5,8 @@
 			params:[table:table, period:currentPeriod.id, program:currentProgram.id]]}">
 		<select id="${table}-compare" name="location" onchange="dashboardFilterChange(this, '${table}'); return false;">
 			<option value="0">Please select</option>
-			<g:if test="${dashboard != null && dashboard.locationPath != null && !dashboard.locationPath.empty}">
-				<g:each in="${dashboard.locationPath}" var="location">
+			<g:if test="${locationPath != null && !locationPath.empty}">
+				<g:each in="${locationPath}" var="location">
 					<option value="${location.id}">
 						<g:i18n field="${location.names}" />
 					</option>

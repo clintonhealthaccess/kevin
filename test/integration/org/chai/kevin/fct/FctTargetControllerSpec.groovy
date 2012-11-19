@@ -24,7 +24,7 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 	def "fct target list"() {
 		setup:
 		def program = newReportProgram(CODE(1))
-		def target = newFctTarget(CODE(1), 1, program)
+		def target = newFctTarget(CODE(2), 1, program)
 		fctTargetController = new FctTargetController()
 		
 		when:
@@ -40,25 +40,43 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def program = newReportProgram(CODE(1))
-		def target = newFctTarget(CODE(1), 1, program)
+		def target = newFctTarget(CODE(2), 1, program)
 		fctTargetController = new FctTargetController()
 		
 		when:
-		fctTargetController.params.id = target.id
+		fctTargetController.params.id = target.id+''
 		fctTargetController.delete()
 		
 		then:
 		FctTarget.count() == 0
 	}
 	
-	def "search target"() {
+	def "delete target deletes option" () {
 		setup:
+		setupLocationTree()
 		def program = newReportProgram(CODE(1))
-		def target = newFctTarget(CODE(1), 1, program)
+		def target = newFctTarget(CODE(2), 1, program)
+		def sum = newSum('1', CODE(1))
+		def option = newFctTargetOption(CODE(3), target, sum)
 		fctTargetController = new FctTargetController()
 		
 		when:
-		fctTargetController.params.q = CODE(1)
+		fctTargetController.params.id = target.id+''
+		fctTargetController.delete()
+		
+		then:
+		FctTarget.count() == 0
+		FctTargetOption.count() == 0
+	}
+	
+	def "search target"() {
+		setup:
+		def program = newReportProgram(CODE(1))
+		def target = newFctTarget(CODE(2), 1, program)
+		fctTargetController = new FctTargetController()
+		
+		when:
+		fctTargetController.params.q = CODE(2)
 		fctTargetController.search()
 		
 		then:

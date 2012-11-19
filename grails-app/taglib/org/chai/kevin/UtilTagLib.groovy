@@ -90,12 +90,14 @@ class UtilTagLib {
 	}
 	
 	def locales = { attrs, body ->
-		attrs["locales"] = languageService.getAvailableLanguages();
+		attrs["locales"] = languageService.getAvailableLocales();
 		out << render(template:"/tags/util/locales", model: attrs)
 	}
 	
 	def i18n = { attrs, body ->
-		def text = languageService.getText(attrs['field'])
+		def text
+		if (attrs['field'] instanceof Map) text = attrs['field'].get(languageService.currentLanguage)
+		else text = attrs['field']
 		out << text 
 	}
 	
@@ -112,6 +114,11 @@ class UtilTagLib {
 		else {}
 		
 		out << text
+	}
+	
+	def i18nField = { attrs, body ->
+		def field = attrs['field']
+		out << field + '_' + languageService.currentLanguage
 	}
 	
 	def ifText = { attrs, body ->

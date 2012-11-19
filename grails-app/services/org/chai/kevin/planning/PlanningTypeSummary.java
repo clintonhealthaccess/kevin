@@ -2,7 +2,7 @@ package org.chai.kevin.planning;
 
 import java.util.Map;
 
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 
 public class PlanningTypeSummary {
 

@@ -28,10 +28,9 @@
 package org.chai.kevin.planning
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.Period;
-import org.chai.kevin.PeriodSorter
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.Period
+import org.chai.kevin.data.DataElement
+import org.chai.location.DataLocationType
 /**
  * @author Jean Kahigiso M.
  *
@@ -77,12 +76,6 @@ class PlanningOutputController extends AbstractEntityController {
 	def bindParams(def entity) {
 		bindData(entity, params, [exclude:'dataElement.id'])
 		if (params.int('dataElement.id')) entity.dataElement = dataService.getData(params.int('dataElement.id'), DataElement.class)
-
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.helps!=null) entity.helps = params.helps
-		if (params.captions!=null) entity.captions = params.captions
 	}
 
 	def list = {
@@ -91,12 +84,12 @@ class PlanningOutputController extends AbstractEntityController {
 		Planning planning = Planning.get(params.int('planning.id'))
 		if (planning == null) response.sendError(404)
 		else {
-			def planningOutputs = planning.planningOutputs
+			def planningOutputs = PlanningOutput.createCriteria().list(params){eq('planning', planning)}
 			
 			render (view: '/planning/admin/list', model:[
 				template:"planningOutputList",
 				entities: planningOutputs,
-				entityCount: planningOutputs.size(),
+				entityCount: planningOutputs.totalCount,
 				code: getLabel(),
 				entityClass: getEntityClass()
 			])

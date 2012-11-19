@@ -12,15 +12,17 @@
 				<g:selectFromList name="formElement.id" label="${message(code:'formelement.label')}" field="formElement" optionKey="id" multiple="false"
 					ajaxLink="${createLink(controller:'formElement', action:'getAjaxData')}" from="${formElements}"
 					value="${validation.formElement?.id}" bean="${validation}"
-					values="${formElements.collect {it.getLabel(languageService)+'['+it.id+']'}}" />
+					values="${formElements.collect {it.label+'['+it.id+']'}}" />
+			
+				<g:input name="code" label="${message(code:'entity.code.label')}" bean="${validation}" field="code"/>
 			
 				<g:input name="prefix" label="${message(code:'formelement.validationrule.prefix.label')}" bean="${validation}" field="prefix"/>
 		 		<g:i18nRichTextarea name="messages" bean="${validation}" value="${validation.messages}" label="Messages" field="messages" height="150"  width="400" maxHeight="100" />
 		 		
-		 		<g:selectFromList name="dependencies" label="${message(code:'formelement.validationrule.dependencies.label')}" field="dependencies" optionKey="id" multiple="true"
+		 		<g:selectFromList name="dependencies.id" label="${message(code:'formelement.validationrule.dependencies.label')}" field="dependencies" optionKey="id" multiple="true"
 					ajaxLink="${createLink(controller:'formElement', action:'getAjaxData')}" from="${dependencies}" 
 					value="${validation.dependencies*.id}" bean="${validation}"
-					values="${dependencies.collect {it.getLabel(languageService)+'['+it.id+']'}}" />
+					values="${dependencies.collect {it.label+'['+it.id+']'}}" />
 			
 				<div class="row">
 					<label><g:message code="formelement.validationrule.allowoutlier.label" default="Allow Outlier"/></label>

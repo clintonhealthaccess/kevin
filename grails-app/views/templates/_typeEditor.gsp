@@ -1,5 +1,5 @@
 <div class="row ${hasErrors(bean:bean,field:'type','errors')}">
-	<label for="type">${message(code:'expression.test.type.label')}</label>
+	<label for="${name}">${message(code:'expression.test.type.label')}</label>
 	
 	<div class="push-10 js_type-editor">
 		<ul class="horizontal">

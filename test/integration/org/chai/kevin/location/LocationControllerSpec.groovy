@@ -2,6 +2,10 @@ package org.chai.kevin.location
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.util.JSONUtils;
+import org.chai.kevin.value.SumPartialValue;
+import org.chai.kevin.value.Value;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 
 class LocationControllerSpec extends IntegrationTests {
 
@@ -38,7 +42,27 @@ class LocationControllerSpec extends IntegrationTests {
 	def "test can delete when no children"() {
 		setup:
 		def country = newLocationLevel(NATIONAL, 1)
-		newLocation(RWANDA, country)
+		newLocation(['en': 'Rwanda', ], RWANDA, country)
+		locationController = new LocationController()
+		country.save(flush:true)
+		
+		when:
+		locationController.params.id = Location.findByCode(RWANDA).id
+		locationController.delete()
+		
+		then:
+		Location.findByCode(RWANDA) == null
+		Location.count() == 0
+	}
+	
+	def "test deletes removes all partial values"() {
+		setup:
+		def country = newLocationLevel(NATIONAL, 1)
+		def location = newLocation(['en': 'Rwanda', ], RWANDA, country)
+		def type = newDataLocationType(['en': 'Country'], NATIONAL)
+		def period = newPeriod()
+		def sum = newSum("1", CODE(1))
+		newSumPartialValue(sum, period, location, type, Value.VALUE_NUMBER(1))
 		locationController = new LocationController()
 		
 		when:
@@ -48,6 +72,7 @@ class LocationControllerSpec extends IntegrationTests {
 		then:
 		Location.findByCode(RWANDA) == null
 		Location.count() == 0
+		SumPartialValue.count() == 0
 	}
 	
 	def "get ajax data with class - Location"() {
@@ -111,6 +136,20 @@ class LocationControllerSpec extends IntegrationTests {
 		s(locationController.modelAndView.model.entities) == s([Location.findByCode(RWANDA), Location.findByCode(NORTH), Location.findByCode(BURERA)])
 	}
 	
+	def "test list with type"() {
+		setup:
+		setupLocationTree()
+		locationController = new LocationController()
+		
+		when:
+		locationController.params.level = LocationLevel.findByCode(NATIONAL).id
+		locationController.list()
+		
+		then:
+		locationController.modelAndView.model.entities == [Location.findByCode(RWANDA)]
+	}
+	
+	
 	def "test list with location"() {
 		setup:
 		setupLocationTree()
@@ -124,18 +163,17 @@ class LocationControllerSpec extends IntegrationTests {
 		locationController.modelAndView.model.entities == [Location.findByCode(NORTH)]
 	}
 	
-	def "test list with type"() {
+	def "test search with location"() {
 		setup:
 		setupLocationTree()
 		locationController = new LocationController()
 		
 		when:
-		locationController.params.level = LocationLevel.findByCode(NATIONAL).id
-		locationController.list()
+		locationController.params.q = 'north'
+		locationController.search()
 		
 		then:
-		locationController.modelAndView.model.entities == [Location.findByCode(RWANDA)]
-		
+		locationController.modelAndView.model.entities == [Location.findByCode(NORTH)]
+		locationController.modelAndView.model.entityCount == 1
 	}
-	
 }

@@ -3,9 +3,9 @@ package org.chai.kevin
 import grails.plugin.spock.UnitSpec;
 
 import org.chai.kevin.data.Aggregation;
-import org.chai.kevin.data.Sum;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.kevin.data.Summ;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.AggregationValue;
 import org.chai.kevin.value.CalculationPartialValue;
@@ -20,7 +20,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def partialValue1 = new SumPartialValue(value: v("1"), numberOfDataLocations: 1)
 		def partialValue2 = new SumPartialValue(value: v("2"), numberOfDataLocations: 2)
 		def partialValue3 = new SumPartialValue(value: v("3"), numberOfDataLocations: 3)
-		def sum = new Sum()
+		def sum = new Summ()
 		def value = null
 		
 		when:
@@ -59,7 +59,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def partialValue2 = new SumPartialValue(value: v("0.5"), numberOfDataLocations: 2)
 		def partialValue3 = new SumPartialValue(value: v("2"), numberOfDataLocations: 5)
 		def partialValue4 = new SumPartialValue(value: Value.NULL_INSTANCE(), numberOfDataLocations: 1)
-		def percentage = new Sum()
+		def percentage = new Summ()
 		def value = null
 		
 		when:
@@ -145,7 +145,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		setup:
 		def partialValue = null
 		def value = null
-		def sum = new Sum()
+		def sum = new Summ()
 		
 		when:
 		partialValue = new SumPartialValue(value: Value.NULL_INSTANCE(), numberOfDataLocations: 1)
@@ -162,7 +162,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def partialValue1 = null
 		def partialValue2 = null
 		def value = null
-		def percentage = new Sum()
+		def percentage = new Summ()
 		
 		when:
 		partialValue1 = new SumPartialValue(value: Value.NULL_INSTANCE(), numberOfDataLocations: 1)
@@ -210,7 +210,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		setup:
 		def partialValue = null
 		def value = null
-		def percentage = new Sum()
+		def percentage = new Summ()
 		
 		when:
 		partialValue = new SumPartialValue(value: v("1"), numberOfDataLocations:0)

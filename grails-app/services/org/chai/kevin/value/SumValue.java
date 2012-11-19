@@ -6,16 +6,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.chai.kevin.Period;
-import org.chai.kevin.data.Sum;
-import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.data.Summ;
+import org.chai.location.CalculationLocation;
 
 public class SumValue extends CalculationValue<SumPartialValue> {
 	
-	public SumValue(Set<SumPartialValue> calculationPartialValues, Sum calculation, Period period, CalculationLocation location) {
+	public SumValue(Set<SumPartialValue> calculationPartialValues, Summ calculation, Period period, CalculationLocation location) {
 		super(new ArrayList<SumPartialValue>(calculationPartialValues), calculation, period, location);
 	}
 	
-	public SumValue(List<SumPartialValue> calculationPartialValues, Sum calculation, Period period, CalculationLocation location) {
+	public SumValue(List<SumPartialValue> calculationPartialValues, Summ calculation, Period period, CalculationLocation location) {
 		super(calculationPartialValues, calculation, period, location);
 	}
 

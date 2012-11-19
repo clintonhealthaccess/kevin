@@ -12,14 +12,17 @@
 				
 				<g:i18nRichTextarea name="names" bean="${option}" value="${option.names}" label="${message(code:'survey.checkboxquestion.checkboxoption.label')}" field="names" height="150"  width="300" maxHeight="150" />
 				
+				<input type="hidden" name="surveyElement.id"  value="${option.surveyElement?.id}" />
 				<input type="hidden" name="surveyElement.dataElement.id"  value="${option.surveyElement?.dataElement?.id}" id="data-element-id" />
 				<div class="row ${hasErrors(bean:option, field:'surveyElement', 'errors')}">
 				    <label for="survey"><g:message code="dataelement.label"/>:</label> 
-				    <input type="text" name="surveyElement.dataElement.name" value="${i18n(field: option.surveyElement?.dataElement?.names)}" id="data-element-name" class="idle-field" disabled />
+				    <input type="text" name="surveyElement.dataElement.name" value="${option.surveyElement?.dataElement?.code}" id="data-element-name" class="idle-field" disabled />
 				    <div class="error-list"><g:renderErrors bean="${option}" field="surveyElement" /></div>
 				</div>
-	
+				
+				<g:input name="code" label="${message(code:'entity.code.label')}" bean="${option}" field="code" />
 				<g:input name="order" label="${message(code:'entity.order.label')}" bean="${option}" field="order"/>
+				
 				<g:selectFromList name="typeCodes" label="${message(code:'entity.datalocationtype.label')}" bean="${option}" field="typeCodeString" 
 					from="${types}" value="${option.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 	

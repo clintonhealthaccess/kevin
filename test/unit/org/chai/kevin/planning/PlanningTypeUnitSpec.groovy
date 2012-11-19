@@ -1,16 +1,12 @@
 package org.chai.kevin.planning
 
-import org.chai.kevin.LanguageService;
-import org.chai.kevin.Translation;
-import org.chai.kevin.UnitTests;
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.form.FormElement;
-import org.chai.kevin.util.JSONUtils;
+import grails.plugin.spock.UnitSpec
 
-import grails.plugin.spock.UnitSpec;
+import org.chai.kevin.data.RawDataElement
+import org.chai.kevin.data.Type
+import org.chai.kevin.form.FormElement
 
-class PlanningTypeUnitSpec extends UnitTests {
+class PlanningTypeUnitSpec extends UnitSpec {
 
 	def "test get sections"() {
 		when:
@@ -53,46 +49,44 @@ class PlanningTypeUnitSpec extends UnitTests {
 	def "build groups works properly"() {
 		setup:
 		def planningType
-		def languageService = new LanguageService()
-		languageService.metaClass.getCurrentLanguage = {"en"}
 		
 		when:
 		planningType = new PlanningType(costs: [
-			new PlanningCost(id: 1, names: j(["en": "Test1"])),
-			new PlanningCost(id: 2, names: j(["en": "Test2"]))
+			new PlanningCost(id: 1, names_en: "Test1"),
+			new PlanningCost(id: 2, names_en: "Test2")
 		])
-		planningType.buildGroupHierarchy(languageService)
+		planningType.buildGroupHierarchy()
 		
 		then:
 		planningType.getGroups([]) == null 
-		planningType.getPlanningCostsInGroup([])*.names.en == ["Test1", "Test2"]
-		planningType.getPlanningCosts([])*.names.en == ["Test1", "Test2"]
+		planningType.getPlanningCostsInGroup([])*.names_en == ["Test1", "Test2"]
+		planningType.getPlanningCosts([])*.names_en == ["Test1", "Test2"]
 		
 		when:
 		planningType = new PlanningType(costs: [
-			new PlanningCost(id: 1, names: j(["en": "Group - Test1"])),
-			new PlanningCost(id: 2, names: j(["en": "Group - Test2"]))
+			new PlanningCost(id: 1, names_en: "Group - Test1"),
+			new PlanningCost(id: 2, names_en: "Group - Test2")
 		])
-		planningType.buildGroupHierarchy(languageService)
+		planningType.buildGroupHierarchy()
 		
 		then:
 		planningType.getGroups([]).equals(["Group"])
 		planningType.getPlanningCostsInGroup([]) == null
-		planningType.getPlanningCostsInGroup(["Group"])*.names.en == ["Group - Test1", "Group - Test2"]
-		planningType.getPlanningCosts([])*.names.en == ["Group - Test1", "Group - Test2"]
+		planningType.getPlanningCostsInGroup(["Group"])*.names_en == ["Group - Test1", "Group - Test2"]
+		planningType.getPlanningCosts([])*.names_en == ["Group - Test1", "Group - Test2"]
 		
 		when:
 		planningType = new PlanningType(costs: [
-			new PlanningCost(id: 1, names: j(["en": "Test1"])),
-			new PlanningCost(id: 2, names: j(["en": "Group - Test2"]))
+			new PlanningCost(id: 1, names_en: "Test1"),
+			new PlanningCost(id: 2, names_en: "Group - Test2")
 		])
-		planningType.buildGroupHierarchy(languageService)
+		planningType.buildGroupHierarchy()
 		
 		then:
 		planningType.getGroups([]).equals(["Group"])
-		planningType.getPlanningCostsInGroup([])*.names.en == ["Test1"]
-		planningType.getPlanningCostsInGroup(["Group"])*.names.en == ["Group - Test2"]
-		planningType.getPlanningCosts([])*.names.en == ["Test1", "Group - Test2"]
+		planningType.getPlanningCostsInGroup([])*.names_en == ["Test1"]
+		planningType.getPlanningCostsInGroup(["Group"])*.names_en == ["Group - Test2"]
+		planningType.getPlanningCosts([])*.names_en == ["Test1", "Group - Test2"]
 	}
 
 }

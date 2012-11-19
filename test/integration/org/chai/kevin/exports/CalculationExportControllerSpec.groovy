@@ -31,8 +31,8 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.exports.DataElementExportController;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 
 /**
  * @author Jean Kahigiso M.
@@ -51,14 +51,12 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		def sum = newSum("",CODE(1));
 		def aggregation = newAggregation("1",CODE(2));
 		
-		def locations = new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
-		
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def calculations=new HashSet([sum,aggregation]);
 		calculationExportController = new  CalculationExportController();
 		
 		when:
+		calculationExportController.params.code = 'code'
 		calculationExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+"",Location.findByCode(BURERA).id+""]
 		calculationExportController.params.('periodIds')=[Period.list()[0].id+""]
 		calculationExportController.params.('calculationIds')=[sum.id+"",aggregation.id+""]
@@ -82,14 +80,12 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		def sum = newSum("1",CODE(1));
 		def aggregation = newAggregation("",CODE(2));
 		
-		def locations = new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
-		
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def calculations=new HashSet([sum,aggregation]);
 		calculationExportController = new  CalculationExportController();
 		
 		when:
+		calculationExportController.params.code = 'code'
 		calculationExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
 		calculationExportController.params.('periodIds')=[Period.list()[0].id+""]
 		calculationExportController.params.('calculationIds')=[sum.id+"",aggregation.id+"",aggregation.id+""]
@@ -114,14 +110,12 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		def sum = newSum("1",CODE(1));
 		def aggregation = newAggregation("",CODE(2));
 		
-		def locations = new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
-		
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def calculations=new HashSet([sum,aggregation]);
 		calculationExportController = new  CalculationExportController();
 		
 		when:
+		calculationExportController.params.code = 'code'
 		calculationExportController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
 		calculationExportController.params.('periodIds')=[Period.list()[0].id+"",Period.list()[0].id+""]
 		calculationExportController.params.('calculationIds')=[sum.id+"",aggregation.id+""]
@@ -145,12 +139,9 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		def sum = newSum("1",CODE(1));
 		def aggregation = newAggregation("",CODE(2));
 		
-		def locations=new HashSet();
-		locations.addAll(getLocations([BURERA]));
-		locations.addAll(getDataLocations([KIVUYE]));
-		
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
 		def calculations=new HashSet([sum,aggregation]);
-		def dataExport = newCalculationExport(j("en":"Testing Seach One"),periods, locationType, locations, calculations);
+		def dataExport = newCalculationExport(CODE(1), ["en":"Testing Seach One"],periods, locationType, locations, calculations);
 		
 		calculationExportController = new  CalculationExportController();
 		
@@ -163,6 +154,28 @@ class CalculationExportControllerSpec extends IntegrationTests {
 		CalculationExport.list()[0].typeCodeString.equals(CalculationExport.list()[1].typeCodeString)
 		CalculationExport.list()[0].locations.equals(CalculationExport.list()[1].locations)
 		CalculationExport.list()[0].calculations.equals(CalculationExport.list()[1].calculations)
+	}
+	
+	def "dataExport list"(){
+		setup:
+		setupLocationTree();
+		def periods=new HashSet([newPeriod()]);
+		def locationType="Health Center,District Hospital";
+		
+		def sum = newSum("1",CODE(1));
+		def aggregation = newAggregation("",CODE(2));
+		
+		def locations = s([Location.findByCode(BURERA), DataLocation.findByCode(KIVUYE)]);
+		def calculations=new HashSet([sum,aggregation]);
+		def dataExport = newCalculationExport(CODE(1), ["en":"Testing Seach One"],periods, locationType, locations, calculations);
+		
+		calculationExportController = new  CalculationExportController();
+		
+		when:
+		calculationExportController.list()
+		
+		then:
+		calculationExportController.modelAndView.model.entities == [dataExport]
 	}
 
 }

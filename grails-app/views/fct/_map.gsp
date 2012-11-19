@@ -3,13 +3,13 @@
 	<g:reportExport linkParams="${params}" />
 	<g:reportView linkParams="${params}"/>
 	<div class="selector">
-		<g:reportTargetFilter linkParams="${params}" />
+		<g:reportTargetFilter selected="${currentTarget}" program="${currentProgram}" linkParams="${params}" />
 	</div>
 	
-	<g:render template="/maps/legend" model="[indicators: fctTable.targetOptions]"/>
+	<g:render template="/maps/legend" model="[indicators: fctTable.indicators]"/>
 	<g:render template="/maps/colors"/>
 	<g:render template="/fct/reportProgramMap" 
-		model="[linkParams:params, reportTable: fctTable, reportLocations: fctTable.locations, reportIndicators: fctTable.targetOptions]"/>
+		model="[linkParams:params, reportTable: fctTable, reportLocations: fctTable.getLocations(currentLocation, locationSkipLevels, currentLocationTypes), reportIndicators: fctTable.indicators]"/>
 	<g:render template="/fct/reportProgramMapTable" 
-		model="[linkParams:params, reportTable: fctTable, reportLocations: fctTable.locations, reportIndicators: fctTable.targetOptions]"/>
+		model="[linkParams:params, reportTable: fctTable, reportLocations: fctTable.getLocations(currentLocation, locationSkipLevels, currentLocationTypes), reportIndicators: fctTable.indicators]"/>
 </li>

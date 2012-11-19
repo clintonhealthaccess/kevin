@@ -67,21 +67,16 @@ class ReportProgramController extends AbstractEntityController{
 	
 	def bindParams(def entity) {
 		entity.properties = params	
-	
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
 	def search = {
 		adaptParamsForList()
 		
-		List<ReportProgram> programs = dataService.searchData(ReportProgram.class, params['q'], [], params);
+		def programs = dataService.searchData(ReportProgram.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: programs,
-			entityCount: dataService.countData(ReportProgram.class, params['q'], []),
+			entityCount: programs.totalCount,
 			entityClass: getEntityClass(),
 			template: "reports/programList",
 			code: getLabel(),

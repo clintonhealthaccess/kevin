@@ -37,7 +37,7 @@ import grails.plugin.springcache.annotations.CacheFlush
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.reports.ReportProgram;
 
 import org.chai.kevin.AbstractEntityController
@@ -88,22 +88,16 @@ class DsrTargetController extends AbstractEntityController {
 	def bindParams(def entity) {
 		bindData(entity, params, [exclude:'data.id'])
 		if (params.int('data.id')) entity.data = dataService.getData(params.int('data.id'), Data.class)
-		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
 	def search = {
 		adaptParamsForList()
 		
-		//TODO add data & data type to allowedTypes
-		List<DsrTarget> targets = dataService.searchData(DsrTarget.class, params['q'], [], params);
+		def targets = dataService.searchData(DsrTarget.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: targets,
-			entityCount: dataService.countData(DsrTarget.class, params['q'], []),
+			entityCount: targets.totalCount,
 			entityClass: getEntityClass(),
 			template: "dsr/targetList",
 			code: getLabel(),

@@ -11,7 +11,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.JaqlService;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Aggregation;
-import org.chai.kevin.location.CalculationLocation;
+import org.chai.location.CalculationLocation;
 
 import com.ibm.jaql.json.type.JsonValue;
 

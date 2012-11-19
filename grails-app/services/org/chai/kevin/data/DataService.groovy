@@ -64,19 +64,6 @@ class DataService {
 		return Enum.findByCode(code, [cache: true])
 	}
 	
-	// this exists because Groovy Calculation.list() doesn't return anything
-	public <T extends Data<?>> List<T> list(Class<T> clazz, Map<String, String> params) {
-		def criteria = sessionFactory.getCurrentSession().createCriteria(clazz)
-		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
-		if (params['max'] != null) criteria.setMaxResults(params['max'])
-		return (List<T>)criteria.addOrder(Order.asc("id")).list()
-	}
-	
-	// this exists because Groovy Calculation.list() doesn't return anything
-	public <T extends Data<?>> Integer count(Class<T> clazz) {
-		return (Integer)sessionFactory.getCurrentSession().createCriteria(clazz).setProjection(Projections.count("id")).uniqueResult()
-	}
-	
 	public <T extends Data<?>> T getData(Long id, Class<T> clazz) {
 		if (id == null) return null;
 		return (Data)sessionFactory.getCurrentSession().get(clazz, id);
@@ -98,22 +85,22 @@ class DataService {
 	 * @throws IllegalArgumentException if the data element has values associated to it
 	 * @param element
 	 */
-	public void delete(Data<?> data) {
+	public void delete(Data data) {
 		if (!getReferencingData(data).isEmpty()) throw new IllegalArgumentException("other data are still referencing the element being deleted")
 		if (valueService.getNumberOfValues(data) != 0) throw new IllegalArgumentException("there are still values associated to the element being deleted");
 		else data.delete();
 	}
 	
-	public Set<Data<?>> getReferencingData(Data<?> data) {
+	public Set<Data<?>> getReferencingData(Data data) {
 		def result = []
 		result.addAll(getReferencingNormalizedDataElements(data))
 		result.addAll(getReferencingCalculations(data))
 		return result
 	}
 	
-	public List<NormalizedDataElement> getReferencingNormalizedDataElements(Data<?> data) {
+	public List<NormalizedDataElement> getReferencingNormalizedDataElements(Data data) {
 		def criteria = sessionFactory.currentSession.createCriteria(NormalizedDataElement.class);
-		def list = criteria.add(Restrictions.like("expressionMap.jsonText", "\$"+data.id, MatchMode.ANYWHERE)).list()
+		def list = criteria.add(Restrictions.like("expressionMapString", "\$"+data.id, MatchMode.ANYWHERE)).list()
 		return list.findAll { result ->
 			return !result.expressions.findAll { expression ->
 				return Utils.containsId(expression, data.id)
@@ -121,7 +108,7 @@ class DataService {
 		}
 	}
 	
-	public List<Calculation> getReferencingCalculations(Data<?> data) {
+	public List<Calculation> getReferencingCalculations(Data data) {
 		def criteria = sessionFactory.currentSession.createCriteria(Calculation.class);
 		def list = criteria.add(Restrictions.like("expression", "\$"+data.id, MatchMode.ANYWHERE)).list()
 		return list.findAll { result ->
@@ -129,65 +116,36 @@ class DataService {
 		}
 	}
 	
-	public Integer countData(Class<Data> clazz, String text, List<String> allowedTypes) {
-		return getSearchCriteria(clazz, text, allowedTypes).setProjection(Projections.count("id")).uniqueResult()
-	}
-	
     public <T extends Data> List<T> searchData(Class<T> clazz, String text, List<String> allowedTypes, Map<String, String> params) {
-		def criteria = getSearchCriteria(clazz, text, allowedTypes)
-		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
-		if (params['max'] != null) criteria.setMaxResults(params['max'])
-		else criteria.setMaxResults(500)
-		
-		List<Data<T>> data = criteria.addOrder(Order.asc("id")).list()
-		
-		StringUtils.split(text).each { chunk ->
-			data.retainAll { element ->
-				// we look in "info" if it is a data element
-				(clazz.equals(RawDataElement.class)?Utils.matches(chunk, element.info):false) ||
-				Utils.matches(chunk, element.id+"") ||
-				Utils.matches(chunk, element.names[languageService.getCurrentLanguage()]) ||
-				Utils.matches(chunk, element.code)
+		def dbFieldName = 'names_' + languageService.currentLanguage;
+		def criteria = clazz.createCriteria()
+		def data = criteria.list(offset:params.offset, max:params.max, sort:params.sort ?:"id", order: params.order ?:"asc"){
+			StringUtils.split(text).each { chunk ->
+				 or{
+					 ilike("code","%"+chunk+"%")
+					 ilike(dbFieldName,"%"+chunk+"%")
+					 if (NumberUtils.isNumber(chunk)) {
+						 eq("id", Long.parseLong(chunk))
+					 }
+					 if (clazz.equals(RawDataElement.class)) {
+						 ilike("info", "%"+chunk+"%")
+					 }
+				 }
+			}
+			if (!allowedTypes.isEmpty()) {
+				allowedTypes.each { type ->
+					ilike("typeString", "%"+type+"%")
+				}
 			}
 		}
 		
 		if (!allowedTypes.isEmpty()) {
 			data.retainAll { element ->
-				element.type.type.name().toLowerCase() in allowedTypes 
+				element.getType().type.name().toLowerCase() in allowedTypes 
 			}
 		}
 		
 		return data
     }
 	
-	private def getSearchCriteria(Class<Data> clazz, String text, List<String> allowedTypes) {
-		def criteria = sessionFactory.currentSession.createCriteria(clazz)
-		
-		def textRestrictions = Restrictions.conjunction()
-		StringUtils.split(text).each { chunk ->
-			def disjunction = Restrictions.disjunction();
-			
-			// we look in "info" if it is a data element
-			if (clazz.equals(RawDataElement.class)) disjunction.add(Restrictions.ilike("info", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("code", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("names.jsonText", chunk, MatchMode.ANYWHERE))
-			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("id", Long.parseLong(chunk)))
-			
-			textRestrictions.add(disjunction)
-		}
-		
-		if (!allowedTypes.isEmpty()) {
-			def typeRestrictions = Restrictions.disjunction()
-			allowedTypes.each { type ->
-				typeRestrictions.add(Restrictions.like("type.jsonValue", type, MatchMode.ANYWHERE))
-			}
-			criteria.add(Restrictions.and(textRestrictions, typeRestrictions))
-		}
-		else {
-			criteria.add(textRestrictions)
-		}
-		
-		return criteria
-	}
-	    
 }

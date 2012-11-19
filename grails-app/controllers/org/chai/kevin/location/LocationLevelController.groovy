@@ -1,6 +1,7 @@
 package org.chai.kevin.location;
 
 import org.chai.kevin.AbstractEntityController;
+import org.chai.location.LocationLevel;
 
 class LocationLevelController extends AbstractEntityController {
 
@@ -29,7 +30,7 @@ class LocationLevelController extends AbstractEntityController {
 	}
 
 	def deleteEntity(def entity) {
-		if (entity.locations.size() != 0) {
+		if (entity.locations != null && entity.locations.size() != 0) {
 			flash.message = message(code: 'locationLevel.haslocations', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Location level {0} still has associated locations.')
 		}
 		else {

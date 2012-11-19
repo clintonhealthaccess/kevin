@@ -30,9 +30,10 @@ package org.chai.kevin;
 
 import org.apache.commons.lang.math.NumberUtils
 import org.apache.shiro.SecurityUtils
-import org.chai.kevin.location.DataLocationType
-import org.chai.kevin.location.Location
-import org.chai.kevin.location.LocationLevel
+import org.chai.location.DataLocationType
+import org.chai.location.Location
+import org.chai.location.LocationLevel
+import org.chai.location.LocationService;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.security.User;
@@ -62,17 +63,19 @@ public abstract class AbstractController {
 
 	def getPeriod() {
 		Period period = Period.get(params.int('period'))
-		if (period == null)  period = Period.findAll()[ConfigurationHolder.config.site.period]
+		if (period == null) period = Period.findByDefaultSelected(true) 
 		return period
 	}
 	
+	/**
+	 * Returns the program passed as parameter if it exists. Otherwise, returns the root program.
+	 * 
+	 * @param clazz
+	 * @return
+	 */
 	def getProgram(def clazz){		
 		ReportProgram program = ReportProgram.get(params.int('program'))		
 		if(program == null) program = reportService.getRootProgram()			
-		if(clazz != null){
-			def targets = reportService.collectReportTargets(clazz, program);
-			if (targets.isEmpty()) program = reportService.getRootProgram()
-		}
 		return program
 	}
 	
@@ -80,8 +83,7 @@ public abstract class AbstractController {
 		Location location = Location.get(params.int('location'))
 		//TODO add skips and types to method
 		//TODO if location != null, get location tree, and if the location tree doesn't contain the location, return root location
-		if (location == null)
-			location = locationService.getRootLocation()
+		if (location == null) location = locationService.getRootLocation()
 		return location
 	}
 	
@@ -131,8 +133,8 @@ public abstract class AbstractController {
 	}
 	
 	def adaptParamsForList() {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		params.offset = params.offset ? params.int('offset'): 0
+		params.max = Math.min(params.int('max') ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
+		params.offset = params.int('offset') ? params.int('offset'): 0
 	}	
 	
 	protected def redirectIfDifferent(def redirectParams) {
@@ -140,7 +142,7 @@ public abstract class AbstractController {
 			log.debug("redirectIfDifferent(redirectParams="+redirectParams+")")
 			log.debug("request params: "+params)
 		}
-				
+		
 		boolean redirect = false
 		def newParams = [:]
 		for(def param : redirectParams){
@@ -154,8 +156,7 @@ public abstract class AbstractController {
 			else 
 				urlValue = params[key].toString()
 			
-			if(redirectValue != null && urlValue != redirectValue)
-				redirect = true
+			if(redirectValue != null && urlValue != redirectValue) redirect = true
 			if(redirectParams[key] != null) newParams.put(key, redirectParams[key])
 		}
 		

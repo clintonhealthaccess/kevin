@@ -18,8 +18,8 @@ class FormElementControllerSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def dataElement1 = newRawDataElement(j(["en": "element"]), CODE(1), Type.TYPE_NUMBER())
-		def dataElement2 = newRawDataElement(j(["en": "test"]), CODE(2), Type.TYPE_NUMBER())
+		def dataElement1 = newRawDataElement(["en": "element"], CODE(1), Type.TYPE_NUMBER())
+		def dataElement2 = newRawDataElement(["en": "test"], CODE(2), Type.TYPE_NUMBER())
 		newSurveyElement(question, dataElement1)
 		newSurveyElement(question, dataElement2)
 		
@@ -44,7 +44,7 @@ class FormElementControllerSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def dataElement = newRawDataElement(j(["en": "element"]),CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(["en": "element"],CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		
 		formElementController = new FormElementController()
@@ -57,14 +57,14 @@ class FormElementControllerSpec extends SurveyIntegrationTests {
 		then:
 		jsonResult.elements.size() == 1
 		jsonResult.elements[0].key == element.id
-		jsonResult.elements[0].value == element.getLabel(languageService)+'['+element.id+']'
+		jsonResult.elements[0].value == element.getLabel()+'['+element.id+']'
 	}
 	
 	def "test get description for form element"() {
 		setup:
 		def period = newPeriod()
 		
-		def dataElement = newRawDataElement(j(["en": "element"]),CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(["en": "element"],CODE(1), Type.TYPE_NUMBER())
 		def element = newFormElement(dataElement)
 		
 		formElementController = new FormElementController()
@@ -88,7 +88,7 @@ class FormElementControllerSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def dataElement = newRawDataElement(j(["en": "element"]),CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(["en": "element"],CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		
 		formElementController = new FormElementController()

@@ -31,8 +31,9 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.NormalizedDataElementController;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.kevin.dsr.DsrIntegrationTests;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 import org.chai.kevin.planning.PlanningIntegrationTests;
 import org.chai.kevin.value.NormalizedDataElementValue;
@@ -47,7 +48,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
 		normalizedDataElementController = new NormalizedDataElementController()
 		
 		when:
@@ -64,7 +65,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
 		normalizedDataElementController = new NormalizedDataElementController()
 		def time1 = normalizedDataElement.timestamp
 		
@@ -81,7 +82,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
 		normalizedDataElementController = new NormalizedDataElementController()
 		def time1 = normalizedDataElement.lastValueChanged
 		
@@ -100,7 +101,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
 		newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
 		normalizedDataElementController = new NormalizedDataElementController()
 		
@@ -115,7 +116,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 	
 	def "cannot delete normalized data element if there are associated calculations"() {
 		setup:
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
 		def calculation = newSum("\$"+normalizedDataElement.id, CODE(2))
 		normalizedDataElementController = new NormalizedDataElementController()
 		
@@ -125,13 +126,29 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		
 		then:
 		NormalizedDataElement.count() == 1
-		Sum.count() == 1
+		Summ.count() == 1
+	}
+	
+	def "cannot delete normalized data element if there are associated targets"() {
+		setup:
+		def program = newReportProgram(CODE(1))
+		def targetCategory = DsrIntegrationTests.newDsrTargetCategory(CODE(2), program, 1)
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
+		def target = DsrIntegrationTests.newDsrTarget(CODE(3), normalizedDataElement, targetCategory)
+		normalizedDataElementController = new NormalizedDataElementController()
+		
+		when:
+		normalizedDataElementController.params.id = normalizedDataElement.id
+		normalizedDataElementController.delete()
+		
+		then:
+		NormalizedDataElement.count() == 1
 	}
 	
 	def "cannot delete normalized data element if there are associated planning costs"() {
 		setup:
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [:])
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = PlanningIntegrationTests.newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
@@ -151,7 +168,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 	
 	def "search normalized data element"() {
 		setup:
-		def normalizedDataElement = newNormalizedDataElement(j(["en":"data element"]), CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(["en":"data element"], CODE(1), Type.TYPE_NUMBER(), [:])
 		normalizedDataElementController = new NormalizedDataElementController()
 		
 		when:
@@ -167,8 +184,8 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 	def "create normalized element with expressions"() {
 		setup:
 		def period1 = newPeriod()
-		def period2 = newPeriod()
-		def type1 = newDataLocationType("type1")
+		def period2 = newPeriod(2006)
+		def type1 = newDataLocationType([:], "type1")
 		normalizedDataElementController = new NormalizedDataElementController()
 
 		when:

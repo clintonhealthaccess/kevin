@@ -1,5 +1,7 @@
 package org.chai.task;
 
+import i18nfields.I18nFieldsHelper;
+
 import java.util.Map;
 import org.chai.task.Task.TaskStatus;
 import org.apache.commons.io.FileUtils;
@@ -31,9 +33,15 @@ class DataExportTask extends Task {
 				def user = User.findByUuid(principal)
 				def language = user.defaultLanguage != null ? user.defaultLanguage : languageService.fallbackLanguage
 				
-				if (export instanceof DataElementExport) csvFile = dataElementExportService.exportData(export, language) 
-				else if (export instanceof CalculationExport) csvFile = calculationExportService.exportData(export, language)
+				def previousLocale = I18nFieldsHelper.getLocale()
+				I18nFieldsHelper.setLocale(new Locale(language))
+
+				if (export instanceof DataElementExport) csvFile = dataElementExportService.exportData(export)
+				else if (export instanceof CalculationExport) csvFile = calculationExportService.exportData(export)
 				else {} // TODO exception
+				
+				I18nFieldsHelper.setLocale(previousLocale)
+				
 			}
 		}
 		if (csvFile != null) {
@@ -52,7 +60,7 @@ class DataExportTask extends Task {
 	}
 	
 	String getInformation() {
-		return languageService.getText(getExport().descriptions)
+		return getExport().descriptions
 	}
 
 	String getFormView() {

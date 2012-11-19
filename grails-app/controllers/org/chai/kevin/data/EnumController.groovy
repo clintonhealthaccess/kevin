@@ -63,10 +63,6 @@ class EnumController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
 	def list = {
@@ -89,7 +85,7 @@ class EnumController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: enums,
 			template: "data/enumList",
-			entityCount: enumService.countEnum(params['q']),
+			entityCount: enums.totalCount,
 			entityClass: getEntityClass(),
 			q:params['q'],
 			code: getLabel()			

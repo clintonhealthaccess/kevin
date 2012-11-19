@@ -1,4 +1,4 @@
-<table class="nested push-top-10 push-10 ${fctTable.targetOptions.size() > 3 ? 'col4' : ''}">
+<table class="nested push-top-10 push-10 ${fctTable.indicators.size() > 3 ? 'col4' : ''}">
 	<thead>
 		<tr>
 			<th>
@@ -6,8 +6,8 @@
 				<br/><br/>
 				<div class="left" style="margin-left:4px"><g:render template="/templates/reportLocationParent"/></div>						
 			</th>
-			<g:if test="${fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
-				<g:each in="${fctTable.targetOptions}" var="targetOption">
+			<g:if test="${fctTable.indicators != null && !fctTable.indicators.empty}">
+				<g:each in="${fctTable.indicators}" var="targetOption">
 					<th>						
 						<g:i18n field="${targetOption.names}" />
 						<g:render template="/templates/help_tooltip" 

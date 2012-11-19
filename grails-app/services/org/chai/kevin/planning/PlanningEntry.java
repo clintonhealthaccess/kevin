@@ -9,7 +9,8 @@ import java.util.Set;
 
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.form.FormElement.ElementCalculator;
-import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.form.FormEnteredValue;
+import org.chai.location.DataLocation;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
 
@@ -19,23 +20,23 @@ public class PlanningEntry {
 	private DataLocation dataLocation;
 	private Integer lineNumber;
 	private Map<String, Enum>  enums;
-	private ValidatableValue validatable;
+	private FormEnteredValue enteredValue;
 	
 	public PlanningEntry() {
 		// allows mocking
 	}
 	
-	public PlanningEntry(ValidatableValue validatable, Integer lineNumber) {
-		this.validatable = validatable;
+	public PlanningEntry(FormEnteredValue enteredValue, Integer lineNumber) {
+		this.enteredValue = enteredValue;
 		this.lineNumber = lineNumber;
 		this.type = null;
 		this.enums = null;
 		this.dataLocation = null;
 	}
 	
-	public PlanningEntry(DataLocation dataLocation, PlanningType type, ValidatableValue validatable, Integer lineNumber, Map<String, Enum> enums) {
+	public PlanningEntry(DataLocation dataLocation, PlanningType type, FormEnteredValue enteredValue, Integer lineNumber, Map<String, Enum> enums) {
 		this.dataLocation = dataLocation;
-		this.validatable = validatable;
+		this.enteredValue = enteredValue;
 		this.type = type;
 		this.lineNumber = lineNumber;
 		this.enums = enums;
@@ -66,7 +67,7 @@ public class PlanningEntry {
 	}
 	
 	public ValidatableValue getValidatable() {
-		return validatable;
+		return enteredValue.getValidatable();
 	}
 	
 	public String getPrefix(String prefix) {
@@ -74,7 +75,7 @@ public class PlanningEntry {
 	}
 	
 	public Value getValue(String prefix) {
-		return validatable.getType().getValue(validatable.getValue(), PlanningUtils.getPrefix(prefix, lineNumber));
+		return enteredValue.getValidatable().getType().getValue(enteredValue.getValidatable().getValue(), PlanningUtils.getPrefix(prefix, lineNumber));
 	}
 	
 	public Value getFixedHeaderValue() {
@@ -94,7 +95,7 @@ public class PlanningEntry {
 	
 	private List<String> getLineNumbers(Integer skip) {
 		List<String> result = new ArrayList<String>();
-		Integer linesInValue = validatable.getValue().isNull()?0:validatable.getValue().getListValue().size();
+		Integer linesInValue = enteredValue.getValidatable().getValue().isNull()?0:enteredValue.getValidatable().getValue().getListValue().size();
 		for (int i = 0; i <= Math.max(linesInValue-1, lineNumber); i++) {
 			if (skip == null || i != skip) result.add("["+i+"]");
 		}

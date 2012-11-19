@@ -28,24 +28,27 @@ package org.chai.kevin
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.chai.kevin.LocationService;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.LocationService;
+import org.chai.location.DataLocationType;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.fct.FctTarget;
-import org.chai.kevin.location.DataLocation
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.location.DataLocation
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.AbstractReportTarget;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.DataLocationType;
 
 class FilterTagLib {
 
 	def languageService;
 	def locationService;
 	def reportService;
+	
+	def dsrService;
+	def fctService;
 	
 	def topLevelReportTabs = {attrs, body ->
 		def model = excludeLinkParams(attrs)
@@ -62,21 +65,31 @@ class FilterTagLib {
 		out << render(template:'/templates/reportExport', model:model)
 	}
 	
+	def reportValueFilter = {attrs, body ->
+		def model = excludeLinkParams(attrs)
+		out << render(template:'/fct/reportValueFilter', model:model)
+	}
+	
 	def reportCategoryFilter = {attrs, body ->
 		def model = excludeLinkParams(attrs)
+		model <<
+		[
+			currentCategory: attrs['selected'],
+			targetCategories: dsrService.getDsrCategoriesWithTargets(attrs['program']).sort({it.order}),
+		]
 		out << render(template:'/dsr/reportCategoryFilter', model:model)
 	}
 	
 	def reportTargetFilter = {attrs, body ->
 		def model = excludeLinkParams(attrs)
+		model <<
+		[
+			currentTarget: attrs['selected'],
+			targets: fctService.getFctTargetsWithOptions(attrs['program']).sort({it.order}),
+		]
 		out << render(template:'/fct/reportTargetFilter', model:model)
 	}
 	
-	def reportValueFilter = {attrs, body ->
-		def model = excludeLinkParams(attrs)
-		out << render(template:'/fct/reportValueFilter', model:model)
-	}
-			
 	def periodFilter = {attrs, body ->
 		Period.withTransaction {
 			def model = excludeLinkParams(attrs)
@@ -114,13 +127,17 @@ class FilterTagLib {
 		Location.withTransaction {
 			def model = excludeLinkParams(attrs)
 			def location = attrs['selected']
+			def selectedTypes = attrs['selectedTypes']
+			if (selectedTypes == null) selectedTypes = DataLocationType.list([cache: true])
 			def locationFilterRoot = locationService.getRootLocation()	
-			def locationFilterTree = locationFilterRoot.collectLocationTreeWithData(attrs['skipLevels'], attrs['selectedTypes'], false)
+			def locationFilterTree = []
+			if (locationFilterRoot != null && !selectedTypes.empty) locationFilterTree.addAll locationFilterRoot.collectTreeWithDataLocations(attrs['skipLevels'], selectedTypes, false)
 			model << 
 				[
 					currentLocation: location,
 					locationFilterRoot: locationFilterRoot, 
-					locationFilterTree: locationFilterTree
+					locationFilterTree: locationFilterTree,
+					selectedTypes: selectedTypes
 				]
 			out << render(template:'/tags/filter/locationFilter', model:model)
 		}
@@ -130,9 +147,9 @@ class FilterTagLib {
 		DataLocationType.withTransaction {
 			def model = excludeLinkParams(attrs)
 			def currentLocationTypes = null
-			if(attrs['selected'] == null) currentLocationTypes = []
-			else currentLocationTypes = attrs['selected'].asList().sort{it.id}
-			def dataLocationTypes = DataLocationType.list([cache: true]).sort{it.id}
+			if (attrs['selected'] == null) currentLocationTypes = []
+			else currentLocationTypes = attrs['selected'].asList().sort{it.order}
+			def dataLocationTypes = DataLocationType.list([cache: true]).sort{it.order}
 			model << 
 				[
 					currentLocationTypes: currentLocationTypes,
@@ -159,72 +176,4 @@ class FilterTagLib {
 		return model
 	}
 	
-//	def levelFilter = {attrs, body ->
-//		LocationLevel.withTransaction {
-//			def model = new HashMap(attrs)
-//			def currentLevel = attrs['selected']
-//			def levels = locationService.listLevels(attrs['skipLevels'])
-//			model << 
-//				[
-//					currentLevel: currentLevel,
-//					levels: levels
-//				]
-//			if (model.linkParams == null) model << [linkParams: [:]]
-//			out << render(template:'/tags/filter/levelFilter', model:model)
-//		}
-//	}
-//	
-//	 attrs['locationSkipLevels'] is only needed for reports with both top-level locationFilter & levelFilter
-//	def createLinkByFilter = {attrs, body ->
-//		if (attrs['params'] == null) attrs['params'] = [:]
-//		else{
-//			Map params = new HashMap(attrs['params'])
-//			def skipLevels = attrs['locationSkipLevels']
-//			if(skipLevels == null) skipLevels = new HashSet<LocationLevel>()
-//			attrs['params'] = updateParamsByFilter(params, skipLevels);
-//		}
-//		out << createLink(attrs, body)
-//	}		
-//	
-//	public Map updateParamsByFilter(Map params, Set<LocationLevel> skipLevels) {
-//		if (!params.containsKey("filter")) return params;
-//		String filter = (String) params.get("filter");
-//		Location location = null;
-//		if (params.get("location") != null) {
-//			location = Location.get(Integer.parseInt(params.get("location")))
-//		}
-//		LocationLevel level = null;
-//		if (params.get("level") != null) {
-//			level = LocationLevel.get(Integer.parseInt(params.get("level")))
-//		}
-//
-//		if (location != null) {
-//			if (level != null) {
-//				// TODO use isAfter()
-//				if (location.getLevel().getOrder() >= level.getOrder()) {
-//					// conflict
-//					if (filter == "level") {
-//						// adjust location to level
-//						LocationLevel levelBefore = locationService.getLevelBefore(location.getLevel(), skipLevels)
-//						if (levelBefore != null)
-//							location = locationService.getParentOfLevel(location, levelBefore);
-//					}
-//					// conflict
-//					else {
-//						// adjust level to location
-//						level = locationService.getLevelAfter(location.getLevel(), skipLevels)
-//					}
-//				}
-//			}
-//			// conflict
-//			else {
-//				// adjust level to location
-//				level = locationService.getLevelAfter(location.getLevel(), skipLevels)
-//			}
-//		}
-//		
-//		if (location != null) params.put("location", location.id);
-//		if (level != null) params.put("level", level.id);
-//		return params;
-//	}
 }

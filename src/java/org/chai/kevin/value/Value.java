@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Transient;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
@@ -20,7 +17,6 @@ import org.chai.kevin.Exportable;
 import org.chai.kevin.json.JSONValue;
 import org.chai.kevin.util.Utils;
 
-@Embeddable
 public class Value extends JSONValue implements Exportable {
 	
 	public static final String MAP_KEY = "map_key";
@@ -65,17 +61,14 @@ public class Value extends JSONValue implements Exportable {
 	}
 	
 	@Override
-	@Transient
 	protected String[] getReservedKeywords() {
 		return KEYWORDS;
 	}
 	
-	@Transient
 	public boolean isNull() {
 		return JSONUtils.isNull(getJsonObject().get(VALUE_STRING));
 	}
 	
-	@Transient
 	public Value getValueWithoutAttributes() {
 		if (isNull()) return Value.NULL_INSTANCE();
 		else {
@@ -89,7 +82,6 @@ public class Value extends JSONValue implements Exportable {
 		}
 	}
 	
-	@Transient
 	public Number getNumberValue() {
 		if (numberValue == null) {
 			try {
@@ -101,7 +93,6 @@ public class Value extends JSONValue implements Exportable {
 		return numberValue;
 	}
 	
-	@Transient
 	public String getStringValue() {
 		if (stringValue == null) {
 			try {
@@ -114,7 +105,6 @@ public class Value extends JSONValue implements Exportable {
 		return stringValue;
 	}
 	
-	@Transient
 	public Boolean getBooleanValue() {
 		if (booleanValue == null) {
 			try {
@@ -126,7 +116,6 @@ public class Value extends JSONValue implements Exportable {
 		return booleanValue;
 	}
 	
-	@Transient
 	public String getEnumValue() {
 		// TODO think that through
 		if (enumValue == null) {
@@ -139,7 +128,6 @@ public class Value extends JSONValue implements Exportable {
 		return enumValue;
 	}
 	
-	@Transient
 	public Date getDateValue() {
 		if (dateValue == null) {
 			try {
@@ -154,7 +142,6 @@ public class Value extends JSONValue implements Exportable {
 		return dateValue;
 	}
 	
-	@Transient
 	public List<Value> getListValue() {
 		if (listValue == null) {
 			try {
@@ -172,7 +159,6 @@ public class Value extends JSONValue implements Exportable {
 		return listValue;
 	}
 	
-	@Transient
 	public Map<String, Value> getMapValue() {
 		if (mapValue == null) {
 			try {

@@ -53,7 +53,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 	
 	def testReportMapValueEnum(){
 		def enume = IntegrationTests.newEnume('enum')
-		IntegrationTests.newEnumOption(IntegrationTests.j(['en': 'VALUE']), enume, 'enum1')
+		IntegrationTests.newEnumOption(['en': 'VALUE'], enume, 'enum1')
 		
 		assertEquals applyTemplate(
 			'<g:reportMapValue value="${value}" type="${type}"/>',
@@ -94,6 +94,22 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 			' data-report-value-type="NUMBER">'+
 			'58</div>'
 	}
+	
+	def testReportMapPercentageNumber(){
+		assertEquals applyTemplate(
+			'<g:reportMapValue value="${value}" type="${type}" format="${format}"/>',
+			[
+				'value': Value.VALUE_NUMBER(0.58),
+				'type': Type.TYPE_NUMBER(),
+				'format': '#%',
+				'rounded': '2'
+			]
+		), '<div class="report-value"'+
+			' data-report-value="58%"'+
+			' data-report-value-raw="0.58"'+
+			' data-report-value-type="NUMBER">'+
+			'58%</div>'
+	}
 
 	
 	def testReportBarValue() {
@@ -120,18 +136,19 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 	
 	def testReportBarPercentage() {
 		assertEquals applyTemplate(
-			'<g:reportBarPercentage value="${value}" type="${type}" format="${format}"/>',
+			'<g:reportBarValue value="${value}" type="${type}" format="${format}"/>',
 			[
 				'value': Value.VALUE_NUMBER(0.579),
 				'type': Type.TYPE_NUMBER(),
-				'format': "#%"
+				'format': "#%",
+				'rounded': '2'
 			]
 		), '58%'
 	}
 	
 	def testReportBarPercentageNull() {
 		assertEquals applyTemplate(
-			'<g:reportBarPercentage value="${value}" type="${type}" format="${format}"/>',
+			'<g:reportBarValue value="${value}" type="${type}" format="${format}"/>',
 			[
 				'value': Value.NULL_INSTANCE(),
 				'type': Type.TYPE_NUMBER(),
@@ -192,9 +209,20 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 		), '<div class="report-value-null">N/A</div>'
 	}
 	
+	def testReportValueWithNullFormat() {
+		
+		assertEquals applyTemplate(
+			'<g:reportValue value="${value}" type="${type}"/>',
+			[
+				'value': Value.VALUE_NUMBER(1),
+				'type': Type.TYPE_NUMBER()
+			]
+		), '1'
+	}
+	
 	def testReportValueEnum() {
 		def enume = IntegrationTests.newEnume('enum')
-		IntegrationTests.newEnumOption(IntegrationTests.j(['en': 'VALUE']), enume, 'enum1')
+		IntegrationTests.newEnumOption(['en': 'VALUE'], enume, 'enum1')
 		
 		assertEquals applyTemplate(
 			'<g:reportValue value="${value}" type="${type}"/>',
@@ -236,38 +264,45 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 	def testReportValuePercentage() {
 		
 		assertEquals applyTemplate(
-			'<g:reportPercentage value="${value}" format="${format}"/>',
+			'<g:reportValue value="${value}" format="${format}" type="${type}"/>',
 			[
 				'value': Value.VALUE_NUMBER(0.67),
-				'format': '#%'
+				'type': Type.TYPE_NUMBER(),
+				'format': '#%',
+				'rounded': '2'
 			]
 		), '67%'
 		
 		assertEquals applyTemplate(
-			'<g:reportPercentage value="${value}" format="${format}"/>',
+			'<g:reportValue value="${value}" format="${format}" type="${type}"/>',
 			[
 				'value': Value.VALUE_NUMBER(0.673),
-				'format': '#%'
+				'type': Type.TYPE_NUMBER(),
+				'format': '#%',
+				'rounded': '2'
 			]
 		), '67%'
 
 		assertEquals applyTemplate(
-			'<g:reportPercentage value="${value}" format="${format}"/>',
+			'<g:reportValue value="${value}" format="${format}" type="${type}"/>',
 			[
 				'value': Value.VALUE_NUMBER(0.677),
-				'format': '#%'
+				'type': Type.TYPE_NUMBER(),
+				'format': '#%',
+				'rounded': '2'
 			]
 		), '68%'
 		
 		assertEquals applyTemplate(
-			'<g:reportPercentage value="${value}" format="${format}"/>',
+			'<g:reportValue value="${value}" format="${format}" type="${type}"/>',
 			[
 				'value': null,
-				'format': '#%'
+				'type': Type.TYPE_NUMBER(),
+				'format': '#%',
+				'rounded': '2'
 			]
 		), '<div class="report-value-null">N/A</div>'
 	}				
-	
 	
 	def testAdminValue() {
 		assertEquals applyTemplate(
@@ -430,7 +465,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 			[
 				'value': new Value("{\"value\":\"value\"}"),
 				'type': Type.TYPE_ENUM("code"),
-				'enums': ['code': new Enum(enumOptions: [new EnumOption(value: 'value', names: IntegrationTests.j(['en':'VALUE_EN']))])]
+				'enums': ['code': new Enum(enumOptions: [new EnumOption(value: 'value', names_en:'VALUE_EN')])]
 			]
 		), 'VALUE_EN'
 		
@@ -438,7 +473,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 	
 	def testValueWithExistingEnumAndExistingOptionAndNoEnums() {
 		def enume = IntegrationTests.newEnume('code')
-		IntegrationTests.newEnumOption(IntegrationTests.j(['en':'VALUE_EN']), enume, 'value')
+		IntegrationTests.newEnumOption(['en':'VALUE_EN'], enume, 'value')
 			
 		assertEquals applyTemplate(
 			'<g:value value="${value}" type="${type}" enums="${enums}"/>',

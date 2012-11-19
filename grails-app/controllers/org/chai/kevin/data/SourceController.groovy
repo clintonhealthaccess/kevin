@@ -62,10 +62,15 @@ class SourceController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
+	}
+	
+	def deleteEntity(def entity) {
+		// we remove the source from all raw data element
+		RawDataElement.findAllBySource(entity).each {
+			it.source = null
+			it.save(flush: true)
+		}
+		super.deleteEntity(entity)
 	}
 	
 	def list = {

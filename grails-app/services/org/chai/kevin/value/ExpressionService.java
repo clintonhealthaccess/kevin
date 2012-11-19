@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.JaqlService;
-import org.chai.kevin.LocationService;
+import org.chai.location.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.PeriodService;
 import org.chai.kevin.data.Calculation;
@@ -51,9 +51,9 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.DataLocationType;
+import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -192,7 +192,7 @@ public class ExpressionService {
 	
 	@Transactional(readOnly=true)
     public <T extends Data<?>> Map<String, T> getDataInExpression(String expression, Class<T> clazz) {
-    	if (log.isDebugEnabled()) log.debug("getDataInExpression(expression="+expression+", clazz="+clazz+")");
+    	if (log.isTraceEnabled()) log.trace("getDataInExpression(expression="+expression+", clazz="+clazz+")");
     	
         Map<String, T> dataInExpression = new HashMap<String, T>();
     	Set<String> placeholders = getVariables(expression);
@@ -213,7 +213,7 @@ public class ExpressionService {
         	dataInExpression.put(placeholder, data);
         }
     	
-    	if (log.isDebugEnabled()) log.debug("getDataInExpression()="+dataInExpression);
+    	if (log.isTraceEnabled()) log.trace("getDataInExpression()="+dataInExpression);
         return dataInExpression;
     }
 	

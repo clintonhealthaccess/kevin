@@ -75,9 +75,7 @@ class SurveySkipRuleController  extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
+
 		// binding skipped elements
 		entity.skippedFormElements.clear()
 		int i = 0;
@@ -109,15 +107,12 @@ class SurveySkipRuleController  extends AbstractEntityController {
 			response.sendError(404)
 		}
 		else {
-			List<SurveySkipRule> skipRules = new ArrayList(survey.skipRules);
-			skipRules.sort {it.id}
-			
-			def max = Math.min(params['offset']+params['max'], skipRules.size())
+			def skipRules = SurveySkipRule.createCriteria().list(params) {eq ('survey', survey)}
 			
 			render(view: '/entity/list', model:[
 				template: "survey/skipRuleList",
-				entities: skipRules.subList(params['offset'], max),
-				entityCount: skipRules.size(),
+				entities: skipRules,
+				entityCount: skipRules.totalCount,
 				code: getLabel(),
 				entityClass: getEntityClass()
 			])

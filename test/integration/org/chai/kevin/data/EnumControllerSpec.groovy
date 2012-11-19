@@ -39,25 +39,11 @@ class EnumControllerSpec extends IntegrationTests {
 	
 	def enumController
 	
-	//TODO grails 2.0.0 bug needs to be fixed in order for these to validate
-	//this will fail grails 2 bug has to be fixed so this can pass
-	//def "enum code has to be unique (this will fail grails bug)"(){
-	//setup:
-	//def enume = newEnume(CODE("code"), "My Enum two", "Enum two for test kap");
-	//enumController = new EnumController();
-	//when:
-	//enumController.params.code="code";
-	//enumController.save()
-	//then:
-	//thrown ConstraintViolationException
-	//Enum.count()==1
-	//	}
-	
 	def "search and list enum"(){
 		setup:
-		def enumeTwo = newEnume(CODE("the code two"), "My Enum two", "Enum two for test kap");
-		def enumeOne = newEnume(CODE("the code one"), "My Enum one", "Enum one for test one kap");
-		def enumeThree= newEnume(CODE("the code three"), "My Enum one", "Enum one for test one");
+		def enumeTwo = newEnume(CODE(2), ['en': 'enum']);
+		def enumeOne = newEnume(CODE(1), ['en': 'enum1']);
+		def enumeThree= newEnume(CODE(3));
 		enumController = new EnumController();
 		
 		when:
@@ -66,12 +52,12 @@ class EnumControllerSpec extends IntegrationTests {
 		
 		then:
 		enumController.modelAndView != null
-		enumController.modelAndView.model.entities.equals([enumeOne,enumeThree,enumeTwo])
+		enumController.modelAndView.model.entities.equals([enumeOne,enumeTwo,enumeThree])
 		enumController.modelAndView.model.entityCount== 3
 		
 		when:
 		enumController.params['testParam']=["val":"value"]
-		enumController.params.q="kap"
+		enumController.params.q="enum"
 		enumController.params.sort="code"
 		enumController.search()
 		

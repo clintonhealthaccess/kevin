@@ -94,4 +94,14 @@ environments {
 //			dialect = "org.hibernate.dialect.MySQLDialect"
 		}
 	}
+	demo {
+		dataSource {
+			dbCreate = "update"
+			driverClassName = "com.mysql.jdbc.Driver"
+			// configuration overriden by cloudfoundry
+		}
+		hibernate {
+//			dialect = "org.hibernate.dialect.MySQLDialect"
+		}
+	}
 }

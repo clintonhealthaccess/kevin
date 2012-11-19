@@ -2,13 +2,12 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.code.label"/></th>
-			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="dsr.target.program.label"/></th>
-			<th><g:message code="dsr.target.data.label"/></th>
-			<th><g:message code="dsr.target.datatype.label"/></th>
-			<th><g:message code="dsr.target.category.label"/></th>
-			<th><g:message code="entity.order.label"/></th>
+			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />  		    
+  			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q]" title="${message(code: 'entity.name.label')}" />
+  			<g:sortableColumn property="data.code" params="[q:params.q]" title="${message(code: 'dsr.target.calculationelement.label')}" />
+  			<g:sortableColumn property="average" params="[q:params.q]" title="${message(code: 'dsr.target.datatype.label')}" />
+  			<g:sortableColumn property="${i18nField(field: 'category.names')}" params="[q:params.q]" title="${message(code: 'dsr.target.category.label')}" />
+			<g:sortableColumn property="order" params="[q:params.q]" title="${message(code: 'entity.order.label')}" />
 		</tr>
 	</thead>
 	<tbody>
@@ -30,9 +29,6 @@
 				<td>${target.code}</td>				
 				<td>
 					<g:i18n field="${target.names}"/>
-				</td>
-				<td>
-					<g:i18n field="${target.program.names}"/>
 				</td>
 				<td>${target.data.code}</td>
 				<td>${target.average != null && target.average ? message(code: 'average.label') : target.data.class.getSimpleName()}</td>

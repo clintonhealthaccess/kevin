@@ -29,7 +29,7 @@ package org.chai.kevin.imports;
 
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Data;
-import org.chai.kevin.location.DataLocation;
+import org.chai.location.DataLocation;
 import org.chai.kevin.value.DataValue;
 
 /**

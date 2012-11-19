@@ -36,7 +36,11 @@ import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.math.NumberUtils
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.data.RawDataElement
-import org.chai.kevin.location.DataLocationType
+import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.form.FormSkipRuleElementMap;
+import org.chai.kevin.form.FormValidationRuleDependency;
+import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType
 import org.chai.kevin.util.Utils
 import org.hibernate.FlushMode
 import org.hibernate.criterion.MatchMode
@@ -62,61 +66,113 @@ class SurveyService {
 		enteredValue.setTimestamp(new Date())
 	}
 	
+	void deleteSurvey(def survey) {
+		if (log.debugEnabled) log.debug('deleteSurvey(survey='+survey+')')
+		new ArrayList(survey.programs?:[]).each { program ->
+			deleteProgram(program)
+		}
+		survey.delete()
+	}
+	
+	void deleteProgram(def program) {
+		if (log.debugEnabled) log.debug('deleteProgram(program='+program+')')
+		SurveyEnteredSection.executeUpdate("delete from SurveyEnteredProgram where program = :program", ['program': program])
+		// we delete all the questions
+		new ArrayList(program.sections?:[]).each { section ->
+			deleteSection(section)
+		}
+		program.survey.removeFromPrograms(program)
+		program.delete()
+	} 
+	
+	void deleteSection(def section) {
+		if (log.debugEnabled) log.debug('deleteSection(section='+section+')')
+		SurveyEnteredSection.executeUpdate("delete from SurveyEnteredSection where section = :section", ['section': section])
+		// we delete all the questions
+		new ArrayList(section.questions?:[]).each { question ->
+			deleteQuestion(question)
+		}
+		section.program.removeFromSections(section)
+		section.delete()
+	}
+	
+	void deleteQuestion(def question) {
+		if (log.debugEnabled) log.debug('deleteQuestion(question='+question+')')
+		SurveyEnteredQuestion.executeUpdate("delete from SurveyEnteredQuestion where question = :question", ['question': question])
+		// we delete all the referenced survey skip rule
+		SurveySkipRule.withCriteria{skippedSurveyQuestions {eq('id', question.id)}}.each { skipRule ->
+			skipRule.removeFromSkippedSurveyQuestions(question)
+			skipRule.save()
+		}
+		// we delete all the survey elements
+		new ArrayList(question.surveyElements?:[]).each { element ->
+			deleteSurveyElement(element)
+		}
+		question.section.removeFromQuestions(question)
+		question.delete()
+	}
+	
+	void deleteSurveyElement(def surveyElement) {
+		if (log.debugEnabled) log.debug('deleteSurveyElement(surveyElement='+surveyElement+')')
+		// we delete the form entered value
+		FormEnteredValue.executeUpdate("delete from FormEnteredValue where formElement = :formElement", ['formElement': surveyElement])
+		// we delete all the survey elements on all the skip rules they are referenced from
+		if (log.debugEnabled) log.debug('deleting survey elements on skip rules')
+		FormSkipRuleElementMap.findAllByFormElement(surveyElement).each { map ->
+			def skipRule = map.skipRule
+			skipRule.removeFromFormSkipRuleElementMaps(map)
+			map.delete()
+			skipRule.save()
+			map.skipRule = skipRule
+		}
+		// we delete all the dependencies
+		if (log.debugEnabled) log.debug('deleting survey elements on validation rule dependencies')
+		FormValidationRuleDependency.findAllByFormElement(surveyElement).each { dependency ->
+			def validationRule = dependency.validationRule
+			validationRule.removeFromValidationRuleDependencies(dependency)
+			dependency.delete()
+			validationRule.save()
+			dependency.validationRule = validationRule
+		}
+		// we delete the survey element from the question
+		if (log.debugEnabled) log.debug('deleting survey elements from question')
+		def question = surveyElement.question
+		question.removeSurveyElement(surveyElement)
+		surveyElement.delete()
+	}
+	
 	SurveyQuestion getSurveyQuestion(Long id) {
 		// TODO test this with Grails 2.0
 		return sessionFactory.currentSession.get(SurveyQuestion.class, id)
 	}
 	
 	List<SurveyQuestion> searchSurveyQuestions(String text, Survey survey, def params = [:]) {
-		def criteria = getQuestionSearchCriteria(text, survey)
-		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
-		if (params['max'] != null) criteria.setMaxResults(params['max'])
-		else criteria.setMaxResults(500)
 		
-		List<SurveyQuestion> questions = criteria.addOrder(Order.asc("id")).list()
+		def dbFieldName = 'names_' + languageService.currentLanguage;
+		def dbFieldDescription = 'names_' + languageService.currentLanguage;
 		
-		StringUtils.split(text).each { chunk ->
-			questions.retainAll { question ->
-				Utils.matches(chunk, question.names[languageService.getCurrentLanguage()]) ||
-				Utils.matches(chunk, question.descriptions[languageService.getCurrentLanguage()])
+		def criteria = SurveyQuestion.createCriteria()
+		return criteria.list(offset:params.offset, max:params.max, sort:params.sort ?:"id", order: params.order ?:"asc"){
+			if (survey != null) {
+				createAlias('section', 'ss')
+				createAlias('ss.program', 'so')
+				eq ('so.survey', survey)
+			}
+			StringUtils.split(text).each { chunk ->
+				 or{
+					 ilike("code","%"+chunk+"%")
+					 ilike(dbFieldName,"%"+chunk+"%")
+					 ilike(dbFieldDescription,"%"+chunk+"%")
+				 }
 			}
 		}
-		
-		return questions;
-	}
-	
-	Integer countSurveyQuestions(String text, Survey survey) {
-		return getQuestionSearchCriteria(text, survey).setProjection(Projections.count("id")).uniqueResult()
-	}
-
-	private def getQuestionSearchCriteria(String text, Survey survey) {
-		def criteria = sessionFactory.currentSession.createCriteria(SurveyQuestion.class)
-		
-		def textRestrictions = Restrictions.conjunction()
-		StringUtils.split(text).each { chunk ->
-			def disjunction = Restrictions.disjunction();
-			
-			disjunction.add(Restrictions.ilike("names.jsonText", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("descriptions.jsonText", chunk, MatchMode.ANYWHERE))
-
-			textRestrictions.add(disjunction)
-		}
-		criteria.add(textRestrictions)
-		
-		if (survey != null) {
-			criteria.createAlias("section", "ss")
-			.createAlias("ss.program", "so")
-			.add(Restrictions.eq("so.survey", survey))
-		}
-		
-		return criteria
 	}
 	
 	Set<SurveyElement> getSurveyElements(RawDataElement dataElement, Survey survey) {
 		if (log.isDebugEnabled()) log.debug("getSurveyElements(dataElement=${dataElement}, survey=${survey})")
 		def c = sessionFactory.currentSession.createCriteria(SurveyElement.class)
 		if (survey != null) {
-			c.createAlias("surveyQuestion", "sq")
+			c.createAlias("question", "sq")
 			.createAlias("sq.section", "ss")
 			.createAlias("ss.program", "so")
 			.add(Restrictions.eq("so.survey", survey))
@@ -130,82 +186,12 @@ class SurveyService {
 		return result
 	}
 
-	@Deprecated
-	List<SurveyElement> searchSurveyElements(String text, Survey survey, List<String> allowedTypes, Map<String, String> params) {
-		def criteria = getSurveyElementSearchCriteria(text, survey, allowedTypes)
-		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
-		if (params['max'] != null) criteria.setMaxResults(params['max'])
-		else criteria.setMaxResults(500)
-		
-		List<SurveyElement> data = criteria.addOrder(Order.asc("id")).list()
-		
-		StringUtils.split(text).each { chunk ->
-			data.retainAll { element ->
-				// we look in "info" if it is a data element
-				Utils.matches(chunk, element.dataElement.id+"") ||
-				Utils.matches(chunk, element.dataElement.info) ||
-				Utils.matches(chunk, element.dataElement.names[languageService.getCurrentLanguage()]) ||
-				Utils.matches(chunk, element.dataElement.code) ||
-				Utils.matches(chunk, element.surveyQuestion.names[languageService.getCurrentLanguage()]) ||
-				Utils.matches(chunk, element.id+"")
-			}
-		}
-		
-		if (!allowedTypes.isEmpty()) {
-			data.retainAll { element ->
-				element.dataElement.type.type.name().toLowerCase() in allowedTypes
-			}
-		}
-		
-		return data
-	}
-	
-	private def getSurveyElementSearchCriteria(String text, Survey survey, List<String> allowedTypes) {
-		def criteria = sessionFactory.currentSession.createCriteria(SurveyElement.class)
-		criteria.createAlias("dataElement", "de")
-		criteria.createAlias("surveyQuestion", "sq")
-		
-		def textRestrictions = Restrictions.conjunction()
-		StringUtils.split(text).each { chunk ->
-			def disjunction = Restrictions.disjunction();
-			
-			// data element
-			disjunction.add(Restrictions.ilike("de.info", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("de.code", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("de.names.jsonText", chunk, MatchMode.ANYWHERE))
-			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("de.id", Long.parseLong(chunk)))
-			// question
-			disjunction.add(Restrictions.ilike("sq.names.jsonText", chunk, MatchMode.ANYWHERE))
-			// survey element
-			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("id", Long.parseLong(chunk)))
-			
-			textRestrictions.add(disjunction)
-		}
-		criteria.add(textRestrictions)
-		
-		if (!allowedTypes.isEmpty()) {
-			def typeRestrictions = Restrictions.disjunction()
-			allowedTypes.each { type ->
-				typeRestrictions.add(Restrictions.like("de.type.jsonValue", type, MatchMode.ANYWHERE))
-			}
-			criteria.add(typeRestrictions)
-		}
-
-		if (survey != null) {
-			criteria.createAlias("sq.section", "ss")
-			.createAlias("ss.program", "so")
-			.add(Restrictions.eq("so.survey", survey))
-		}
-		
-		return criteria
-	}
-	
 	Integer getNumberOfApplicableDataLocationTypes(SurveyElement surveyElement) {
 		Set<String> typeCodes = surveyElement.getTypeApplicable();
 		int number = 0;
 		for (String typeCode : typeCodes) {
 			DataLocationType type = locationService.findDataLocationTypeByCode(typeCode);
-			if (type != null) number += locationService.getNumberOfDataLocationsForType(type)
+			if (type != null) number += DataLocation.countByType(type)
 		}
 		return number;
 	}

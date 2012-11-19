@@ -45,25 +45,23 @@
 									<li>
 										<a href="${createLinkWithTargetURI(controller: 'task', action: 'create', 
 											params: surveyLinkParams << [
-																			class: 'RefreshSurveyTask',
-																			locationId: currentLocation.id,
-																			surveyId: currentSurvey.id,
-																			programId: currentProgram?.id,
-																			sectionId: currentSection?.id
-																		])}">
+												class: 'RefreshSurveyTask',
+												locationId: currentLocation.id,
+												surveyId: currentSurvey?.id,
+												programId: currentProgram?.id,
+												sectionId: currentSection?.id
+											])}">
 											<g:message code="survey.summary.refreshsurvey.label" />
 										</a>
 									</li>
 								</shiro:hasPermission>
 								<shiro:hasPermission permission="surveySummary:submitAll">
-									<g:if test="${!submitSkipLevels.contains(currentLocation.level)}">
-										<li>
-											<a href="${createLink(controller: 'surveySummary', action: 'submitAll', 
-												params: surveyLinkParams << [submitLocation: currentLocation.id])}">
-												<g:message code="survey.summary.submitallprogram.label" />
-											</a>
-										</li>
-									</g:if>
+									<li>
+										<a href="${createLink(controller: 'surveySummary', action: 'submitAll', 
+											params: surveyLinkParams << [submitLocation: currentLocation.id])}">
+											<g:message code="survey.summary.submitallprogram.label" />
+										</a>
+									</li>
 								</shiro:hasPermission>
 							</ul>
 						</div>

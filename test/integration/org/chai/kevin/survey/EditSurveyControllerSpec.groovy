@@ -1,7 +1,7 @@
 package org.chai.kevin.survey
 
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
 
 class EditSurveyControllerSpec extends SurveyIntegrationTests {
 
@@ -34,6 +34,51 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		editSurveyController.modelAndView.model.surveyPage.survey.equals(survey)
 		editSurveyController.modelAndView.model.surveyPage.section.equals(section)
 		
+	}
+	
+	def "get section page with not existing survey"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		editSurveyController = new EditSurveyController()
+		
+		when:
+		editSurveyController.params.location = DataLocation.findByCode(BUTARO).id
+		editSurveyController.params.section = '1'
+		editSurveyController.sectionPage()
+		
+		then:
+		editSurveyController.modelAndView == null
+	}
+	
+	def "get survey page with not existing survey"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		editSurveyController = new EditSurveyController()
+		
+		when:
+		editSurveyController.params.location = DataLocation.findByCode(BUTARO).id
+		editSurveyController.params.survey = '1'
+		editSurveyController.surveyPage()
+		
+		then:
+		editSurveyController.modelAndView == null
+	}
+	
+	def "get program page with not existing survey"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		editSurveyController = new EditSurveyController()
+		
+		when:
+		editSurveyController.params.location = DataLocation.findByCode(BUTARO).id
+		editSurveyController.params.program = '1'
+		editSurveyController.programPage()
+		
+		then:
+		editSurveyController.modelAndView == null
 	}
 	
 	def "get survey page with valid parameters"() {

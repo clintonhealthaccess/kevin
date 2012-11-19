@@ -3,13 +3,10 @@ package org.chai.kevin.survey
 import org.chai.kevin.LanguageService
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.DataLocationType
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.survey.validation.SurveyEnteredProgram;
-import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
-import org.chai.kevin.survey.validation.SurveyEnteredSection;
+import org.chai.location.DataLocationType
+import org.chai.location.DataLocation;
+import org.chai.location.Location;
+import org.chai.location.LocationLevel;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.RawDataElementValue;
@@ -349,15 +346,6 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		then:
 		locationSkipLevels.size() == 1
 		locationSkipLevels.contains(LocationLevel.findByCode(SECTOR))
-		
-		//survey and program submit skip levels
-		when:
-		def submitSkipLevels = surveyPageService.getSkipSubmitLevels()
-		
-		then:
-		submitSkipLevels.size() == 2
-		submitSkipLevels.contains(LocationLevel.findByCode(NATIONAL))
-		submitSkipLevels.contains(LocationLevel.findByCode(PROVINCE))
 	}	
 	
 	def "test modify"() {
@@ -666,7 +654,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		enteredValue = newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), Value.VALUE_NUMBER(1d))
 		enteredValue.save(failOnError: true)
 		def enteredQuestion = SurveyEnteredQuestion.list()[0]
-		enteredQuestion.skipped = s([skipRule])
+		enteredQuestion.addToSkippedRules(skipRule)
 		enteredQuestion.save(failOnError: true)
 		surveyPageService.refreshSurveyForDataLocation(DataLocation.findByCode(KIVUYE), survey, false, false)
 		
@@ -807,7 +795,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupSecurityManager(newUser('test', 'uuid'))
 		
 		def period1 = newPeriod()
-		def period2 = newPeriod()
+		def period2 = newPeriod(2006)
 		
 		def survey = newSurvey(CODE(1), period2)
 		survey.lastPeriod = period1
@@ -835,7 +823,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupSecurityManager(newUser('test', 'uuid'))
 		
 		def period1 = newPeriod()
-		def period2 = newPeriod()
+		def period2 = newPeriod(2006)
 		
 		def survey = newSurvey(CODE(1), period2)
 		survey.lastPeriod = period1
