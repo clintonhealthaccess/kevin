@@ -96,9 +96,12 @@ environments {
 	}
 	demo {
 		dataSource {
-			dbCreate = "update"
+			dbCreate = "create-drop"
 			driverClassName = "com.mysql.jdbc.Driver"
 			// configuration overriden by cloudfoundry
+			dataSource.url="jdbc:mysql://127.0.0.1:8889/kevin_demo"
+			dataSource.username="root"
+			dataSource.password="root"
 		}
 		hibernate {
 //			dialect = "org.hibernate.dialect.MySQLDialect"

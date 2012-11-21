@@ -59,6 +59,7 @@ import com.ibm.jaql.lang.expr.core.TimeoutExpr.TaskState;
 
 class BootStrap {
 	
+	def grailsApplication
 	def sessionFactory
 	def rabbitTemplate
 	def taskService
@@ -66,7 +67,6 @@ class BootStrap {
 	def surveyPageService
 	
     def init = { servletContext ->
-
 		// we clear the queue
 		// assumption is that at this point of the startup process,
 		// no task has been picked for processing if
@@ -119,8 +119,11 @@ class BootStrap {
 			}
 			
 			break;
-		case "development":
 		case "demo":
+			// we delete some stuff
+			User.executeUpdate('delete User')
+			Role.executeUpdate('delete Role')
+		case "development":
 			// we initialize the structure
 			StructureInitializer.createLocationLevels()
 			StructureInitializer.createDataLocationTypes()

@@ -148,7 +148,7 @@ environments {
 	demo {
 		grails.serverURL = 'http://kevin.cloudfoundry.com'
 		grails.resources.cdn.enabled = false
-		grails.resources.processing.enabled = false
+		grails.resources.processing.enabled = true
 		grails.resources.mappers.yuicssminify.disable = false
 		grails.resources.mappers.yuijsminify.disable = false
 	}
@@ -179,7 +179,7 @@ log4j = {
 	//appenders {
 	//    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
 	//}
-
+	
 	error  'grails.app.services.org.grails.plugin.resource',
 		   'grails.app.resourceMappers.org.grails.plugin.resource',
 		   'grails.app.taglib.org.grails.plugin.resource',
@@ -210,7 +210,7 @@ log4j = {
 	debug  'grails.app',
 		   'org.chai.kevin'
 		   
-	trace 'org.chai.kevin.service.imports.GeneralDataImporter',
+	trace  'org.chai.kevin.service.imports.GeneralDataImporter',
 		   'org.chai.kevin.service.imports.NominativeDataImporter',
 		   'org.chai.kevin.service.imports.DataImporter',
 		   'org.chai.kevin.service.imports.DataImporterSpec'
@@ -235,10 +235,18 @@ environments {
 	}
 }
 
-/**
- * Application specific config
- */
-google.analytics.webPropertyID = "UA-xxxxxx-x"
+// google analytics plugin
+google.analytics.enabled = false
+
+environments {
+	demo {
+		google.analytics.enabled = true
+		google.analytics.webPropertyID = "UA-4227513-4"
+		google.analytics.customTrackingCode = [
+			[_setDomainName: "kevin.cloudfoundry.com"], "_trackPageview"
+		]
+	}
+}
 
 // internationalization
 i18nFields {
