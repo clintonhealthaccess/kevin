@@ -46,7 +46,7 @@ class AuthController {
 		else {
 			RegistrationToken token = new RegistrationToken(token: RandomStringUtils.randomAlphabetic(20), used: false)
 			
-			def user = new User(userType: UserType.OTHER, code: cmd.firstname,username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'',
+			def user = new User(userType: UserType.OTHER, username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'',
 				firstname: cmd.firstname, lastname: cmd.lastname, organisation: cmd.organisation,
 				phoneNumber: cmd.phoneNumber, defaultLanguage: cmd.defaultLanguage, uuid: UUID.randomUUID().toString(),registrationToken:token).save(failOnError: true)
 				

@@ -76,14 +76,14 @@ class CheckboxQuestionController extends AbstractEntityController {
 	def bindParams(def entity) {
 		entity.properties = params
 		
-		params.optionNames.each { i ->
-			Map<String, String> translation = new HashMap<String, String>()
-			languageService.availableLanguages.each { language ->
-				translation[language] = params['optionNames['+i+'].names.'+language]
+		entity.options.each { option ->
+			if (params.list('optionNames').contains(option.id)) {
+				Map<String, String> translation = new HashMap<String, String>()
+				languageService.availableLanguages.each { language ->
+					option.setNames(params['optionNames['+option.id+'].names_'+language], new Locale(language))
+				}
 			}
-			// TODO what if i is bigger than list size
-			entity.options.get(Integer.parseInt(i)).names = translation
-		}
+		}		
 	}
 	
 }
