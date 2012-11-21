@@ -127,8 +127,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static def setupLocationTree() {
 		// for the test environment, the location level is set to 4
 		// so we create a tree accordingly
-		def hc = newDataLocationType(["en":HEALTH_CENTER_GROUP], HEALTH_CENTER_GROUP);
-		def dh = newDataLocationType(["en":DISTRICT_HOSPITAL_GROUP], DISTRICT_HOSPITAL_GROUP);
+		def hc = newDataLocationType(["en":HEALTH_CENTER_GROUP], HEALTH_CENTER_GROUP, null, true);
+		def dh = newDataLocationType(["en":DISTRICT_HOSPITAL_GROUP], DISTRICT_HOSPITAL_GROUP, null, true);
 		
 		def country = newLocationLevel(NATIONAL, 1)
 		def province = newLocationLevel(PROVINCE, 2)
@@ -168,7 +168,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newDataLocationType(def names, def code, def order) {
-		def dataLocationType = new DataLocationType(code: code, order: order)
+		newDataLocationType(names, code, order, false)
+	}
+	
+	static def newDataLocationType(def names, def code, def order, def defaultSelected) {
+		def dataLocationType = new DataLocationType(code: code, order: order, defaultSelected: defaultSelected)
 		setLocaleValueInMap(dataLocationType, names, "Names")
 		return dataLocationType.save(failOnError: true)
 	}
