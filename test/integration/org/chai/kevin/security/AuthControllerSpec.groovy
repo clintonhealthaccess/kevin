@@ -250,7 +250,6 @@ class AuthControllerSpec extends IntegrationTests {
 		
 		then:
 		User.count() == 1
-		User.findByEmail('test@test.com').code == 'test'
 		User.findByEmail('test@test.com').firstname == 'test'
 		User.findByEmail('test@test.com').lastname == 'test'
 		User.findByEmail('test@test.com').organisation == 'test'

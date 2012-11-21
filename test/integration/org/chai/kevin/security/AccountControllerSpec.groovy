@@ -86,21 +86,4 @@ class AccountControllerSpec extends IntegrationTests {
 		User.list()[0].organisation == 'org2'
 	}
 	
-	def "non assignable fields cannot be modified"() {
-		setup:
-		setup:
-		def user = newUser('test@test.com', true, true)
-		setupSecurityManager(user)
-		accountController = new AccountController()
-		
-		when:
-		accountController.params.code = 'new_code'
-		accountController.params.targetURI = '/user/list'
-		accountController.saveAccount()
-		
-		then:
-		accountController.response.redirectUrl == '/user/list'
-		User.list()[0].code != 'new_code'
-	}
-	
 }

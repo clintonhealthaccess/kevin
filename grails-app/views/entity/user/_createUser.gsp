@@ -11,7 +11,6 @@
 	<div class="data-field-column">
 		<g:form url="[controller:'user', action:'save', params: [targetURI: targetURI]]" useToken="true">			
 			<g:input name="username" label="${message(code:'user.username.label')}" bean="${user}" field="username"/>
-			<g:input name="code" label="${message(code:'user.code.label')}" bean="${user}" field="code"/>
 			<g:input name="firstname" label="${message(code:'user.firstname.label')}" bean="${user}" field="firstname"/>
 			<g:input name="lastname" label="${message(code:'user.lastname.label')}" bean="${user}" field="lastname"/>
 			<g:input name="organisation" label="${message(code:'user.organisation.label')}" bean="${user}" field="organisation"/>

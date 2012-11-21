@@ -225,27 +225,27 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 		
 	static def newUser(def username, def uuid) {
-		return new User(userType: UserType.OTHER, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
+		return new User(userType: UserType.OTHER, username: username, permissionString: '', passwordHash:'', uuid: uuid, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newUser(def username, def active, def confirmed) {
-		return new User(userType: UserType.OTHER, code: 'not_important', username: username, email: username,
+		return new User(userType: UserType.OTHER, username: username, email: username,
 			passwordHash: '', active: active, confirmed: confirmed, uuid: 'uuid', firstname: 'first', lastname: 'last',
 			organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newUser(def username, def passwordHash, def active, def confirmed) {
-		return new User(userType: UserType.OTHER, code: 'not_important', username: username, email: username,
+		return new User(userType: UserType.OTHER, username: username, email: username,
 			passwordHash: passwordHash, active: active, confirmed: confirmed, uuid: 'uuid', firstname: 'first', lastname: 'last',
 			organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newSurveyUser(def username, def uuid, def locationId) {
-		return new User(userType: UserType.SURVEY, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
+		return new User(userType: UserType.SURVEY, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newPlanningUser(def username, def uuid, def locationId) {
-		return new User(userType: UserType.PLANNING, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
+		return new User(userType: UserType.PLANNING, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newReportProgram(def code) {
