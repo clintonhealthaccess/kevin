@@ -175,7 +175,7 @@ public class ValueService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, CalculationLocation location, Period period, Set<DataLocationType> types) {
+	public <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, CalculationLocation location, Period period, Set<DataLocationType> types) {
 		return (List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
 		.add(Restrictions.eq("period", period))
 		.add(Restrictions.eq("location", location))

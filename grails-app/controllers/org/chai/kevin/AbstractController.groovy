@@ -94,7 +94,7 @@ public abstract class AbstractController {
 			dataLocationTypes.addAll(types.collect{ NumberUtils.isNumber(it as String) ? DataLocationType.get(it) : null } - null)
 		}		
 		
-		if(dataLocationTypes == null || dataLocationTypes.empty){
+		if(dataLocationTypes.empty){
 			dataLocationTypes.addAll(DataLocationType.findAllByDefaultSelected(true))
 		}
 		

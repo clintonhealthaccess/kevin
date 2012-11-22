@@ -244,7 +244,7 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		then:
 		valueService.listDataValues(rawDataElement, null, period, [:]).equals([rawDataElementValue])
-		valueService.listDataValues(rawDataElement, null, null, [:]).equals([rawDataElementValue2, rawDataElementValue])
+		s(valueService.listDataValues(rawDataElement, null, null, [:])).equals(s([rawDataElementValue2, rawDataElementValue]))
 		
 		when:
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
@@ -541,6 +541,19 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		then:
 		SumPartialValue.count() == 1
+	}
+	
+	def "test get partial values with no type"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def ratio = newSum("1", CODE(1))
+		
+		when:
+		def values = valueService.getPartialValues(ratio, Location.findByCode(RWANDA), period, s([]))
+		
+		then:
+		values.empty
 	}
 	
 }
