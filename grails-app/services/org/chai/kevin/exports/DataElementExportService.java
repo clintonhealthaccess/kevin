@@ -71,7 +71,7 @@ public class DataElementExportService extends ExportService {
 		
 		Set<DataLocation> dataLocations = new LinkedHashSet<DataLocation>();
 		for (CalculationLocation location : export.getAllLocations()) {
-			dataLocations.addAll(location.collectDataLocations(null, types));
+			dataLocations.addAll(location.collectDataLocations(types));
 		}
 		return this.exportDataElements(export.getCode(), new ArrayList<DataLocation>(dataLocations), export.getAllPeriods(), ((DataElementExport) export).getAllDataElements());
 	}

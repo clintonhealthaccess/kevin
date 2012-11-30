@@ -3,8 +3,6 @@ package org.chai.kevin.reports;
 import org.chai.kevin.Exportable
 import org.chai.kevin.util.Utils
 
-
-
 class ReportProgram extends ReportEntity implements Exportable {
 
 	ReportProgram parent;

@@ -94,4 +94,9 @@ class DsrTarget extends AbstractReportTarget implements Exportable, Importable {
 		return (DsrTarget) value;
 	}
 	
+	@Override
+	public ReportProgram getReportProgram() {
+		return category.program
+	}
+	
 }

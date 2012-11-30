@@ -301,18 +301,24 @@ select
     float: left
     width: 460px
     
-.entity-form-container form
+.entity-form-container
   background-color: inherit
   border: 1px solid $filler
   padding: 15px
   position: relative
   
   .row
+    color: $primary
+    font-size: 11px
     border-bottom: 1px dotted $filler
     margin-bottom: 10px
     padding-bottom: 10px
     +pie-clearfix
     
+  .type
+    font-size: 13px
+    margin-bottom: 8px
+
     //.error-list
     //  height: 14px
       
@@ -332,9 +338,7 @@ select
     width: auto
   
   label
-    color: $primary
     display: block
-    font-size: 11px
     margin-bottom: 3px
     
   // fterrier start: added span for summary in admin forms

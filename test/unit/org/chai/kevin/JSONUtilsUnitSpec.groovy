@@ -12,8 +12,22 @@ class JSONUtilsUnitSpec extends UnitSpec {
 		
 		then:
 		JSONUtils.getJSONFromMap(map) == null
-//		JSONUtils.getJSONFromMap(map) == '{"1":"test"}'
+	}
+	
+	def "get json from map string"() {
+		when:
+		def map = ["1": '"test"']
 		
+		then:
+		JSONUtils.getJSONFromMap(map) == '{"1":"\\"test\\""}'
+	}
+	
+	def "get map from json string"() {
+		when:
+		def json = '{"1":" \\"test\\""}'
+		
+		then:
+		JSONUtils.getMapFromJSON(json) == ["1": ' "test"']
 	}
 	
 	def "get json from empty map"() {

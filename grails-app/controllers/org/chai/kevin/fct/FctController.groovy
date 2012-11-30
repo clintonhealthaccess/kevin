@@ -96,7 +96,7 @@ class FctController extends AbstractController {
 			def locationTree = null
 			if (location != null) {	
 				// entire location tree to filter stuff that has no data for tree table
-				locationTree = location.collectTreeWithDataLocations(locationSkipLevels, dataLocationTypes, false).asList()
+				locationTree = location.collectTreeWithDataLocations(locationSkipLevels, dataLocationTypes).asList()
 			}
 				
 			if (log.isDebugEnabled()) log.debug('fct: '+fctTable+", root program: "+program+", root location: "+location)				

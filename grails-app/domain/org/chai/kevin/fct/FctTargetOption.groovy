@@ -5,6 +5,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.Exportable;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Summ;
@@ -62,6 +63,11 @@ class FctTargetOption extends AbstractReportTarget implements Exportable {
 	@Override
 	public String toExportString() {
 		return "[" + Utils.formatExportCode(getCode()) + "]";
+	}
+
+	@Override
+	public ReportProgram getReportProgram() {
+		return target.program
 	}
 
 }
