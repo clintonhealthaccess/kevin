@@ -299,13 +299,6 @@ class DataInitializer {
 				})]
 			})).save(failOnError: true)
 			
-//			//geographical access - number of motos
-//			new NormalizedDataElement(code: 'number_of_motos_number', type: Type.TYPE_NUMBER(), expressionMap: Period.list().collectEntries ([:], { period ->
-//				[(period.id.toString()), DataLocationType.list().collectEntries ([:], { type ->
-//					[(type.code), '\$' + RawDataElement.findByCode('number_of_motos').id]
-//				})]
-//			})).save(failOnError: true)
-			
 			// geographical access - harvesting infrastructure
 			new NormalizedDataElement(code: 'rainwater_harvesting', type: Type.TYPE_STRING(), expressionMap: Period.list().collectEntries ([:], { period ->
 				[(period.id.toString()), DataLocationType.list().collectEntries ([:], { type ->
