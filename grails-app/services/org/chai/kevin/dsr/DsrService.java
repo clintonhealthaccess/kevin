@@ -58,7 +58,6 @@ public class DsrService {
 				for(CalculationLocation calculationLocation : calculationLocations){
 					if(!valueMap.containsKey(calculationLocation))
 						valueMap.put(calculationLocation, new HashMap<DsrTarget, DataValue>());	
-
 					if (target.getData() instanceof Calculation) {
 						valueMap.get(calculationLocation).put(target, getDsrValue(target, (Calculation)target.getData(), calculationLocation, period, types));
 					}	

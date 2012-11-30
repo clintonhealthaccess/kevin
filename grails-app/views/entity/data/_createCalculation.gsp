@@ -12,6 +12,9 @@
 				<g:i18nTextarea name="descriptions" bean="${calculation}" value="${calculation.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions" height="150" width="300" maxHeight="150" />
 				
 				<g:input name="code" label="${message(code:'entity.code.label')}" bean="${calculation}" field="code" />
+				
+				<g:render template="/templates/typeEditor" model="[bean: calculation, name: 'typeString']"/>
+				
 				<g:textarea name="expression" label="${message(code:'calculation.expression.label')}" bean="${calculation}" field="expression" value="${calculation.expression}" rows="5"/>
 				
 				<g:if test="${calculation.id != null}">

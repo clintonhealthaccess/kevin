@@ -7,7 +7,9 @@ class AggregationController extends AbstractCalculationController {
 	}
 	
 	def createEntity() {
-		return new Aggregation();
+		def aggregation = new Aggregation();
+		aggregation.type = new Type()
+		return aggregation
 	}
 	
 	def getLabel() {

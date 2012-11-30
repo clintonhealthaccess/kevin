@@ -7,7 +7,9 @@ class ModeController extends AbstractCalculationController {
 	}
 	
 	def createEntity() {
-		return new Mode();
+		def mode = new Mode()
+		mode.type = new Type()
+		return mode
 	}
 	
 	def getLabel() {

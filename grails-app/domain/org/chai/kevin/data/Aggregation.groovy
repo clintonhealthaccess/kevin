@@ -55,6 +55,13 @@ class Aggregation extends Calculation<AggregationPartialValue> {
 		table 'dhsst_data_calculation_aggregation'
 	}
 	
+	/*
+	 * Retaining backward compatibility with old getters and setters
+	 */
+	public Type getType(){
+		Type.TYPE_NUMBER()
+	}
+	
 	@Override
 	public AggregationValue getCalculationValue(
 			List<AggregationPartialValue> partialValues, Period period,

@@ -51,6 +51,13 @@ class Summ extends Calculation<SumPartialValue> {
 		table 'dhsst_data_calculation_sum'
 	}
 	
+	/*
+	 * Retaining backward compatibility with old getters and setters
+	 */
+	public Type getType(){
+		Type.TYPE_NUMBER()
+	}
+	
 	@Override
 	public SumValue getCalculationValue(List<SumPartialValue> partialValues, Period period, CalculationLocation location) {
 		return new SumValue(partialValues, this, period, location);

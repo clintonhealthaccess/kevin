@@ -2,6 +2,7 @@ package org.chai.init
 
 import org.chai.kevin.data.NormalizedDataElement
 import org.chai.kevin.data.RawDataElement
+import org.chai.kevin.data.Mode
 import org.chai.kevin.data.Summ
 import org.chai.kevin.dsr.DsrTarget
 import org.chai.kevin.dsr.DsrTargetCategory
@@ -24,7 +25,8 @@ class ReportInitializer {
 		if (!DsrTargetCategory.count()) {
 			new DsrTargetCategory(code: 'sd_critical_indicators', names_en: 'Critical Indicators', program: ReportProgram.findByCode('service_delivery'), order: 1).save(failOnError: true)
 			new DsrTargetCategory(code: 'ga_energy', names_en: 'Energy', program: ReportProgram.findByCode('geographical_access'), order: 1).save(failOnError: true)
-			new DsrTargetCategory(code: 'water_plumbing', names_en: 'Water & Plumbing', program: ReportProgram.findByCode('geographical_access'), order: 1).save(failOnError: true)
+			new DsrTargetCategory(code: 'ga_patient_access', names_en: 'Patient Access', program: ReportProgram.findByCode('geographical_access'), order: 1).save(failOnError: true)
+			new DsrTargetCategory(code: 'water_plumbing', names_en: 'Water & Plumbing', program: ReportProgram.findByCode('geographical_access'), order: 2).save(failOnError: true)
 		}
 	}
 	
@@ -37,8 +39,13 @@ class ReportInitializer {
 			].each {DsrTargetCategory.findByCode('sd_critical_indicators').addToTargets(it).save(failOnError: true)}
 			
 			// geographical access - energy
-			[	new DsrTarget(code: 'dsr_use_solar', names_en: 'Use of Solar Power', data: NormalizedDataElement.findByCode('use_solar')),
+			[	new DsrTarget(code: 'dsr_primary_energy_source', names_en: 'Primary Energy Source', data: Mode.findByCode('primary_energy_source_mode_enum')),
+				new DsrTarget(code: 'dsr_use_solar', names_en: 'Use of Solar Power', data: Mode.findByCode('use_solar_mode_bool'))
 			].each {DsrTargetCategory.findByCode('ga_energy').addToTargets(it).save(failOnError: true)}
+			
+			// geographical access - patient access
+			[	new DsrTarget(code: 'dsr_number_of_motos', names_en: 'Number of Motos', data: Mode.findByCode('number_of_motos_mode_number'))
+			].each {DsrTargetCategory.findByCode('ga_patient_access').addToTargets(it).save(failOnError: true)}
 			
 			// geographical access - rainwater harvesting
 			[	new DsrTarget(code: 'rainwater_harvesting', names_en: 'Rainwater Harvesting', data: NormalizedDataElement.findByCode('rainwater_harvesting'))
