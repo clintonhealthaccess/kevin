@@ -39,6 +39,7 @@ class EnumOptionController extends AbstractEntityController {
 
 	def languageService
 	def enumService
+	def sessionFactory
 	
 	def getEntity(def id){
 		return EnumOption.get(id)
@@ -67,6 +68,9 @@ class EnumOptionController extends AbstractEntityController {
 	def saveEntity(def entity) {
 		entity.enume.addToEnumOptions(entity)
 		entity.enume.save()
+		entity.save()
+		
+		sessionFactory.evictCollection("org.chai.kevin.data.Enum.enumOptions", entity.enume.id)
 	}
 	
 	def deleteEntity(def entity) {
