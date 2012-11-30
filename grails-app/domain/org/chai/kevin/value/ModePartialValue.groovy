@@ -26,18 +26,12 @@ import org.hibernate.annotations.NaturalId;
 public class ModePartialValue extends CalculationPartialValue {
 
 	Data data;
-	//String modeMapString;
 	
 	static constraints = {
 		// TODO this create an UNIQUE index in the database that should not be there
 //		data (nullable: false, unique: ['data', 'period', 'location', 'type'])
 		data (nullable: false)
-		//modeMapString (nullable: true)
 	}
-	
-	//Map cachedModeMap;
-	
-	//static transients = ['cachedModeMap', 'modeMap']
 	
 	public ModePartialValue() {
 		super();
@@ -54,23 +48,5 @@ public class ModePartialValue extends CalculationPartialValue {
 		this.data = data;
 		//this.modeMapString = JSONUtils.getJSONFromMap(modeMap);
 	}
-
-//	/*
-//	 * Retaining backward compatibility with old getters and setters
-//	 */
-//	Map<String,Integer> getModeMap() {
-//		if (modeMapString != null && cachedModeMap == null) this.cachedModeMap = JSONUtils.getMapFromJSON(modeMapString)
-//		return this.cachedModeMap
-//	}
-//	
-//	void setModeMap(Map modeMap) {
-//		this.modeMapString = JSONUtils.getJSONFromMap(modeMap)
-//		this.cachedModeMap = modeMap
-//	}
-//	
-//	void setModeMapString(String modeMapString) {
-//		this.cachedModeMap = null
-//		this.modeMapString = modeMapString
-//	}
 	
 }
