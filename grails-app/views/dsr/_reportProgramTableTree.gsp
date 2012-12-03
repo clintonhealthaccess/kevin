@@ -9,7 +9,7 @@
 				<g:reportValue
 					tooltip="${i18n(field: target.names)}"
 					value="${dsrTable.getTableReportValue(location, target)?.value}" 
-					type="${target.data.type}" 
+					type="${target.type}" 
 					format="${target.format}"/>	
 			</td>
 		</g:each>
@@ -29,7 +29,7 @@
 							<g:reportValue
 								tooltip="${i18n(field: target.names)}"
 								value="${dsrTable.getTableReportValue(location, target)?.value}" 
-								type="${target.type}" 
+								type="${target.data.getType(location)}"
 								format="${target.format}"/>
 						</g:if>
 					</g:if>

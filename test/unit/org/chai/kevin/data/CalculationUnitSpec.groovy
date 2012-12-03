@@ -43,30 +43,36 @@ class CalculationUnitSpec extends UnitSpec {
 		
 		when:
 		calculation = new Summ(expression: "1")
-		
 		then:
 		calculation.getPartialExpressions().equals(["1"])
 		
 		when:
 		calculation = new Summ(expression: "1")
+		then:
+		calculation.getPartialExpressions().equals(["1"])
 		
+		when:
+		calculation = new Mode(expression: "1")
+		then:
+		calculation.getPartialExpressions().equals(["1"])
+		
+		when:
+		calculation = new Mode(expression: "1")
 		then:
 		calculation.getPartialExpressions().equals(["1"])
 		
 		when:
 		calculation = new Aggregation(expression: "1")
-		
 		then:
 		calculation.getPartialExpressions().equals([])
 		
 		when:
 		calculation = new Aggregation(expression: "\$1/\$2")
-		
 		then:
 		calculation.getPartialExpressions().equals(["\$1", "\$2"])
 	}
 	
-	def "partial values equals"() {
+	def "sum partial values equals"() {
 		setup:
 		def location = new Location(code: 'location')
 		def period = new Period(code: 'period')

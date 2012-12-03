@@ -130,6 +130,28 @@ class ValueServiceSpec extends IntegrationTests {
 		value.equals(expectedValue)
 	}
 	
+	def "test get mode value"() {
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		
+		when:
+		def mode = newMode("1", CODE(1))
+		def expectedValue = new ModeValue("1", mode, period, DataLocation.findByCode(BUTARO))
+		def value = valueService.getCalculationValue(mode, DataLocation.findByCode(BUTARO), period, s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		 
+		then:
+		value.equals(expectedValue)
+		
+		when:
+		def partialValue = newModePartialValue(mode, period, DataLocation.findByCode(BUTARO), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1"))
+		expectedValue = new ModeValue([partialValue], mode, period, DataLocation.findByCode(BUTARO))
+		value = valueService.getCalculationValue(mode, DataLocation.findByCode(BUTARO), period, s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+
+		then:
+		value.equals(expectedValue)
+	}
+	
 	def "test get aggregation value"() {
 		setup:
 		def period = newPeriod()

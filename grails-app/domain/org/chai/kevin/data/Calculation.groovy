@@ -71,6 +71,8 @@ abstract class Calculation<T extends CalculationPartialValue> extends Data<T> im
 	Map cachedSourceMap
 	static transients = ['cachedType', 'type', 'cachedSourceMap', 'sourceMap']
 	
+	public abstract Type getType(CalculationLocation location);
+	
 	/*
 	 * Retaining backward compatibility with old getters and setters
 	 */

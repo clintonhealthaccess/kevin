@@ -417,6 +417,24 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		}
 	}
 	
+	def "test refresh mode refreshes all fields"() {
+		when:
+		def refreshed = new Date()
+		setupLocationTree()
+		def period = newPeriod()
+		def mode = newMode("1", CODE(2))
+		def partialValue = newModePartialValue(mode, period, Location.findByCode(BURERA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 0, v("1"))
+		
+		then:
+		ModePartialValue.count() == 1
+		
+		when:
+		refreshValueService.refreshCalculation(mode, new TestProgress());
+
+		then:
+		ModePartialValue.count() == 8
+	}
+	
 	def "test refresh aggregation refreshes all fields"() {
 		when:
 		def refreshed = new Date()

@@ -1,30 +1,17 @@
 package org.chai.kevin.value;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONNull;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.JaqlService;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Mode;
-import org.chai.kevin.util.JSONUtils;
-import org.chai.kevin.util.Utils;
 import org.chai.location.CalculationLocation;
-
-import com.ibm.jaql.json.type.JsonValue;
 
 public class ModeValue extends CalculationValue<ModePartialValue> {
 	private static final Log log = LogFactory.getLog(ModeValue.class);
@@ -44,10 +31,9 @@ public class ModeValue extends CalculationValue<ModePartialValue> {
 	
 	@Override
 	public Value getValue() {
-		String maxMode = null;
-		
 		//data Location
 		if (getLocation().collectsData()) {
+			String maxMode = null;
 			if (getCalculationPartialValues().get(0).getValue().getMapValue().size() != 1) 
 				throw new IllegalStateException("DataLocation must contain only 1 calculation partial value");
 			else if (getCalculationPartialValues().get(0).getValue().getMapValue().size() > 0) {
@@ -60,6 +46,10 @@ public class ModeValue extends CalculationValue<ModePartialValue> {
 				}
 			}
 			if (log.isDebugEnabled()) log.debug("partialValue.dataLocation(maxMode="+maxMode+")");
+			
+			Value value = getData().getType().getValueFromJaql(maxMode);
+			if (log.isDebugEnabled()) log.debug("modeValue.modeMap(value="+value+")");
+			return value;
 		}
 		//location
 		else{
@@ -72,36 +62,45 @@ public class ModeValue extends CalculationValue<ModePartialValue> {
 						modeMap = new HashMap<String,Double>();
 					Map<String,Value> partialValueModeMap =  partialValue.getValue().getMapValue();
 					for(String partialModeValue : partialValueModeMap.keySet()){
-						Double modeCount = null;
-						Double partialModeCount = null;
+						Double modeCount = 0d;
+						Double partialModeCount = partialValueModeMap.get(partialModeValue).getNumberValue().doubleValue();
+						if (log.isDebugEnabled()) log.debug("partialValue.location(modeJsonValue="+partialModeValue+", partialModeCount="+partialModeCount+")");
 						if(modeMap.containsKey(partialModeValue)){
 							modeCount = modeMap.get(partialModeValue);
-							partialModeCount = partialValueModeMap.get(partialModeValue).getNumberValue().doubleValue();
-							modeCount += partialModeCount;
 						}
-						else
-							modeCount = 1d;
+						modeCount += partialModeCount;
 						modeMap.put(partialModeValue, modeCount);
 						if (log.isDebugEnabled()) log.debug("partialValue.location(modeJsonValue="+partialModeValue+", modeCount="+modeCount+")");
 					}
 				}
 			}
-			
-			Integer maxCount = 0;
+			Double maxCount = 0d;
 			if(modeMap != null){
 				for(String modeValue : modeMap.keySet()){
 					Double modeCount = modeMap.get(modeValue);
-					if(modeCount > maxCount)
-						maxMode = modeValue;
+					if(modeCount > maxCount){
+						maxCount = modeCount;
+					}
+					if (log.isDebugEnabled()) log.debug("modeValue.location(maxCount="+maxCount+")");
+				}
+			}			
+			Value value = null;
+			List<Value> maxModeValues = new ArrayList<Value>();
+			if(modeMap != null){
+				for(String modeValue : modeMap.keySet()){
+					Double modeCount = modeMap.get(modeValue);
+					if(modeCount == maxCount){
+						Value maxModeValue = getData().getType().getValueFromJaql(modeValue);
+						maxModeValues.add(maxModeValue);
+					}
 					if (log.isDebugEnabled()) log.debug("modeValue.location(modeValue="+modeValue+", modeCount="+modeCount+")");
 				}
+				if (log.isDebugEnabled()) log.debug("modeValue.location(maxModeValues="+maxModeValues+")");
+				value = Value.VALUE_LIST(maxModeValues);
 			}
-			if (log.isDebugEnabled()) log.debug("modeValue.location(maxMode="+maxMode+", maxCount="+modeMap.get(maxMode)+")");
+			if (log.isDebugEnabled()) log.debug("modeValue.modeMap(value="+value+")");
+			return value;
 		}
-		
-		Value value = getData().getType().getValueFromJaql(maxMode);
-		if (log.isDebugEnabled()) log.debug("modeValue.modeMap(value="+value+")");
-		return value;
 	}
 	
 	@Override

@@ -76,12 +76,14 @@ class LanguageService implements ApplicationContextAware {
 		if (value == null || value.isNull()) return null
 		def result;
 		switch (type.type) {
+			case ValueType.BOOL:
+				if (value.booleanValue) result = '<span class="report-value-true">&#10003;</span>'
+				else result = '<span class="report-value-false">&#10007;</span>'
+				break;
 			case (ValueType.ENUM):
 				def enume = null
-				 
 				if (enums == null) enume = dataService.findEnumByCode(type.enumCode);
 				else enume = enums?.get(type.enumCode)
-				
 				if (enume == null) result = value.enumValue
 				else {
 					def option = enume?.getOptionForValue(value.enumValue)
@@ -93,13 +95,35 @@ class LanguageService implements ApplicationContextAware {
 				if (zero != null && value.numberValue == 0) result = zero
 				else result = Utils.formatNumber(format, rounded!=null?value.numberValue.round(rounded):value.numberValue)
 				break;
+			case (ValueType.LIST):
+				result = []
+				if(value.listValue != null && !value.listValue.empty){
+					def listValues = value.listValue.sort()
+					for(Value listValue : listValues){
+						if (log.isDebugEnabled()) log.debug("getStringValue(listType="+type.listType+", listValue="+listValue.value+")");
+						def stringValue = getStringValue(listValue, type.listType)
+						result.add(stringValue)
+					}
+					switch(type.listType.type){
+						case ValueType.BOOL:
+							result = result.join('&nbsp;&nbsp;&nbsp;')
+							break;
+						case ValueType.ENUM:
+						case ValueType.NUMBER:
+						case ValueType.STRING:
+						case ValueType.TEXT:
+							result = result.join(', ')
+							break;
+					}
+				}
+				break;
 			case (ValueType.MAP):
 				// TODO
-			case (ValueType.LIST):
-				// TODO
+				break;
 			default:
 				result = value.stringValue
 		}
+		if (log.isDebugEnabled()) log.debug("getStringValue(type="+type.type+", result="+result+")");
 		return result;
 	}	
 }

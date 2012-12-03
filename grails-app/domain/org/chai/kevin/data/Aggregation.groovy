@@ -63,6 +63,11 @@ class Aggregation extends Calculation<AggregationPartialValue> {
 	}
 	
 	@Override
+	public Type getType(CalculationLocation location){
+		return getType();
+	}
+	
+	@Override
 	public AggregationValue getCalculationValue(
 			List<AggregationPartialValue> partialValues, Period period,
 			CalculationLocation location) {

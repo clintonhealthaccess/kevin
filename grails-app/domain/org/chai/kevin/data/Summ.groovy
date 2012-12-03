@@ -59,6 +59,11 @@ class Summ extends Calculation<SumPartialValue> {
 	}
 	
 	@Override
+	public Type getType(CalculationLocation location){
+		return getType();
+	}
+	
+	@Override
 	public SumValue getCalculationValue(List<SumPartialValue> partialValues, Period period, CalculationLocation location) {
 		return new SumValue(partialValues, this, period, location);
 	}

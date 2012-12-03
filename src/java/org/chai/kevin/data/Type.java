@@ -479,8 +479,7 @@ public class Type extends JSONValue implements Exportable {
 	}
 	
 	public Value getValueFromJaql(String jaqlString) {
-		if (log.isDebugEnabled()) log.debug("getValueFromJaql(jaqlString="+jaqlString+")");
-		if (log.isDebugEnabled()) log.debug("getValueFromJaql(type="+getType()+")");
+		if (log.isDebugEnabled()) log.debug("getValueFromJaql(jaqlString="+jaqlString+", type="+getType()+")");
 		
 		if (jaqlString == null || jaqlString.equals("null") || jaqlString.equals("\"null\"")) return Value.NULL_INSTANCE();
 		try {

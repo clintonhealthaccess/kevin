@@ -40,13 +40,11 @@ public class ModePartialValue extends CalculationPartialValue {
 	public ModePartialValue(Mode data, CalculationLocation location, Period period, DataLocationType type, Value value) {
 		super(location, period, type, value);
 		this.data = data;
-		//this.modeMapString = modeMapString;
 	}
 
 	public ModePartialValue(Mode data, CalculationLocation location, Period period, DataLocationType type) {
 		super(location, period, type);		
 		this.data = data;
-		//this.modeMapString = JSONUtils.getJSONFromMap(modeMap);
 	}
 	
 }

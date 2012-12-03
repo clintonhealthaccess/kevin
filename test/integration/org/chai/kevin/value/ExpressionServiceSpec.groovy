@@ -229,6 +229,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		s(result*.value).equals(s([v("2"), v("1")]))
 	}
 
+	//TODO
 	def "test mode calculation"() {
 		setup:
 		setupLocationTree()

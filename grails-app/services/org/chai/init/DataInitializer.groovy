@@ -367,8 +367,7 @@ class DataInitializer {
 			new Mode(code: 'primary_energy_source_mode_enum', expression: '(\$'+NormalizedDataElement.findByCode('primary_energy_source_enum').id+')', type: Type.TYPE_ENUM('energy_source')).save(failOnError: true)
 			// geographical access - TODO mode number
 			new Mode(code: 'number_of_motos_mode_number', expression: '(\$'+RawDataElement.findByCode('number_of_motos').id+')', type: Type.TYPE_NUMBER()).save(failOnError: true)
-			// geographical access - TODO mode string
-			// geographical access - TODO mode text
+			// geographical access - TODO mode string/text
 		}
 	}
 	

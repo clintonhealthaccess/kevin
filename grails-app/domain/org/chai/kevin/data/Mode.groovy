@@ -43,6 +43,12 @@ public class Mode extends Calculation<ModePartialValue> {
 	}
 	
 	@Override
+	public Type getType(CalculationLocation location){
+		if(location.collectsData()) return getType();
+		else return Type.TYPE_LIST(getType());
+	}
+	
+	@Override
 	public ModeValue getCalculationValue(List<ModePartialValue> partialValues, Period period, CalculationLocation location) {
 		return new ModeValue(partialValues, this, period, location);
 	}
