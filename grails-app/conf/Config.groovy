@@ -286,6 +286,18 @@ task.temp.folder='files/'
 file.upload.available.charset=["UTF-8", "ISO-8859-1"]
 file.upload.delimiter=","
 
+sync.activity.feed.url = 'http://facilities.moh.gov.rw/api/activity.rss?collection_ids[]=26&page=all'
+sync.full.list.url = 'http://facilities.moh.gov.rw/api/collections/26.json'
+sync.site.url = 'http://facilities.moh.gov.rw/api/sites/${itemid}.json'
+
+sync.site.username = "fterrier@clintonhealthaccess.org"
+sync.site.password = "viveinstedd"
+sync.type.ignore = ["PS", "CLIN", "DISP", "FOSACOM"]
+sync.type.mapping = [
+	"CS": "health_center",
+	"DH": "district_hospital"
+]
+
 /**
  * Configuration file override
  */

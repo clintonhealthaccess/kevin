@@ -56,13 +56,4 @@ class DsrTargetCategory extends ReportEntity implements ReportTarget, Exportable
 		return new ArrayList<DsrTarget>(targets?:[]);
 	}
 		
-	@Override
-	public String toExportString() {
-		return "[" + Utils.formatExportCode(getCode()) + "]";
-	}
-	
-//	@Override
-//	public DsrTargetCategory fromExportString(Object value) {
-//		return (DsrTargetCategory) value;
-//	}
 }

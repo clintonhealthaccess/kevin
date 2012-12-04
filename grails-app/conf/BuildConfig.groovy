@@ -73,7 +73,6 @@ grails.project.dependency.resolution = {
 		libResolver.addArtifactPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]")
 		libResolver.addIvyPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/ivys/ivy-[revision].xml")
 		libResolver.name = "github"
-//		libResolver.settings = ivySettings
 		resolver libResolver
     }
     dependencies {
@@ -121,9 +120,10 @@ grails.project.dependency.resolution = {
 		compile ":mail:1.0"
 		compile ":build-info-tag:0.3.1"
 		compile ":yui-minify-resources:0.1.5"
-		compile ":rabbitmq-tasks:0.5.3-SNAPSHOT"
 		compile ":i18n-fields:0.6.3-CHAI"
-		compile ':chai-locations:0.4.3-CHAI'
+		compile ':mail-on-exception:0.1'
+		// compile ':chai-locations:0.5-CHAI'
+		// compile ":rabbitmq-tasks:0.5.4"
 		
 		// cloud foundry support
 		compile ":cloud-foundry:1.2.3"
@@ -134,3 +134,6 @@ grails.project.dependency.resolution = {
 	}
 
 }
+
+grails.plugin.location.'chai-locations' = '../chai-locations'
+grails.plugin.location.'rabbitmq-tasks' = '../tasks'

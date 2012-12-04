@@ -83,12 +83,7 @@ class DsrTarget extends AbstractReportTarget implements Exportable, Importable {
 	public Type getType() {
 		return getData().getType();
 	}
-	
-	@Override
-	public String toExportString() {
-		return "[" + Utils.formatExportCode(getCode().toString()) + "]";
-	}
-	
+		
 	@Override
 	public DsrTarget fromExportString(Object value) {
 		return (DsrTarget) value;

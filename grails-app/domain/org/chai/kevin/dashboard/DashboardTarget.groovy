@@ -88,9 +88,4 @@ class DashboardTarget extends AbstractReportTarget implements DashboardEntity, R
 		return "DashboardTarget[getCode()=" + getCode() + "]";
 	}
 	
-	@Override
-	public String toExportString() {
-		return "[" + Utils.formatExportCode(getCode()) + "]";
-	}
-
 }

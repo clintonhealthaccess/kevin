@@ -47,9 +47,4 @@ class DashboardProgram extends ReportEntity implements DashboardEntity, Exportab
 		return "DashboardProgram[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
 
-	@Override
-	public String toExportString() {
-		return "[" + Utils.formatExportCode(getCode()) + "]";
-	}
-
 }
