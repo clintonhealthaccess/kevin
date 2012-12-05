@@ -38,7 +38,7 @@ import org.chai.kevin.util.Utils
 import org.chai.location.CalculationLocation
 import org.hibernate.proxy.HibernateProxy
 
-class DashboardTarget extends AbstractReportTarget implements DashboardEntity, ReportTarget, Exportable {
+class DashboardTarget extends AbstractReportTarget implements DashboardEntity, ReportTarget {
 
 	ReportProgram program;
 	Integer weight;

@@ -11,7 +11,7 @@ import org.chai.kevin.value.Value;
 class DsrServiceSpec extends DsrIntegrationTests {
 
 	def dsrService
-	def refreshValueService
+	def reportService
 	
 	def "get dsr"() {
 		setup:
@@ -36,7 +36,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 
 		when:
 		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_NUMBER(10d))
-		refreshValueService.flushCaches()
+		reportService.flushCaches()
 		dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
 
 		then:
@@ -153,7 +153,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 
 		when:
 		newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(KIVUYE), Value.VALUE_NUMBER(10d))
-		refreshValueService.flushCaches()
+		reportService.flushCaches()
 		dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
 
 		then:

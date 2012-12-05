@@ -135,15 +135,6 @@ beans = {
 		sessionFactory = ref("sessionFactory")
 	}
 
-	reportService(ReportService){
-		dataService = ref("dataService")
-		languageService = ref("languageService")
-		locationService = ref("locationService")
-		valueService = ref("valueService")		
-		sessionFactory = ref("sessionFactory")
-		skipLevels = reportSkipLevels		
-	}
-	
 	reportExportService(ReportExportService){
 		languageService = ref("languageService")
 		locationService = ref("locationService")

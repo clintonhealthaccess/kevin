@@ -52,7 +52,7 @@ import org.chai.kevin.reports.AbstractReportTarget
 import org.chai.kevin.util.Utils
 import org.hibernate.proxy.HibernateProxy
 
-class DsrTarget extends AbstractReportTarget implements Exportable, Importable {
+class DsrTarget extends AbstractReportTarget implements Importable {
 	
 	String format;
 	Boolean average; //this can either be an average (true) or sum (null or false)

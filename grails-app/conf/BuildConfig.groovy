@@ -112,7 +112,6 @@ grails.project.dependency.resolution = {
 		compile ":compass-sass:0.7"
 		compile ":google-analytics:2.0"
 		compile ":quartz:1.0-RC2"
-		compile ":constraints:0.8.0"
 		compile ":cached-resources:1.0"
 		compile ":cache-headers:1.1.5"
 		compile ":svn:1.0.2"
@@ -122,8 +121,8 @@ grails.project.dependency.resolution = {
 		compile ":yui-minify-resources:0.1.5"
 		compile ":i18n-fields:0.6.3-CHAI"
 		compile ':mail-on-exception:0.1'
+		compile ":rabbitmq-tasks:0.5.4"
 		// compile ':chai-locations:0.5-CHAI'
-		// compile ":rabbitmq-tasks:0.5.4"
 		
 		// cloud foundry support
 		compile ":cloud-foundry:1.2.3"
@@ -136,4 +135,4 @@ grails.project.dependency.resolution = {
 }
 
 grails.plugin.location.'chai-locations' = '../chai-locations'
-grails.plugin.location.'rabbitmq-tasks' = '../tasks'
+grails.plugin.location.'kevin-data' = '../chai-kevin-data'

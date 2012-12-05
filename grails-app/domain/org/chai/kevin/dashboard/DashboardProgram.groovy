@@ -7,7 +7,7 @@ import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.util.Utils
 import org.chai.location.CalculationLocation
 
-class DashboardProgram extends ReportEntity implements DashboardEntity, Exportable {
+class DashboardProgram extends ReportEntity implements DashboardEntity {
 
 	ReportProgram program;
 	Integer weight;
