@@ -16,7 +16,6 @@ import net.sf.json.util.JSONUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Exportable;
-import org.chai.kevin.data.Type;
 import org.chai.kevin.json.JSONValue;
 import org.chai.kevin.util.Utils;
 

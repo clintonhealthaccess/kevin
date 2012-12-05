@@ -42,6 +42,7 @@ import org.chai.location.DataLocationType;
 import org.chai.location.DataLocation;
 import org.chai.location.Location;
 import org.chai.kevin.value.CalculationPartialValue;
+import org.chai.kevin.value.ModePartialValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.Status;
@@ -63,8 +64,8 @@ class DataServiceSpec extends IntegrationTests {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [:])
-		def ratio = newSum("1", CODE(3))
-		def sum = newSum("1", CODE(4))
+		def sum = newSum("1", CODE(3))
+		def mode = newMode("1", CODE(4), Type.TYPE_NUMBER())
 		def aggregation = newAggregation("1", CODE(5))
 		def result = null
 		
@@ -81,29 +82,45 @@ class DataServiceSpec extends IntegrationTests {
 		result.equals(normalizedDataElement)
 
 		when:
-		result = dataService.getData(ratio.id, Summ.class)
-		
-		then:
-		result.equals(ratio)
-
-		when:
 		result = dataService.getData(sum.id, Summ.class)
 		
 		then:
 		result.equals(sum)
 	
-		expect:		
-		dataService.getData(ratio.id, NormalizedDataElement.class) == null
-		dataService.getData(ratio.id, RawDataElement.class) == null
-		dataService.getData(sum.id, NormalizedDataElement.class) == null
-		dataService.getData(sum.id, RawDataElement.class) == null
-		dataService.getData(rawDataElement.id, Summ.class) == null				
-		dataService.getData(normalizedDataElement.id, Summ.class) == null
-		dataService.getData(normalizedDataElement.id, RawDataElement.class) == null
+		when:
+		result = dataService.getData(mode.id, Mode.class)
 		
+		then:
+		result.equals(mode)
+		
+		expect:
+		dataService.getData(rawDataElement.id, NormalizedDataElement.class) == null
+		dataService.getData(rawDataElement.id, Summ.class) == null
+		dataService.getData(rawDataElement.id, Mode.class) == null
+		dataService.getData(rawDataElement.id, Aggregation.class) == null
+		
+		dataService.getData(normalizedDataElement.id, RawDataElement.class) == null
+		dataService.getData(normalizedDataElement.id, Summ.class) == null
+		dataService.getData(normalizedDataElement.id, Mode.class) == null
+		dataService.getData(normalizedDataElement.id, Aggregation.class) == null
+		
+		dataService.getData(sum.id, RawDataElement.class) == null
+		dataService.getData(sum.id, NormalizedDataElement.class) == null
+		dataService.getData(sum.id, Mode.class) == null
+		dataService.getData(sum.id, Aggregation.class) == null
+		
+		dataService.getData(mode.id, RawDataElement.class) == null
+		dataService.getData(mode.id, NormalizedDataElement.class) == null
+		dataService.getData(mode.id, Summ.class) == null
+		dataService.getData(mode.id, Aggregation.class) == null
+		
+		dataService.getData(aggregation.id, RawDataElement.class) == null
+		dataService.getData(aggregation.id, NormalizedDataElement.class) == null
+		dataService.getData(aggregation.id, Summ.class) == null
+		dataService.getData(aggregation.id, Mode.class) == null
 	}
 
-	def "get data from DSR"() {
+	def "get calculation data from target with raw data element"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def program = newReportProgram(CODE(1))
@@ -120,9 +137,9 @@ class DataServiceSpec extends IntegrationTests {
 	def "get data element by code"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [:])
-		def ratio = newSum("1", CODE(3))
-		def sum = newSum("1", CODE(4))
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [:])		
+		def sum = newSum("1", CODE(3))
+		def mode = newMode("1", CODE(4), Type.TYPE_NUMBER())
 		def aggregation = newAggregation("1", CODE(5))
 		def result = null
 		
@@ -139,39 +156,58 @@ class DataServiceSpec extends IntegrationTests {
 		result.equals(normalizedDataElement)
 
 		when:
-		result = dataService.getDataByCode(ratio.code, Summ.class)
-		
-		then:
-		result.equals(ratio)
-
-		when:
 		result = dataService.getDataByCode(sum.code, Summ.class)
 		
 		then:
 		result.equals(sum)
 	
+		when:
+		result = dataService.getDataByCode(mode.code, Mode.class)
+		
+		then:
+		result.equals(mode)
+		
 		expect:
-		dataService.getDataByCode(ratio.code, NormalizedDataElement.class) == null
-		dataService.getDataByCode(ratio.code, RawDataElement.class) == null
-		dataService.getDataByCode(sum.code, NormalizedDataElement.class) == null
-		dataService.getDataByCode(sum.code, RawDataElement.class) == null
-		dataService.getDataByCode(rawDataElement.code, Summ.class) == null
 		dataService.getDataByCode(rawDataElement.code, NormalizedDataElement.class) == null
-		dataService.getDataByCode(normalizedDataElement.code, Summ.class) == null
+		dataService.getDataByCode(rawDataElement.code, Summ.class) == null
+		dataService.getDataByCode(rawDataElement.code, Mode.class) == null
+		dataService.getDataByCode(rawDataElement.code, Aggregation.class) == null
+		
 		dataService.getDataByCode(normalizedDataElement.code, RawDataElement.class) == null
+		dataService.getDataByCode(normalizedDataElement.code, Summ.class) == null
+		dataService.getDataByCode(normalizedDataElement.code, Mode.class) == null
+		dataService.getDataByCode(normalizedDataElement.code, Aggregation.class) == null
+		
+		dataService.getDataByCode(sum.code, RawDataElement.class) == null
+		dataService.getDataByCode(sum.code, NormalizedDataElement.class) == null
+		dataService.getDataByCode(sum.code, Mode.class) == null
+		dataService.getDataByCode(sum.code, Aggregation.class) == null
+		
+		dataService.getDataByCode(mode.code, RawDataElement.class) == null
+		dataService.getDataByCode(mode.code, NormalizedDataElement.class) == null
+		dataService.getDataByCode(mode.code, Summ.class) == null
+		dataService.getDataByCode(mode.code, Aggregation.class) == null
+		
+		dataService.getDataByCode(aggregation.code, RawDataElement.class) == null
+		dataService.getDataByCode(aggregation.code, NormalizedDataElement.class) == null
+		dataService.getDataByCode(aggregation.code, Summ.class) == null
+		dataService.getDataByCode(aggregation.code, Mode.class) == null
 		
 	}
 	
 	def "get data element using super type"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def ratio = newSum("1", CODE(3)) 
+		def sum = newSum("1", CODE(3))
+		def mode = newMode("1", CODE(4), Type.TYPE_NUMBER())
 		
 		expect:
 		dataService.getData(rawDataElement.id, DataElement.class).equals(rawDataElement)
 		dataService.getData(rawDataElement.id, Data.class).equals(rawDataElement)
-		dataService.getData(ratio.id, Calculation.class).equals(ratio)
-		dataService.getData(ratio.id, Data.class).equals(ratio)
+		dataService.getData(sum.id, Calculation.class).equals(sum)
+		dataService.getData(sum.id, Data.class).equals(sum)
+		dataService.getData(mode.id, Calculation.class).equals(mode)
+		dataService.getData(mode.id, Data.class).equals(mode)
 	}
 	
 	def "search for null"() {
@@ -228,11 +264,14 @@ class DataServiceSpec extends IntegrationTests {
 	
 	def "search for calculations work"() {
 		setup:
-		def ratio1 = newSum(["en": "sum"], "1", CODE(1));
+		def sum = newSum(["en": "sum"], "1", CODE(1));
+		def mode = newMode(["en": "mode"], "1", CODE(2), Type.TYPE_NUMBER());
 		
 		expect:
-		dataService.searchData(Summ.class, "su", [], [:]).equals([ratio1])
-		dataService.searchData(Data.class, "su", [], [:]).equals([ratio1])
+		dataService.searchData(Summ.class, "su", [], [:]).equals([sum])
+		dataService.searchData(Data.class, "su", [], [:]).equals([sum])
+		dataService.searchData(Mode.class, "mo", [], [:]).equals([mode])
+		dataService.searchData(Data.class, "mo", [], [:]).equals([mode])
 		
 	}
 	
@@ -266,7 +305,7 @@ class DataServiceSpec extends IntegrationTests {
 		NormalizedDataElementValue.count() == 1
 	}
 	
-	def "delete calculation with associated values throws exception"() {
+	def "delete sum with associated values throws exception"() {
 		when:
 		setupLocationTree()
 		def calculation = newSum("1", CODE(1))
@@ -282,6 +321,22 @@ class DataServiceSpec extends IntegrationTests {
 		
 	}
 	
+	def "delete mode with associated values throws exception"() {
+		when:
+		setupLocationTree()
+		def calculation = newMode("1", CODE(1), Type.TYPE_NUMBER())
+		def period = newPeriod()
+		newModePartialValue(calculation, period, DataLocation.findByCode(KIVUYE), DataLocationType.findByCode(HEALTH_CENTER_GROUP), Value.NULL_INSTANCE())
+
+		dataService.delete(calculation)
+		
+		then:
+		thrown IllegalArgumentException
+		Mode.count() == 1
+		ModePartialValue.count() == 1
+		
+	}
+	
 	def "delete normalized data element with associated expression throws exception"() {
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
@@ -294,16 +349,28 @@ class DataServiceSpec extends IntegrationTests {
 		NormalizedDataElement.count() == 1
 	}
 	
-	def "delete calculation with associated expression throws exception"() {
+	def "delete sum with associated expression throws exception"() {
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def sum = newSum("\$"+rawDataElement.id, CODE(2))
+		def calculation = newSum("\$"+rawDataElement.id, CODE(2))
 		
 		dataService.delete(rawDataElement)
 		
 		then:
 		thrown IllegalArgumentException
 		Summ.count() == 1
+	}
+	
+	def "delete mode with associated expression throws exception"() {
+		when:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def calculation = newMode("\$"+rawDataElement.id, CODE(2), Type.TYPE_NUMBER())
+		
+		dataService.delete(rawDataElement)
+		
+		then:
+		thrown IllegalArgumentException
+		Mode.count() == 1
 	}
 	
 	def "get referencing normalized data element"() {
@@ -331,15 +398,14 @@ class DataServiceSpec extends IntegrationTests {
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def sum = newSum("\$"+rawDataElement.id, CODE(2))
-		
 		then:
 		dataService.getReferencingCalculations(rawDataElement).equals([sum])
 		
 		when:
-		newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
-		
+		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
+		def mode = newMode("\$"+normalizedDataElement.id, CODE(4), Type.TYPE_NUMBER())
 		then:
-		dataService.getReferencingCalculations(rawDataElement).equals([sum])
+		dataService.getReferencingCalculations(normalizedDataElement).equals([mode])
 	}
 	
 }

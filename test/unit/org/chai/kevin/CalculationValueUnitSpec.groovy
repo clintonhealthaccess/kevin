@@ -3,8 +3,11 @@ package org.chai.kevin
 import grails.plugin.spock.UnitSpec;
 
 import org.chai.kevin.data.Aggregation;
+import org.chai.kevin.data.Enum;
+import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Mode
 import org.chai.kevin.data.Summ;
+import org.chai.kevin.data.Type;
 import org.chai.location.DataLocation;
 import org.chai.location.Location;
 import org.chai.kevin.value.AggregationPartialValue;
@@ -107,34 +110,105 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 	}
 	
-	def "test mode"() {
+	def "test mode boolean"() {
 		setup:
-		def partialValue0 = new ModePartialValue(value:v(["map_key":"true","map_value":["value":1]]))
-		def partialValue1 = new ModePartialValue(value:v(["map_key":"false","map_value":["value":2]]))
-		def partialValue2 = new ModePartialValue(value:v(["map_key":"true","map_value":["value":3]]))
-		def partialValue3 = new ModePartialValue(value:v(["map_key":"false","map_value":["value":4]]))
-		def mode = new Mode()
+		def partialValue0 = new ModePartialValue(value:Value.VALUE_MAP(["true":v("1")]))
+		def partialValue1 = new ModePartialValue(value:Value.VALUE_MAP(["false":v("2")]))
+		def partialValue2 = new ModePartialValue(value:Value.VALUE_MAP(["true":v("3")]))
+		def partialValue3 = new ModePartialValue(value:Value.VALUE_MAP(["false":v("4")]))
+		def mode = new Mode(type: Type.TYPE_BOOL())
 		def value = null
 		
 		when:
-		value = new ModeValue([partialValue0], mode, null, new Location())
+		value = new ModeValue([partialValue0], mode, null, new DataLocation())
+		
 		then:
-		value.getValue().equals(v("true"))
+		value.getValue().equals(Value.VALUE_LIST([v("true")]));
 		
 		when:
 		value = new ModeValue([partialValue0, partialValue1], mode, null, new Location())
 		then:
-		value.getValue().equals(v("false"))
+		value.getValue().equals(Value.VALUE_LIST([v("false")]))
 		
 		when:
 		value = new ModeValue([partialValue1, partialValue2], mode, null, new Location())
 		then:
-		value.getValue().equals(v("true"))
+		value.getValue().equals(Value.VALUE_LIST([v("true")]))
 		
 		when:
-		value = new ModeValue([partialValue0, partialValue1, partialValue2, partialValue3], mode, null, new Location())
+		value = new ModeValue([partialValue0, partialValue2, partialValue3], mode, null, new Location())
 		then:
-		value.getValue().equals(v("false"))
+		value.getValue().equals(Value.VALUE_LIST([v("false"), v("true")]))	
+	}
+	
+	def "test mode number"() {
+		setup:
+		def partialValue0 = new ModePartialValue(value:Value.VALUE_MAP(["2":v("1")]))
+		def partialValue1 = new ModePartialValue(value:Value.VALUE_MAP(["4":v("2")]))
+		def partialValue2 = new ModePartialValue(value:Value.VALUE_MAP(["2":v("3")]))
+		def partialValue3 = new ModePartialValue(value:Value.VALUE_MAP(["4":v("4")]))
+		def mode = new Mode(type: Type.TYPE_NUMBER())
+		def value = null
+		
+		when:
+		value = new ModeValue([partialValue0], mode, null, new DataLocation())
+		
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("2")]))
+		
+		when:
+		value = new ModeValue([partialValue0, partialValue1], mode, null, new Location())
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("4")]))
+		
+		when:
+		value = new ModeValue([partialValue1, partialValue2], mode, null, new Location())
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("2")]))
+		
+		when:
+		value = new ModeValue([partialValue0, partialValue2, partialValue3], mode, null, new Location())
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("2"),v("4")]))
+		
+	}
+	
+	def "test mode enum/string/text"() {
+		setup:
+		def energy = new Enum(code: 'energy_source')
+		def nationalGrid = new EnumOption(enume: energy, value: 'national_grid')
+		def solar = new EnumOption(enume: energy, value: 'solar')
+		def none = new EnumOption(enume: energy, value: 'none')
+		
+		def partialValue0 = new ModePartialValue(value: Value.VALUE_MAP(["solar":v("1")]))
+		def partialValue1 = new ModePartialValue(value: Value.VALUE_MAP(["national_grid":v("2")]))
+		def partialValue2 = new ModePartialValue(value: Value.VALUE_MAP(["solar":v("3")]))
+		def partialValue3 = new ModePartialValue(value: Value.VALUE_MAP(["none":v("4")]))
+		def mode = new Mode(type: Type.TYPE_ENUM("energy_source"))
+//		def modeString = new Mode(type: Type.TYPE_STRING())
+//		def modeText = new Mode(type: Type.TYPE_TEXT())
+		def value = null
+		
+		when:
+		value = new ModeValue([partialValue0], mode, null, new DataLocation())
+		
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("solar")]))
+		
+		when:
+		value = new ModeValue([partialValue0, partialValue1], mode, null, new Location())
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("national_grid")]))
+		
+		when:
+		value = new ModeValue([partialValue1, partialValue2], mode, null, new Location())
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("solar")]))
+		
+		when:
+		value = new ModeValue([partialValue0, partialValue2, partialValue3], mode, null, new Location())
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("solar"),v("none")]))
 		
 	}
 	

@@ -16,6 +16,7 @@ class ModeControllerSpec extends IntegrationTests {
 		when:
 		modeController.params.code = CODE(1)
 		modeController.params.expression = "1"
+		modeController.params.type = Type.TYPE_NUMBER()
 		modeController.saveWithoutTokenCheck()
 		
 		then:
@@ -41,7 +42,7 @@ class ModeControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def mode = newMode("1", CODE(1))
+		def mode = newMode("1", CODE(1), Type.TYPE_NUMBER())
 		newModePartialValue(mode, period, Location.findByCode(RWANDA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1")) 
 		modeController = new ModeController()
 		
@@ -58,7 +59,7 @@ class ModeControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def mode = newMode("1", CODE(1))
+		def mode = newMode("1", CODE(1), Type.TYPE_NUMBER())
 		newModePartialValue(mode, period, Location.findByCode(RWANDA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1"))
 		modeController = new ModeController()
 		
@@ -75,7 +76,7 @@ class ModeControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def mode = newMode("1", CODE(1))
+		def mode = newMode("1", CODE(1), Type.TYPE_NUMBER())
 		modeController = new ModeController()
 		def time1 = mode.timestamp
 		

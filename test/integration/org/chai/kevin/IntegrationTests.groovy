@@ -296,12 +296,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new SumPartialValue(data: sum, period: period, location: location, type: type, numberOfDataLocations:0, value: value).save(failOnError: true)
 	}
 	
-	static ModePartialValue newModePartialValue(def mode, def period, def location, def type, def modeMap, def value) {
-		return new ModePartialValue(data: mode, period: period, location: location, type: type, modeMap: modeMap, value: value).save(failOnError: true)
-	}
-	
 	static ModePartialValue newModePartialValue(def mode, def period, def location, def type, def value) {
-		return new ModePartialValue(data: mode, period: period, location: location, type: type, modeMap:null, value: value).save(failOnError: true)
+		return new ModePartialValue(data: mode, period: period, location: location, type: type, value: value).save(failOnError: true)
 	}
 	
 	static RawDataElement newRawDataElement(def code, def type) {
@@ -355,7 +351,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static Aggregation newAggregation(def names, def expression, def code) {
-		def data = new Aggregation(expression: expression, code: code).save(failOnError: true)
+		def data = new Aggregation(expression: expression, code: code, type: Type.TYPE_NUMBER()).save(failOnError: true)
 		setLocaleValueInMap(data, names, "Names")
 		return data
 	}
@@ -369,7 +365,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static Summ newSum(def names, def expression, def code) {
-		def data = new Summ(expression: expression, code: code).save(failOnError: true, flush: true)
+		def data = new Summ(expression: expression, code: code, type: Type.TYPE_NUMBER()).save(failOnError: true, flush: true)
 		setLocaleValueInMap(data, names, "Names")
 		return data
 	}
@@ -378,16 +374,18 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return newSum(null, expression, code)
 	}
 	
-	static def newMode(String expression, def code) {
-		return newMode([:], expression, code)
+	static def newMode(String expression, def code, def type) {
+		return newMode([:], expression, code, type)
 	}
-	
-	static Mode newMode(def names, def expression, def code) {
-		return new Mode(names: names, expression: expression, code: code).save(failOnError: true, flush: true)
+		
+	static Mode newMode(def names, def expression, def code, def type) {
+		def data = new Mode(names: names, expression: expression, code: code, type: type).save(failOnError: true, flush: true)
+		setLocaleValueInMap(data, names, "Names")
+		return data
 	}
 
-	static Mode newMode(def expression, def code) {
-		return newMode([:], expression, code)
+	static Mode newMode(def expression, def code, def type) {
+		return newMode([:], expression, code, type)
 	}
 		
 	static Enum newEnume(def code) {
@@ -475,6 +473,9 @@ abstract class IntegrationTests extends IntegrationSpec {
 			sessionFactory.currentSession.createCriteria(CalculationLocation.class).list().each { location ->
 				Summ.list().each { sum ->
 					refreshValueService.updateCalculationPartialValues(sum, location, period)
+				}
+				Mode.list().each { mode ->
+					refreshValueService.updateCalculationPartialValues(mode, location, period)
 				}
 				Aggregation.list().each { aggregation ->
 					refreshValueService.updateCalculationPartialValues(aggregation, location, period)

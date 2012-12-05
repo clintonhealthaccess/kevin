@@ -18,10 +18,12 @@
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'Data'])}"
 			from="${data}" value="${target.data?.id}" values="${data.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 		
-		<div class="row">
-			<label>${message(code:'dsr.target.average.label')}</label>
-			<g:checkBox class="checkbox" name="average" value="${target.average}" />
-		</div>
+		<g:if test="${data.class == Summ.class}">
+			<div class="row">
+				<label>${message(code:'dsr.target.average.label')}</label>
+				<g:checkBox class="checkbox" name="average" value="${target.average}" />
+			</div>
+		</g:if>
 
 		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${target}" field="order"/>				
 		

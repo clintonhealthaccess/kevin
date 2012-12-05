@@ -51,7 +51,7 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 			return getDataLocationValue();			
 		}
 		//location
-		Double sum = null;
+		Double sum = 0d;
 		Double num = 0d;
 		for (SumPartialValue sumPartialValue : getCalculationPartialValues()) {
 			if (!sumPartialValue.getValue().isNull()) {
@@ -62,7 +62,7 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 			}
 		}
 		
-		average = sum / num;		
+		average = sum / num;
 		
 		if (average.isInfinite()) average = null;
 		else if (average.isNaN()) average = null;		

@@ -7,9 +7,7 @@ class SummController extends AbstractCalculationController {
 	}
 	
 	def createEntity() {
-		def summ = new Summ();
-		summ.type = new Type()
-		return summ
+		return new Summ();
 	}
 	
 	def getLabel() {

@@ -229,52 +229,58 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		s(result*.value).equals(s([v("2"), v("1")]))
 	}
 
-	//TODO
 	def "test mode calculation"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"2",(HEALTH_CENTER_GROUP):"1"]]))
-		def mode = newMode("\$"+normalizedDataElement.id, CODE(2))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"2",(HEALTH_CENTER_GROUP):"1"]])
+		def mode = newMode("\$"+normalizedDataElement.id, CODE(2), Type.TYPE_NUMBER())
 		def result = null
 		refreshNormalizedDataElement()
+		
+		when:
+		result = expressionService.calculatePartialValues(mode, DataLocation.findByCode(KIVUYE), period)
+		
+		then:
+		result.size() == 1
+		result*.value.equals([Value.VALUE_MAP(["1":v("1")])])
 		
 		when:
 		result = expressionService.calculatePartialValues(mode, DataLocation.findByCode(BUTARO), period)
 		
 		then:
 		result.size() == 1
-		result*.value.equals([v("2")])
+		result*.value.equals([Value.VALUE_MAP(["2":v("1")])])
 
 		when:
 		result = expressionService.calculatePartialValues(mode, Location.findByCode(BURERA), period)
 		
 		then:
 		result.size() == 2
-		result*.value.equals([v("2"), , v("1")])
+		result*.value.equals([Value.VALUE_MAP(["2":v("1")]), Value.VALUE_MAP(["1":v("1")])])
 		
 		when:
 		result = expressionService.calculatePartialValues(mode, Location.findByCode(NORTH), period)
 		
 		then:
 		result.size() == 2
-		result*.value.equals([v("2"), v("1")])
+		result*.value.equals([Value.VALUE_MAP(["2":v("1")]), Value.VALUE_MAP(["1":v("1")])])
 		
 		when:
 		def burera = Location.findByCode(BURERA)
 		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
-		newDataLocation("dummy", burera, dh)
+		newDataLocation(['en': 'dummy'], "dummy", burera, dh)
 		normalizedDataElement.timestamp = new Date()
 		normalizedDataElement.save(failOnError: true)
 		refreshNormalizedDataElement()
-		result = expressionService.calculatePartialValues(sum, Location.findByCode(BURERA), period)
+		result = expressionService.calculatePartialValues(mode, Location.findByCode(BURERA), period)
 		
 		then:
 		result.size() == 2
-		s(result*.value).equals(s([v("2"), v("1")]))
+		result*.value.equals([Value.VALUE_MAP(["2":v("2")]), Value.VALUE_MAP(["1":v("1")])])
 	}
 		
-	def "test calculation with missing value"() {
+	def "test sum with missing value"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -295,6 +301,29 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		then:
 		result.size() == 2
 		result*.value.equals([v("0"), v("0")])
+	}
+	
+	def "test mode with missing value"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER());
+		def mode = newMode("\$"+rawDataElement.id, CODE(2), Type.TYPE_NUMBER())
+		def result
+		
+		when:
+		result = expressionService.calculatePartialValues(mode, DataLocation.findByCode(BUTARO), period)
+		
+		then:
+		result.size() == 1
+		result*.value.equals([v([])])
+		
+		when:
+		result = expressionService.calculatePartialValues(mode, Location.findByCode(BURERA), period)
+		
+		then:
+		result.size() == 2
+		result*.value.equals([v([]), v([])])
 	}
 	
 	def "test sum with missing data location type"() {
@@ -341,35 +370,34 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		s(result*.value).equals(s([v("0"), v("2")]))
 	}
 	
-	def "test ratio with valid calculation"() {
+	def "test mode with missing data location type"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]])
-		def ratio = newSum("\$"+normalizedDataElement.id, CODE(2))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
+		def mode = newMode("\$"+normalizedDataElement.id, CODE(2), Type.TYPE_NUMBER())
 		def result = null
 		refreshNormalizedDataElement()
 		
 		when:
-		result = expressionService.calculatePartialValues(ratio, DataLocation.findByCode(BUTARO), period)
+		result = expressionService.calculatePartialValues(mode, DataLocation.findByCode(BUTARO), period)
+		then:
+		result.size() == 1
+		result*.value.equals([Value.VALUE_MAP(["1":v("1")])])
+
+		when:
+		result = expressionService.calculatePartialValues(mode, DataLocation.findByCode(KIVUYE), period)
 		
 		then:
 		result.size() == 1
-		result*.value.equals([v("1")])
-
+		result*.value.equals([v([])])
+		
 		when:
-		result = expressionService.calculatePartialValues(ratio, Location.findByCode(BURERA), period)
+		result = expressionService.calculatePartialValues(mode, Location.findByCode(BURERA), period)
 		
 		then:
 		result.size() == 2
-		result*.value.equals([v("1"), v("1")])
-		
-		when:
-		result = expressionService.calculatePartialValues(ratio, Location.findByCode(NORTH), period)
-		
-		then:
-		result.size() == 2
-		result*.value.equals([v("1"), v("1")])
+		result*.value.equals([Value.VALUE_MAP(["1":v("1")]), v([])])
 		
 		when:
 		def burera = Location.findByCode(BURERA)
@@ -378,22 +406,21 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		normalizedDataElement.timestamp = new Date()
 		normalizedDataElement.save(failOnError: true)
 		refreshNormalizedDataElement()
-		result = expressionService.calculatePartialValues(ratio, Location.findByCode(BURERA), period)
+		result = expressionService.calculatePartialValues(mode, Location.findByCode(BURERA), period)
 		
 		then:
 		result.size() == 2
-		s(result*.value).equals(s([v("2"), v("1")]))
-
+		result*.value.equals([Value.VALUE_MAP(["1":v("2")]), v([])])
 	}
 	
 	def "data elements in expression"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def ratio = newSum("1", CODE(2))
+		def sum = newSum("1", CODE(2))
 		def data = null
 		
 		when:
-		data = expressionService.getDataInExpression("\$"+ratio.id+"+"+"\$"+rawDataElement.id, RawDataElement.class)
+		data = expressionService.getDataInExpression("\$"+sum.id+"+"+"\$"+rawDataElement.id, RawDataElement.class)
 		
 		then:
 		data.size() == 2
@@ -407,21 +434,21 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		s(data.values()).equals(s([null]))
 		
 		when:
-		data = expressionService.getDataInExpression("\$"+ratio.id+"+"+"\$"+rawDataElement.id, Summ.class)
+		data = expressionService.getDataInExpression("\$"+sum.id+"+"+"\$"+rawDataElement.id, Summ.class)
 		
 		then:
 		data.size() == 2
-		s(data.values()).equals(s([null, ratio]))
+		s(data.values()).equals(s([null, sum]))
 		
 		when:
-		data = expressionService.getDataInExpression("\$"+ratio.id+"+"+"\$"+rawDataElement.id, Data.class)
+		data = expressionService.getDataInExpression("\$"+sum.id+"+"+"\$"+rawDataElement.id, Data.class)
 		
 		then:
 		data.size() == 2
-		s(data.values()).equals(s([ratio, rawDataElement]))
+		s(data.values()).equals(s([sum, rawDataElement]))
 		
 		when:
-		data = expressionService.getDataInExpression("\$"+ratio.id+"+"+"\$"+rawDataElement.id, DataElement.class)
+		data = expressionService.getDataInExpression("\$"+sum.id+"+"+"\$"+rawDataElement.id, DataElement.class)
 		
 		then:
 		data.size() == 2

@@ -37,6 +37,7 @@ import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Source;
 import org.chai.kevin.data.Summ;
+import org.chai.kevin.data.Mode;
 import org.chai.kevin.data.Type;
 import org.chai.location.CalculationLocation;
 import org.chai.location.DataLocation;
@@ -64,8 +65,10 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		NormalizedDataElementValue.executeUpdate("delete NormalizedDataElementValue")
 		NormalizedDataElement.executeUpdate("delete NormalizedDataElement")
 		SumPartialValue.executeUpdate("delete SumPartialValue")
+		ModePartialValue.executeUpdate("delete ModePartialValue")
 		AggregationPartialValue.executeUpdate("delete AggregationPartialValue")
 		Summ.executeUpdate("delete Summ")
+		Mode.executeUpdate("delete Mode")
 		Aggregation.executeUpdate("delete Aggregation")
 		DataLocation.executeUpdate("delete DataLocation")
 		Location.executeUpdate("delete Location")
@@ -422,8 +425,8 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def refreshed = new Date()
 		setupLocationTree()
 		def period = newPeriod()
-		def mode = newMode("1", CODE(2))
-		def partialValue = newModePartialValue(mode, period, Location.findByCode(BURERA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 0, v("1"))
+		def mode = newMode("1", CODE(2), Type.TYPE_NUMBER())
+		def partialValue = newModePartialValue(mode, period, Location.findByCode(BURERA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1"))
 		
 		then:
 		ModePartialValue.count() == 1

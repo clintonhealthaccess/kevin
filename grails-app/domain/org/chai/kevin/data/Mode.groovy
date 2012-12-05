@@ -30,9 +30,21 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 public class Mode extends Calculation<ModePartialValue> {
 	
+	String typeString;
+	
 	static mapping = {
 		table 'dhsst_data_calculation_mode'
+		typeString sqlType: 'text'
 	}
+	
+	static constraints =  {
+		type (nullable: false,  validator: {val, obj ->
+			return val.isValid();
+		})
+	}
+	
+	Type cachedType
+	static transients = ['cachedType', 'type']
 	
 	/*
 	 * Retaining backward compatibility with old getters and setters
@@ -42,10 +54,19 @@ public class Mode extends Calculation<ModePartialValue> {
 		return cachedType
 	}
 	
+	void setType(Type type) {
+		this.cachedType = type
+		this.typeString = type.jsonValue
+	}
+	
+	void setTypeString(String typeString) {
+		this.typeString = typeString
+		this.cachedType = null
+	}
+	
 	@Override
 	public Type getType(CalculationLocation location){
-		if(location.collectsData()) return getType();
-		else return Type.TYPE_LIST(getType());
+		return Type.TYPE_LIST(getType());
 	}
 	
 	@Override

@@ -82,7 +82,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		def program = newReportProgram(CODE(1))
 		def category = newDsrTargetCategory(CODE(2), program, 1)
-		def mode = newMode("1", CODE(2))
+		def mode = newMode("1", CODE(2), Type.TYPE_NUMBER())
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
 		

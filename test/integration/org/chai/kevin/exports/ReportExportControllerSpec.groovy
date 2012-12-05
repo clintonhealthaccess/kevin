@@ -26,8 +26,8 @@ class ReportExportControllerSpec extends ReportIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		def dataElementValue1 = newRawDataElementValue(dataElement, period, DataLocation.findByCode(KIVUYE), v("30"))
 		def dataElementValue2 = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), v("50"))
-		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(1), 1)
-		def target = DsrIntegrationTests.newDsrTarget(CODE(3), 1, dataElement, program, category)
+		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(1), program, 0)
+		def target = DsrIntegrationTests.newDsrTarget(CODE(3), 1, dataElement, null, category)
 		def reportType = Utils.ReportType.TABLE
 		
 		when:

@@ -51,14 +51,12 @@ abstract class Calculation<T extends CalculationPartialValue> extends Data<T> im
 
 	Date refreshed;
 	String expression;
-	String typeString;
 	String sourceMapString;
 	
 	static mapping = {
 		table 'dhsst_data_calculation'
 		tablePerHierarchy false
 //		refreshed sqlType: "datetime"
-		typeString sqlType: 'text'
 	}
 	
 	static constraints =  {
@@ -67,26 +65,8 @@ abstract class Calculation<T extends CalculationPartialValue> extends Data<T> im
 		sourceMapString (nullable: true)
 	}
 	
-	Type cachedType
 	Map cachedSourceMap
-	static transients = ['cachedType', 'type', 'cachedSourceMap', 'sourceMap']
-	
-	public abstract Type getType(CalculationLocation location);
-	
-	/*
-	 * Retaining backward compatibility with old getters and setters
-	 */
-	public abstract Type getType();
-	
-	void setType(Type type) {
-		this.cachedType = type
-		this.typeString = type.jsonValue
-	}
-	
-	void setTypeString(String typeString) {
-		this.typeString = typeString
-		this.cachedType = null
-	}
+	static transients = ['cachedSourceMap', 'sourceMap']
 	
 	/*
 	 * Retaining backward compatibility with old getters and setters
@@ -105,6 +85,8 @@ abstract class Calculation<T extends CalculationPartialValue> extends Data<T> im
 		this.cachedSourceMap = null
 		this.sourceMapString = sourceMapString
 	}
+	
+	public abstract getType(CalculationLocation location);
 	
 	// extract partial expressions from the calculation
 	public abstract List<String> getPartialExpressions();
