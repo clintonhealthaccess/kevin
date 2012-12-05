@@ -61,8 +61,11 @@ public class Dashboard {
 	}
 	
 	public List<CalculationLocation> getLocations(Location parent, def skipLevels, def types) {
-		// TODO implement sorting
-		return parent.getChildrenLocations(skipLevels, types).sort({it.names});
+		//gets all location children and data locations
+		def result = new ArrayList<CalculationLocation>();
+		result.addAll(parent.getChildren(skipLevels));
+		result.addAll(parent.getDataLocations(skipLevels, types));
+		return result.sort({it.names});
 	}
 	
 	public List<DashboardEntity> getIndicators(DashboardEntity entity) {

@@ -131,7 +131,7 @@ class FilterTagLib {
 			if (selectedTypes == null) selectedTypes = DataLocationType.list([cache: true])
 			def locationFilterRoot = locationService.getRootLocation()	
 			def locationFilterTree = []
-			if (locationFilterRoot != null && !selectedTypes.empty) locationFilterTree.addAll locationFilterRoot.collectTreeWithDataLocations(attrs['skipLevels'], selectedTypes, false)
+			if (locationFilterRoot != null && !selectedTypes.empty) locationFilterTree.addAll locationFilterRoot.collectTreeWithDataLocations(attrs['skipLevels'], selectedTypes)
 			model << 
 				[
 					currentLocation: location,

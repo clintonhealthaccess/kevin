@@ -50,4 +50,5 @@ abstract class AbstractReportTarget extends ReportEntity {
 		return data.getType()
 	}
 	
+	abstract ReportProgram getReportProgram()	
 }

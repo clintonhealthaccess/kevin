@@ -116,7 +116,7 @@ grails.project.dependency.resolution = {
 		compile ":cache-headers:1.1.5"
 		compile ":svn:1.0.2"
 		compile ":cdn-resources:0.2.1"
-		compile ":mail:1.0"
+		compile ":mail:1.0.1"
 		compile ":build-info-tag:0.3.1"
 		compile ":yui-minify-resources:0.1.5"
 		compile ":i18n-fields:0.6.3-CHAI"

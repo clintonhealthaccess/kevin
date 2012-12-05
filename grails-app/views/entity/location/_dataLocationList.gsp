@@ -2,11 +2,12 @@
 	<thead>
 		<tr>
 			<th/>
-			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />  		    
-  			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q]" title="${message(code: 'entity.name.label')}" />
-  			<g:sortableColumn property="${i18nField(field: 'type.names')}" params="[q:params.q]" title="${message(code: 'datalocation.type.label')}" />
-  			<g:sortableColumn property="${i18nField(field: 'location.names')}" params="[q:params.q]" title="${message(code: 'datalocation.location.label')}" />  		    
-  			<g:sortableColumn property="${i18nField(field: 'location.level.names')}" params="[q:params.q]" title="${message(code: 'locationlevel.label')}" />  		    
+			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />			
+			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q]" title="${message(code: 'entity.name.label')}" />
+			<g:sortableColumn property="${i18nField(field: 'type.names')}" params="[q:params.q]" title="${message(code: 'datalocation.type.label')}" />
+			<g:sortableColumn property="${i18nField(field: 'location.names')}" params="[q:params.q]" title="${message(code: 'datalocation.location.label')}" />				
+			<g:sortableColumn property="${i18nField(field: 'location.level.names')}" params="[q:params.q]" title="${message(code: 'locationlevel.label')}" />			
+			<g:sortableColumn property="needsReview" params="[q:params.q]" title="${message(code: 'datalocation.needsreview.label')}" />			
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
 	</thead>
@@ -25,33 +26,41 @@
 						</li>
 					</ul>
 				</td>
-				<td>${location.code}</td>
+				<td>
+					<a class="cluetip" href="#" onclick="return false;"
+						rel="${createLink(controller: 'dataLocation', action:'getDescription', params:[id: location.id])}">
+						${location.code}
+					</a>
+				</td>
 				<td>
 					<g:i18n field="${location.names}"/>
 				</td>
 				<td>
-					<g:i18n field="${location.type.names}"/>
+					<g:i18n field="${location.type?.names}"/>
 				</td>
 				<td>
-					<g:i18n field="${location.location.names}"/>
+					<g:i18n field="${location.location?.names}"/>
 				</td>
 				<td>
-					<g:i18n field="${location.location.level.names}"/>
+					<g:i18n field="${location.location?.level?.names}"/>
+				</td>
+				<td>
+					<g:i18n field="${location.needsReview}"/>
 				</td>
 				<td>
 					<div class="js_dropdown dropdown"> 
 						<a class="js_dropdown-link with-highlight" href="#"><g:message code="entity.list.manage.label"/></a>
 						<div class="dropdown-list js_dropdown-list">
 							<ul>
-  								<li>
-  									<a href="${createLinkWithTargetURI(controller:'data', action:'deleteValues', params:[location: location.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
-  										<g:message code="data.deletevalues.label"/>
-  									</a>
-  								</li>
-  							</ul>
-  						</div>
-  					</div>
-  				</td>
+								<li>
+									<a href="${createLinkWithTargetURI(controller:'data', action:'deleteValues', params:[location: location.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
+										<g:message code="data.deletevalues.label"/>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</td>
 			</tr>
 		</g:each>
 	</tbody>

@@ -208,13 +208,15 @@ log4j = {
 		   'org.chai.kevin.value.ValueService'
 		   				   
 	debug  'grails.app',
-		   'org.chai.kevin'
+		   'org.chai.kevin',
+		   'org.chai.exception'
+		   //'org.springframework'
 		   
 	trace  'org.chai.kevin.service.imports.GeneralDataImporter',
 		   'org.chai.kevin.service.imports.NominativeDataImporter',
 		   'org.chai.kevin.service.imports.DataImporter',
 		   'org.chai.kevin.service.imports.DataImporterSpec'
-//		   'org.hibernate.type'
+		   //'org.hibernate.type'
 		   
 }
 
@@ -255,36 +257,52 @@ i18nFields {
 }
 site.fallback.language="en"
 
-site.entity.list.max=40
+// mail on exception plugin
+mailOnException.email.to = "admin@dhsst.org"
+mailOnException.email.from = "no-reply@dhsst.org"
+mailOnException.error.view = "/error"
 
-site.admin.email="admin@dhsst.org"
-site.contact.email="contact@dhsst.org"
-site.from.email="no-reply@dhsst.org"
+site.entity.list.max = 40
+site.admin.email = "admin@dhsst.org"
+site.contact.email = "contact@dhsst.org"
+site.from.email = "no-reply@dhsst.org"
 
-site.tagline.en="Ministry of Health"
-site.tagline.fr="Ministère de la santé"
+site.tagline.en = "Ministry of Health"
+site.tagline.fr = "Ministère de la santé"
 site.bugtracker.url = "#"
 environments {
 	development {
-		site.icon="http://localhost:8080/kevin/images/apple-touch-icon.png"
+		site.icon = "http://localhost:8080/kevin/images/apple-touch-icon.png"
 	}
 	demo {
-		site.icon="http://kevin.cloudfoundry.com/images/apple-touch-icon.png"
+		site.icon = "http://kevin.cloudfoundry.com/images/apple-touch-icon.png"
 	}
 }
 
-report.skip.levels=["sector"]
-dashboard.skip.levels=[]
-fct.skip.levels=[]
-dsr.skip.levels=[]
-dsr.view.map.skip.levels=["country", "province"]
-survey.skip.levels=["sector"]
-survey.export.skip.levels=["country", "sector"]
+report.skip.levels = ["sector"]
+dashboard.skip.levels = []
+fct.skip.levels = []
+dsr.skip.levels = []
+dsr.view.map.skip.levels = ["country", "province"]
+survey.skip.levels = ["sector"]
+survey.export.skip.levels = ["country", "sector"]
 
-task.temp.folder='files/'
+task.temp.folder = 'files/'
 
-file.upload.available.charset=["UTF-8", "ISO-8859-1"]
-file.upload.delimiter=","
+file.upload.available.charset = ["UTF-8", "ISO-8859-1"]
+file.upload.delimiter = ","
+
+//sync.activity.feed.url = 'http://facilities.moh.gov.rw/api/activity.rss?collection_ids[]=26&page=all'
+//sync.full.list.url = 'http://facilities.moh.gov.rw/api/collections/26.json'
+//sync.site.url = 'http://facilities.moh.gov.rw/api/sites/${itemid}.json'
+
+sync.site.username = "fterrier@clintonhealthaccess.org"
+sync.site.password = "viveinstedd"
+sync.type.ignore = ["PS", "CLIN", "DISP", "FOSACOM"]
+sync.type.mapping = [
+	"CS": "health_center",
+	"DH": "district_hospital"
+]
 
 sync.activity.feed.url = 'http://facilities.moh.gov.rw/api/activity.rss?collection_ids[]=26&page=all'
 sync.full.list.url = 'http://facilities.moh.gov.rw/api/collections/26.json'

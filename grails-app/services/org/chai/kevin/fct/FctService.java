@@ -41,11 +41,13 @@ public class FctService {
 		Set<LocationLevel> skips = reportService.getSkipReportLevels(locationSkipLevels);			
 		switch(reportType){
 			case MAP:
-				calculationLocations.addAll(location.getChildrenEntitiesWithDataLocations(skips, types, true));
+				calculationLocations.addAll(location.getChildrenEntitiesWithDataLocations(skips, types));
+				calculationLocations.addAll(location.getDataLocations(skips, types));
 				break;
 			case TABLE:
 			default:
-				calculationLocations.addAll(location.collectTreeWithDataLocations(skips, types, true));
+				calculationLocations.addAll(location.collectTreeWithDataLocations(skips, types));
+				calculationLocations.addAll(location.collectDataLocations(types));
 		}
 		
 		Map<CalculationLocation, Map<FctTargetOption, DataValue>> valueMap = new HashMap<CalculationLocation, Map<FctTargetOption, DataValue>>();

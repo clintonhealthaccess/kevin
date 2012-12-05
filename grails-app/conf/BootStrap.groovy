@@ -1,8 +1,3 @@
-import org.chai.kevin.survey.Survey;
-import org.chai.location.CalculationLocation;
-import org.chai.location.Location;
-import org.chai.task.Progress;
-
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -37,6 +32,11 @@ import org.chai.init.ReportInitializer;
 import org.chai.init.StructureInitializer;
 import org.chai.init.SurveyInitializer;
 
+import org.chai.kevin.survey.Survey;
+import org.chai.location.CalculationLocation;
+import org.chai.location.Location;
+import org.chai.task.Progress;
+
 import java.util.Date;
 import java.nio.channels.Channel;
 import org.chai.kevin.security.Role;
@@ -55,6 +55,9 @@ import org.chai.task.Task.TaskStatus;
 import org.chai.kevin.value.RawDataElementValue;
 import org.springframework.amqp.rabbit.core.ChannelCallback;
 
+import java.lang.management.RuntimeMXBean
+import java.lang.management.ManagementFactory
+
 import com.ibm.jaql.lang.expr.core.TimeoutExpr.TaskState;
 
 class BootStrap {
@@ -66,7 +69,12 @@ class BootStrap {
 	def refreshValueService
 	def surveyPageService
 	
-    def init = { servletContext ->
+	def init = { servletContext ->
+		// we print the amount of permgen
+		printProperty("-XX:MaxPermSize=");
+	
+		println grailsApplication.config.dataSource.url
+	
 		// we clear the queue
 		// assumption is that at this point of the startup process,
 		// no task has been picked for processing if
@@ -143,7 +151,7 @@ class BootStrap {
 			DataInitializer.createRawDataElementValues();
 			DataInitializer.createNormalizedDataElements();
 			DataInitializer.createSums();
-						
+			
 			refreshValueService.refreshAll(null)
 			
 			// we initialize the reports
@@ -173,5 +181,19 @@ class BootStrap {
     }
 
     def destroy = { }
+
+	static def printProperty(def prefix) {
+		final RuntimeMXBean memMXBean = ManagementFactory.getRuntimeMXBean();
+		final List<String> jvmArgs = memMXBean.getInputArguments();
+        String value = null;
+        for (final String jvmArg : jvmArgs) {
+            if (jvmArg.startsWith(prefix)) {
+                value = jvmArg.substring(prefix.length());
+                break;
+            }
+        }
+
+		println (prefix + value);
+	}
 	
 }

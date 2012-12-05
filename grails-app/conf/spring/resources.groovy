@@ -30,7 +30,6 @@ import org.chai.kevin.ExpressionService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.RefreshValueService
 import org.chai.kevin.dashboard.DashboardService
-import org.chai.kevin.ExceptionHandler;
 import org.chai.kevin.JaqlService
 import org.chai.kevin.LanguageService;
 import org.chai.location.LocationService;
@@ -70,13 +69,6 @@ Set<String> surveySkipLevels = config.survey.skip.levels
 Set<String> surveyExportSkipLevels = config.survey.export.skip.levels
 
 beans = {
-	
-	 exceptionHandler(ExceptionHandler){
-        // this is required so that calls to super work
-        exceptionMappings = ['java.lang.Exception': '/error']
-		mailService = ref("mailService")
-		grailsApplication = ref("grailsApplication") 
-    }
 	
 	validationService(ValidationService){
 		jaqlService = ref("jaqlService")		

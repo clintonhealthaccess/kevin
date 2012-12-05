@@ -64,7 +64,7 @@ public class SummaryService {
 	@Transactional(readOnly = true)
 	public SurveySummaryPage getSurveySummaryPage(Location location, Set<DataLocationType> types, Survey survey) {
 		//TODO?
-		List<DataLocation> dataLocations = location.collectDataLocations(null, types);		
+		List<DataLocation> dataLocations = location.collectDataLocations(types);
 		
 		Map<DataLocationType, List<SurveyProgram>> programMap = new HashMap<DataLocationType, List<SurveyProgram>>();
 //		Map<DataLocationType, List<SurveyQuestion>> questionMap = new HashMap<DataLocationType, List<SurveyQuestion>>();
@@ -108,7 +108,7 @@ public class SummaryService {
 	@Transactional(readOnly = true)
 	public SurveySummaryPage getProgramSummaryPage(Location location, Set<DataLocationType> types, SurveyProgram program) {
 				
-		List<DataLocation> dataLocations = location.collectDataLocations(null, types);
+		List<DataLocation> dataLocations = location.collectDataLocations(types);
 		List<DataLocation> programSummaryLocations = new ArrayList<DataLocation>();
 		
 		Map<DataLocation, SurveyEnteredProgram> enteredProgramMap = new HashMap<DataLocation, SurveyEnteredProgram>();
@@ -145,7 +145,7 @@ public class SummaryService {
 	@Transactional(readOnly = true)
 	public SurveySummaryPage getSectionSummaryPage(Location location, Set<DataLocationType> types, SurveySection section) {
 				
-		List<DataLocation> dataLocations = location.collectDataLocations(null, types);		
+		List<DataLocation> dataLocations = location.collectDataLocations(types);
 		List<DataLocation> sectionSummaryLocations = new ArrayList<DataLocation>();
 		
 		Map<DataLocation, QuestionSummary> questionSummaryMap = new HashMap<DataLocation, QuestionSummary>();
