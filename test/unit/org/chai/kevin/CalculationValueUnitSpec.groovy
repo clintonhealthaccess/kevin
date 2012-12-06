@@ -173,40 +173,40 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 	}
 	
-	def "test mode string"() {
+	def "test mode enum"() {
 		setup:
-//		def energy = new Enum(code: 'energy_source')
-//		def nationalGrid = new EnumOption(enume: energy, value: 'national_grid')
-//		def solar = new EnumOption(enume: energy, value: 'solar')
-//		def none = new EnumOption(enume: energy, value: 'none')
+		def energy = new Enum(code: 'energy_source')
+		def nationalGrid = new EnumOption(enume: energy, code: 'national_grid', value: 'national_grid')
+		def solar = new EnumOption(enume: energy, code: 'solar', value: 'solar')
+		def none = new EnumOption(enume: energy, code: 'none', value: 'none')
 		
-		def partialValue0 = new ModePartialValue(value: Value.VALUE_MAP(["solar":v("1")]))
-		def partialValue1 = new ModePartialValue(value: Value.VALUE_MAP(["national_grid":v("2")]))
-		def partialValue2 = new ModePartialValue(value: Value.VALUE_MAP(["solar":v("3")]))
-		def partialValue3 = new ModePartialValue(value: Value.VALUE_MAP(["none":v("4")]))
-		def mode = new Mode(type: Type.TYPE_LIST(Type.TYPE_STRING()))
+		def partialValue0 = new ModePartialValue(value: Value.VALUE_MAP([solar:v("1")]))
+		def partialValue1 = new ModePartialValue(value: Value.VALUE_MAP([nationalGrid:v("2")]))
+		def partialValue2 = new ModePartialValue(value: Value.VALUE_MAP([solar:v("3")]))
+		def partialValue3 = new ModePartialValue(value: Value.VALUE_MAP([none:v("4")]))
+		def mode = new Mode(type: Type.TYPE_LIST(Type.TYPE_ENUM('energy_source')))
 		def value = null
 		
 		when:
 		value = new ModeValue([partialValue0], mode, null, new DataLocation())
 		
 		then:
-		value.getValue().equals(Value.VALUE_LIST([v("solar")]))
+		value.getValue().equals(Value.VALUE_LIST([v(solar)]))
 		
 		when:
 		value = new ModeValue([partialValue0, partialValue1], mode, null, new Location())
 		then:
-		value.getValue().equals(Value.VALUE_LIST([v("national_grid")]))
+		value.getValue().equals(Value.VALUE_LIST([v(nationalGrid)]))
 		
 		when:
 		value = new ModeValue([partialValue1, partialValue2], mode, null, new Location())
 		then:
-		value.getValue().equals(Value.VALUE_LIST([v("solar")]))
+		value.getValue().equals(Value.VALUE_LIST([v(solar)]))
 		
 		when:
 		value = new ModeValue([partialValue0, partialValue2, partialValue3], mode, null, new Location())
 		then:
-		value.getValue().equals(Value.VALUE_LIST([v("solar"),v("none")]))
+		value.getValue().equals(Value.VALUE_LIST([v(solar),v(none)]))
 		
 	}
 	
@@ -411,7 +411,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 	}
 	
 	static v(def value) {
-		return new Value("{\"value\":"+value+"}");
+		return new Value("{\"value\":\""+value+"\"}");
 	}
 
 }
