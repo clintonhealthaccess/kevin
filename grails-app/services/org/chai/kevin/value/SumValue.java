@@ -34,6 +34,7 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 		Double sum = null;
 		for (SumPartialValue partialValue : getCalculationPartialValues()) {
 			if (!partialValue.getValue().isNull()) {
+				// exclude null values from sum
 				if (sum == null) sum = 0d;
 				sum += partialValue.getValue().getNumberValue().doubleValue();
 			}
@@ -55,12 +56,13 @@ public class SumValue extends CalculationValue<SumPartialValue> {
 		for (SumPartialValue sumPartialValue : getCalculationPartialValues()) {
 			if (!sumPartialValue.getValue().isNull()) {
 				// exclude null values from average
+				if (sum == null) sum = 0d;
 				sum += sumPartialValue.getValue().getNumberValue().doubleValue();
 				num += sumPartialValue.getNumberOfDataLocations();
 			}
 		}
 		
-		average = sum / num;		
+		average = sum / num;
 		
 		if (average.isInfinite()) average = null;
 		else if (average.isNaN()) average = null;		

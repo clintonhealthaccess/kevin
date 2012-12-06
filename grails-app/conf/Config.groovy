@@ -204,11 +204,11 @@ log4j = {
 
     info   'org.chai.kevin.importer.GeneralDataImporter',
 	       'org.chai.kevin.importer.NormalizedDataImporter',
-		   'org.chai.kevin.importer.Importer',
-		   'org.chai.kevin.value.ValueService'
+		   'org.chai.kevin.importer.Importer'
 		   				   
 	debug  'grails.app',
-		   'org.chai.kevin'
+		   'org.chai.kevin',
+		   'org.chai.kevin.value.ValueService'
 		   
 	trace  'org.chai.kevin.service.imports.GeneralDataImporter',
 		   'org.chai.kevin.service.imports.NominativeDataImporter',

@@ -98,7 +98,6 @@ class ValueTagLib {
 		def type = attrs['type']
 		def format = attrs['format']
 		def rounded = attrs['rounded']
-		
 		def tooltip = attrs['tooltip'].toString()
 		
 		if (value == null || value.isNull()) {
@@ -107,22 +106,7 @@ class ValueTagLib {
 					'</div>'
 		}
 		else {
-			switch (type.type) {
-				case ValueType.BOOL:
-					if (value.booleanValue){
-						out << '<div class="report-value-true">'+
-								reportTooltip(tooltip, '&#10003;')+
-								'</div>'
-					}
-					else{
-						out << '<div class="report-value-false">'+
-								reportTooltip(tooltip, '&#10007;')+
-								'</div>'
-					}
-					break;
-				default:
-					out << reportTooltip(tooltip, languageService.getStringValue(value, type, null, format, rounded))
-			}
+			out << reportTooltip(tooltip, languageService.getStringValue(value, type, null, format, rounded))
 		}
 	}
 	
@@ -141,6 +125,25 @@ class ValueTagLib {
 		prettyPrint(type, value, printableValue, 0)
 		
 		out << printableValue.toString()
+	}
+	
+	//TODO explain what zero, enums, and nullText are
+	def value = {attrs, body ->
+		if (log.isDebugEnabled()) log.debug('value(attrs='+attrs+',body='+body+')')
+		
+		def type = attrs['type']
+		def value = attrs['value']
+		def format = attrs['format']
+		def zero = attrs['zero']
+		def enums = attrs['enums']
+		def nullText = attrs['nullText']
+		
+		def result = null
+		if (value != null && !value.isNull()) {
+			result = languageService.getStringValue(value, type, enums, format, zero)
+		}
+		if (result == null && nullText != null) out << nullText
+		else out << result
 	}
 	
 	def prettyPrint(Type type, Value value, StringBuffer printableValue, Integer level) {
@@ -197,25 +200,6 @@ class ValueTagLib {
 					throw new NotImplementedException()
 			}
 		}
-	}
-	
-	//TODO explain what zero, enums, and nullText are
-	def value = {attrs, body ->
-		if (log.isDebugEnabled()) log.debug('value(attrs='+attrs+',body='+body+')')
-		
-		def type = attrs['type']
-		def value = attrs['value']
-		def format = attrs['format']
-		def zero = attrs['zero']
-		def enums = attrs['enums']
-		def nullText = attrs['nullText']
-		
-		def result = null
-		if (value != null && !value.isNull()) {
-			result = languageService.getStringValue(value, type, enums, format, zero)
-		}
-		if (result == null && nullText != null) out << nullText
-		else out << result
 	}
 	
 }

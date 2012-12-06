@@ -77,6 +77,26 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		DsrTarget.list()[0].data.equals(sum)
 	}
 	
+	def "create target with mode calculation element"(){
+		setup:
+		setupLocationTree()
+		def program = newReportProgram(CODE(1))
+		def category = newDsrTargetCategory(CODE(2), program, 1)
+		def mode = newMode("1", CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		dsrTargetController = new DsrTargetController()
+		dsrTargetController.dataService = dataService
+		
+		when:
+		dsrTargetController.params.code = CODE(5)
+		dsrTargetController.params['data.id'] = mode.id+""
+		dsrTargetController.params['category.id'] = category.id+""
+		dsrTargetController.saveWithoutTokenCheck()
+		
+		then:
+		DsrTarget.count() == 1
+		DsrTarget.list()[0].data.equals(mode)
+	}
+	
 	def "create target with raw data element calculation element"() {
 		setup:
 		setupLocationTree()

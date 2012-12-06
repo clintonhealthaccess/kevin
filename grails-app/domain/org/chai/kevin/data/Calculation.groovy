@@ -49,11 +49,9 @@ import org.chai.kevin.value.Value;
 
 abstract class Calculation<T extends CalculationPartialValue> extends Data<T> implements Exportable {
 
-	public static Type TYPE = Type.TYPE_NUMBER();
-	
 	Date refreshed;
 	String expression;
-	String sourceMapString
+	String sourceMapString;
 	
 	static mapping = {
 		table 'dhsst_data_calculation'
@@ -68,9 +66,8 @@ abstract class Calculation<T extends CalculationPartialValue> extends Data<T> im
 	}
 	
 	Map cachedSourceMap
-
 	static transients = ['cachedSourceMap', 'sourceMap']
-		
+	
 	/*
 	 * Retaining backward compatibility with old getters and setters
 	 */
@@ -111,11 +108,6 @@ abstract class Calculation<T extends CalculationPartialValue> extends Data<T> im
 			result = getType().getValue(value);
 		}
 		return result;
-	}
-	
-	@Override
-	public Type getType() {
-		return Calculation.TYPE;
 	}
 	
 	@Override

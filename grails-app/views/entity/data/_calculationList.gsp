@@ -5,7 +5,9 @@
   		    <g:sortableColumn property="id" title="${message(code: 'entity.id.label')}" />
   			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />  		    
   			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q]" title="${message(code: 'entity.name.label')}" />
+  		    <!-- TODO make columns sortable -->
   		    <th><g:message code="entity.type.label"/></th>
+  		    <th><g:message code="entity.datatype.label"/></th>
   			<g:sortableColumn property="expression" params="[q:params.q]" title="${message(code: 'calculation.expression.label')}" />  		    
   			<g:sortableColumn property="refreshed" params="[q:params.q]" title="${message(code: 'calculation.lastrefreshed.label')}" />
   			<g:sortableColumn property="lastValueChanged" params="[q:params.q]" title="${message(code: 'calculation.lastvaluechanged.label')}" />
@@ -39,6 +41,7 @@
   				</td>	
   				<td><g:i18n field="${calculation.names}" /></td>  				
   				<td><g:message code="${calculation.class.simpleName.toLowerCase()}.label"/></td>
+  				<td>${calculation.type.getDisplayedValue(2, 2)}</td>
   				<td>${calculation.expression}</td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${calculation.refreshed}"/></td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${calculation.lastValueChanged}"/></td>
