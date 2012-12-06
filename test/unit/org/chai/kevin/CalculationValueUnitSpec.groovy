@@ -180,10 +180,10 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def solar = new EnumOption(enume: energy, code: 'solar', value: 'solar')
 		def none = new EnumOption(enume: energy, code: 'none', value: 'none')
 		
-		def partialValue0 = new ModePartialValue(value: Value.VALUE_MAP([solar:v("1")]))
-		def partialValue1 = new ModePartialValue(value: Value.VALUE_MAP([nationalGrid:v("2")]))
-		def partialValue2 = new ModePartialValue(value: Value.VALUE_MAP([solar:v("3")]))
-		def partialValue3 = new ModePartialValue(value: Value.VALUE_MAP([none:v("4")]))
+		def partialValue0 = new ModePartialValue(value: Value.VALUE_MAP([(solar.value):v("1")]))
+		def partialValue1 = new ModePartialValue(value: Value.VALUE_MAP([(nationalGrid.value):v("2")]))
+		def partialValue2 = new ModePartialValue(value: Value.VALUE_MAP([(solar.value):v("3")]))
+		def partialValue3 = new ModePartialValue(value: Value.VALUE_MAP([(none.value):v("4")]))
 		def type = Type.TYPE_LIST(Type.TYPE_ENUM('energy_source'))
 		def mode = new Mode(type: type)
 		def expectedValue = null
@@ -209,7 +209,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 		when:
 		value = new ModeValue([partialValue0, partialValue2, partialValue3], mode, null, new Location())
-		def expectedValues = [type.getListType().getValueFromJaql(solar.value), type.getListType().getValueFromJaql(none.value)]
+		def expectedValues = [type.getListType().getValueFromJaql(none.value), type.getListType().getValueFromJaql(solar.value)]
 		then:
 		value.getValue().equals(Value.VALUE_LIST(expectedValues))
 		
