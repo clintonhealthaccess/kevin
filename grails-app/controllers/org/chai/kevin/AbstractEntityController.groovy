@@ -105,19 +105,8 @@ abstract class AbstractEntityController extends AbstractExportController {
 		
 		bindParams(entity)
 		if (log.isDebugEnabled()) log.debug('bound params, entity: '+entity)
-		
-		// TODO this should be not necessary once the unique 
-		// validation constraints is fixed in grails
-		def codeIsValid = true
-		if (params.containsKey("code")){
-			String code = (String) params.get("code");
-			codeIsValid = validateCode(entity, code)
-			if(!codeIsValid){
-				entity.errors.rejectValue("code","entity.code.notunique", "Code needs to be unique.}");
-			}
-		}
 					
-		if (!codeIsValid || !validateEntity(entity)) {
+		if (!validateEntity(entity)) {
 			if (log.isInfoEnabled()) log.info ("validation error in ${entity}: ${entity.errors}}")
 			
 			def model = getModel(entity)

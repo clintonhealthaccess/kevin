@@ -23,6 +23,6 @@
 	<span class="bold"><g:message code="entity.order.label"/>:</span>
 	<span>${option.order}</span>
 </div>
-<input type="hidden" name="optionNames" value="${index}"/>
-<g:i18nRichTextarea name="optionNames[${index}].names" bean="${option}" value="${option.names}" height="50"
+<input type="hidden" name="optionNames" value="${option.id}"/>
+<g:i18nRichTextarea name="optionNames[${option.id}].names" bean="${option}" value="${option.names}" height="50"
 	label="${message(code:'survey.checkboxquestion.checkboxoption.label')}" field="names" />

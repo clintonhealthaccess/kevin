@@ -7,6 +7,7 @@ import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value
+import org.chai.kevin.dsr.DsrIntegrationTests
 
 class DashboardControllerSpec extends DashboardIntegrationTests {
 
@@ -46,7 +47,59 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		model.currentLocation.equals(Location.findByCode(RWANDA))
 		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.dashboard.hasData() == true
-	}		
+	}
+	
+	def "get dashboard with dsr id"() {
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		setupProgramTree()
+		setupDashboardTree()
+		def dsrCategory = DsrIntegrationTests.newDsrTargetCategory(CODE(1), ReportProgram.findByCode(ROOT), 1)
+		dashboardController = new DashboardController()
+		refresh()
+		
+		when:
+		dashboardController.params.period = period.id
+		dashboardController.params.location = Location.findByCode(RWANDA).id
+		dashboardController.params.program = dsrCategory.id
+		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		def model = dashboardController.view()
+		
+		then:
+		model == null
+		dashboardController.response.redirectedUrl.contains("/dashboard/view/")
+		dashboardController.response.redirectedUrl.contains(period.id+"/"+ReportProgram.findByCode(ROOT).id+"/"+Location.findByCode(RWANDA).id+"?")
+	}
+	
+	def "get dashboard with no location type and no default"() {
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
+		dh.defaultSelected = false
+		dh.save()
+		def cs = DataLocationType.findByCode(HEALTH_CENTER_GROUP)
+		cs.defaultSelected = false
+		cs.save()
+		setupProgramTree()
+		setupDashboardTree()
+		dashboardController = new DashboardController()
+		refresh()
+		
+		when:
+		dashboardController.params.period = period.id
+		dashboardController.params.location = Location.findByCode(RWANDA).id
+		dashboardController.params.program = ReportProgram.findByCode(ROOT).id
+		def model = dashboardController.view()
+		
+		then:
+		model.currentPeriod.equals(period)
+		model.dashboardEntity.equals(DashboardProgram.findByCode(DASHBOARD_ROOT))
+		model.currentLocation.equals(Location.findByCode(RWANDA))
+		model.currentLocationTypes.equals(s([]))
+		model.dashboard.hasData() == true
+	}
 	
 	def "get dashboard with no parameters redirects to period, root program, root location, location types, and dashboard entity"(){
 		setup:

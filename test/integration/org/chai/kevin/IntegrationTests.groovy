@@ -129,8 +129,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static def setupLocationTree() {
 		// for the test environment, the location level is set to 4
 		// so we create a tree accordingly
-		def hc = newDataLocationType(["en":HEALTH_CENTER_GROUP], HEALTH_CENTER_GROUP);
-		def dh = newDataLocationType(["en":DISTRICT_HOSPITAL_GROUP], DISTRICT_HOSPITAL_GROUP);
+		def hc = newDataLocationType(["en":HEALTH_CENTER_GROUP], HEALTH_CENTER_GROUP, null, true);
+		def dh = newDataLocationType(["en":DISTRICT_HOSPITAL_GROUP], DISTRICT_HOSPITAL_GROUP, null, true);
 		
 		def country = newLocationLevel(NATIONAL, 1)
 		def province = newLocationLevel(PROVINCE, 2)
@@ -170,7 +170,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newDataLocationType(def names, def code, def order) {
-		def dataLocationType = new DataLocationType(code: code, order: order)
+		newDataLocationType(names, code, order, false)
+	}
+	
+	static def newDataLocationType(def names, def code, def order, def defaultSelected) {
+		def dataLocationType = new DataLocationType(code: code, order: order, defaultSelected: defaultSelected)
 		setLocaleValueInMap(dataLocationType, names, "Names")
 		return dataLocationType.save(failOnError: true)
 	}
@@ -227,27 +231,27 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 		
 	static def newUser(def username, def uuid) {
-		return new User(userType: UserType.OTHER, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
+		return new User(userType: UserType.OTHER, username: username, permissionString: '', passwordHash:'', uuid: uuid, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newUser(def username, def active, def confirmed) {
-		return new User(userType: UserType.OTHER, code: 'not_important', username: username, email: username,
+		return new User(userType: UserType.OTHER, username: username, email: username,
 			passwordHash: '', active: active, confirmed: confirmed, uuid: 'uuid', firstname: 'first', lastname: 'last',
 			organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newUser(def username, def passwordHash, def active, def confirmed) {
-		return new User(userType: UserType.OTHER, code: 'not_important', username: username, email: username,
+		return new User(userType: UserType.OTHER, username: username, email: username,
 			passwordHash: passwordHash, active: active, confirmed: confirmed, uuid: 'uuid', firstname: 'first', lastname: 'last',
 			organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newSurveyUser(def username, def uuid, def locationId) {
-		return new User(userType: UserType.SURVEY, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
+		return new User(userType: UserType.SURVEY, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newPlanningUser(def username, def uuid, def locationId) {
-		return new User(userType: UserType.PLANNING, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
+		return new User(userType: UserType.PLANNING, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newReportProgram(def code) {

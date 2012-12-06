@@ -65,7 +65,7 @@ public class RefreshValueService {
 		Set<Data> dependencySet = new HashSet<Data>();
 		collectOrderedDependencies(normalizedDataElement, dependencySet, NormalizedDataElement.class);
 		removeNulls(dependencySet);
-		progress.setMaximum(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class));
+		if (progress != null) progress.setMaximum(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class));
 		
 		List<NormalizedDataElement> uptodateElements = refreshNormalizedDataElementWithoutSettingProgress(normalizedDataElement, progress);
 		return uptodateElements;
@@ -354,12 +354,14 @@ public class RefreshValueService {
 		collectOrderedDependencies(calculation, dependencySet, NormalizedDataElement.class);
 		dependencySet.remove(calculation);
 		removeNulls(dependencySet);
-		progress.setMaximum(
-			// all dependent NDEs
-			(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
-			// the calculation itself
-			(periodService.listPeriods().size() * countLocations(CalculationLocation.class))
-		);
+		if (progress != null)  {
+			progress.setMaximum(
+				// all dependent NDEs
+				(dependencySet.size() * periodService.listPeriods().size() * countLocations(DataLocation.class)) +
+				// the calculation itself
+				(periodService.listPeriods().size() * countLocations(CalculationLocation.class))
+			);
+		}
 		
 		refreshCalculationWithoutSettingProgress(calculation, progress);
 	}
@@ -395,7 +397,7 @@ public class RefreshValueService {
 		}
 		
 		else {
-			progress.incrementProgress(periodService.listPeriods().size() * countLocations(CalculationLocation.class));
+			if (progress != null) progress.incrementProgress(periodService.listPeriods().size() * countLocations(CalculationLocation.class));
 		}
 	}
 	
