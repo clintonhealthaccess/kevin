@@ -3,6 +3,7 @@ package org.chai.kevin.data
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.value.ModePartialValue;
 import org.chai.location.DataLocation;
+import org.chai.location.DataLocationType;
 import org.chai.location.Location;
 
 class ModeControllerSpec extends IntegrationTests {

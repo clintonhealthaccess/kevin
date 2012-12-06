@@ -184,29 +184,34 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def partialValue1 = new ModePartialValue(value: Value.VALUE_MAP([nationalGrid:v("2")]))
 		def partialValue2 = new ModePartialValue(value: Value.VALUE_MAP([solar:v("3")]))
 		def partialValue3 = new ModePartialValue(value: Value.VALUE_MAP([none:v("4")]))
-		def mode = new Mode(type: Type.TYPE_LIST(Type.TYPE_ENUM('energy_source')))
+		def type = Type.TYPE_LIST(Type.TYPE_ENUM('energy_source'))
+		def mode = new Mode(type: type)
+		def expectedValue = null
 		def value = null
 		
 		when:
 		value = new ModeValue([partialValue0], mode, null, new DataLocation())
-		
+		expectedValue = type.getListType().getValueFromJaql(solar.value)
 		then:
-		value.getValue().equals(Value.VALUE_LIST([v(solar)]))
+		value.getValue().equals(Value.VALUE_LIST([expectedValue]))
 		
 		when:
 		value = new ModeValue([partialValue0, partialValue1], mode, null, new Location())
+		expectedValue = type.getListType().getValueFromJaql(nationalGrid.value)
 		then:
-		value.getValue().equals(Value.VALUE_LIST([v(nationalGrid)]))
+		value.getValue().equals(Value.VALUE_LIST([expectedValue]))
 		
 		when:
 		value = new ModeValue([partialValue1, partialValue2], mode, null, new Location())
+		expectedValue = type.getListType().getValueFromJaql(solar.value)
 		then:
-		value.getValue().equals(Value.VALUE_LIST([v(solar)]))
+		value.getValue().equals(Value.VALUE_LIST([expectedValue]))
 		
 		when:
 		value = new ModeValue([partialValue0, partialValue2, partialValue3], mode, null, new Location())
+		def expectedValues = [type.getListType().getValueFromJaql(solar.value), type.getListType().getValueFromJaql(none.value)]
 		then:
-		value.getValue().equals(Value.VALUE_LIST([v(solar),v(none)]))
+		value.getValue().equals(Value.VALUE_LIST(expectedValues))
 		
 	}
 	
@@ -411,7 +416,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 	}
 	
 	static v(def value) {
-		return new Value("{\"value\":\""+value+"\"}");
+		return new Value("{\"value\":"+value+"}");
 	}
 
 }
