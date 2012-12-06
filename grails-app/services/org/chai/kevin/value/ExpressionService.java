@@ -49,6 +49,7 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
+import org.chai.kevin.data.Mode;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.location.CalculationLocation;
@@ -101,8 +102,12 @@ public class ExpressionService {
 			
 			if (!dataLocations.isEmpty()) {
 				Map<DataLocation, StatusValuePair> values = new HashMap<DataLocation, StatusValuePair>();
-				for (DataLocation dataLocation : dataLocations) {
-					StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, calculation.getType(), period, dataLocation, DataElement.class);
+				
+				Type calculationType = calculation.getType();
+				if(calculation.getClass().equals(Mode.class)) calculationType = calculationType.getListType();
+				
+				for (DataLocation dataLocation : dataLocations) {						
+					StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, calculationType, period, dataLocation, DataElement.class);
 					values.put(dataLocation, statusValuePair);
 				}
 				result.add(calculation.getCalculationPartialValue(expression, values, location, period, type));

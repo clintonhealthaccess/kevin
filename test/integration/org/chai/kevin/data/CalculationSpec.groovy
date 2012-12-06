@@ -114,13 +114,13 @@ class CalculationSpec extends IntegrationTests {
 	
 	def "mode expression must be valid"() {
 		when:
-		new Mode(code:CODE(1), type: Type.TYPE_NUMBER(), expression: "1").save(failOnError: true)
+		new Mode(code:CODE(1), type: Type.TYPE_LIST(Type.TYPE_NUMBER()), expression: "1").save(failOnError: true)
 		
 		then:
 		Mode.count() == 1
 		
 		when:
-		new Mode(code:CODE(2), type: Type.TYPE_NUMBER(), expression: "1(").save(failOnError: true)
+		new Mode(code:CODE(2), type: Type.TYPE_LIST(Type.TYPE_NUMBER()), expression: "1(").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -128,13 +128,13 @@ class CalculationSpec extends IntegrationTests {
 	
 	def "mode code must be unique"() {
 		when:
-		new Mode(code:CODE(1), type: Type.TYPE_NUMBER(), expression: "1").save(failOnError: true)
+		new Mode(code:CODE(1), type: Type.TYPE_LIST(Type.TYPE_NUMBER()), expression: "1").save(failOnError: true)
 		
 		then:
 		Mode.count() == 1
 		
 		when:
-		new Mode(code:CODE(1), type: Type.TYPE_NUMBER(), expression: "1").save(failOnError: true)
+		new Mode(code:CODE(1), type: Type.TYPE_LIST(Type.TYPE_NUMBER()), expression: "1").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -142,13 +142,13 @@ class CalculationSpec extends IntegrationTests {
 	
 	def "mode code must not be null"() {
 		when:
-		new Mode(code:CODE(1), type: Type.TYPE_NUMBER(), expression: "1").save(failOnError: true)
+		new Mode(code:CODE(1), type: Type.TYPE_LIST(Type.TYPE_NUMBER()), expression: "1").save(failOnError: true)
 		
 		then:
 		Mode.count() == 1
 		
 		when:
-		new Mode(type: Type.TYPE_NUMBER(), expression: "1").save(failOnError: true)
+		new Mode(type: Type.TYPE_LIST(Type.TYPE_NUMBER()), expression: "1").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -157,7 +157,7 @@ class CalculationSpec extends IntegrationTests {
 	def "mode expression does not accept calculations"() {
 		when:
 		def sum = newSum("1", CODE(1))
-		new Mode(code:CODE(1), type: Type.TYPE_NUMBER(), expression: "\$"+sum.id).save(failOnError: true)
+		new Mode(code:CODE(1), type: Type.TYPE_LIST(Type.TYPE_NUMBER()), expression: "\$"+sum.id).save(failOnError: true)
 		
 		then:
 		thrown ValidationException

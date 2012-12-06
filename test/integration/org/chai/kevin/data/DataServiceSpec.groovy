@@ -65,7 +65,7 @@ class DataServiceSpec extends IntegrationTests {
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [:])
 		def sum = newSum("1", CODE(3))
-		def mode = newMode("1", CODE(4), Type.TYPE_NUMBER())
+		def mode = newMode("1", CODE(4),  Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		def aggregation = newAggregation("1", CODE(5))
 		def result = null
 		
@@ -139,7 +139,7 @@ class DataServiceSpec extends IntegrationTests {
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [:])		
 		def sum = newSum("1", CODE(3))
-		def mode = newMode("1", CODE(4), Type.TYPE_NUMBER())
+		def mode = newMode("1", CODE(4),  Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		def aggregation = newAggregation("1", CODE(5))
 		def result = null
 		
@@ -199,7 +199,7 @@ class DataServiceSpec extends IntegrationTests {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def sum = newSum("1", CODE(3))
-		def mode = newMode("1", CODE(4), Type.TYPE_NUMBER())
+		def mode = newMode("1", CODE(4),  Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		
 		expect:
 		dataService.getData(rawDataElement.id, DataElement.class).equals(rawDataElement)
@@ -265,7 +265,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "search for calculations work"() {
 		setup:
 		def sum = newSum(["en": "sum"], "1", CODE(1));
-		def mode = newMode(["en": "mode"], "1", CODE(2), Type.TYPE_NUMBER());
+		def mode = newMode(["en": "mode"], "1", CODE(2),  Type.TYPE_LIST(Type.TYPE_NUMBER()));
 		
 		expect:
 		dataService.searchData(Summ.class, "su", [], [:]).equals([sum])
@@ -324,7 +324,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "delete mode with associated values throws exception"() {
 		when:
 		setupLocationTree()
-		def calculation = newMode("1", CODE(1), Type.TYPE_NUMBER())
+		def calculation = newMode("1", CODE(1),  Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		def period = newPeriod()
 		newModePartialValue(calculation, period, DataLocation.findByCode(KIVUYE), DataLocationType.findByCode(HEALTH_CENTER_GROUP), Value.NULL_INSTANCE())
 
@@ -364,7 +364,7 @@ class DataServiceSpec extends IntegrationTests {
 	def "delete mode with associated expression throws exception"() {
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def calculation = newMode("\$"+rawDataElement.id, CODE(2), Type.TYPE_NUMBER())
+		def calculation = newMode("\$"+rawDataElement.id, CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		
 		dataService.delete(rawDataElement)
 		
@@ -403,7 +403,7 @@ class DataServiceSpec extends IntegrationTests {
 		
 		when:
 		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [('1'):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
-		def mode = newMode("\$"+normalizedDataElement.id, CODE(4), Type.TYPE_NUMBER())
+		def mode = newMode("\$"+normalizedDataElement.id, CODE(4),  Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		then:
 		dataService.getReferencingCalculations(normalizedDataElement).equals([mode])
 	}

@@ -86,8 +86,6 @@ abstract class Calculation<T extends CalculationPartialValue> extends Data<T> im
 		this.sourceMapString = sourceMapString
 	}
 	
-	public abstract getType(CalculationLocation location);
-	
 	// extract partial expressions from the calculation
 	public abstract List<String> getPartialExpressions();
 	

@@ -136,7 +136,7 @@ class ValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		
 		when:
-		def mode = newMode("1", CODE(1), Type.TYPE_NUMBER())
+		def mode = newMode("1", CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		def expectedValue = new ModeValue(["1"], mode, period, DataLocation.findByCode(BUTARO))
 		def value = valueService.getCalculationValue(mode, DataLocation.findByCode(BUTARO), period, s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		 

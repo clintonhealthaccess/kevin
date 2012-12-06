@@ -15,6 +15,7 @@ import javax.persistence.Transient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Period;
+import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.dsr.DsrService;
 import org.chai.location.CalculationLocation;
 import org.chai.location.DataLocation;
@@ -39,7 +40,10 @@ public class Mode extends Calculation<ModePartialValue> {
 	
 	static constraints =  {
 		type (nullable: false,  validator: {val, obj ->
-			return val.isValid();
+			if(val.type != ValueType.LIST) 
+				return 'calculation.type.notlist'
+			else return val.isValid();
+//			return val.isValid();
 		})
 	}
 	
@@ -62,11 +66,6 @@ public class Mode extends Calculation<ModePartialValue> {
 	void setTypeString(String typeString) {
 		this.typeString = typeString
 		this.cachedType = null
-	}
-	
-	@Override
-	public Type getType(CalculationLocation location){
-		return Type.TYPE_LIST(getType());
 	}
 	
 	@Override

@@ -87,14 +87,20 @@ public class ModeValue extends CalculationValue<ModePartialValue> {
 			for(String modeValue : modeMap.keySet()){
 				Double modeCount = modeMap.get(modeValue);
 				if(modeCount.equals(maxCount)){
-					Calculation<ModePartialValue> calculation = getData();
-					Type type = calculation.getType();
+					
+					Type type = getData().getType();
 					if (log.isDebugEnabled()) log.debug("modeValue.location(type="+type+")");
-					Value maxModeValue = type.getValueFromJaql(modeValue);
-					if (log.isDebugEnabled()) log.debug("modeValue.location(maxModeValue="+maxModeValue+")");
-					maxModeValues.add(maxModeValue);
-					if (log.isDebugEnabled()) log.debug("modeValue.location(maxModeValuesSize="+maxModeValues.size()+")");
+					Type listType = type.getListType();
+					if (log.isDebugEnabled()) log.debug("modeValue.location(listType="+listType+")");
+					
+					if(listType != null){
+						Value maxModeValue = listType.getValueFromJaql(modeValue);
+						if (log.isDebugEnabled()) log.debug("modeValue.location(maxModeValue="+maxModeValue+")");
+						maxModeValues.add(maxModeValue);
+						if (log.isDebugEnabled()) log.debug("modeValue.location(maxModeValuesSize="+maxModeValues.size()+")");
+					}
 				}
+					
 				if (log.isDebugEnabled()) log.debug("modeValue.location(modeValue="+modeValue+", modeCount="+modeCount+")");
 			}
 			//creates the value, in this case, a list of modes

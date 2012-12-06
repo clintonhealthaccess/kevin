@@ -116,7 +116,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def partialValue1 = new ModePartialValue(value:Value.VALUE_MAP(["false":v("2")]))
 		def partialValue2 = new ModePartialValue(value:Value.VALUE_MAP(["true":v("3")]))
 		def partialValue3 = new ModePartialValue(value:Value.VALUE_MAP(["false":v("4")]))
-		def mode = new Mode(type: Type.TYPE_BOOL())
+		def mode = new Mode(type: Type.TYPE_LIST(Type.TYPE_BOOL()))
 		def value = null
 		
 		when:
@@ -147,7 +147,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def partialValue1 = new ModePartialValue(value:Value.VALUE_MAP(["4":v("2")]))
 		def partialValue2 = new ModePartialValue(value:Value.VALUE_MAP(["2":v("3")]))
 		def partialValue3 = new ModePartialValue(value:Value.VALUE_MAP(["4":v("4")]))
-		def mode = new Mode(type: Type.TYPE_NUMBER())
+		def mode = new Mode(type: Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		def value = null
 		
 		when:
@@ -173,20 +173,18 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 	}
 	
-	def "test mode enum/string/text"() {
+	def "test mode string"() {
 		setup:
-		def energy = new Enum(code: 'energy_source')
-		def nationalGrid = new EnumOption(enume: energy, value: 'national_grid')
-		def solar = new EnumOption(enume: energy, value: 'solar')
-		def none = new EnumOption(enume: energy, value: 'none')
+//		def energy = new Enum(code: 'energy_source')
+//		def nationalGrid = new EnumOption(enume: energy, value: 'national_grid')
+//		def solar = new EnumOption(enume: energy, value: 'solar')
+//		def none = new EnumOption(enume: energy, value: 'none')
 		
 		def partialValue0 = new ModePartialValue(value: Value.VALUE_MAP(["solar":v("1")]))
 		def partialValue1 = new ModePartialValue(value: Value.VALUE_MAP(["national_grid":v("2")]))
 		def partialValue2 = new ModePartialValue(value: Value.VALUE_MAP(["solar":v("3")]))
 		def partialValue3 = new ModePartialValue(value: Value.VALUE_MAP(["none":v("4")]))
-		def mode = new Mode(type: Type.TYPE_ENUM("energy_source"))
-//		def modeString = new Mode(type: Type.TYPE_STRING())
-//		def modeText = new Mode(type: Type.TYPE_TEXT())
+		def mode = new Mode(type: Type.TYPE_LIST(Type.TYPE_STRING()))
 		def value = null
 		
 		when:

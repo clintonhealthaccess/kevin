@@ -234,7 +234,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"2",(HEALTH_CENTER_GROUP):"1"]])
-		def mode = newMode("\$"+normalizedDataElement.id, CODE(2), Type.TYPE_NUMBER())
+		def mode = newMode("\$"+normalizedDataElement.id, CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		def result = null
 		refreshNormalizedDataElement()
 		
@@ -308,7 +308,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER());
-		def mode = newMode("\$"+rawDataElement.id, CODE(2), Type.TYPE_NUMBER())
+		def mode = newMode("\$"+rawDataElement.id, CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		def result
 		
 		when:
@@ -375,7 +375,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
-		def mode = newMode("\$"+normalizedDataElement.id, CODE(2), Type.TYPE_NUMBER())
+		def mode = newMode("\$"+normalizedDataElement.id, CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		def result = null
 		refreshNormalizedDataElement()
 		

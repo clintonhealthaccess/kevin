@@ -425,7 +425,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def refreshed = new Date()
 		setupLocationTree()
 		def period = newPeriod()
-		def mode = newMode("1", CODE(2), Type.TYPE_NUMBER())
+		def mode = newMode("1", CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		def partialValue = newModePartialValue(mode, period, Location.findByCode(BURERA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1"))
 		
 		then:
