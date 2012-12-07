@@ -5,7 +5,7 @@ import grails.test.GroovyPagesTestCase;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.util.Utils;
+import org.chai.kevin.util.DataUtils;
 import org.chai.kevin.value.Value;
 
 class ValueTagLibTests extends GroovyPagesTestCase {
@@ -316,7 +316,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 		assertEquals applyTemplate(
 			'<g:adminValue value="${value}" type="${type}"/>',
 			[
-				'value': Value.VALUE_DATE(Utils.parseDate("01-01-2000")),
+				'value': Value.VALUE_DATE(DataUtils.parseDate("01-01-2000")),
 				'type': Type.TYPE_DATE()
 			]
 		), '\"01-01-2000\"'

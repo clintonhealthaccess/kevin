@@ -13,6 +13,7 @@ import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type.ValueType;
 
 import org.chai.kevin.data.Type;
+import org.chai.kevin.util.DataUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 
@@ -51,7 +52,7 @@ class ValueTagLib {
 					}
 					break;
 				case ValueType.NUMBER:
-					def reportValue = languageService.getStringValue(value, type, null, format, rounded)
+					def reportValue = Utils.getStringValue(value, type, null, format, rounded)
 					out << '<div class="report-value"'+
 							' data-report-value="'+reportValue+'"'+
 							' data-report-value-raw="'+value.numberValue+'"'+
@@ -59,7 +60,7 @@ class ValueTagLib {
 							reportValue+'</div>'
 					break;
 				default:
-					def reportValue = languageService.getStringValue(value, type, null, format, rounded)
+					def reportValue = Utils.getStringValue(value, type, null, format, rounded)
 					out << '<div class="report-value"'+
 							' data-report-value="'+reportValue+'"'+
 							' data-report-value-raw="'+reportValue+'"'+
@@ -79,7 +80,7 @@ class ValueTagLib {
 			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
 		}
 		else {
-			out << languageService.getStringValue(value, type, null, format, rounded)
+			out << Utils.getStringValue(value, type, null, format, rounded)
 		}
 	}	
 
@@ -121,7 +122,7 @@ class ValueTagLib {
 					}
 					break;
 				default:
-					out << reportTooltip(tooltip, languageService.getStringValue(value, type, null, format, rounded))
+					out << reportTooltip(tooltip, Utils.getStringValue(value, type, null, format, rounded))
 			}
 		}
 	}
@@ -156,7 +157,7 @@ class ValueTagLib {
 					break;
 				case (ValueType.DATE):
 					printableValue.append '"'
-					printableValue.append  Utils.formatDate(value.dateValue)
+					printableValue.append  DataUtils.formatDate(value.dateValue)
 					printableValue.append '"'
 					break;
 				case (ValueType.NUMBER):
@@ -212,7 +213,7 @@ class ValueTagLib {
 		
 		def result = null
 		if (value != null && !value.isNull()) {
-			result = languageService.getStringValue(value, type, enums, format, zero)
+			result = Utils.getStringValue(value, type, enums, format, zero)
 		}
 		if (result == null && nullText != null) out << nullText
 		else out << result

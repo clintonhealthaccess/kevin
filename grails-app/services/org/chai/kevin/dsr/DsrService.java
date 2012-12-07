@@ -17,7 +17,7 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.reports.ReportTable;
-import org.chai.kevin.util.Utils.ReportType;
+import org.chai.kevin.reports.ReportService.ReportType;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ValueService;
 import org.chai.location.CalculationLocation;

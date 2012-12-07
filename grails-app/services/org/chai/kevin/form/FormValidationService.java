@@ -10,7 +10,7 @@ import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
 import org.chai.location.DataLocation;
 import org.chai.location.DataLocationType;
-import org.chai.kevin.util.Utils;
+import org.chai.kevin.util.DataUtils;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.ValidationService;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,7 +58,7 @@ public class FormValidationService {
 		if (log.isDebugEnabled()) log.debug("getInvalidPrefix(validationRule="+validationRule+", dataLocation="+dataLocation+")");
 
 		Set<String> result = new HashSet<String>();
-		if (Utils.split(validationRule.getTypeCodeString(), Utils.DEFAULT_TYPE_CODE_DELIMITER).contains(dataLocation.getType().getCode())) {
+		if (DataUtils.split(validationRule.getTypeCodeString(), DataUtils.DEFAULT_TYPE_CODE_DELIMITER).contains(dataLocation.getType().getCode())) {
 			// we validate only if that rule applies to the group
 			ValidatableValue validatable = locator.getValidatable(validationRule.getFormElement().getId(), dataLocation);
 	

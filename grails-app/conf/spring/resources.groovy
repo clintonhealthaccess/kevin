@@ -79,20 +79,6 @@ beans = {
 		languageService = ref("languageService")
 	}
 	
-	jaqlService(JaqlService) { bean ->
-		bean.singleton = true
-	}
-	
-	refreshValueService(RefreshValueService) {
-		expressionService = ref("expressionService")
-		valueService = ref("valueService")
-		locationService = ref("locationService")
-		sessionFactory = ref("sessionFactory")
-		dataService = ref("dataService")
-		periodService = ref("periodService")
-		transactionManager = ref("transactionManager")
-	}
-	
 	formValidationService(FormValidationService){
 		validationService = ref("validationService")
 	}
@@ -153,20 +139,6 @@ beans = {
 		locationSkipLevels = fctSkipLevels
 	}
 	
-	valueService(ValueService) {
-		sessionFactory = ref("sessionFactory")
-		languageService = ref("languageService")
-	}
-	
-	expressionService(ExpressionService) {
-		dataService = ref("dataService")
-		locationService = ref("locationService")
-		valueService = ref("valueService")
-		periodService = ref("periodService")
-		jaqlService = ref("jaqlService")
-		sessionFactory = ref("sessionFactory")
-	}
-	
 	dashboardPercentageService(DashboardValueService) {
 		valueService = ref("valueService")
 		dashboardService = ref("dashboardService")
@@ -180,18 +152,6 @@ beans = {
 		sessionFactory = ref("sessionFactory")
 		refreshValueService = ref("refreshValueService")
 		locationService = ref("locationService")
-	}
-	
-	dataElementExportService(DataElementExportService){
-		locationService = ref("locationService")
-		valueService = ref("valueService")
-		sessionFactory = ref("sessionFactory")
-	}
-	calculationExportService(CalculationExportService){
-		locationService = ref("locationService")
-		valueService = ref("valueService")
-		sessionFactory = ref("sessionFactory")
-		reportService =ref("reportService")
 	}
 	
 	// override the spring cache manager to use the same as hibernate

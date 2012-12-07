@@ -37,7 +37,7 @@ import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportTarget
 import org.chai.kevin.util.Utils
 
-class DsrTargetCategory extends ReportEntity implements ReportTarget, Exportable {
+class DsrTargetCategory extends ReportEntity implements ReportTarget {
 
 	ReportProgram program;
 	

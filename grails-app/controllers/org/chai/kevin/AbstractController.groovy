@@ -43,7 +43,7 @@ import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.SurveySection
 import org.chai.kevin.survey.summary.SurveySummaryPage;
 import org.chai.kevin.util.Utils;
-import org.chai.kevin.util.Utils.ReportType
+import org.chai.kevin.reports.ReportService.ReportType
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 public abstract class AbstractController {

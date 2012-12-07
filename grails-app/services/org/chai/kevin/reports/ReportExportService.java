@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.util.DataUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
@@ -71,7 +72,7 @@ public class ReportExportService {
 		List<String> headers = new ArrayList<String>();		
 		headers.add(LOCATION_HEADER);
 		for (AbstractReportTarget indicator : indicators) {
-			headers.add(Utils.noNull(indicator.getNames()));
+			headers.add(DataUtils.noNull(indicator.getNames()));
 		}
 		return headers.toArray(new String[0]);
 	}	
@@ -122,10 +123,10 @@ public class ReportExportService {
 		for (LocationLevel level : getLevels()){			
 			Location parent = location.getParentOfLevel(level);
 			if (parent != null && !parent.equals(location)){
-				rowLocations.add(Utils.noNull(parent.getNames()));
+				rowLocations.add(DataUtils.noNull(parent.getNames()));
 			}
 		}
-		rowLocations.add(Utils.noNull(location.getNames()));
+		rowLocations.add(DataUtils.noNull(location.getNames()));
 		String locationNames = StringUtils.join(rowLocations, "-");
 		reportExportRow.add(locationNames);
 		
@@ -133,7 +134,7 @@ public class ReportExportService {
 		for (AbstractReportTarget indicator: indicators){
 			DataValue value = reportTable.getTableReportValue(location, indicator);
 			if(value != null && !value.getValue().isNull())
-				reportExportRow.add(languageService.getStringValue(value.getValue(), indicator.getType()));
+				reportExportRow.add(Utils.getStringValue(value.getValue(), indicator.getType()));
 			else{
 				reportExportRow.add("N/A");
 			}

@@ -60,7 +60,7 @@ import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
 import org.chai.task.Progress;
 import org.chai.kevin.util.JSONUtils;
-import org.chai.kevin.util.Utils;
+import org.chai.kevin.util.DataUtils;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.CalculationPartialValue
 import org.chai.kevin.value.RawDataElementValue
@@ -215,14 +215,14 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newDataElementExport(def code, def descriptions, def periods, def locationType, def locations, def dataElements){
-		def export = new DataElementExport(code: code, periods:periods, typeCodeString:Utils.unsplit(locationType, Utils.DEFAULT_TYPE_CODE_DELIMITER), locations:locations, dataElements:dataElements, date:new Date())
+		def export = new DataElementExport(code: code, periods:periods, typeCodeString:DataUtils.unsplit(locationType, DataUtils.DEFAULT_TYPE_CODE_DELIMITER), locations:locations, dataElements:dataElements, date:new Date())
 		setLocaleValueInMap(export, descriptions, "Descriptions")
 		export.save(failOnError: true)
 		return export
 	}
 	
 	static def newCalculationExport(def code, def descriptions, def periods, def locationType, def locations, def calculations){
-		def export = new CalculationExport(code: code, periods:periods,typeCodeString:Utils.unsplit(locationType, Utils.DEFAULT_TYPE_CODE_DELIMITER),locations:locations,calculations:calculations,date:new Date())
+		def export = new CalculationExport(code: code, periods:periods,typeCodeString:DataUtils.unsplit(locationType, DataUtils.DEFAULT_TYPE_CODE_DELIMITER),locations:locations,calculations:calculations,date:new Date())
 		setLocaleValueInMap(export, descriptions, "Descriptions")
 		export.save(failOnError: true)
 		return export
@@ -408,7 +408,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def static newFormValidationRule(def code, def element, def prefix, def types, def expression, boolean allowOutlier, def dependencies = []) {
-		def validationRule = new FormValidationRule(code: code, expression: expression, prefix: prefix, formElement: element, typeCodeString: Utils.unsplit(types, Utils.DEFAULT_TYPE_CODE_DELIMITER), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
+		def validationRule = new FormValidationRule(code: code, expression: expression, prefix: prefix, formElement: element, typeCodeString: DataUtils.unsplit(types, DataUtils.DEFAULT_TYPE_CODE_DELIMITER), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
 		element.addToValidationRules(validationRule)
 		element.save(failOnError: true)
 		return validationRule
@@ -479,7 +479,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def g(def types) {
-		return Utils.unsplit(types, Utils.DEFAULT_TYPE_CODE_DELIMITER)
+		return DataUtils.unsplit(types, DataUtils.DEFAULT_TYPE_CODE_DELIMITER)
 	}
 	
 	static s(def list) {

@@ -36,7 +36,7 @@ class ExpressionController {
 		else {
 			def period = Period.get(cmd.periodId)
 			def dataLocationTypes = new HashSet( cmd.typeCodes.collect { DataLocationType.findByCode(it) } ) - null
-			def locations = locationService.getRootLocation().collectDataLocations(null, dataLocationTypes)
+			def locations = locationService.getRootLocation().collectDataLocations(dataLocationTypes)
 			
 			if (log.isDebugEnabled()) log.debug("calculating expression "+cmd.expression+", for period "+period+" and data location types "+dataLocationTypes+", number of locations: "+locations.size())
 			

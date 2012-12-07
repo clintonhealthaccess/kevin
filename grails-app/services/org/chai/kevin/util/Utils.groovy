@@ -57,6 +57,8 @@ import org.chai.kevin.data.Type.ValueType;
 import org.chai.location.DataLocationType;
 import org.chai.kevin.security.User;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.data.Enum;
+import org.chai.kevin.util.DataUtils;
 
 /**
  * @author Jean Kahigiso M.
@@ -64,34 +66,9 @@ import org.chai.kevin.value.Value;
  */
 public class Utils {
 	
-	public enum ReportType {MAP, TABLE};
-	
-	public final static String DEFAULT_TYPE_CODE_DELIMITER = ";";
-	
-	private final static String DATE_FORMAT = "dd-MM-yyyy";
+	private final static String ZIP_FILE_EXTENSION = ".zip";	
 	private final static String DATE_FORMAT_TIME = "dd-MM-yyyy hh:mm:ss";
-	private final static String ZIP_FILE_EXTENSION = ".zip";
-	
-	public static Set<String> split(String string, String delimiter) {
-		Set<String> result = new HashSet<String>();
-		if (string != null) result.addAll(Arrays.asList(StringUtils.split(string, delimiter)));
-		return result;
-	}
 
-	public static String unsplit(Object list, String delimiter) {
-		List<String> result = new ArrayList<String>();
-		
-		if (list instanceof String) result.add((String) list);
-		if (list instanceof Collection) result.addAll((Collection<String>)list);
-		else result.addAll(Arrays.asList((String[]) list));
-		
-		for (String string : new ArrayList<String>(result)) {
-			if (string.isEmpty()) result.remove(string);
-		}
-		
-		return StringUtils.join(result, delimiter);
-	}
-		
 	public static boolean matches(String text, String value) {
 		if (value == null) return false;
 		return value.matches("(?i).*"+text+".*");
@@ -104,24 +81,11 @@ public class Utils {
 		return frmt.format(value.doubleValue()).toString();
 	}
 	
-	public static String formatDate(Date date) {
-		if (date == null) return null;
-		return new SimpleDateFormat(DATE_FORMAT).format(date);
-	}
-	
 	public static String formatDateWithTime(Date date) {
 		if (date == null) return null;
 		return new SimpleDateFormat(DATE_FORMAT_TIME).format(date);
 	}
-	
-	public static Date parseDate(String string) throws ParseException {
-		return new SimpleDateFormat(DATE_FORMAT).parse(string);
-	}
-	
-	public static boolean containsId(String string, Long id) {
-		return string.matches(".*\\\$"+id+"(\\D|\\z|\\s)(.|\\s)*");
-	}
-	
+
 	public static String stripHtml(String htmlString) {
 		String noHtmlString;
 	
@@ -134,29 +98,6 @@ public class Utils {
 		else noHtmlString = htmlString;
 	
 		return noHtmlString;
-	}
-	
-	public static String getValueString(Type type, Value value){
-		if(value != null && !value.isNull()){
-			switch (type.getType()) {
-			case ValueType.NUMBER:
-				return value.getNumberValue().toString();
-			case ValueType.BOOL:
-				return value.getBooleanValue().toString();
-			case ValueType.STRING:
-				return value.getStringValue();
-			case ValueType.TEXT:
-				return value.getStringValue();
-			case ValueType.DATE:
-				if(value.getDateValue() != null) return Utils.formatDate(value.getDateValue());	
-				else return value.getStringValue();
-			case ValueType.ENUM:
-				return value.getStringValue();
-			default:
-				throw new IllegalArgumentException("get value string can only be called on simple type");
-			}			
-		}
-		return "";
 	}
 	
 	public static File getZipFile(File file, String filename) throws IOException {		
@@ -189,13 +130,6 @@ public class Utils {
 		return zipFile;
 	}
 	
-	public static <E> List<E> removeDuplicates(List<E> list){
-		Set<E> set = new LinkedHashSet<E>(list);
-		list.clear();
-		list.addAll(set);
-		return list;
-	}
-	
 	public static String formatExportCode(String code){
 		// TODO relocate outer brackets to this method
 //		if(code == null || code.isEmpty()){
@@ -215,8 +149,35 @@ public class Utils {
 		}
 	}
 	
-	public static String noNull(String possiblyNull) {
-		return possiblyNull==null?"":possiblyNull;
+	public static String getStringValue(Value value, Type type, def enums = null, def format = null, def zero = null, def rounded = null) {
+		if (value == null || value.isNull()) return null
+		def result;
+		switch (type.type) {
+			case (ValueType.ENUM):
+				def enume = null
+				 
+				if (enums == null) enume = Enum.findByCode(type.enumCode, [cache: true])
+				else enume = enums?.get(type.enumCode)
+				
+				if (enume == null) result = value.enumValue
+				else {
+					def option = enume?.getOptionForValue(value.enumValue)
+					if (option == null) result = value.enumValue
+					else result = DataUtils.noNull(option.names)
+				}
+				break;
+			case (ValueType.NUMBER):
+				if (zero != null && value.numberValue == 0) result = zero
+				else result = Utils.formatNumber(format, rounded!=null?value.numberValue.round(rounded):value.numberValue)
+				break;
+			case (ValueType.MAP):
+				// TODO
+			case (ValueType.LIST):
+				// TODO
+			default:
+				result = value.stringValue
+		}
+		return result;
 	}
 	
 }

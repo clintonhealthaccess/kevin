@@ -40,6 +40,7 @@ import java.util.Map.Entry
 import org.apache.commons.lang.StringUtils
 import org.chai.kevin.Exportable
 import org.chai.kevin.util.Utils
+import org.chai.kevin.util.DataUtils
 
 @I18nFields
 @EqualsAndHashCode(includes='code')
@@ -111,15 +112,15 @@ class SurveyTableRow implements Exportable {
 	}
 			
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString, Utils.DEFAULT_TYPE_CODE_DELIMITER);
+		return DataUtils.split(typeCodeString, DataUtils.DEFAULT_TYPE_CODE_DELIMITER);
 	}
 	
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes, Utils.DEFAULT_TYPE_CODE_DELIMITER);
+		this.typeCodeString = DataUtils.unsplit(typeCodes, DataUtils.DEFAULT_TYPE_CODE_DELIMITER);
 	}
 
 	public Set<String> getTypeApplicable() {
-		return Utils.split(this.typeCodeString, Utils.DEFAULT_TYPE_CODE_DELIMITER);
+		return DataUtils.split(this.typeCodeString, DataUtils.DEFAULT_TYPE_CODE_DELIMITER);
 	}
 	
 	protected SurveyTableRow deepCopy(SurveyCloner cloner, Map<Long, SurveyTableColumn> columns) {

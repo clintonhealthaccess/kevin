@@ -6,11 +6,13 @@ import org.chai.kevin.data.Type
 import org.chai.location.DataLocation
 import org.chai.location.Location
 import org.chai.kevin.planning.PlanningCost.PlanningCostType
-import org.chai.kevin.security.UserType;
+import org.chai.kevin.security.UserType
 import org.chai.kevin.table.AggregateLine
 import org.chai.kevin.table.NumberLine
 import org.chai.kevin.table.Table
 import org.chai.kevin.value.Value
+import org.chai.kevin.util.Utils
+import org.chai.kevin.util.DataUtils
 
 class EditPlanningController extends AbstractController {
 	
@@ -202,7 +204,7 @@ class EditPlanningController extends AbstractController {
 						header = planningList.planningType.names + (planningList.planningType.maxNumber!=1?(' ' + i):'')
 					} 
 					else {
-						header = languageService.getStringValue(entry.fixedHeaderValue, planningList.planningType.fixedHeaderType)
+						header = Utils.getStringValue(entry.fixedHeaderValue, planningList.planningType.fixedHeaderType)
 					}
 					def line = new AggregateLine(header, costLines, ['budget-entry'])
 					line.href = createLink(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber: entry.lineNumber])
@@ -273,7 +275,7 @@ class EditPlanningController extends AbstractController {
 				values << outputTable.getValue(i, column);
 				types << outputTable.getValueType(column);
 			}
-			lines << new NumberLine(languageService.getStringValue(value, outputTable.getHeaderType()), values, types);
+			lines << new NumberLine(Utils.getStringValue(value, outputTable.getHeaderType()), values, types);
 		}
 		def columns = outputTable.planningOutput.columns.collect {i18n(field: it.names)}
 		return new Table(

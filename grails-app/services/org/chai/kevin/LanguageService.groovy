@@ -29,7 +29,6 @@ package org.chai.kevin
 */
 
 import org.apache.commons.lang.LocaleUtils
-import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Type
 import org.chai.kevin.data.Type.ValueType
 import org.chai.kevin.util.Utils
@@ -44,13 +43,8 @@ class LanguageService implements ApplicationContextAware {
 	ApplicationContext applicationContext
 	
 	def grailsApplication
-	def dataServiceBean
 	
 	static transactional = false
-	
-	DataService getDataService() {
-		return applicationContext.getBean("dataService")
-	}
 	
 	List<Locale> getAvailableLocales() {
 		return getAvailableLanguages().collect {LocaleUtils.toLocale(it)}
@@ -72,34 +66,4 @@ class LanguageService implements ApplicationContextAware {
 		return getCurrentLocale().getLanguage();
 	}
 	
-	String getStringValue(Value value, Type type, def enums = null, def format = null, def zero = null, def rounded = null) {
-		if (value == null || value.isNull()) return null
-		def result;
-		switch (type.type) {
-			case (ValueType.ENUM):
-				def enume = null
-				 
-				if (enums == null) enume = dataService.findEnumByCode(type.enumCode);
-				else enume = enums?.get(type.enumCode)
-				
-				if (enume == null) result = value.enumValue
-				else {
-					def option = enume?.getOptionForValue(value.enumValue)
-					if (option == null) result = value.enumValue
-					else result = Utils.noNull(option.names)
-				}
-				break;
-			case (ValueType.NUMBER):
-				if (zero != null && value.numberValue == 0) result = zero
-				else result = Utils.formatNumber(format, rounded!=null?value.numberValue.round(rounded):value.numberValue)
-				break;
-			case (ValueType.MAP):
-				// TODO
-			case (ValueType.LIST):
-				// TODO
-			default:
-				result = value.stringValue
-		}
-		return result;
-	}	
 }
