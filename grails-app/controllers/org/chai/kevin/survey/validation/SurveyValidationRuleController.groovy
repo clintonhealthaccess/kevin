@@ -49,6 +49,10 @@ class SurveyValidationRuleController extends AbstractController {
 		return null;
 	}
 	
+	def create = {
+		redirect (controller: 'formValidationRule', action: 'create', params: params)
+	}
+	
 	def list = {
 		adaptParamsForList()
 
