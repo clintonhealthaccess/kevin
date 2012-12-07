@@ -29,6 +29,7 @@ package org.chai.kevin.data
 
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
@@ -50,7 +51,6 @@ class CalculationController extends AbstractController {
 	
 	def Class getEntityClass(){
 		return Calculation.class;
-//		return [Aggregation.class, Sum.class];
 	}
 	
 	def search = {

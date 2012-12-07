@@ -29,6 +29,33 @@ class CheckboxQuestionControllerSpec extends SurveyIntegrationTests {
 		SurveyCheckboxQuestion.count() == 1
 	}
 	
+	def "edit question"() {
+		setup:
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newCheckboxQuestion(CODE(1), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_BOOL())
+		def element = newSurveyElement(question, dataElement).save(flush: true)
+		def option = newCheckboxOption(CODE(1), question, 1, [(DISTRICT_HOSPITAL_GROUP)], element)
+		checkboxQuestionController = new CheckboxQuestionController()
+		
+		when:
+		checkboxQuestionController.params.id = question.id
+		checkboxQuestionController.params['code'] = 'code'
+		checkboxQuestionController.params['order'] = 1
+		checkboxQuestionController.params['typeCodes'] = ['']
+		checkboxQuestionController.params['optionNames'] = option.id
+		checkboxQuestionController.params['optionNames['+option.id+'].names_en'] = 'option'
+		checkboxQuestionController.saveWithoutTokenCheck()
+		
+		then:
+		SurveyCheckboxQuestion.count() == 1
+		SurveyCheckboxOption.count() == 1
+		SurveyCheckboxOption.list()[0].names_en == 'option'
+	}
+	
 	def "delete question"() {
 		setup:
 		def period = newPeriod()

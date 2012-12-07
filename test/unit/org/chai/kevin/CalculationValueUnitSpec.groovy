@@ -3,12 +3,18 @@ package org.chai.kevin
 import grails.plugin.spock.UnitSpec;
 
 import org.chai.kevin.data.Aggregation;
+import org.chai.kevin.data.Enum;
+import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.data.Mode
 import org.chai.kevin.data.Summ;
+import org.chai.kevin.data.Type;
 import org.chai.location.DataLocation;
 import org.chai.location.Location;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.AggregationValue;
 import org.chai.kevin.value.CalculationPartialValue;
+import org.chai.kevin.value.ModePartialValue
+import org.chai.kevin.value.ModeValue
 import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
@@ -104,6 +110,111 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 	}
 	
+	def "test mode boolean"() {
+		setup:
+		def partialValue0 = new ModePartialValue(value:Value.VALUE_MAP(["true":v("1")]))
+		def partialValue1 = new ModePartialValue(value:Value.VALUE_MAP(["false":v("2")]))
+		def partialValue2 = new ModePartialValue(value:Value.VALUE_MAP(["true":v("3")]))
+		def partialValue3 = new ModePartialValue(value:Value.VALUE_MAP(["false":v("4")]))
+		def mode = new Mode(type: Type.TYPE_LIST(Type.TYPE_BOOL()))
+		def value = null
+		
+		when:
+		value = new ModeValue([partialValue0], mode, null, new DataLocation())
+		
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("true")]));
+		
+		when:
+		value = new ModeValue([partialValue0, partialValue1], mode, null, new Location())
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("false")]))
+		
+		when:
+		value = new ModeValue([partialValue1, partialValue2], mode, null, new Location())
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("true")]))
+		
+		when:
+		value = new ModeValue([partialValue0, partialValue2, partialValue3], mode, null, new Location())
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("false"), v("true")]))	
+	}
+	
+	def "test mode number"() {
+		setup:
+		def partialValue0 = new ModePartialValue(value:Value.VALUE_MAP(["2":v("1")]))
+		def partialValue1 = new ModePartialValue(value:Value.VALUE_MAP(["4":v("2")]))
+		def partialValue2 = new ModePartialValue(value:Value.VALUE_MAP(["2":v("3")]))
+		def partialValue3 = new ModePartialValue(value:Value.VALUE_MAP(["4":v("4")]))
+		def mode = new Mode(type: Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		def value = null
+		
+		when:
+		value = new ModeValue([partialValue0], mode, null, new DataLocation())
+		
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("2")]))
+		
+		when:
+		value = new ModeValue([partialValue0, partialValue1], mode, null, new Location())
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("4")]))
+		
+		when:
+		value = new ModeValue([partialValue1, partialValue2], mode, null, new Location())
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("2")]))
+		
+		when:
+		value = new ModeValue([partialValue0, partialValue2, partialValue3], mode, null, new Location())
+		then:
+		value.getValue().equals(Value.VALUE_LIST([v("2"),v("4")]))
+		
+	}
+	
+	def "test mode enum"() {
+		setup:
+		def energy = new Enum(code: 'energy_source')
+		def nationalGrid = new EnumOption(enume: energy, code: 'national_grid', value: 'national_grid')
+		def solar = new EnumOption(enume: energy, code: 'solar', value: 'solar')
+		def none = new EnumOption(enume: energy, code: 'none', value: 'none')
+		
+		def partialValue0 = new ModePartialValue(value: Value.VALUE_MAP([(solar.value):v("1")]))
+		def partialValue1 = new ModePartialValue(value: Value.VALUE_MAP([(nationalGrid.value):v("2")]))
+		def partialValue2 = new ModePartialValue(value: Value.VALUE_MAP([(solar.value):v("3")]))
+		def partialValue3 = new ModePartialValue(value: Value.VALUE_MAP([(none.value):v("4")]))
+		def type = Type.TYPE_LIST(Type.TYPE_ENUM('energy_source'))
+		def mode = new Mode(type: type)
+		def expectedValue = null
+		def value = null
+		
+		when:
+		value = new ModeValue([partialValue0], mode, null, new DataLocation())
+		expectedValue = type.getListType().getValueFromJaql(solar.value)
+		then:
+		value.getValue().equals(Value.VALUE_LIST([expectedValue]))
+		
+		when:
+		value = new ModeValue([partialValue0, partialValue1], mode, null, new Location())
+		expectedValue = type.getListType().getValueFromJaql(nationalGrid.value)
+		then:
+		value.getValue().equals(Value.VALUE_LIST([expectedValue]))
+		
+		when:
+		value = new ModeValue([partialValue1, partialValue2], mode, null, new Location())
+		expectedValue = type.getListType().getValueFromJaql(solar.value)
+		then:
+		value.getValue().equals(Value.VALUE_LIST([expectedValue]))
+		
+		when:
+		value = new ModeValue([partialValue0, partialValue2, partialValue3], mode, null, new Location())
+		def expectedValues = [type.getListType().getValueFromJaql(none.value), type.getListType().getValueFromJaql(solar.value)]
+		then:
+		value.getValue().equals(Value.VALUE_LIST(expectedValues))
+		
+	}
+	
 	def "test aggregation"() {
 		setup:
 		def partialValue11 = new AggregationPartialValue(value: v("1"), expressionData: '\$1')
@@ -176,6 +287,36 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 	}
 	
+	def "test mode with null values on DataLocation"() {
+		setup:
+		def partialValue = null
+		def value = null
+		def mode = new Mode()
+		
+		when:
+		partialValue = new ModePartialValue(value: Value.NULL_INSTANCE())
+		value = new ModeValue([partialValue], mode, null, new DataLocation())
+		then:
+		value.getValue().equals(Value.NULL_INSTANCE())
+	}
+	
+	def "test mode with null values on Location"() {
+		setup:
+		def partialValue1 = null
+		def partialValue2 = null
+		def value = null
+		def mode = new Mode()
+		
+		when:
+		partialValue1 = new ModePartialValue(value: Value.NULL_INSTANCE())
+		partialValue2 = new ModePartialValue(value: Value.NULL_INSTANCE())
+		value = new ModeValue([partialValue1, partialValue2], mode, null, new Location())
+		
+		then:
+		value.getValue().equals(Value.NULL_INSTANCE())
+		
+	}
+	
 	def "test aggregation with null values on DataLocation"() {
 		setup:
 		def partialValue = null
@@ -231,6 +372,25 @@ class CalculationValueUnitSpec extends UnitSpec {
 		value.getNumberOfDataLocations() == 0
 	}
 	
+	def "test mode with invalid values"() {
+		setup:
+		def partialValue = null
+		def value = null
+		def mode = new Mode()
+		
+		when:
+		partialValue = new ModePartialValue(value: v("0"))
+		value = new ModeValue([partialValue], mode, null, new Location())
+		then:
+		value.getValue().equals(Value.NULL_INSTANCE())
+		
+		when:
+		partialValue = new ModePartialValue(value: v("blah"))
+		value = new ModeValue([partialValue], mode, null, new Location())
+		then:
+		value.getValue().equals(Value.NULL_INSTANCE())
+	}
+	
 	def "test aggregation with invalid values"() {
 		setup:
 		def partialValue1 = null
@@ -254,7 +414,6 @@ class CalculationValueUnitSpec extends UnitSpec {
 		then:
 		value.getValue().equals(Value.NULL_INSTANCE())
 	}
-	
 	
 	static v(def value) {
 		return new Value("{\"value\":"+value+"}");

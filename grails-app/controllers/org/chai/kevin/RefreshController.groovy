@@ -1,4 +1,8 @@
-/**
+package org.chai.kevin
+
+import org.chai.kevin.value.RefreshValueService
+
+/*
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -13,7 +17,7 @@
  *     * Neither the name of the <organization> nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,65 +29,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.survey
 
-import org.chai.kevin.AbstractEntityController
-import org.chai.location.DataLocationType
-
-/**
- * @author Jean Kahigiso M.
- *
- */
-class CheckboxQuestionController extends AbstractEntityController {
-
-	def languageService
-	def surveyService
+class RefreshController {
 	
-	def getEntity(def id) {
-		return SurveyCheckboxQuestion.get(id)
+	def refreshValueService
+	
+	def index = {
+		if (log.isDebugEnabled()) log.debug("refresh.index, params:"+params)
+		redirect (action: 'view', params: params)
 	}
 	
-	def createEntity() {
-		return new SurveyCheckboxQuestion();
+	def view = {
+		refreshValueService.refreshAll(null)
+		refreshValueService.flushCaches()
 	}
-	
-	def getLabel() {
-		return 'survey.checkboxquestion.label';
-	}
-	
-	def getTemplate() {
-		return "/survey/admin/createCheckboxQuestion"
-	}
-	
-	def deleteEntity(def entity) {
-		surveyService.deleteQuestion(entity)
-	}
-
-	def getModel(def entity) {
-		def options = entity.options?.sort({it.order})
-		[
-			question: entity,
-			options: options,
-			types: DataLocationType.list([cache: true]),
-			sections: (entity.section)!=null?entity.survey.sections:null
-		]
-	}
-
-	def getEntityClass(){
-		return SurveyCheckboxQuestion.class;
-	}
-	
-	def bindParams(def entity) {
-		entity.properties = params
-		
-		entity.options.each { option ->
-			if (params.list('optionNames').contains(option.id)) {
-				Map<String, String> translation = new HashMap<String, String>()
-				languageService.availableLanguages.each { language ->
-					option.setNames(params['optionNames['+option.id+'].names_'+language], new Locale(language))
-				}
-			}
-		}		
-	}
-	
 }

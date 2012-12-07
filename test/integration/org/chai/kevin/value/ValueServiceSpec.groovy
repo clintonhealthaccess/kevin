@@ -130,6 +130,28 @@ class ValueServiceSpec extends IntegrationTests {
 		value.equals(expectedValue)
 	}
 	
+	def "test get mode value"() {
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		
+		when:
+		def mode = newMode("1", CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		def expectedValue = new ModeValue(["1"], mode, period, DataLocation.findByCode(BUTARO))
+		def value = valueService.getCalculationValue(mode, DataLocation.findByCode(BUTARO), period, s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		 
+		then:
+		value.equals(expectedValue)
+		
+		when:
+		def partialValue = newModePartialValue(mode, period, DataLocation.findByCode(BUTARO), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1"))
+		expectedValue = new ModeValue([partialValue], mode, period, DataLocation.findByCode(BUTARO))
+		value = valueService.getCalculationValue(mode, DataLocation.findByCode(BUTARO), period, s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+
+		then:
+		value.equals(expectedValue)
+	}
+	
 	def "test get aggregation value"() {
 		setup:
 		def period = newPeriod()
@@ -144,8 +166,8 @@ class ValueServiceSpec extends IntegrationTests {
 		value.equals(expectedValue)
 		
 		when:
-		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER());
-		aggregation = newAggregation("\$"+dataElement.id, CODE(2))
+		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER());
+		aggregation = newAggregation("\$"+dataElement.id, CODE(3))
 		def partialValue = newAggregationPartialValue(aggregation, period, DataLocation.findByCode(BUTARO), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), "\$"+dataElement.id, v("1"))
 		expectedValue = new AggregationValue([partialValue], aggregation, period, DataLocation.findByCode(BUTARO))
 		value = valueService.getCalculationValue(aggregation, DataLocation.findByCode(BUTARO), period, s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
@@ -244,7 +266,7 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		then:
 		valueService.listDataValues(rawDataElement, null, period, [:]).equals([rawDataElementValue])
-		valueService.listDataValues(rawDataElement, null, null, [:]).equals([rawDataElementValue2, rawDataElementValue])
+		s(valueService.listDataValues(rawDataElement, null, null, [:])).equals(s([rawDataElementValue2, rawDataElementValue]))
 		
 		when:
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
@@ -541,6 +563,19 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		then:
 		SumPartialValue.count() == 1
+	}
+	
+	def "test get partial values with no type"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def ratio = newSum("1", CODE(1))
+		
+		when:
+		def values = valueService.getPartialValues(ratio, Location.findByCode(RWANDA), period, s([]))
+		
+		then:
+		values.empty
 	}
 	
 }

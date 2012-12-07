@@ -80,30 +80,6 @@ public class DashboardValueService {
 		}
 	}
 	
-//	private class ExplanationVisitor implements DashboardVisitor<Info> {
-//
-//		private Set<DataLocationType> types;
-//		
-//		public ExplanationVisitor(Set<DataLocationType> types) {
-//			this.types = types;
-//		}
-//		
-//		@Override
-//		public Info visitProgram(DashboardProgram program, CalculationLocation location, Period period) {
-//			DashboardPercentage percentage = program.visit(new PercentageVisitor(types), location, period);
-//			if (percentage == null) return null;
-//			List<DashboardEntity> dashboardEntities = getDashboardEntities(program.getProgram());
-//			Map<DashboardEntity, DashboardPercentage> values = getValues(dashboardEntities, period, location, types);
-//			return new DashboardProgramInfo(percentage, values);
-//		}
-//
-//		@Override
-//		public Info visitTarget(DashboardTarget target, CalculationLocation location, Period period) {
-//			return infoService.getCalculationInfo(target.getCalculation(), location, period, types);
-//		}
-//		
-//	}
-	
 	// TODO check this
 	@Transactional(readOnly = true)
 	@Cacheable(cache="dashboardCache")

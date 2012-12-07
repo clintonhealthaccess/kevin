@@ -53,7 +53,7 @@ hibernate {
 	// performance improvement, but keep in mind that it might 
 	// affect data consistency
 	flush.mode = 'commit'
-//    show_sql = true
+	// show_sql = true
 }
 naming_strategy = org.hibernate.cfg.DefaultNamingStrategy
 
@@ -96,9 +96,12 @@ environments {
 	}
 	demo {
 		dataSource {
-			dbCreate = "update"
+			dbCreate = "create-drop"
 			driverClassName = "com.mysql.jdbc.Driver"
 			// configuration overriden by cloudfoundry
+			dataSource.url="jdbc:mysql://127.0.0.1:8889/kevin_demo"
+			dataSource.username="root"
+			dataSource.password="root"
 		}
 		hibernate {
 //			dialect = "org.hibernate.dialect.MySQLDialect"

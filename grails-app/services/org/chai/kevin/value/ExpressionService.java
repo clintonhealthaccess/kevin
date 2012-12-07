@@ -49,6 +49,7 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
+import org.chai.kevin.data.Mode;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.location.CalculationLocation;
@@ -81,7 +82,7 @@ public class ExpressionService {
 	
 	@Transactional(readOnly=true)
 	public <T extends CalculationPartialValue> List<T> calculatePartialValues(Calculation<T> calculation, CalculationLocation location, Period period) {
-		if (log.isDebugEnabled()) log.debug("calculateValue(calculation="+calculation+",period="+period+",location="+location+")");
+		if (log.isDebugEnabled()) log.debug("calculatePartialValues(calculation="+calculation+",period="+period+",location="+location+")");
 		
 		List<T> result = new ArrayList<T>();
 		for (String expression : calculation.getPartialExpressions()) {
@@ -91,7 +92,7 @@ public class ExpressionService {
 	}
 	
 	private <T extends CalculationPartialValue> Set<T> calculatePartialValues(Calculation<T> calculation, String expression, CalculationLocation location, Period period) {
-		if (log.isDebugEnabled()) log.debug("calculateValue(expression="+expression+",period="+period+",location="+location+")");
+		if (log.isDebugEnabled()) log.debug("calculatePartialValues(expression="+expression+",period="+period+",location="+location+")");
 		
 		Set<T> result = new HashSet<T>();
 		for (DataLocationType type : locationService.listTypes()) {
@@ -101,8 +102,12 @@ public class ExpressionService {
 			
 			if (!dataLocations.isEmpty()) {
 				Map<DataLocation, StatusValuePair> values = new HashMap<DataLocation, StatusValuePair>();
-				for (DataLocation dataLocation : dataLocations) {
-					StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, Calculation.TYPE, period, dataLocation, DataElement.class);
+				
+				Type calculationType = calculation.getType();
+				if(calculation.getClass().equals(Mode.class)) calculationType = calculationType.getListType();
+				
+				for (DataLocation dataLocation : dataLocations) {						
+					StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, calculationType, period, dataLocation, DataElement.class);
 					values.put(dataLocation, statusValuePair);
 				}
 				result.add(calculation.getCalculationPartialValue(expression, values, location, period, type));
@@ -127,6 +132,8 @@ public class ExpressionService {
 	// location has to be a dataLocation
 	private <T extends DataElement<S>, S extends DataValue> StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, DataLocation dataLocation, Class<T> clazz) {
 		if (expressionLog.isInfoEnabled()) expressionLog.info("getting expression status-value for: expression={"+expression+"}, type={"+type+"}, period={"+period+"}, dataLocation={"+dataLocation+"}");
+		
+		if (log.isDebugEnabled())log.debug("getExpressionStatusValuePair(expression="+expression+", type="+type+", period="+period+", dataLocation="+dataLocation+", clazz="+clazz);
 		
 		StatusValuePair statusValuePair = new StatusValuePair();
 		if (expression == null || expression.trim().isEmpty()) {

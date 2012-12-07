@@ -44,6 +44,7 @@ import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Mode
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
@@ -63,6 +64,7 @@ import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.CalculationPartialValue
+import org.chai.kevin.value.ModePartialValue
 import org.chai.kevin.value.RawDataElementValue
 import org.chai.kevin.value.NormalizedDataElementValue
 import org.chai.kevin.value.SumPartialValue;
@@ -127,8 +129,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static def setupLocationTree() {
 		// for the test environment, the location level is set to 4
 		// so we create a tree accordingly
-		def hc = newDataLocationType(["en":HEALTH_CENTER_GROUP], HEALTH_CENTER_GROUP);
-		def dh = newDataLocationType(["en":DISTRICT_HOSPITAL_GROUP], DISTRICT_HOSPITAL_GROUP);
+		def hc = newDataLocationType(["en":HEALTH_CENTER_GROUP], HEALTH_CENTER_GROUP, null, true);
+		def dh = newDataLocationType(["en":DISTRICT_HOSPITAL_GROUP], DISTRICT_HOSPITAL_GROUP, null, true);
 		
 		def country = newLocationLevel(NATIONAL, 1)
 		def province = newLocationLevel(PROVINCE, 2)
@@ -168,7 +170,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newDataLocationType(def names, def code, def order) {
-		def dataLocationType = new DataLocationType(code: code, order: order)
+		newDataLocationType(names, code, order, false)
+	}
+	
+	static def newDataLocationType(def names, def code, def order, def defaultSelected) {
+		def dataLocationType = new DataLocationType(code: code, order: order, defaultSelected: defaultSelected)
 		setLocaleValueInMap(dataLocationType, names, "Names")
 		return dataLocationType.save(failOnError: true)
 	}
@@ -225,27 +231,27 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 		
 	static def newUser(def username, def uuid) {
-		return new User(userType: UserType.OTHER, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
+		return new User(userType: UserType.OTHER, username: username, permissionString: '', passwordHash:'', uuid: uuid, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newUser(def username, def active, def confirmed) {
-		return new User(userType: UserType.OTHER, code: 'not_important', username: username, email: username,
+		return new User(userType: UserType.OTHER, username: username, email: username,
 			passwordHash: '', active: active, confirmed: confirmed, uuid: 'uuid', firstname: 'first', lastname: 'last',
 			organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newUser(def username, def passwordHash, def active, def confirmed) {
-		return new User(userType: UserType.OTHER, code: 'not_important', username: username, email: username,
+		return new User(userType: UserType.OTHER, username: username, email: username,
 			passwordHash: passwordHash, active: active, confirmed: confirmed, uuid: 'uuid', firstname: 'first', lastname: 'last',
 			organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newSurveyUser(def username, def uuid, def locationId) {
-		return new User(userType: UserType.SURVEY, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
+		return new User(userType: UserType.SURVEY, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newPlanningUser(def username, def uuid, def locationId) {
-		return new User(userType: UserType.PLANNING, code: username, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
+		return new User(userType: UserType.PLANNING, username: username, permissionString: '', passwordHash:'', uuid: uuid, locationId: locationId, firstname: 'first', lastname: 'last', organisation: 'org', phoneNumber: '+250 11 111 11 11', defaultLanguage: 'en').save(failOnError: true)
 	}
 	
 	static def newReportProgram(def code) {
@@ -292,6 +298,10 @@ abstract class IntegrationTests extends IntegrationSpec {
 	
 	static SumPartialValue newSumPartialValue(def sum, def period, def location, def type, def value) {
 		return new SumPartialValue(data: sum, period: period, location: location, type: type, numberOfDataLocations:0, value: value).save(failOnError: true)
+	}
+	
+	static ModePartialValue newModePartialValue(def mode, def period, def location, def type, def value) {
+		return new ModePartialValue(data: mode, period: period, location: location, type: type, value: value).save(failOnError: true)
 	}
 	
 	static RawDataElement newRawDataElement(def code, def type) {
@@ -345,7 +355,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static Aggregation newAggregation(def names, def expression, def code) {
-		def data = new Aggregation(expression: expression, code: code).save(failOnError: true)
+		def data = new Aggregation(expression: expression, code: code, type: Type.TYPE_NUMBER()).save(failOnError: true)
 		setLocaleValueInMap(data, names, "Names")
 		return data
 	}
@@ -359,7 +369,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static Summ newSum(def names, def expression, def code) {
-		def data = new Summ(expression: expression, code: code).save(failOnError: true, flush: true)
+		def data = new Summ(expression: expression, code: code, type: Type.TYPE_NUMBER()).save(failOnError: true, flush: true)
 		setLocaleValueInMap(data, names, "Names")
 		return data
 	}
@@ -368,6 +378,20 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return newSum(null, expression, code)
 	}
 	
+	static def newMode(String expression, def code, def type) {
+		return newMode([:], expression, code, type)
+	}
+		
+	static Mode newMode(def names, def expression, def code, def type) {
+		def data = new Mode(names: names, expression: expression, code: code, type: type).save(failOnError: true, flush: true)
+		setLocaleValueInMap(data, names, "Names")
+		return data
+	}
+
+	static Mode newMode(def expression, def code, def type) {
+		return newMode([:], expression, code, type)
+	}
+		
 	static Enum newEnume(def code) {
 		return newEnume(code, null)
 	}
@@ -453,6 +477,9 @@ abstract class IntegrationTests extends IntegrationSpec {
 			sessionFactory.currentSession.createCriteria(CalculationLocation.class).list().each { location ->
 				Summ.list().each { sum ->
 					refreshValueService.updateCalculationPartialValues(sum, location, period)
+				}
+				Mode.list().each { mode ->
+					refreshValueService.updateCalculationPartialValues(mode, location, period)
 				}
 				Aggregation.list().each { aggregation ->
 					refreshValueService.updateCalculationPartialValues(aggregation, location, period)

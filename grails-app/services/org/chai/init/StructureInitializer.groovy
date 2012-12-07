@@ -14,7 +14,7 @@ import org.chai.location.LocationLevel
 public class StructureInitializer {
 
 	static def createRoles() {
-		if (Role.count() == 0) {
+		if (!Role.count()) {
 			def reportAllReadonly = new Role(name: "report-all-readonly")
 			reportAllReadonly.addToPermissions("menu:reports")
 			reportAllReadonly.addToPermissions("dashboard:*")
@@ -39,49 +39,51 @@ public class StructureInitializer {
 	}
 	
 	static def createUsers() {
-		def user = new User(
-			userType: UserType.OTHER, code:"dhsst", username: "dhsst", 
-			firstname: "Dhsst", lastname: "Dhsst", 
-			email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), 
-			active: true, confirmed: true, uuid:'dhsst_uuid', 
-			defaultLanguage:'fr', phoneNumber: '+250 11 111 11 11', organisation:'org')
-		[	Role.findByName('report-all-readonly'), 
-			Role.findByName('survey-all-readonly')
-		].each {user.addToRoles(it)}
-		user.save(failOnError: true)
-
-		def admin = new User(
-			userType: UserType.OTHER, code:"admin", username: "admin",
-			firstname: "Super", lastname: "Admin", defaultLanguage: 'en',
-			email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), 
-			active: true, confirmed: true, uuid:'admin_uuid', 
-			phoneNumber: '+250 11 111 11 11', organisation:'org')
-		admin.addToPermissions("*")
-		admin.save(failOnError: true)
-
-		def butaro = new User(userType: UserType.SURVEY, code:"butaro",
-			username: "butaro", firstname: "butaro", lastname: "butaro", defaultLanguage: 'en',
-			locationId: DataLocation.findByCode("butaro_hd").id, passwordHash: new Sha256Hash("123").toHex(), 
-			active: true, confirmed: true, uuid: 'butaro_uuid', 
-			phoneNumber: '+250 11 111 11 11', organisation:'org')
-		[	"editSurvey:view", 
-			"editSurvey:*:"+DataLocation.findByCode("butaro_hd").id, 
-			"menu:survey", 
-			"menu:reports", 
-			"home:*"].each {butaro.addToPermissions(it)}
-		butaro.save(failOnError: true)
-		
-		def kivuye = new User(userType: UserType.PLANNING, code:"kivuye",
-			username: "kivuye", firstname: "kivuye", lastname: "kivuye", defaultLanguage: 'en',
-			locationId: DataLocation.findByCode("kivuye_cs").id, passwordHash: new Sha256Hash("123").toHex(),
-			active: true, confirmed: true, uuid: 'kivuye_uuid',
-			phoneNumber: '+250 11 111 11 11', organisation:'org')
-		[	"editPlanning:view",
-			"editPlanning:*:"+DataLocation.findByCode("kivuye_cs").id,
-			"menu:planning",
-			"menu:reports",
-			"home:*"].each {kivuye.addToPermissions(it)}
-		kivuye.save(failOnError: true)
+		if (!User.count()) {
+			def user = new User(
+				userType: UserType.OTHER, code:"dhsst", username: "dhsst", 
+				firstname: "Dhsst", lastname: "Dhsst", 
+				email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), 
+				active: true, confirmed: true, uuid:'dhsst_uuid', 
+				defaultLanguage:'fr', phoneNumber: '+250 11 111 11 11', organisation:'org')
+			[	Role.findByName('report-all-readonly'), 
+				Role.findByName('survey-all-readonly')
+			].each {user.addToRoles(it)}
+			user.save(failOnError: true)
+	
+			def admin = new User(
+				userType: UserType.OTHER, code:"admin", username: "admin",
+				firstname: "Super", lastname: "Admin", defaultLanguage: 'en',
+				email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), 
+				active: true, confirmed: true, uuid:'admin_uuid', 
+				phoneNumber: '+250 11 111 11 11', organisation:'org')
+			admin.addToPermissions("*")
+			admin.save(failOnError: true)
+	
+			def butaro = new User(userType: UserType.SURVEY, code:"butaro",
+				username: "butaro", firstname: "butaro", lastname: "butaro", defaultLanguage: 'en',
+				locationId: DataLocation.findByCode("butaro_hd").id, passwordHash: new Sha256Hash("123").toHex(), 
+				active: true, confirmed: true, uuid: 'butaro_uuid', 
+				phoneNumber: '+250 11 111 11 11', organisation:'org')
+			[	"editSurvey:view", 
+				"editSurvey:*:"+DataLocation.findByCode("butaro_hd").id, 
+				"menu:survey", 
+				"menu:reports", 
+				"home:*"].each {butaro.addToPermissions(it)}
+			butaro.save(failOnError: true)
+			
+			def kivuye = new User(userType: UserType.PLANNING, code:"kivuye",
+				username: "kivuye", firstname: "kivuye", lastname: "kivuye", defaultLanguage: 'en',
+				locationId: DataLocation.findByCode("kivuye_cs").id, passwordHash: new Sha256Hash("123").toHex(),
+				active: true, confirmed: true, uuid: 'kivuye_uuid',
+				phoneNumber: '+250 11 111 11 11', organisation:'org')
+			[	"editPlanning:view",
+				"editPlanning:*:"+DataLocation.findByCode("kivuye_cs").id,
+				"menu:planning",
+				"menu:reports",
+				"home:*"].each {kivuye.addToPermissions(it)}
+			kivuye.save(failOnError: true)
+		}
 	}
 	
 	static def createPeriods() {
@@ -109,8 +111,8 @@ public class StructureInitializer {
 	
 	static def createDataLocationTypes() {
 		if (!DataLocationType.count()) {
-			new DataLocationType(code: 'health_center', names_en: "Health Center").save(failOnError: true)
-			new DataLocationType(code: 'district_hospital', names_en: "District Hospital").save(failOnError: true)
+			new DataLocationType(code: 'health_center', names_en: "Health Center", defaultSelected: true).save(failOnError: true)
+			new DataLocationType(code: 'district_hospital', names_en: "District Hospital", defaultSelected: true).save(failOnError: true)
 		}
 	}
 	

@@ -1,13 +1,11 @@
 package org.chai.kevin;
 
-import grails.plugin.springcache.annotations.Cacheable;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,7 +23,7 @@ public class JaqlService {
 	// we implement our own cache because of springcache bug GPSPRINGCACHE-44
 	private static class LruCache<A, B> extends LinkedHashMap<A, B> {
 		private static final long serialVersionUID = 4576340669871751619L;
-		private final int maxEntries;
+	    private final int maxEntries;
 
 	    public LruCache(final int maxEntries) {
 	        super(maxEntries + 1, 1.0f, true);

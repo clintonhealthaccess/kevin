@@ -13,11 +13,15 @@ import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.json.JSONValue;
 import org.chai.kevin.util.Utils;
 
 public class Value extends JSONValue implements Exportable {
+	
+	private static final Log log = LogFactory.getLog(Value.class);
 	
 	public static final String MAP_KEY = "map_key";
 	public static final String MAP_VALUE = "map_value";
@@ -88,6 +92,7 @@ public class Value extends JSONValue implements Exportable {
 				numberValue = getJsonObject().getDouble(VALUE_STRING);
 			} catch (JSONException e) {
 				numberValue = null;
+				if (log.isDebugEnabled()) log.debug("value(numberValue="+numberValue+")");
 			}
 		}
 		return numberValue;
@@ -100,6 +105,7 @@ public class Value extends JSONValue implements Exportable {
 				else stringValue = getJsonObject().getString(VALUE_STRING);
 			} catch (JSONException e) {
 				stringValue = null;
+				if (log.isDebugEnabled()) log.debug("value(stringValue="+stringValue+")");
 			}
 		}
 		return stringValue;
@@ -111,6 +117,7 @@ public class Value extends JSONValue implements Exportable {
 				booleanValue = getJsonObject().getBoolean(VALUE_STRING);
 			} catch (JSONException e) {
 				booleanValue = null;
+				if (log.isDebugEnabled()) log.debug("value(booleanValue="+booleanValue+")");
 			}
 		}
 		return booleanValue;
@@ -123,6 +130,7 @@ public class Value extends JSONValue implements Exportable {
 				enumValue = getJsonObject().getString(VALUE_STRING);
 			} catch (JSONException e) {
 				enumValue = null;
+				if (log.isDebugEnabled()) log.debug("value(enumValue="+enumValue+")");
 			}
 		}
 		return enumValue;
@@ -134,9 +142,11 @@ public class Value extends JSONValue implements Exportable {
 				dateValue = Utils.parseDate(getJsonObject().getString(VALUE_STRING));
 			} catch (JSONException e) {
 				dateValue = null;
+				if (log.isDebugEnabled()) log.debug("value(dateValue="+dateValue+")");
 			} catch (ParseException e) {
 				//TODO this should never be null!
 				dateValue = null;
+				if (log.isDebugEnabled()) log.debug("value(dateValue="+dateValue+")");
 			}
 		}
 		return dateValue;
@@ -154,6 +164,7 @@ public class Value extends JSONValue implements Exportable {
 				listValue = result;
 			} catch (JSONException e) {
 				listValue = null;
+				if (log.isDebugEnabled()) log.debug("value(listValue="+listValue+")");
 			}
 		}
 		return listValue;
@@ -173,6 +184,7 @@ public class Value extends JSONValue implements Exportable {
 				mapValue = result;
 			} catch (JSONException e) {
 				mapValue = null;
+				if (log.isDebugEnabled()) log.debug("value(mapValue="+mapValue+")");
 			}
 		}
 		return mapValue;

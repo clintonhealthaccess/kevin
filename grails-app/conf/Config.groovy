@@ -148,7 +148,7 @@ environments {
 	demo {
 		grails.serverURL = 'http://kevin.cloudfoundry.com'
 		grails.resources.cdn.enabled = false
-		grails.resources.processing.enabled = false
+		grails.resources.processing.enabled = true
 		grails.resources.mappers.yuicssminify.disable = false
 		grails.resources.mappers.yuijsminify.disable = false
 	}
@@ -179,7 +179,7 @@ log4j = {
 	//appenders {
 	//    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
 	//}
-
+	
 	error  'grails.app.services.org.grails.plugin.resource',
 		   'grails.app.resourceMappers.org.grails.plugin.resource',
 		   'grails.app.taglib.org.grails.plugin.resource',
@@ -204,13 +204,13 @@ log4j = {
 
     info   'org.chai.kevin.importer.GeneralDataImporter',
 	       'org.chai.kevin.importer.NormalizedDataImporter',
-		   'org.chai.kevin.importer.Importer',
-		   'org.chai.kevin.value.ValueService'
+		   'org.chai.kevin.importer.Importer'
 		   				   
 	debug  'grails.app',
-		   'org.chai.kevin'
+		   'org.chai.kevin',
+		   'org.chai.kevin.value.ValueService'
 		   
-	trace 'org.chai.kevin.service.imports.GeneralDataImporter',
+	trace  'org.chai.kevin.service.imports.GeneralDataImporter',
 		   'org.chai.kevin.service.imports.NominativeDataImporter',
 		   'org.chai.kevin.service.imports.DataImporter',
 		   'org.chai.kevin.service.imports.DataImporterSpec'
@@ -235,23 +235,32 @@ environments {
 	}
 }
 
-/**
- * Application specific config
- */
-google.analytics.webPropertyID = "UA-xxxxxx-x"
+// google analytics plugin
+google.analytics.enabled = false
+
+environments {
+	demo {
+		google.analytics.enabled = true
+		google.analytics.webPropertyID = "UA-4227513-4"
+		google.analytics.customTrackingCode = [
+			[_setDomainName: "kevin.cloudfoundry.com"], "_trackPageview"
+		]
+	}
+}
 
 // internationalization
 i18nFields {
 	locales = ["en","fr"]
 	withlocale.disabled = true
 }
-
 site.fallback.language="en"
+
 site.entity.list.max=40
 
 site.admin.email="admin@dhsst.org"
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
+
 site.tagline.en="Ministry of Health"
 site.tagline.fr="Ministère de la santé"
 site.bugtracker.url = "#"
@@ -263,9 +272,6 @@ environments {
 		site.icon="http://kevin.cloudfoundry.com/images/apple-touch-icon.png"
 	}
 }
-
-// TODO put in database on datalocation and period
-site.datalocationtype.checked=["district_hospital","health_center"]
 
 report.skip.levels=["sector"]
 dashboard.skip.levels=[]

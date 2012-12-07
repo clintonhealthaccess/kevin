@@ -14,7 +14,7 @@ abstract class AbstractCalculationController extends AbstractEntityController {
 	
 	def deleteEntity(def entity) {
 		if (!AbstractReportTarget.findAllByData(entity).isEmpty()) {
-			flash.message = message(code: "data.delete.hasreporttargets", default: "Could not delete element, some reports use this data element.")
+			flash.message = message(code: "data.delete.hasreporttargets", default: "Could not delete calculation because reports still reference this calculation.")
 		}
 		else {
 			valueService.deleteValues(entity, null, null)
@@ -25,8 +25,6 @@ abstract class AbstractCalculationController extends AbstractEntityController {
 	def getModel(def entity) {
 		[calculation: entity]
 	}
-	
-//	protected abstract def getEntityClass();
 
 	def saveEntity(def entity) {
 		if (entity.id != null) valueService.deleteValues(entity, null, null)

@@ -14,10 +14,7 @@ class User {
 	//some code has been writen assuming its a one to many relationship
 	RegistrationToken registrationToken
 	PasswordToken passwordToken
-	
-	// TODO get rid of this, it is the uuid
-	String code
-	
+		
 	String email
     String username
 	String uuid
@@ -115,9 +112,6 @@ class User {
 	}
 	
     static constraints = {
-		// TODO get rid of this, it is the uuid
-		code(nullable: false, blank: false, unique: true)
-		
 		email(email:true, unique: true, nullable: true)
         username(nullable: false, blank: false, unique: true)
 		uuid(nullable: false, blank: false, unique: true)

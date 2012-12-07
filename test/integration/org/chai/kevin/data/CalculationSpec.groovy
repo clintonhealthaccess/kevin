@@ -38,16 +38,7 @@ class CalculationSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 	
-	def "sum expression does not accept calculations"() {
-		when:
-		def sum = newSum("1", CODE(1))
-		new Summ(code:CODE(1), expression: "\$"+sum.id).save(failOnError: true)
-		
-		then:
-		thrown ValidationException
-	}
-	
-	def "ratio expression must be valid"() {
+	def "sum code must not be null"() {
 		when:
 		new Summ(code:CODE(1), expression: "1").save(failOnError: true)
 		
@@ -55,7 +46,16 @@ class CalculationSpec extends IntegrationTests {
 		Summ.count() == 1
 		
 		when:
-		new Summ(code:CODE(2), expression: "1(").save(failOnError: true)
+		new Summ(expression: "1").save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "sum expression does not accept calculations"() {
+		when:
+		def sum = newSum("1", CODE(1))
+		new Summ(code:CODE(1), expression: "\$"+sum.id).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -75,38 +75,15 @@ class CalculationSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 	
-	def "aggregation expression does not accept calculations"() {
+	def "aggregation code must be unique"() {
 		when:
-		def sum = newSum("1", CODE(1))
-		new Aggregation(code:CODE(1), expression: "\$"+sum.id).save(failOnError: true)
+		new Aggregation(code:CODE(1), expression: "1").save(failOnError: true)
 		
 		then:
-		thrown ValidationException
-	}
-	
-	def "sum code must not be null"() {
-		when:
-		new Summ(code:CODE(1), expression: "1").save(failOnError: true)
-		
-		then:
-		Summ.count() == 1
+		Aggregation.count() == 1
 		
 		when:
-		new Summ(expression: "1").save(failOnError: true)
-		
-		then:
-		thrown ValidationException
-	}
-	
-	def "ratio code must not be null"() {
-		when:
-		new Summ(code:CODE(1), expression: "1").save(failOnError: true)
-		
-		then:
-		Summ.count() == 1
-		
-		when:
-		new Summ(expression: "1").save(failOnError: true)
+		new Aggregation(code:CODE(1), expression: "1").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -126,4 +103,63 @@ class CalculationSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 	
+	def "aggregation expression does not accept calculations"() {
+		when:
+		def sum = newSum("1", CODE(1))
+		new Aggregation(code:CODE(1), expression: "\$"+sum.id).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "mode expression must be valid"() {
+		when:
+		new Mode(code:CODE(1), type: Type.TYPE_LIST(Type.TYPE_NUMBER()), expression: "1").save(failOnError: true)
+		
+		then:
+		Mode.count() == 1
+		
+		when:
+		new Mode(code:CODE(2), type: Type.TYPE_LIST(Type.TYPE_NUMBER()), expression: "1(").save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "mode code must be unique"() {
+		when:
+		new Mode(code:CODE(1), type: Type.TYPE_LIST(Type.TYPE_NUMBER()), expression: "1").save(failOnError: true)
+		
+		then:
+		Mode.count() == 1
+		
+		when:
+		new Mode(code:CODE(1), type: Type.TYPE_LIST(Type.TYPE_NUMBER()), expression: "1").save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "mode code must not be null"() {
+		when:
+		new Mode(code:CODE(1), type: Type.TYPE_LIST(Type.TYPE_NUMBER()), expression: "1").save(failOnError: true)
+		
+		then:
+		Mode.count() == 1
+		
+		when:
+		new Mode(type: Type.TYPE_LIST(Type.TYPE_NUMBER()), expression: "1").save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "mode expression does not accept calculations"() {
+		when:
+		def sum = newSum("1", CODE(1))
+		new Mode(code:CODE(1), type: Type.TYPE_LIST(Type.TYPE_NUMBER()), expression: "\$"+sum.id).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
 }
