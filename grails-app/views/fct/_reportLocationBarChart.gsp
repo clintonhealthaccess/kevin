@@ -84,21 +84,20 @@
 		</r:script>
 		<!-- chart x-axis -->
 		<tr>
-			<g:if test="${fctTable != null && fctTable.getLocations(currentLocation, locationSkipLevels, currentLocationTypes).empty}">
-				<g:each in="${fctTable.getLocations(currentLocation, locationSkipLevels, currentLocationTypes)}" var="location">
-					<td>
-						<g:if test="${!location.collectsData()}">
-							<% def childLocationLinkParams = new HashMap(params) %>
-							<% childLocationLinkParams['location'] = location.id+"" %>
-							<a href="${createLink(controller:controllerName, action:actionName, params:childLocationLinkParams)}">
-							<g:i18n field="${location.names}" /></a>
-						</g:if>
-						<g:else>
-							<g:i18n field="${location.names}" />
-						</g:else>
-					</td>
-				</g:each>
-			</g:if>
+			<g:each in="${fctTable.getLocations(currentLocation, locationSkipLevels, currentLocationTypes)}" var="location">
+				<td>
+					<!-- //TODO filter out locations with no data -->
+					<g:if test="${!location.collectsData()}">
+						<% def childLocationLinkParams = new HashMap(params) %>
+						<% childLocationLinkParams['location'] = location.id+"" %>
+						<a href="${createLink(controller:controllerName, action:actionName, params:childLocationLinkParams)}">
+						<g:i18n field="${location.names}" /></a>
+					</g:if>
+					<g:else>
+						<g:i18n field="${location.names}" />
+					</g:else>
+				</td>
+			</g:each>
 		</tr>
 	</tbody>
 </table>
