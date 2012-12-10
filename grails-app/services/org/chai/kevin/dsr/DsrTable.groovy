@@ -1,4 +1,6 @@
-/**
+package org.chai.kevin.dsr;
+
+/* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -25,60 +27,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.data
 
-import org.chai.kevin.AbstractController;
-import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.util.Utils
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
-/**
- * @author Jean Kahigiso M.
- *
- */
-class CalculationController extends AbstractController {
+import org.chai.kevin.reports.AbstractReportTarget;
+import org.chai.location.CalculationLocation;
+import org.chai.kevin.reports.ReportTable;
+import org.chai.kevin.value.Value;
 
-	def dataService
+public class DsrTable extends ReportTable {
 	
-	def index = {
-		redirect (action: "list", params: params)
+	public DsrTable(Map valueMap, List targetOptions) {
+		super(valueMap, targetOptions);
 	}
 	
-	def getLabel() {
-		return "calculation.label"
+	public List<Value> getModeList(CalculationLocation location, AbstractReportTarget indicator) {
+		if(calculation.getClass().equals(Mode.class)) {
+			return getTableReportValue(topLevelLocation, targetOption).getValueList()
+		}
+		else return null;
 	}
-	
-	def Class getEntityClass(){
-		return Calculation.class;
-	}
-	
-	def search = {
-		adaptParamsForList()
-		
-		def calculations = dataService.searchData(Calculation.class, params['q'], [], params);
-		
-		render (view: '/entity/list', model:[
-			entities: calculations,
-			entityCount: calculations.totalCount,
-			entityClass: getEntityClass(),
-			template: "data/calculationList",
-			code: getLabel(),
-			search: true
-		])
-	}
-	
-	def list = {
-		adaptParamsForList()
-		def calculations = Calculation.list(params)		
-		
-		render (view: '/entity/list', model:[
-			entities: calculations,
-			template: "data/calculationList",
-			entityCount: calculations.totalCount,
-			code: 'calculation.label',
-			addTemplate: '/entity/data/addCalculation'
-		])
-	}
-	
+
 }

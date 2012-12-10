@@ -3,8 +3,13 @@
 	<div class="js_dropdown-list dropdown-list">
 		<ul>
 			<li>
-				<a href="${createLinkWithTargetURI(controller:'sum', action:'create')}">
-					<g:message code="default.new.label" args="[message(code:'sum.label')]"/>
+				<a href="${createLinkWithTargetURI(controller:'summ', action:'create')}">
+					<g:message code="default.new.label" args="[message(code:'summ.label')]"/>
+				</a>
+			</li>
+			<li>
+				<a href="${createLinkWithTargetURI(controller:'mode', action:'create')}">
+					<g:message code="default.new.label" args="[message(code:'mode.label')]"/>
 				</a>
 			</li>
 			<li>

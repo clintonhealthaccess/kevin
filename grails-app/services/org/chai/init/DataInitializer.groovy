@@ -3,6 +3,7 @@ package org.chai.init
 import org.chai.kevin.Period
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
+import org.chai.kevin.data.Mode
 import org.chai.kevin.data.NormalizedDataElement
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Source
@@ -105,6 +106,7 @@ class DataInitializer {
 					])
 				])
 			), source: Source.findByCode('dhsst')).save(failOnError: true)
+			new RawDataElement(code: 'number_of_motos', type: Type.TYPE_NUMBER(), source: Source.findByCode('dhsst')).save(failOnError: true)
 			
 			// human resources
 			new RawDataElement(code: 'number_of_doctors', type: Type.TYPE_NUMBER(), source: Source.findByCode('dhsst')).save(failOnError: true)
@@ -196,6 +198,16 @@ class DataInitializer {
 			newValue('kivuye_cs', 'period1', 'number_of_doctors', Value.VALUE_NUMBER(2))
 			newValue('rusasa_cs', 'period1', 'number_of_doctors', Value.VALUE_NUMBER(1))
 			
+			// number_of_motos - period1
+			newValue('butaro_hd', 'period1', 'number_of_motos', Value.VALUE_NUMBER(2))
+			newValue('kivuye_cs', 'period1', 'number_of_motos', Value.VALUE_NUMBER(0))
+			newValue('rusasa_cs', 'period1', 'number_of_motos', Value.VALUE_NUMBER(0))
+			
+			// number_of_motos - period2
+			newValue('butaro_hd', 'period2', 'number_of_motos', Value.VALUE_NUMBER(1))
+			newValue('kivuye_cs', 'period2', 'number_of_motos', Value.VALUE_NUMBER(2))
+			newValue('rusasa_cs', 'period2', 'number_of_motos', Value.VALUE_NUMBER(1))
+			
 			// human_resources - period2
 			newValue('butaro_hd', 'period2', 'human_resources', Value.VALUE_LIST([
 				Value.VALUE_MAP([
@@ -280,6 +292,13 @@ class DataInitializer {
 				})]
 			})).save(failOnError: true)
 			
+			// geographical access - energy source
+			new NormalizedDataElement(code: 'primary_energy_source_enum', type: Type.TYPE_ENUM('energy_source'), expressionMap: Period.list().collectEntries ([:], { period ->
+				[(period.id.toString()), DataLocationType.list().collectEntries ([:], { type ->
+					[(type.code), '\$' + RawDataElement.findByCode('energy_source').id]
+				})]
+			})).save(failOnError: true)
+			
 			// geographical access - harvesting infrastructure
 			new NormalizedDataElement(code: 'rainwater_harvesting', type: Type.TYPE_STRING(), expressionMap: Period.list().collectEntries ([:], { period ->
 				[(period.id.toString()), DataLocationType.list().collectEntries ([:], { type ->
@@ -326,17 +345,32 @@ class DataInitializer {
 	static def createSums() {
 		if (!Summ.count()) {
 			// energy - consistent energy
-			new Summ(code: 'energy_consistent_count', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_consistent').id+') 1 else 0').save(failOnError: true)
+			new Summ(code: 'energy_consistent_count', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_consistent').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
 			// energy - limited energy
-			new Summ(code: 'energy_limited_count', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_limited').id+') 1 else 0').save(failOnError: true)
+			new Summ(code: 'energy_limited_count', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_limited').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
 			// energy - consistent energy
-			new Summ(code: 'energy_none_count', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_none').id+') 1 else 0').save(failOnError: true)
+			new Summ(code: 'energy_none_count', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_none').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
 			
 			// human resources - above recommended population per doctor
-			new Summ(code: 'population_per_doctor_above', expression: 'if (\$'+NormalizedDataElement.findByCode('population_per_doctor').id+' < 10000) 1 else 0').save(failOnError: true)
+			new Summ(code: 'population_per_doctor_above', expression: 'if (\$'+NormalizedDataElement.findByCode('population_per_doctor').id+' < 10000) 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
 			// human resources - below recommended population per doctor
 			new Summ(code: 'population_per_doctor_below', expression: 'if (\$'+NormalizedDataElement.findByCode('population_per_doctor').id+
-				' >= 10000 or \$'+NormalizedDataElement.findByCode('population_per_doctor').id+' == "null") 1 else 0').save(failOnError: true)
+				' >= 10000 or \$'+NormalizedDataElement.findByCode('population_per_doctor').id+' == "null") 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
+		}
+	}
+	
+	static def createModes() {
+		if (!Mode.count()) {
+			// geographical access - use of solar
+			new Mode(code: 'use_solar_mode_bool', expression: '(\$'+NormalizedDataElement.findByCode('use_solar').id+')', 
+				type: Type.TYPE_LIST(Type.TYPE_BOOL())).save(failOnError: true)
+			// geographical access - primary energy source
+			new Mode(code: 'primary_energy_source_mode_enum', expression: '(\$'+NormalizedDataElement.findByCode('primary_energy_source_enum').id+')', 
+				type: Type.TYPE_LIST(Type.TYPE_ENUM('energy_source'))).save(failOnError: true)
+			// geographical access - TODO mode number
+			new Mode(code: 'number_of_motos_mode_number', expression: '(\$'+RawDataElement.findByCode('number_of_motos').id+')', 
+				type: Type.TYPE_LIST(Type.TYPE_NUMBER())).save(failOnError: true)
+			// geographical access - TODO mode string/text
 		}
 	}
 	

@@ -151,7 +151,7 @@ class BootStrap {
 			DataInitializer.createRawDataElementValues();
 			DataInitializer.createNormalizedDataElements();
 			DataInitializer.createSums();
-			
+			DataInitializer.createModes();
 			refreshValueService.refreshAll(null)
 			
 			// we initialize the reports

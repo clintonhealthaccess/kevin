@@ -94,37 +94,68 @@ class ValueTagLib {
 				message(code: 'fct.report.chart.tooltip.datalocations')+': '+totalLocations
 	}
 	
+	/**
+	 *
+	 */
 	def reportValue = { attrs, body ->
+		def valueList = attrs['valueList']
 		def value = attrs['value']
 		def type = attrs['type']
 		def format = attrs['format']
 		def rounded = attrs['rounded']
-		
 		def tooltip = attrs['tooltip'].toString()
 		
 		if (value == null || value.isNull()) {
 			out << '<div class="report-value-null">'+
 					reportTooltip(tooltip, message(code: 'report.value.null')+'')+
-					'</div>'
+				'</div>'
 		}
 		else {
-			switch (type.type) {
-				case ValueType.BOOL:
-					if (value.booleanValue){
-						out << '<div class="report-value-true">'+
-								reportTooltip(tooltip, '&#10003;')+
-								'</div>'
+			if (valueList != null) {
+				def result = ''
+				valueList = valueList.sort()
+				for (Value listValue : valueList){
+					result += getReportValue(listValue, type, tooltip)
+					switch(type.listType){
+						case ValueType.BOOL:
+							result += result.join('&nbsp;&nbsp;&nbsp;')
+							break;
+						default:
+							result += result.join(', ')
+							break;
 					}
-					else{
-						out << '<div class="report-value-false">'+
-								reportTooltip(tooltip, '&#10007;')+
-								'</div>'
-					}
-					break;
-				default:
-					out << reportTooltip(tooltip, Utils.getStringValue(value, type, null, format, rounded))
+				}
+
+				out << result
+			}
+			else {
+				out << getReportValue(value, type, tooltip)
 			}
 		}
+	}
+	
+	def String getReportValue(def value, def type, def tooltip) {
+		if (log.isDebugEnabled()) log.debug("getReportValue(value="+value+", type="+type+")");
+		def result = ''
+		
+		switch (type.type) {
+		case ValueType.BOOL:
+			if (value.booleanValue){
+				result += '<div class="report-value-true">'+
+						reportTooltip(tooltip, '&#10003;')+
+						'</div>'
+			}
+			else {
+				result += '<div class="report-value-false">'+
+						reportTooltip(tooltip, '&#10007;')+
+						'</div>'
+			}
+			break;
+		default:
+			result += reportTooltip(tooltip, Utils.getStringValue(value, type, null, format, rounded))
+		}
+			
+		return result
 	}
 	
 	def String reportTooltip(String tooltip, String value){
@@ -142,6 +173,25 @@ class ValueTagLib {
 		prettyPrint(type, value, printableValue, 0)
 		
 		out << printableValue.toString()
+	}
+	
+	//TODO explain what zero, enums, and nullText are
+	def value = {attrs, body ->
+		if (log.isDebugEnabled()) log.debug('value(attrs='+attrs+',body='+body+')')
+		
+		def type = attrs['type']
+		def value = attrs['value']
+		def format = attrs['format']
+		def zero = attrs['zero']
+		def enums = attrs['enums']
+		def nullText = attrs['nullText']
+		
+		def result = null
+		if (value != null && !value.isNull()) {
+			result = languageService.getStringValue(value, type, enums, format, zero)
+		}
+		if (result == null && nullText != null) out << nullText
+		else out << result
 	}
 	
 	def prettyPrint(Type type, Value value, StringBuffer printableValue, Integer level) {
@@ -198,25 +248,6 @@ class ValueTagLib {
 					throw new NotImplementedException()
 			}
 		}
-	}
-	
-	//TODO explain what zero, enums, and nullText are
-	def value = {attrs, body ->
-		if (log.isDebugEnabled()) log.debug('value(attrs='+attrs+',body='+body+')')
-		
-		def type = attrs['type']
-		def value = attrs['value']
-		def format = attrs['format']
-		def zero = attrs['zero']
-		def enums = attrs['enums']
-		def nullText = attrs['nullText']
-		
-		def result = null
-		if (value != null && !value.isNull()) {
-			result = Utils.getStringValue(value, type, enums, format, zero)
-		}
-		if (result == null && nullText != null) out << nullText
-		else out << result
 	}
 	
 }

@@ -153,6 +153,10 @@ public class Utils {
 		if (value == null || value.isNull()) return null
 		def result;
 		switch (type.type) {
+			case ValueType.BOOL:
+				if (value.booleanValue) result = 'true'
+				else result = 'false'
+				break;
 			case (ValueType.ENUM):
 				def enume = null
 				 
@@ -174,6 +178,7 @@ public class Utils {
 				// TODO
 			case (ValueType.LIST):
 				// TODO
+				break;
 			default:
 				result = value.stringValue
 		}

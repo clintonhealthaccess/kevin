@@ -44,7 +44,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		dsrTable.getTableReportValue(DataLocation.findByCode(BUTARO), target).value.getNumberValue() == 10d
 	}
 		
-	def "get dsr with average calculation element"(){
+	def "get dsr with average data"(){
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -72,7 +72,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		dsrTable.getTableReportValue(Location.findByCode(BURERA), target).value.getNumberValue() == 2
 	}
 
-	def "get dsr with null average calculation element, default to sum calculation element"(){
+	def "get dsr with null average data, default to sum data"(){
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -80,8 +80,8 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def burera = Location.findByCode(BURERA)
 		def average = newSum("1", CODE(2))
 		def isAverage = null
-		def category = newDsrTargetCategory(CODE(2), program, 1)
-		def target = newDsrTarget(CODE(3), 1, average, isAverage, category)
+		def category = newDsrTargetCategory(CODE(3), program, 1)
+		def target = newDsrTarget(CODE(4), 1, average, isAverage, category)
 		def types = new HashSet([
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
@@ -100,15 +100,15 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		dsrTable.getTableReportValue(Location.findByCode(BURERA), target).value.getNumberValue() == 2
 	}
 
-	def "get dsr with sum calculation element"(){
+	def "get dsr with sum data"(){
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(1))
 		def burera = Location.findByCode(BURERA)
 		def sum = newSum("1", CODE(2))
-		def category = newDsrTargetCategory(CODE(2), program, 1)
-		def target = newDsrTarget(CODE(3), 1, sum, category)
+		def category = newDsrTargetCategory(CODE(3), program, 1)
+		def target = newDsrTarget(CODE(4), sum, category)
 		def types = new HashSet([
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
@@ -127,7 +127,34 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		dsrTable.getTableReportValue(Location.findByCode(BURERA), target).value.getNumberValue() == 2		
 	}
 
-	def "get dsr with raw data element calculation element"(){
+	def "get dsr with mode data"(){
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def program = newReportProgram(CODE(1))
+		def burera = Location.findByCode(BURERA)
+		def mode = newMode("1", CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		def category = newDsrTargetCategory(CODE(3), program, 1)
+		def target = newDsrTarget(CODE(4), mode, category)
+		def types = new HashSet([
+			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
+			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
+		])
+		def reportType = Utils.ReportType.TABLE
+		refreshCalculation()
+
+		when:
+		def dsrTable = dsrService.getDsrTable(burera, period, types, category, reportType)
+
+		then:
+		dsrTable != null
+		dsrTable.hasData() == true
+		dsrTable.getModeList(DataLocation.findByCode(BUTARO), target) == [v(1)]
+		dsrTable.getModeList(DataLocation.findByCode(KIVUYE), target) == [v(1)]
+		dsrTable.getModeList(Location.findByCode(BURERA), target) == [v(1)]
+	}
+	
+	def "get dsr with raw data element data"(){
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -164,7 +191,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		dsrTable.getTableReportValue(DataLocation.findByCode(KIVUYE), target).value.getNumberValue() == 10d
 	}
 
-	def "get dsr with normalized data element calculation element"(){
+	def "get dsr with normalized data element data"(){
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(1))
@@ -189,7 +216,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		dsrTable.getTableReportValue(DataLocation.findByCode(KIVUYE), target).value.getNumberValue() == 10d
 	}
 
-	def "get dsr with normalized data element calculation element and no expression"(){
+	def "get dsr with normalized data element data and no expression"(){
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(1))
