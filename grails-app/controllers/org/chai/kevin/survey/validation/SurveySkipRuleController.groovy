@@ -34,6 +34,7 @@ import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyQuestion
 import org.chai.kevin.survey.SurveySkipRule
+import org.chai.kevin.survey.SurveyEnteredQuestion
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 /**
  * @author Jean Kahigiso M.
@@ -71,6 +72,18 @@ class SurveySkipRuleController  extends AbstractEntityController {
 	def getEntityClass(){
 		//TODO return SurveySkipRule.class;
 		return null;
+	}
+	
+	def deleteEntity(def entity) {
+		// we delete the skip from the entered questions
+		SurveyEnteredQuestion.withCriteria {
+			skippedRules {eq('id', entity.id)}
+		}.each { enteredQuestion ->
+			enteredQuestion.removeFromSkippedRules(entity)
+			enteredQuestion.save()
+		}
+		entity.survey.removeFromSkipRules(entity)
+		entity.delete()
 	}
 	
 	def bindParams(def entity) {
