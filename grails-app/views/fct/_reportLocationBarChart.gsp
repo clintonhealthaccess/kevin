@@ -34,9 +34,12 @@
 								<g:set var="value" value="${fctTable.getTableReportValue(location, indicator)}"/>									
 								<g:if test="${value != null && !value.value.isNull() && !value.average.isNull()}">											
 									
-									<!-- report value number --><g:set var="reportBarValue" value="${g.reportBarData(value: fctTable.getTableReportValue(location, indicator)?.getValue(), type: indicator.type)}"/>											
-									<!-- report value number 0-1 --><g:set var="reportBarAverage" value="${fctTable.getTableReportValue(location, indicator)?.getAverage().numberValue.round(2)}"/>
-									<!-- report value percentage 0%-100% --><g:set var="reportBarPercentage" value="${g.reportBarData(value: fctTable.getTableReportValue(location, indicator)?.getAverage(), type: indicator.type, format: indicator.percentageFormat?:'#%', rounded: '2')}"/>
+									<!-- report value number -->
+									<g:set var="reportBarValue" value="${g.reportBarData(value: fctTable.getTableReportValue(location, indicator)?.getValue(), type: indicator.type)}"/>											
+									<!-- report value number 0-1 -->
+									<g:set var="reportBarAverage" value="${fctTable.getTableReportValue(location, indicator)?.getAverage().numberValue.round(2)}"/>
+									<!-- report value percentage 0%-100% -->
+									<g:set var="reportBarPercentage" value="${g.reportBarData(value: fctTable.getTableReportValue(location, indicator)?.getAverage(), type: indicator.type, format: indicator.percentageFormat?:'#%', rounded: '2')}"/>
 
 									<g:set var="maxIndicator" value="${reportBarAverage > maxAverage ? indicator.code : maxIndicator}"/>
 									<g:set var="maxAverage" value="${reportBarAverage > maxAverage ? reportBarAverage : maxAverage}"/>
@@ -63,24 +66,34 @@
 										style="height: 0%;"></div>
 								</g:else>
 							</g:each>
+							<g:if test="${totalAverage > 0 && totalAverage != 1}">
+								<input type="hidden" data-location="${location.code}" name="maxIndicator" value="${maxIndicator}"/>
+								<input type="hidden" data-location="${location.code}" name="maxAverage" value="${maxAverage}"/>
+								<input type="hidden" data-location="${location.code}" name="totalAverage" value="${totalAverage}"/>
+							</g:if>
 						</div>
-						<g:if test="${totalAverage > 0 && totalAverage != 1}">
-							<r:script>updateStackedBarHeight(${totalAverage}, ${maxAverage}, "${location.code}", "${maxIndicator}")</r:script>
-						</g:if>
 					</g:if>
 				</td>
 			</g:each>
 		</tr>
 		<r:script>
-		function updateStackedBarHeight(totalBarAverage, maxBarAverage, location, indicator){
-			if(totalBarAverage > 0 && totalBarAverage != 1){
-				if(totalBarAverage < 1) maxBarAverage += 1-totalBarAverage
-				else if(totalBarAverage > 1) maxBarAverage -= totalBarAverage-1
-				var stackedBars = $('.bars-vertical[data-location="'+location+'"]')
-				var maxStackedBar = $(stackedBars).children('.bar-vertical[data-indicator="'+indicator+'"]')
-				$(maxStackedBar).css('height', maxBarAverage*100 + '%')
-			}
-		}
+		$(document).ready(function() {
+			var stackedBars = $('.bars-vertical')
+			$(stackedBars).each(function(index, stackedBar){
+				var code = $(stackedBar).data('location')
+				if($(':hidden[data-location="'+code+'"]').size() > 0){
+					var totalBarAverage = parseFloat($(':hidden[data-location="'+code+'"][name="totalAverage"]').val())
+					if(totalBarAverage > 0 && totalBarAverage != 1){
+						var maxBarAverage = parseFloat($(':hidden[data-location="'+code+'"][name="maxAverage"]').val())
+						if(totalBarAverage < 1) maxBarAverage += 1-totalBarAverage
+						else if(totalBarAverage > 1) maxBarAverage -= totalBarAverage-1
+						var maxIndicator = $(':hidden[data-location="'+code+'"][name="maxIndicator"]').val()
+						var maxStackedBar = $(stackedBar).children('.bar-vertical[data-indicator="'+maxIndicator+'"]')
+						$(maxStackedBar).css('height', maxBarAverage*100 + '%')
+					}
+				}
+			})
+		});
 		</r:script>
 		<!-- chart x-axis -->
 		<tr>
