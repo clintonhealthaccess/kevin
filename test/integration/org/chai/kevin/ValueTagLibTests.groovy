@@ -114,7 +114,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 	
 	def testReportBarValue() {
 		assertEquals applyTemplate(
-			'<g:reportBarValue value="${value}" type="${type}" format="${format}"/>',
+			'<g:reportBarData value="${value}" type="${type}" format="${format}"/>',
 			[
 				'value': Value.VALUE_NUMBER(58),
 				'type': Type.TYPE_NUMBER(),
@@ -125,7 +125,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 	
 	def testReportBarValueNull() {
 		assertEquals applyTemplate(
-			'<g:reportBarValue value="${value}" type="${type}" format="${format}"/>',
+			'<g:reportBarData value="${value}" type="${type}" format="${format}"/>',
 			[
 				'value': Value.NULL_INSTANCE(),
 				'type': Type.TYPE_NUMBER(),
@@ -136,7 +136,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 	
 	def testReportBarPercentage() {
 		assertEquals applyTemplate(
-			'<g:reportBarValue value="${value}" type="${type}" format="${format}"/>',
+			'<g:reportBarData value="${value}" type="${type}" format="${format}" rounded="${rounded}"/>',
 			[
 				'value': Value.VALUE_NUMBER(0.579),
 				'type': Type.TYPE_NUMBER(),
@@ -148,7 +148,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 	
 	def testReportBarPercentageNull() {
 		assertEquals applyTemplate(
-			'<g:reportBarValue value="${value}" type="${type}" format="${format}"/>',
+			'<g:reportBarData value="${value}" type="${type}" format="${format}"/>',
 			[
 				'value': Value.NULL_INSTANCE(),
 				'type': Type.TYPE_NUMBER(),

@@ -69,7 +69,7 @@ class ValueTagLib {
 		}
 	}
 	
-	def reportBarValue = { attrs, body ->
+	def reportBarData = { attrs, body ->
 		def value = attrs['value']
 		def type = attrs['type']
 		def format = attrs['format']
@@ -79,10 +79,10 @@ class ValueTagLib {
 			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
 		}
 		else {
-			out << languageService.getStringValue(value, type, null, format, rounded)
+			out << languageService.getStringValue(value, type, null, format, null, rounded)
 		}
-	}	
-
+	}
+	
 	def reportBarTooltip = { attrs, body ->
 		def percentage = attrs['percentage']
 		def value = attrs['value']

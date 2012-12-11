@@ -43,6 +43,8 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Exportable;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportTarget;
@@ -67,6 +69,10 @@ class FctTarget extends ReportEntity implements ReportTarget, Exportable {
 
 	public List<FctTargetOption> getAllTargetOptions() {
 		return new ArrayList<FctTargetOption>(targetOptions?:[]);
+	}
+	
+	public Type getType() {
+		return Calculation.TYPE;
 	}
 	
 	@Override

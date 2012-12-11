@@ -130,20 +130,45 @@
     .bar-vertical
       display: block      
       width: 38px
+      +box-shadow(rgba(0, 0, 0, 0.15) 1px 1px 3px)
+      //slister start
+      //&:hover, &:focus
+        //span
+          //background: rgba(0, 0, 0, 0.15)
+          //slister end
 
     //slister start
     .indicator-best
       background: $best
+      +background(linear-gradient(right, $best, $best - #111))
+      &:hover, &:focus
+        background: $best - #090909
+        +background(linear-gradient(right, $best - #090909, $best - #191919))
     .indicator-middle
       background: $middle
+      +background(linear-gradient(right, $middle, $middle - #111))
+      &:hover, &:focus
+        background: $middle - #090909
+        +background(linear-gradient(right, $middle - #090909, $middle - #191919))
     .indicator-worst
       background: $worst
+      +background(linear-gradient(right, $worst, $worst - #111))
+      &:hover, &:focus
+        background: $worst - #090909
+        +background(linear-gradient(right, $worst - #090909, $worst - #191919))
       //slister end
+      
     
     span
-      font-size: 10px
+      //background: rgba(0, 0, 0, 0.06)
+      color: #fff
+      display: block
+      font-size: 12px
       font-weight: bold
+      padding: 2px 0 1px
       vertical-align: middle
+      +text-shadow(rgba(0, 0, 0, 0.15) 0 1px 0)
+      +transition(background .4s)
       // slister end
 
 .chart_legend
