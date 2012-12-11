@@ -38,6 +38,7 @@ import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.location.CalculationLocation;
 import org.chai.kevin.reports.ReportTable;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.data.Mode
 
 public class DsrTable extends ReportTable {
 	
@@ -47,7 +48,7 @@ public class DsrTable extends ReportTable {
 	
 	public List<Value> getModeList(CalculationLocation location, AbstractReportTarget indicator) {
 		if(indicator.data.getClass().equals(Mode.class)) {
-			return getTableReportValue(topLevelLocation, targetOption).getValueList()
+			return getTableReportValue(location, indicator).getValueList()
 		}
 		else return null;
 	}

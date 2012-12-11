@@ -24,15 +24,13 @@
 			</td>
 			<g:each in="${dsrTable.indicators}" var="target">
 				<td>
-					<g:if test="${location.getChildren(locationSkipLevels) == null || location.getChildren(locationSkipLevels).empty}">
-						<g:if test="${dsrTable.getTableReportValue(location, target) != null}">
-							<g:reportValue
-								tooltip="${i18n(field: target.names)}"
-								value="${dsrTable.getTableReportValue(location, target)?.value}"
-								listValue="${dsrTable.getModeList(location, target)}"
-								type="${target.data.type}"
-								format="${target.format}"/>
-						</g:if>
+					<g:if test="${dsrTable.getTableReportValue(location, target) != null}">
+						<g:reportValue
+							tooltip="${i18n(field: target.names)}"
+							value="${dsrTable.getTableReportValue(location, target)?.value}"
+							listValue="${dsrTable.getModeList(location, target)}"
+							type="${target.data.type}"
+							format="${target.format}"/>
 					</g:if>
 				</td>
 			</g:each>

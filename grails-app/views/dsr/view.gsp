@@ -1,4 +1,4 @@
-<%@ page import="org.chai.kevin.util.Utils" %>
+<%@ page import="org.chai.kevin.reports.ReportService.ReportType" %>
 
 <html>
 	<head>
@@ -23,10 +23,10 @@
 				<g:topLevelReportTabs linkParams="${params}" exclude="${['dsrCategory', 'indicators', 'reportType']}" />
 				<g:if test="${dsrTable != null}">
 					<ul>
-						<g:if test="${currentView == Utils.ReportType.MAP}">
+						<g:if test="${currentView == ReportType.MAP}">
 							<g:render template="/dsr/map"/>
 						</g:if>
-						<g:elseif test="${currentView == Utils.ReportType.TABLE && dsrTable.hasData()}">
+						<g:elseif test="${currentView == ReportType.TABLE && dsrTable.hasData()}">
 							<g:render template="/dsr/table"/>								
 						</g:elseif>
 						<g:else>

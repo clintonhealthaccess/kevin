@@ -219,13 +219,13 @@ log4j = {
 }
 
 environments {
-	test {
+	/*test {
 		log4j = {
 			rootLogger="error,stdout"
 			
 			off 'ExpressionLog'
 		}
-	}
+	}*/
 	demo {
 		log4j = {
 			rootLogger="error,stdout"

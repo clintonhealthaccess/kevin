@@ -28,7 +28,7 @@ class ReportExportControllerSpec extends ReportIntegrationTests {
 		def dataElementValue2 = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), v("50"))
 		def category = DsrIntegrationTests.newDsrTargetCategory(CODE(1), program, 0)
 		def target = DsrIntegrationTests.newDsrTarget(CODE(3), 1, dataElement, null, category)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		
 		when:
 		def dsrController = new DsrController()
@@ -53,8 +53,8 @@ class ReportExportControllerSpec extends ReportIntegrationTests {
 		def target = FctIntegrationTests.newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
 		def targetOption1 = FctIntegrationTests.newFctTargetOption(CODE(4), 1, target, sum)
-		def reportType = Utils.ReportType.TABLE
-		
+		def reportType = ReportType.TABLE
+
 		when:
 		def fctController = new FctController()
 		fctController.params.period = period.id

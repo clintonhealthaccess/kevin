@@ -133,7 +133,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(CODE(1))
 		def burera = Location.findByCode(BURERA)
-		def mode = newMode("1", CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		def mode = newMode("1", CODE(2), Type.TYPE_NUMBER())
 		def category = newDsrTargetCategory(CODE(3), program, 1)
 		def target = newDsrTarget(CODE(4), mode, category)
 		def types = new HashSet([

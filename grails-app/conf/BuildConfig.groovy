@@ -122,7 +122,10 @@ grails.project.dependency.resolution = {
 		compile ":i18n-fields:0.6.3-CHAI"
 		compile ':mail-on-exception:0.1'
 		compile ":rabbitmq-tasks:0.5.4"
-		// compile ':chai-locations:0.5-CHAI'
+		
+		// application plugins
+		compile ':chai-locations:0.5-CHAI'
+		compile ':chai-kevin-data:0.1-CHAI'
 		
 		// cloud foundry support
 		compile ":cloud-foundry:1.2.3"
@@ -133,6 +136,3 @@ grails.project.dependency.resolution = {
 	}
 
 }
-
-grails.plugin.location.'chai-locations' = '../chai-locations'
-grails.plugin.location.'kevin-data' = '../chai-kevin-data'
