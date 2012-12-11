@@ -1,3 +1,4 @@
+<%@ page import="org.chai.kevin.data.Summ" %>
 <div class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">
@@ -11,19 +12,17 @@
 		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${target}" field="code"/>
 		<g:input name="format" label="${message(code:'dsr.target.format.label')}" bean="${target}" field="format"/>		   		
 	
-		<g:selectFromList name="category.id" label="${message(code:'dsr.target.category.label')}" bean="${target}" field="category" optionKey="id" multiple="false"
-			from="${categories}" value="${target.category?.id}" values="${categories.collect{i18n(field:it.names)}}" />
+		<g:selectFromList name="category.id" label="${message(code:'dsr.target.category.label')}" bean="${target}" field="category" optionKey="id" 
+		multiple="false" from="${categories}" value="${target.category?.id}" values="${categories.collect{i18n(field:it.names)}}" />
 	
-		<g:selectFromList name="data.id" label="${message(code:'dsr.target.calculationelement.label')}" bean="${target}" field="data" optionKey="id" multiple="false"
-			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'Data'])}"
-			from="${data}" value="${target.data?.id}" values="${data.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+		<g:selectFromList class="js-data-id-select" name="data.id" label="${message(code:'dsr.target.calculationelement.label')}" bean="${target}" 
+		field="data" optionKey="id" multiple="false" ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'Data'])}"
+		from="${data}" value="${target.data?.id}" values="${data.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 		
-		<g:if test="${data.class == Summ.class}">
-			<div class="row">
-				<label>${message(code:'dsr.target.average.label')}</label>
-				<g:checkBox class="checkbox" name="average" value="${target.average}" />
-			</div>
-		</g:if>
+		<div class="row">
+			<label>${message(code:'dsr.target.average.label')}</label>
+			<g:checkBox id="js-average-checkbox" class="checkbox" name="average" value="${target.average}" />
+		</div>
 
 		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${target}" field="order"/>				
 		
@@ -36,4 +35,17 @@
 		</div>
     </g:form>
 	<div class="clear"></div>
+	<r:script>
+	$(document).ready(function() {
+		var averageDiv = $('#js-average-checkbox').parent('div.row');
+		averageDiv.hide();
+		var selectDataFromList = $('select[name="data.id"]');
+		$(selectDataFromList).change(function(){
+			var selectedData = $('.chzn-single span').html();
+			if(selectedData.indexOf('[${Summ.class.simpleName}]') > -1)
+				$(averageDiv).show()
+			else $(averageDiv).hide()
+		});
+	});
+	</r:script>
 </div>
