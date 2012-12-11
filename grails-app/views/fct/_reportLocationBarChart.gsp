@@ -80,7 +80,7 @@
 		$(document).ready(function() {
 			var stackedBars = $('.bars-vertical')
 			$(stackedBars).each(function(index, stackedBar){
-				var code = $(stackedBar).data('location')
+				var code = $(stackedBar).attr('data-location')
 				if($(':hidden[data-location="'+code+'"]').size() > 0){
 					var totalBarAverage = parseFloat($(':hidden[data-location="'+code+'"][name="totalAverage"]').val())
 					if(totalBarAverage > 0 && totalBarAverage != 1){
