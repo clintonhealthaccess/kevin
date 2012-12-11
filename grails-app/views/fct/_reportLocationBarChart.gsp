@@ -86,8 +86,7 @@
 		<tr>
 			<g:each in="${fctTable.getLocations(currentLocation, locationSkipLevels, currentLocationTypes)}" var="location">
 				<td>
-					<!-- //TODO filter out locations with no data -->
-					<g:if test="${!location.collectsData()}">
+					<g:if test="${!location.collectsData() && fctTable.hasData(location)}">
 						<% def childLocationLinkParams = new HashMap(params) %>
 						<% childLocationLinkParams['location'] = location.id+"" %>
 						<a href="${createLink(controller:controllerName, action:actionName, params:childLocationLinkParams)}">

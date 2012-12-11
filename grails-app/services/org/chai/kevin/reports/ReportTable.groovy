@@ -25,6 +25,15 @@ public class ReportTable {
 		return parent.getChildrenLocations(skipLevels, types).sort({it.names});
 	}
 	
+	public List<CalculationLocation> getLocationsWithData(Location parent, Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
+		def locationsWithData = []
+		def locations = parent.getLocations(parent, skipLevels, types);
+		locations.each { location ->
+			if(hasData(location)) locationsWithData.add(location)
+		}
+		return locationsWithData;
+	}
+
 	public List<AbstractReportTarget> getIndicators() {
 		return indicators.sort({it.order})
 	}
@@ -32,6 +41,15 @@ public class ReportTable {
 	public boolean hasData(){
 		def result = false
 		valueMap.each { location, map -> 
+			if(hasData(location)) result = true
+		}
+		return result
+	}
+
+	public boolean hasData(CalculationLocation location){
+		def result = false
+		def map = valueMap.get(location);
+		if(map != null){
 			map.each { entity, value ->
 				if (value != null) result = true
 			}
