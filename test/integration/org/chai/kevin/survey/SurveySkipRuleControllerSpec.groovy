@@ -1,5 +1,6 @@
 package org.chai.kevin.survey
 
+import org.chai.location.DataLocation
 import org.chai.kevin.data.Type;
 import org.chai.kevin.survey.validation.SurveySkipRuleController;
 
@@ -49,7 +50,6 @@ class SurveySkipRuleControllerSpec extends SurveyIntegrationTests {
 		
 		then:
 		surveySkipRuleController.modelAndView.model.entities.equals([skipRule])
-		
 	}
 	
 	def "list skip rule when no survey 404"() {
@@ -61,6 +61,29 @@ class SurveySkipRuleControllerSpec extends SurveyIntegrationTests {
 		
 		then:
 		surveySkipRuleController.modelAndView == null
+	}
+	
+	def "delete skip rules deletes them from survey entered question"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		def skipRule = newSurveySkipRule(CODE(1), survey, "1 == 1", [:], [])
+		def enteredQuestion = newSurveyEnteredQuestion(question, period, DataLocation.findByCode(KIVUYE), false, true)
+		enteredQuestion.addToSkippedRules(skipRule)
+		enteredQuestion.save(failOnError: true)
+		surveySkipRuleController = new SurveySkipRuleController()
+		
+		when:
+		surveySkipRuleController.params['id'] = skipRule.id
+		surveySkipRuleController.delete()
+		
+		then:
+		SurveySkipRule.count() == 0
+		SurveyEnteredQuestion.list()[0].skippedRules.empty == true
 	}
 	
 }
