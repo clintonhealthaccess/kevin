@@ -69,57 +69,6 @@ class FctServiceSpec extends FctIntegrationTests {
 		fctTable.getTableReportValue(Location.findByCode(NORTH), targetOption).getAverage().numberValue == 1d
 				
 	}
-	
-	def "get fct total average"() {
-		setup:
-		setupLocationTree()
-		def period = newPeriod()
-		def program = newReportProgram(CODE(1))
-		def location = Location.findByCode(RWANDA)
-		def nde1 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]])		
-		def sum1 = newSum("\$"+nde1.id, CODE(3))		
-		def target = newFctTarget(CODE(4), 1, program)
-		def targetOption = newFctTargetOption(CODE(5), 1, target, sum1)
-		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
-		def reportType = Utils.ReportType.TABLE
-		refresh()
-		
-		when: "total report average = 1"
-		def fctTable = fctService.getFctTable(location, target, period, dataLocationTypes, reportType)
-		
-		then:
-		fctTable.getTotalAverage(location) == 1
-		
-		when: "add another data location such that total report average < 1"
-		def dummy = newDataLocation(["en":"dummy"], "dummy", Location.findByCode(BURERA), DataLocationType.findByCode(HEALTH_CENTER_GROUP))
-		def ndeHC = newNormalizedDataElement(CODE(6), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"0", (HEALTH_CENTER_GROUP):"1"]])
-		def sumHC = newSum("\$"+ndeHC.id, CODE(7))
-		def targetHC = newFctTarget(CODE(8), 1, program)
-		def targetOptionHC = newFctTargetOption(CODE(9), 1, targetHC, sumHC)
-		refresh()
-		fctTable = fctService.getFctTable(location, targetHC, period, dataLocationTypes, reportType)
-		
-		then:
-		fctTable.getTotalAverage(location) == 0.67
-		
-		when: "add data locations such that total report average < .06, min % to display the report value inside the stacked bar"
-		ndeHC = newNormalizedDataElement(CODE(10), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"0", (HEALTH_CENTER_GROUP):"1"]])
-		sumHC = newSum("\$"+ndeHC.id, CODE(11))
-		targetHC = newFctTarget(CODE(12), 1, program)
-		targetOptionHC = newFctTargetOption(CODE(13), 1, targetHC, sumHC)
-		int i = 0
-		while(i != 30){
-			newDataLocation(["en":"dummy"+i], "dummy"+i, Location.findByCode(BURERA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP))
-			i++
-		}
-		refresh()
-		fctTable = fctService.getFctTable(location, targetHC, period, dataLocationTypes, reportType)
-		
-		then:
-		fctTable.getTableReportValue(location, targetOptionHC).getNumberOfDataLocations() == 33
-		fctTable.getTableReportValue(location, targetOptionHC).getAverage().numberValue.round(2) == 0.06
-		Utils.formatNumber("#.##", fctTable.getTableReportValue(location, targetOptionHC).getAverage().numberValue) == "0.06"
-	}
 
 	def "get fct table report value"() {
 		setup:

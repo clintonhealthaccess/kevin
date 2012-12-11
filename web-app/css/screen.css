@@ -1124,50 +1124,56 @@ textarea.login-field { width: 400px; height: 50px; text-align: left; }
 /* line 126, ../../src/stylesheets/partials/_graphs.sass */
 .vertical-graph td .bars-vertical { display: inline-block; height: 100%; }
 /* line 130, ../../src/stylesheets/partials/_graphs.sass */
-.vertical-graph td .bar-vertical { display: block; width: 38px; }
-/* line 135, ../../src/stylesheets/partials/_graphs.sass */
-.vertical-graph td .indicator-best { background: #4daf4a; }
-/* line 137, ../../src/stylesheets/partials/_graphs.sass */
-.vertical-graph td .indicator-middle { background: #ffff33; }
-/* line 139, ../../src/stylesheets/partials/_graphs.sass */
-.vertical-graph td .indicator-worst { background: #e41a1c; }
-/* line 143, ../../src/stylesheets/partials/_graphs.sass */
-.vertical-graph td span { font-size: 10px; font-weight: bold; vertical-align: middle; }
-
+.vertical-graph td .bar-vertical { display: block; width: 38px; -webkit-box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 3px; -moz-box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 3px; box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 3px; }
+/* line 141, ../../src/stylesheets/partials/_graphs.sass */
+.vertical-graph td .indicator-best { background: #27ba00; background: -webkit-gradient(linear, 100% 50%, 0% 50%, color-stop(0%, #27ba00), color-stop(100%, #16a900)); background: -webkit-linear-gradient(right, #27ba00, #16a900); background: -moz-linear-gradient(right, #27ba00, #16a900); background: -o-linear-gradient(right, #27ba00, #16a900); background: linear-gradient(right, #27ba00, #16a900); }
+/* line 144, ../../src/stylesheets/partials/_graphs.sass */
+.vertical-graph td .indicator-best:hover, .vertical-graph td .indicator-best:focus { background: #1eb100; background: -webkit-gradient(linear, 100% 50%, 0% 50%, color-stop(0%, #1eb100), color-stop(100%, #0ea100)); background: -webkit-linear-gradient(right, #1eb100, #0ea100); background: -moz-linear-gradient(right, #1eb100, #0ea100); background: -o-linear-gradient(right, #1eb100, #0ea100); background: linear-gradient(right, #1eb100, #0ea100); }
+/* line 147, ../../src/stylesheets/partials/_graphs.sass */
+.vertical-graph td .indicator-middle { background: #ffd800; background: -webkit-gradient(linear, 100% 50%, 0% 50%, color-stop(0%, #ffd800), color-stop(100%, #eec700)); background: -webkit-linear-gradient(right, #ffd800, #eec700); background: -moz-linear-gradient(right, #ffd800, #eec700); background: -o-linear-gradient(right, #ffd800, #eec700); background: linear-gradient(right, #ffd800, #eec700); }
 /* line 150, ../../src/stylesheets/partials/_graphs.sass */
-.chart_legend li { margin: 15px 15px 10px 0px !important; }
-/* line 152, ../../src/stylesheets/partials/_graphs.sass */
-.chart_legend li span { display: block; float: left; height: 10px; margin-right: 5px; width: 10px; }
-/* line 160, ../../src/stylesheets/partials/_graphs.sass */
-.chart_legend li .indicator-best { background: #4daf4a; }
+.vertical-graph td .indicator-middle:hover, .vertical-graph td .indicator-middle:focus { background: #f6cf00; background: -webkit-gradient(linear, 100% 50%, 0% 50%, color-stop(0%, #f6cf00), color-stop(100%, #e6bf00)); background: -webkit-linear-gradient(right, #f6cf00, #e6bf00); background: -moz-linear-gradient(right, #f6cf00, #e6bf00); background: -o-linear-gradient(right, #f6cf00, #e6bf00); background: linear-gradient(right, #f6cf00, #e6bf00); }
+/* line 153, ../../src/stylesheets/partials/_graphs.sass */
+.vertical-graph td .indicator-worst { background: #e93100; background: -webkit-gradient(linear, 100% 50%, 0% 50%, color-stop(0%, #e93100), color-stop(100%, #d82000)); background: -webkit-linear-gradient(right, #e93100, #d82000); background: -moz-linear-gradient(right, #e93100, #d82000); background: -o-linear-gradient(right, #e93100, #d82000); background: linear-gradient(right, #e93100, #d82000); }
+/* line 156, ../../src/stylesheets/partials/_graphs.sass */
+.vertical-graph td .indicator-worst:hover, .vertical-graph td .indicator-worst:focus { background: #e02800; background: -webkit-gradient(linear, 100% 50%, 0% 50%, color-stop(0%, #e02800), color-stop(100%, #d01800)); background: -webkit-linear-gradient(right, #e02800, #d01800); background: -moz-linear-gradient(right, #e02800, #d01800); background: -o-linear-gradient(right, #e02800, #d01800); background: linear-gradient(right, #e02800, #d01800); }
 /* line 162, ../../src/stylesheets/partials/_graphs.sass */
-.chart_legend li .indicator-middle { background: #ffff33; }
-/* line 164, ../../src/stylesheets/partials/_graphs.sass */
-.chart_legend li .indicator-worst { background: #e41a1c; }
+.vertical-graph td span { color: white; display: block; font-size: 12px; font-weight: bold; padding: 2px 0 1px; vertical-align: middle; text-shadow: rgba(0, 0, 0, 0.15) 0 1px 0; -webkit-transition: background 0.4s; -moz-transition: background 0.4s; -o-transition: background 0.4s; transition: background 0.4s; }
 
-/* line 168, ../../src/stylesheets/partials/_graphs.sass */
+/* line 175, ../../src/stylesheets/partials/_graphs.sass */
+.chart_legend li { margin: 15px 15px 10px 0px !important; }
+/* line 177, ../../src/stylesheets/partials/_graphs.sass */
+.chart_legend li span { display: block; float: left; height: 10px; margin-right: 5px; width: 10px; }
+/* line 185, ../../src/stylesheets/partials/_graphs.sass */
+.chart_legend li .indicator-best { background: #27ba00; }
+/* line 187, ../../src/stylesheets/partials/_graphs.sass */
+.chart_legend li .indicator-middle { background: #ffd800; }
+/* line 189, ../../src/stylesheets/partials/_graphs.sass */
+.chart_legend li .indicator-worst { background: #e93100; }
+
+/* line 193, ../../src/stylesheets/partials/_graphs.sass */
 .chart { display: inline-block; float: left; font-size: 10px; padding-right: 8px; text-align: right; width: 20px; }
-/* line 176, ../../src/stylesheets/partials/_graphs.sass */
+/* line 201, ../../src/stylesheets/partials/_graphs.sass */
 .chart li { font-weight: bold; }
-/* line 179, ../../src/stylesheets/partials/_graphs.sass */
+/* line 204, ../../src/stylesheets/partials/_graphs.sass */
 .chart li:nth-child(2) { margin-top: 85px; }
-/* line 181, ../../src/stylesheets/partials/_graphs.sass */
+/* line 206, ../../src/stylesheets/partials/_graphs.sass */
 .chart li:last-child { margin-top: 85px; }
 
-/* line 184, ../../src/stylesheets/partials/_graphs.sass */
+/* line 209, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-wrap { overflow: hidden; position: relative; width: 100%; }
 
-/* line 189, ../../src/stylesheets/partials/_graphs.sass */
+/* line 214, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-avg { bottom: 1px; position: absolute; right: 15px; top: 33px; width: 610px; }
 
-/* line 196, ../../src/stylesheets/partials/_graphs.sass */
+/* line 221, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-tip { background: #258cd5; color: white; font-size: 10px; font-weight: bold; height: 10px; left: 63%; margin: 0 0 0 -8px; opacity: 0.6; padding: 3px; position: absolute; text-align: center; top: -18px; width: 10px; -webkit-border-radius: 10px; -moz-border-radius: 10px; -ms-border-radius: 10px; -o-border-radius: 10px; border-radius: 10px; -webkit-box-shadow: white 0 1px 0; -moz-box-shadow: white 0 1px 0; box-shadow: white 0 1px 0; }
-/* line 212, ../../src/stylesheets/partials/_graphs.sass */
+/* line 237, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-tip:hover, .horizontal-graph-tip:focus { opacity: 1; }
-/* line 214, ../../src/stylesheets/partials/_graphs.sass */
+/* line 239, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-tip.expand-tick { background: #65c029; }
 
-/* line 217, ../../src/stylesheets/partials/_graphs.sass */
+/* line 242, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-marker { background: #fcfcfc; border-right: 1px solid #87e24b; bottom: 0; height: 100%; position: relative; top: 0; width: 63%; -webkit-box-shadow: #eeeeee -2px 0 10px inset; -moz-box-shadow: #eeeeee -2px 0 10px inset; box-shadow: #eeeeee -2px 0 10px inset; }
 
 /* line 1, ../../src/stylesheets/partials/_planning.sass */
@@ -1394,18 +1400,18 @@ textarea.login-field { width: 400px; height: 50px; text-align: left; }
 /* line 150, ../../src/stylesheets/partials/_nav-table.sass */
 .map_legend li span { display: block; float: left; height: 10px; margin-right: 5px; width: 10px; }
 /* line 158, ../../src/stylesheets/partials/_nav-table.sass */
-.map_legend li .indicator-best { background: #4daf4a; }
+.map_legend li .indicator-best { background: #27ba00; }
 /* line 160, ../../src/stylesheets/partials/_nav-table.sass */
-.map_legend li .indicator-middle { background: #ffff33; }
+.map_legend li .indicator-middle { background: #ffd800; }
 /* line 162, ../../src/stylesheets/partials/_nav-table.sass */
-.map_legend li .indicator-worst { background: #e41a1c; }
+.map_legend li .indicator-worst { background: #e93100; }
 
 /* line 167, ../../src/stylesheets/partials/_nav-table.sass */
 .map { font-weight: bold; height: 500px; margin: 10px auto 0px; width: 948px; }
 /* line 174, ../../src/stylesheets/partials/_nav-table.sass */
 .map .report-value-marker-true { color: #258cd5; font-size: 25px; opacity: 1; }
 /* line 178, ../../src/stylesheets/partials/_nav-table.sass */
-.map .report-value-marker-false { color: #e41a1c; font-size: 20px; font-weight: normal; opacity: 0.5; }
+.map .report-value-marker-false { color: #e93100; font-size: 20px; font-weight: normal; opacity: 0.5; }
 /* line 183, ../../src/stylesheets/partials/_nav-table.sass */
 .map .report-value-marker-number { opacity: 0.75; }
 /* line 185, ../../src/stylesheets/partials/_nav-table.sass */
@@ -1413,11 +1419,11 @@ textarea.login-field { width: 400px; height: 50px; text-align: left; }
 /* line 188, ../../src/stylesheets/partials/_nav-table.sass */
 .map .report-value-marker-na { font-size: 12px; color: darkgrey; }
 /* line 193, ../../src/stylesheets/partials/_nav-table.sass */
-.map .indicator-best { color: #4daf4a; }
+.map .indicator-best { color: #27ba00; }
 /* line 195, ../../src/stylesheets/partials/_nav-table.sass */
-.map .indicator-middle { color: #ffff33; }
+.map .indicator-middle { color: #ffd800; }
 /* line 197, ../../src/stylesheets/partials/_nav-table.sass */
-.map .indicator-worst { color: #e41a1c; }
+.map .indicator-worst { color: #e93100; }
 /* line 200, ../../src/stylesheets/partials/_nav-table.sass */
 .map .leaflet-popup { bottom: 0px !important; }
 /* line 202, ../../src/stylesheets/partials/_nav-table.sass */
