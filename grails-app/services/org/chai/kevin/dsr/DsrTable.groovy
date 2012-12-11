@@ -46,7 +46,7 @@ public class DsrTable extends ReportTable {
 	}
 	
 	public List<Value> getModeList(CalculationLocation location, AbstractReportTarget indicator) {
-		if(calculation.getClass().equals(Mode.class)) {
+		if(indicator.data.getClass().equals(Mode.class)) {
 			return getTableReportValue(topLevelLocation, targetOption).getValueList()
 		}
 		else return null;

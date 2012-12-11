@@ -115,7 +115,7 @@ class ValueTagLib {
 				def result = ''
 				valueList = valueList.sort()
 				for (Value listValue : valueList){
-					result += getReportValue(listValue, type, tooltip)
+					result += getReportValue(listValue, type, format, rounded, tooltip)
 					switch(type.listType){
 						case ValueType.BOOL:
 							result += result.join('&nbsp;&nbsp;&nbsp;')
@@ -129,12 +129,12 @@ class ValueTagLib {
 				out << result
 			}
 			else {
-				out << getReportValue(value, type, tooltip)
+				out << getReportValue(value, type, format, rounded, tooltip)
 			}
 		}
 	}
 	
-	def String getReportValue(def value, def type, def tooltip) {
+	def String getReportValue(def value, def type, def format, def rounded, def tooltip) {
 		if (log.isDebugEnabled()) log.debug("getReportValue(value="+value+", type="+type+")");
 		def result = ''
 		
@@ -188,7 +188,7 @@ class ValueTagLib {
 		
 		def result = null
 		if (value != null && !value.isNull()) {
-			result = languageService.getStringValue(value, type, enums, format, zero)
+			result = Utils.getStringValue(value, type, enums, format, zero)
 		}
 		if (result == null && nullText != null) out << nullText
 		else out << result

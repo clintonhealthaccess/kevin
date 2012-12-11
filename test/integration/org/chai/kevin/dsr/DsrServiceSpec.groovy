@@ -140,7 +140,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		refreshCalculation()
 
 		when:
