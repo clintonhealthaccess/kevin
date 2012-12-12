@@ -61,7 +61,7 @@ public class PlanningService {
 	
 	@Transactional(readOnly=true)
 	public PlanningSummaryPage getSummaryPage(Planning planning, Location location) {
-		List<DataLocation> dataLocations = location.collectDataLocations(null, getDataLocationTypes(planning));
+		List<DataLocation> dataLocations = location.collectDataLocations(getDataLocationTypes(planning));
 		Map<PlanningType, PlanningTypeSummary> summaries = new HashMap<PlanningType, PlanningTypeSummary>();
 		for (PlanningType planningType : planning.getAllPlanningTypes()) {
 			summaries.put(planningType, getPlanningTypeSummary(planningType, dataLocations));

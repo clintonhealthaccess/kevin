@@ -45,6 +45,16 @@ class DataLocationController extends AbstractEntityController {
 		return 'datalocation.label';
 	}
 	
+	def saveEntity(def entity) {
+		entity.changes.each { change ->
+			if (change.id != null) {
+				change.reviewed = true
+			}
+		}
+		entity.needsReview = false
+		super.saveEntity(entity)
+	}
+	
 	def deleteEntity(def entity) {
 		// we delete the entity only if there are no associated values
 		// should we throw an exception in case we can't delete ?
@@ -62,9 +72,23 @@ class DataLocationController extends AbstractEntityController {
 			surveyValueService.deleteEnteredPrograms(entity)
 			
 			// we delete the entity
-			entity.type.removeFromDataLocations(entity)
-			entity.location.removeFromDataLocations(entity)
+			if (entity.type != null) entity.type.removeFromDataLocations(entity)
+			if (entity.location != null) entity.location.removeFromDataLocations(entity)
 			entity.delete()
+		}
+	}
+
+	def getDescription = {
+		def dataLocation = DataLocation.get(params.int('id'))
+
+		if (dataLocation == null) {
+			render(contentType:"text/json") { result = 'error' }
+		}
+		else {
+			render(contentType:"text/json") {
+				result = 'success'
+				html = g.render (template: '/entity/location/dataLocationDescription', model: [dataLocation: dataLocation])
+			}
 		}
 	}
 

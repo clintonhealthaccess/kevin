@@ -133,7 +133,7 @@ public class SurveyExportService {
 	@Transactional(readOnly=true)
 	public File getSurveyExportFile(String filename, CalculationLocation location, SurveySection section, SurveyProgram program, Survey survey) throws IOException { 
 				
-		List<DataLocation> dataLocations = location.collectDataLocations(null, null);
+		List<DataLocation> dataLocations = location.collectDataLocations(null);
 		File csvFile = File.createTempFile(filename, CSV_FILE_EXTENSION);
 		
 		FileWriter csvFileWriter = new FileWriter(csvFile);

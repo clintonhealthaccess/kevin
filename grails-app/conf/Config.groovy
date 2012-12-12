@@ -208,13 +208,13 @@ log4j = {
 		   				   
 	debug  'grails.app',
 		   'org.chai.kevin',
-		   'org.chai.kevin.value.ValueService'
+		   'org.chai.exception'
 		   
 	trace  'org.chai.kevin.service.imports.GeneralDataImporter',
 		   'org.chai.kevin.service.imports.NominativeDataImporter',
 		   'org.chai.kevin.service.imports.DataImporter',
 		   'org.chai.kevin.service.imports.DataImporterSpec'
-//		   'org.hibernate.type'
+		   //'org.hibernate.type'
 		   
 }
 
@@ -255,36 +255,52 @@ i18nFields {
 }
 site.fallback.language="en"
 
-site.entity.list.max=40
+// mail on exception plugin
+mailOnException.email.to = "admin@dhsst.org"
+mailOnException.email.from = "no-reply@dhsst.org"
+mailOnException.error.view = "/error"
 
-site.admin.email="admin@dhsst.org"
-site.contact.email="contact@dhsst.org"
-site.from.email="no-reply@dhsst.org"
+site.entity.list.max = 40
+site.admin.email = "admin@dhsst.org"
+site.contact.email = "contact@dhsst.org"
+site.from.email = "no-reply@dhsst.org"
 
-site.tagline.en="Ministry of Health"
-site.tagline.fr="Ministère de la santé"
+site.tagline.en = "Ministry of Health"
+site.tagline.fr = "Ministère de la santé"
 site.bugtracker.url = "#"
 environments {
 	development {
-		site.icon="http://localhost:8080/kevin/images/apple-touch-icon.png"
+		site.icon = "http://localhost:8080/kevin/images/apple-touch-icon.png"
 	}
 	demo {
-		site.icon="http://kevin.cloudfoundry.com/images/apple-touch-icon.png"
+		site.icon = "http://kevin.cloudfoundry.com/images/apple-touch-icon.png"
 	}
 }
 
-report.skip.levels=["sector"]
-dashboard.skip.levels=[]
-fct.skip.levels=[]
-dsr.skip.levels=[]
-dsr.view.map.skip.levels=["country", "province"]
-survey.skip.levels=["sector"]
-survey.export.skip.levels=["country", "sector"]
+report.skip.levels = ["sector"]
+dashboard.skip.levels = []
+fct.skip.levels = []
+dsr.skip.levels = []
+dsr.view.map.skip.levels = ["country", "province"]
+survey.skip.levels = ["sector"]
+survey.export.skip.levels = ["country", "sector"]
 
-task.temp.folder='files/'
+task.temp.folder = 'files/'
 
-file.upload.available.charset=["UTF-8", "ISO-8859-1"]
-file.upload.delimiter=","
+file.upload.available.charset = ["UTF-8", "ISO-8859-1"]
+file.upload.delimiter = ","
+
+sync.activity.feed.url = "http://resmap-stg.instedd.org/api/activity.rss?collection_ids[]=694&page=all"
+sync.full.list.url = "http://resmap-stg.instedd.org/api/collections/694.json"
+sync.site.url = "http://resmap-stg.instedd.org/api/sites/${itemid}.json"
+
+sync.site.username = "username"
+sync.site.password = "password"
+sync.type.ignore = ["PS", "CLIN", "DISP", "FOSACOM"]
+sync.type.mapping = [
+	"CS": "health_center",
+	"DH": "district_hospital"
+]
 
 /**
  * Configuration file override

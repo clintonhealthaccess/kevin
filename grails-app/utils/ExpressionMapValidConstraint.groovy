@@ -16,6 +16,7 @@ class ExpressionMapValidConstraint {
 				try {
 					valid = expressionService.expressionIsValid(expression, DataElement.class)
 				} catch (IllegalArgumentException e) {
+					log.debug("caught exception parsing expression ${expression}", e)
 					valid = false
 				}
 				if (expression.trim() != '' && !valid) {

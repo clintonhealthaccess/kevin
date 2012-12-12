@@ -7,6 +7,7 @@ import org.chai.kevin.value.Value;
 import org.chai.location.DataLocation;
 import org.chai.location.DataLocationType;
 import org.chai.location.Location;
+import org.chai.location.SyncChange
 
 class DataLocationControllerSpec extends IntegrationTests {
 
@@ -116,6 +117,39 @@ class DataLocationControllerSpec extends IntegrationTests {
 		
 		then:
 		dataLocationController.modelAndView.model.entities == [DataLocation.findByCode(KIVUYE)]
+	}
+	
+	def "saving data location sets changes to reviewed"() {
+		setup:
+		setupLocationTree()
+		def syncChange = new SyncChange(needsReview: true, reviewed: false)
+		def dataLocation = DataLocation.findByCode(BUTARO)
+		dataLocation.addToChanges(syncChange)
+		dataLocation.save(failOnError: true, flush: true)
+		dataLocationController = new DataLocationController()
+		
+		when:
+		dataLocationController.params.id = DataLocation.findByCode(BUTARO).id
+		dataLocationController.saveWithoutTokenCheck()
+		
+		then:
+		SyncChange.list()[0].reviewed == true
+	}
+	
+	def "saving data location sets needs review to false"() {
+		setup:
+		setupLocationTree()
+		def dataLocation = DataLocation.findByCode(BUTARO)
+		dataLocation.needsReview = true
+		dataLocation.save(failOnError: true, flush: true)
+		dataLocationController = new DataLocationController()
+		
+		when:
+		dataLocationController.params.id = DataLocation.findByCode(BUTARO).id
+		dataLocationController.saveWithoutTokenCheck()
+		
+		then:
+		DataLocation.findByCode(BUTARO).needsReview == false
 	}
 	
 }

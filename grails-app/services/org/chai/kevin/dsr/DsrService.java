@@ -44,11 +44,13 @@ public class DsrService {
 		List<CalculationLocation> calculationLocations = new ArrayList<CalculationLocation>();		
 		switch(reportType){
 			case MAP:
-				calculationLocations.addAll(location.getChildrenEntitiesWithDataLocations(skips, types, true));
+				calculationLocations.addAll(location.getChildrenEntitiesWithDataLocations(skips, types));
+				calculationLocations.addAll(location.getDataLocations(skips, types));
 				break;
 			case TABLE:
 			default:
-				calculationLocations.addAll(location.collectTreeWithDataLocations(skips, types, true));
+				calculationLocations.addAll(location.collectTreeWithDataLocations(skips, types));
+				calculationLocations.addAll(location.collectDataLocations(types));
 		}
 		
 		List<DsrTarget> targets = category.getAllTargets();

@@ -12,7 +12,7 @@
 				<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 					<td>${reportTarget.class.simpleName}</td>
 					<td>${reportTarget.code}</td>
-					<td>${reportTarget.program.code}</td>
+					<td>${reportTarget.reportProgram.code}</td>
 				</tr>
 			</g:each>
 		</tbody>

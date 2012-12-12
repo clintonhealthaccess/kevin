@@ -87,7 +87,7 @@ public abstract class AbstractController {
 		return location
 	}
 	
-	public Set<DataLocationType> getLocationTypes() {
+	def getLocationTypes() {
 		Set<DataLocationType> dataLocationTypes = new HashSet<DataLocationType>()
 		if (params.list('dataLocationTypes') != null && !params.list('dataLocationTypes').empty) {
 			def types = params.list('dataLocationTypes')
@@ -101,7 +101,7 @@ public abstract class AbstractController {
 		return dataLocationTypes
 	}
 	
-	public Set<Period> getPeriods() {
+	def getPeriods() {
 		Set<Period> periods =null
 		if (params.list('currentPeriods') != null && !params.list('currentPeriods').empty) {
 			def selectedPeriods = params.list('currentPeriods')
@@ -114,7 +114,7 @@ public abstract class AbstractController {
 		
 	}
 	
-	public ReportType getReportType(){
+	def getReportType(){
 		def reportType = null
 		if(params['reportType'] != null && !params['reportType'].empty){
 			reportType = params['reportType']

@@ -260,7 +260,7 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public void refresh(CalculationLocation location, final Survey survey, final boolean closeIfComplete, final boolean reset, Progress progress) {
-		List<DataLocation> dataLocations = location.collectDataLocations(null, null);
+		List<DataLocation> dataLocations = location.collectDataLocations(null);
 		
 		if (progress != null) progress.setMaximum(Integer.valueOf(dataLocations.size()).longValue());
 		
@@ -619,7 +619,7 @@ public class SurveyPageService {
 //		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
 		boolean result = false;		
-		List<DataLocation> dataLocations = location.collectDataLocations(null, types);
+		List<DataLocation> dataLocations = location.collectDataLocations(types);
 		result = submitAll(dataLocations, survey, program);
 		return result;
 	}

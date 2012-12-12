@@ -63,7 +63,10 @@ public class DashboardService {
 		locations.add(location);
 		// we need the immediate children (data location + location)
 		Set<LocationLevel> skipLevels = getSkipLocationLevels();
-		if (!compare) locations.addAll(location.getChildrenEntitiesWithDataLocations(skipLevels, types, true));
+		if (!compare) {
+			locations.addAll(location.getChildrenEntitiesWithDataLocations(skipLevels, types));
+			locations.addAll(location.getDataLocations(skipLevels, types));
+		}
 		
 		// DASHBOARD ENTITIES
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();

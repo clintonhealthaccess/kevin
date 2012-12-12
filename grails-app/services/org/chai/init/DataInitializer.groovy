@@ -302,7 +302,7 @@ class DataInitializer {
 			// geographical access - harvesting infrastructure
 			new NormalizedDataElement(code: 'rainwater_harvesting', type: Type.TYPE_STRING(), expressionMap: Period.list().collectEntries ([:], { period ->
 				[(period.id.toString()), DataLocationType.list().collectEntries ([:], { type ->
-					[(type.code), '"TODO"']
+					[(type.code), ' "TODO"']
 				})]
 			})).save(failOnError: true)
 			

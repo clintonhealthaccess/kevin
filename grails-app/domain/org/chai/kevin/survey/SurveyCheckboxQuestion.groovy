@@ -38,6 +38,8 @@ import org.chai.kevin.Exportable;
 import org.chai.kevin.util.Utils;
 import org.chai.location.DataLocationType;
 
+import org.apache.commons.collections.CollectionUtils
+
 public class SurveyCheckboxQuestion extends SurveyQuestion implements Exportable {
 
 	static hasMany = [options: SurveyCheckboxOption]

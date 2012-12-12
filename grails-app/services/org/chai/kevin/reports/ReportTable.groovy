@@ -22,7 +22,10 @@ public class ReportTable {
 	}
 	
 	public List<CalculationLocation> getLocations(Location parent, Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
-		return parent.getChildrenLocations(skipLevels, types).sort({it.names});
+		def result = new ArrayList<CalculationLocation>();
+		result.addAll(parent.getChildren(skipLevels));
+		result.addAll(parent.getDataLocations(skipLevels, types));
+		return result.sort({it.names});
 	}
 	
 	public List<CalculationLocation> getLocationsWithData(Location parent, Set<LocationLevel> skipLevels, Set<DataLocationType> types) {

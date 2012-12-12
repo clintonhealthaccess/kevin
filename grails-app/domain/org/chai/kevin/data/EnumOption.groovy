@@ -59,7 +59,9 @@ public class EnumOption implements Exportable, Importable {
 	
 	static mapping = {
 		table 'dhsst_enum_option'
-		enume column: 'enume'
+		
+		code index: 'Option_Index'
+		enume column: 'enume', index: 'Option_Index'
 		cache true
 	}
 	
@@ -114,6 +116,11 @@ public class EnumOption implements Exportable, Importable {
 		} else if (!enume.equals(other.enume))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return "EnumOption[getId()=" + getId() + ", getCode()=" + getCode() + ", getEnume()=" + getEnume() + "]";
 	}
 	
 }

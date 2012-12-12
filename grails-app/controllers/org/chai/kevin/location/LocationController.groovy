@@ -108,7 +108,7 @@ class LocationController extends AbstractEntityController {
 				locations.each { location ->
 					elem (
 						key: location.id,
-						value: i18n(field:location.names) + ' ['+location.class.simpleName+']' 
+						value: location.label
 					)
 				}
 			}
