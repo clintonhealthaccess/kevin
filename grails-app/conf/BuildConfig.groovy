@@ -124,7 +124,7 @@ grails.project.dependency.resolution = {
 		compile ":rabbitmq-tasks:0.5.3-SNAPSHOT"
 		compile ":i18n-fields:0.6.3-CHAI"
 		compile ':mail-on-exception:0.1'
-		// compile ':chai-locations:0.4.3-CHAI'
+		compile ':chai-locations:0.5-CHAI'
 		
 		// cloud foundry support
 		compile ":cloud-foundry:1.2.3"
@@ -135,5 +135,3 @@ grails.project.dependency.resolution = {
 	}
 
 }
-
-grails.plugin.location.'chai-locations' = '../chai-locations'

@@ -45,6 +45,15 @@ class DataLocationController extends AbstractEntityController {
 		return 'datalocation.label';
 	}
 	
+	def saveEntity(def entity) {
+		entity.changes.each { change ->
+			if (change.id != null) {
+				change.reviewed = true
+			}
+		}
+		super.saveEntity(entity)
+	}
+	
 	def deleteEntity(def entity) {
 		// we delete the entity only if there are no associated values
 		// should we throw an exception in case we can't delete ?

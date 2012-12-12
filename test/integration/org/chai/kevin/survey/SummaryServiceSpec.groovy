@@ -107,7 +107,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		when:
 		def burera = Location.findByCode(BURERA)
 		def summaryPage = summaryService.getProgramSummaryPage(burera, types, program)
-		def dataLocations = burera.collectDataLocations(null, types);
+		def dataLocations = burera.collectDataLocations(types);
 		
 		then:
 		dataLocations.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])			
@@ -132,7 +132,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		when:
 		def burera = Location.findByCode(BURERA)
 		def summaryPage = summaryService.getSectionSummaryPage(burera, types, section)
-		def dataLocations = burera.collectDataLocations(null, types);
+		def dataLocations = burera.collectDataLocations(types);
 		
 		then:
 		dataLocations.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])			
