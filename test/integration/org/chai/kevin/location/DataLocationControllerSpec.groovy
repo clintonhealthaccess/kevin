@@ -136,4 +136,20 @@ class DataLocationControllerSpec extends IntegrationTests {
 		SyncChange.list()[0].reviewed == true
 	}
 	
+	def "saving data location sets needs review to false"() {
+		setup:
+		setupLocationTree()
+		def dataLocation = DataLocation.findByCode(BUTARO)
+		dataLocation.needsReview = true
+		dataLocation.save(failOnError: true, flush: true)
+		dataLocationController = new DataLocationController()
+		
+		when:
+		dataLocationController.params.id = DataLocation.findByCode(BUTARO).id
+		dataLocationController.saveWithoutTokenCheck()
+		
+		then:
+		DataLocation.findByCode(BUTARO).needsReview == false
+	}
+	
 }

@@ -51,6 +51,7 @@ class DataLocationController extends AbstractEntityController {
 				change.reviewed = true
 			}
 		}
+		entity.needsReview = false
 		super.saveEntity(entity)
 	}
 	
