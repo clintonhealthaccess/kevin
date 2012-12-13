@@ -36,4 +36,9 @@ class FormElementHeadersMap implements Serializable {
 		}
 	}
 	
+	@Override
+	public String toString() {
+		return "FormElementHeadersMap[getHeader()=" + getHeader() + ", getNames()=" + getNames() + "]";
+	}
+	
 }

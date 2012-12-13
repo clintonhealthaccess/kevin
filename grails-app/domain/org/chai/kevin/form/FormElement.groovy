@@ -40,7 +40,7 @@ class FormElement implements Exportable {
 	static mapping = {
 		table 'dhsst_form_element'
 		tablePerHierarchy false
-		formElementHeadersMaps cascade: "all-delete-orphan"
+		// formElementHeadersMaps cascade: "all-delete-orphan"
 		dataElement column: 'dataElement'
 	}
 	
@@ -74,12 +74,37 @@ class FormElement implements Exportable {
 	}
 	
 	void setHeaders(Map<String, Map<String, String>> headers) {
-		formElementHeadersMaps?.clear()
+		if (log.debugEnabled) log.debug('old header map: '+formElementHeadersMaps)
+		
+		def oldFormElementHeadersMap = new ArrayList(formElementHeadersMaps?:[])
+
+		def newHeaders = []
 		headers.each {
-			def headerMap = new FormElementHeadersMap(header: it.key)
-			headerMap.setNamesMap(it.value)
-			addToFormElementHeadersMaps(headerMap)
+			if (oldFormElementHeadersMap.find{old -> old.header == it.key}) {
+				oldFormElementHeadersMap.find{old -> old.header == it.key}.setNamesMap(it.value)
+			}
+			else {
+				def headerMap = new FormElementHeadersMap(header: it.key)
+				headerMap.setNamesMap(it.value)
+				
+				if (log.debugEnabled) log.debug('adding header map: '+headerMap)
+				addToFormElementHeadersMaps(headerMap)
+			}
+			newHeaders.add(it.key)
 		}
+		
+		oldFormElementHeadersMap.each {
+			if (!newHeaders.contains(it.header)) {
+				def toRemove = formElementHeadersMaps.find{current -> it.header == current.header}
+				
+				if (log.debugEnabled) log.debug('removing header map: '+toRemove)
+				removeFromFormElementHeadersMaps(toRemove)
+				// formElementHeadersMaps?.remove(toRemove)
+				// toRemove.delete()
+			}
+		}
+		
+		if (log.debugEnabled) log.debug('new header map: '+formElementHeadersMaps)
 	}
 	
 	public String getDescriptionTemplate() {

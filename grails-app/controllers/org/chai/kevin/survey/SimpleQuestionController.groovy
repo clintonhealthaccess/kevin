@@ -71,6 +71,10 @@ class SimpleQuestionController extends AbstractEntityController {
 		return SurveySimpleQuestion.class;
 	}
 	
+	def saveEntity(def entity) {
+		entity.save()
+	}
+	
 	def bindParams(def entity) {
 		entity.properties = params
 				
@@ -80,7 +84,10 @@ class SimpleQuestionController extends AbstractEntityController {
 			// headers
 			def headers = [:]
 			bindTranslationMap('headerList', headers)
+			
+			if (log.debugEnabled) log.debug("binding  headers: "+headers)
 			entity.surveyElement.headers = headers
+			if (log.debugEnabled) log.debug("survey element headers: "+entity.surveyElement.headers)
 		}
 	}
 	
