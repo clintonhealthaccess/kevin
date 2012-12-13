@@ -17,8 +17,15 @@
 			});
 		</script> 
 		<div class="toggle-entry ${i!=0?'hidden':''}" data-toggle="${locale}">
-			<label for="${name}.${locale}">${label} (${locale})</label>		
-			<textarea id="area-${random}-${locale}" type="${type}" class="idle-field" name="${name+'_'+locale}" style="width: ${width}px; height: ${height}px;" class="rich-text-area">${value?.get(locale)}</textarea>
+			<g:set var="fieldLang" value="${field+'_'+locale}"/>
+			<g:if test="${bean.hasProperty(fieldLang)}">		
+				<label for="${name}_${locale}">${label} (${locale})</label>
+				<textarea id="area-${random}-${locale}" type="${type}" class="idle-field" name="${name+'_'+locale}" style="width: ${width}px; height: ${height}px;" class="rich-text-area">${bean?."$fieldLang"}</textarea>
+			</g:if>
+			<g:else>
+				<label for="${name}.${locale}">${label} (${locale})</label>
+				<textarea id="area-${random}-${locale}" type="${type}" class="idle-field" name="${name+'.'+locale}" style="width: ${width}px; height: ${height}px;" class="rich-text-area">${value?.get(locale)}</textarea>				
+			</g:else>
 		</div>
 	</g:each>
 	<div class="error-list"><g:renderErrors bean="${bean}" field="${field}"/></div>
