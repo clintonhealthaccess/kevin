@@ -376,7 +376,7 @@ class DataImporterSpec extends IntegrationTests {
 				);
 
 		File file = new File("test/integration/org/chai/kevin/imports/nominativeTestFile.csv.zip");
-		importer.importZipFiles(new FileInputStream(file), "utf-8", null);
+		importer.importZipFiles(new FileInputStream(file), "UTF-8", null);
 
 		then:
 		importerErrorManagerDate.errors.size() == 2

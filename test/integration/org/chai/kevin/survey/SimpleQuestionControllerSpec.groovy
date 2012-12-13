@@ -67,7 +67,6 @@ class SimpleQuestionControllerSpec extends SurveyIntegrationTests {
 		SurveySimpleQuestion.list()[0].section == section
 		SurveySimpleQuestion.list()[0].surveyElement.dataElement == dataElement2
 		SurveySimpleQuestion.list()[0].surveyElement.getHeaders('en').isEmpty()
-		FormElementHeadersMap.count() == 0
 	}
 	
 	def "change question data element header"() {
