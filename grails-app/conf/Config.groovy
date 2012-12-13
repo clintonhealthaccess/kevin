@@ -214,18 +214,18 @@ log4j = {
 		   'org.chai.kevin.service.imports.NominativeDataImporter',
 		   'org.chai.kevin.service.imports.DataImporter',
 		   'org.chai.kevin.service.imports.DataImporterSpec'
-		   //'org.hibernate.type'
+		   // 'org.hibernate.type'
 		   
 }
 
 environments {
-	/* test {
+	test {
 		log4j = {
 			rootLogger="error,stdout"
 			
 			off 'ExpressionLog'
 		}
-	} */
+	}
 	demo {
 		log4j = {
 			rootLogger="error,stdout"

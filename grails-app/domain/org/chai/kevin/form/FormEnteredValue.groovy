@@ -23,6 +23,7 @@ class FormEnteredValue {
 		table 'dhsst_form_entered_value'
 		cache true
 		
+		id natural:['dataLocation', 'formElement']
 		formElement index: 'Form_Value_Index', column: 'formElement'
 		dataLocation index: 'Form_Value_Index', column: 'dataLocation'
 		valueString column: 'value', sqlType: 'text'
@@ -107,7 +108,7 @@ class FormEnteredValue {
 
 	@Override
 	public String toString() {
-		return "FormEnteredValue [value=" + value + ", lastValue=" + lastValue + "]";
+		return "FormEnteredValue [formElement=" + formElement+ ", value=" + value + ", lastValue=" + lastValue + "]";
 	}
 
 	@Override
@@ -140,6 +141,5 @@ class FormEnteredValue {
 			return false;
 		return true;
 	}
-
 	
 }
