@@ -77,8 +77,8 @@ class LanguageService implements ApplicationContextAware {
 		def result;
 		switch (type.type) {
 			case ValueType.BOOL:
-				if (value.booleanValue) result = '<span class="report-value-true">&#10003;</span>'
-				else result = '<span class="report-value-false">&#10007;</span>'
+				if (value.booleanValue) result = '&#10003;'
+				else result = '&#10007;'
 				break;
 			case (ValueType.ENUM):
 				def enume = null

@@ -197,7 +197,7 @@ class DsrController extends AbstractController {
 				selectedTargetClass: DsrTargetCategory.class,
 				locationTree: locationTree,
 				locationSkipLevels: locationSkipLevels,
-				mapSkipLevels: mapSkipLevels
+				//mapSkipLevels: mapSkipLevels
 			]
 		}
 	}

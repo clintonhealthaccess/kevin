@@ -7,22 +7,27 @@
 					<g:i18n field="${currentLocation.names}" />					
 				</td>
 				<g:if test="${reportIndicators != null && !reportIndicators.empty}">
-					<g:each in="${reportIndicators}" var="indicator">
-						<td class="${currentIndicators.contains(indicator) ? 'selected' : ''}">
-							<g:if test="${currentIndicators.contains(indicator)}">
-								<g:i18n field="${indicator.names}" />
-							</g:if>
-							<g:else>
-								<%
-									indicatorLinkParams = [:]
-									indicatorLinkParams.putAll linkParams
-									indicatorLinkParams['indicators'] = indicator.id+""
-								%>
-								<a href="${createLink(controller: controllerName, action: actionName, params: indicatorLinkParams)}">
-								<g:i18n field="${indicator.names}" /></a>
-							</g:else>
-							<g:render template="/templates/help_tooltip" 
-								model="[names: i18n(field: indicator.names), descriptions: i18n(field: indicator.descriptions)]" />
+					<g:each in="${reportIndicators}" var="indicator" status="i">
+						<td class="${currentIndicators.contains(indicator) ? 'js-selected-indicator' : ''}">
+							<div class="js-map-table-indicator" 
+								data-indicator-code="${indicator.code}" 
+								data-indicator-names="${i18n(field:indicator.names)}"
+								data-indicator-class="${'indicator-'+i}">
+								<g:if test="${currentIndicators.contains(indicator)}">
+									<g:i18n field="${indicator.names}" />
+								</g:if>
+								<g:else>
+									<%
+										indicatorLinkParams = [:]
+										indicatorLinkParams.putAll linkParams
+										indicatorLinkParams['indicators'] = indicator.id+""
+									%>
+									<a href="${createLink(controller: controllerName, action: actionName, params: indicatorLinkParams)}">
+									<g:i18n field="${indicator.names}" /></a>
+								</g:else>
+								<g:render template="/templates/help_tooltip" 
+									model="[names: i18n(field: indicator.names), descriptions: i18n(field: indicator.descriptions)]" />
+							</div>
 						</td>
 					</g:each>
 				</g:if>
@@ -33,27 +38,34 @@
 			<g:each in="${reportLocations}" var="location">
 				<tr>					
 					<td data-location-code="${location.code}">
-						<g:if test="${location.collectsData()}"><g:i18n field="${location.names}" /></g:if>
-						<g:else>
-							<%
-								locationLinkParams = [:]
-								locationLinkParams.putAll linkParams
-								locationLinkParams['location'] = location.id+""
-							%>
-							<a href="${createLink(controller: controllerName, action: actionName,  params: locationLinkParams)}">
-							<g:i18n field="${location.names}" /></a>
-						</g:else>
+						<div class="js-map-table-location" 
+							data-location-code="${location.code}" 
+							data-location-names="${i18n(field: location.names)}">
+							<g:if test="${location.collectsData()}">
+								<g:i18n field="${location.names}" />
+							</g:if>
+							<g:else>
+								<%
+									locationLinkParams = [:]
+									locationLinkParams.putAll linkParams
+									locationLinkParams['location'] = location.id+""
+								%>
+								<a href="${createLink(controller: controllerName, action: actionName,  params: locationLinkParams)}">
+								<g:i18n field="${location.names}" /></a>
+							</g:else>
+						</div>
 					</td>
 					<g:if test="${reportIndicators != null && !reportIndicators.empty}">
-						<g:each in="${reportIndicators}" var="indicator">
+						<g:each in="${reportIndicators}" var="indicator" status="i">
 							<g:if test="${mapSkipLevels != null && mapSkipLevels.contains(currentLocation.level)}"><td></td></g:if>
 							<g:else>
 								<td class="${currentIndicators.contains(indicator) ? 'selected' : ''}">
 									<div class="js-map-table-value ${currentIndicators.contains(indicator) ? 'js-selected-value' : ''}"
 											data-location-code="${location.code}" 
-											data-location-names="${i18n(field: location.names)}"
+											data-location-names="${i18n(field: location.names)}" 
 											data-indicator-code="${indicator.code}" 
-											data-indicator-names="${i18n(field:indicator.names)}">
+											data-indicator-names="${i18n(field:indicator.names)}"
+											data-indicator-class="${'indicator-'+i}">
 										<g:reportMapValue 
 											value="${reportTable.getTableReportValue(location, indicator)?.value}" 
 											type="${indicator.getType()}" 

@@ -62,11 +62,11 @@ public class StructureInitializer {
 	
 			def butaro = new User(userType: UserType.SURVEY, code:"butaro",
 				username: "butaro", firstname: "butaro", lastname: "butaro", defaultLanguage: 'en',
-				locationId: DataLocation.findByCode("butaro_hd").id, passwordHash: new Sha256Hash("123").toHex(), 
+				locationId: DataLocation.findByCode("322").id, passwordHash: new Sha256Hash("123").toHex(), 
 				active: true, confirmed: true, uuid: 'butaro_uuid', 
 				phoneNumber: '+250 11 111 11 11', organisation:'org')
 			[	"editSurvey:view", 
-				"editSurvey:*:"+DataLocation.findByCode("butaro_hd").id, 
+				"editSurvey:*:"+DataLocation.findByCode("322").id, 
 				"menu:survey", 
 				"menu:reports", 
 				"home:*"].each {butaro.addToPermissions(it)}
@@ -74,11 +74,11 @@ public class StructureInitializer {
 			
 			def kivuye = new User(userType: UserType.PLANNING, code:"kivuye",
 				username: "kivuye", firstname: "kivuye", lastname: "kivuye", defaultLanguage: 'en',
-				locationId: DataLocation.findByCode("kivuye_cs").id, passwordHash: new Sha256Hash("123").toHex(),
+				locationId: DataLocation.findByCode("327").id, passwordHash: new Sha256Hash("123").toHex(),
 				active: true, confirmed: true, uuid: 'kivuye_uuid',
 				phoneNumber: '+250 11 111 11 11', organisation:'org')
 			[	"editPlanning:view",
-				"editPlanning:*:"+DataLocation.findByCode("kivuye_cs").id,
+				"editPlanning:*:"+DataLocation.findByCode("327").id,
 				"menu:planning",
 				"menu:reports",
 				"home:*"].each {kivuye.addToPermissions(it)}
@@ -118,25 +118,25 @@ public class StructureInitializer {
 	
 	static def createLocations() {
 		if (!Location.count()) {
-			def rwanda 		= new Location(code: "rwanda", names_en: 'Rwanda', parent: null, level: LocationLevel.findByCode('country')).save(failOnError: true)
-			def north 		= new Location(code: "north", names_en: 'North', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
-			def south 		= new Location(code: "south", names_en: 'South', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
-			def east 		= new Location(code: "east", names_en: 'East', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
-			def west 		= new Location(code: "west", names_en: 'West', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
-			def kigali 		= new Location(code: "kigali", names_en: 'Kigali City', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
-			def gasabo 		= new Location(code: "gasabo", names_en: 'Gasabo', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
-			def kicukiro 	= new Location(code: "kicukiro", names_en: 'Kicukiro', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
-			def nyarugenge 	= new Location(code: "Nyarugenge", names_en: 'Nyarugenge', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
-			def burera 		= new Location(code: "burera", names_en: 'Burera', parent: north, level: LocationLevel.findByCode('district')).save(failOnError: true)
+			def rwanda 		= new Location(code: "0", names_en: 'Rwanda', parent: null, level: LocationLevel.findByCode('country')).save(failOnError: true)
+			def north 		= new Location(code: "04", names_en: 'North', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def south 		= new Location(code: "02", names_en: 'South', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def east 		= new Location(code: "05", names_en: 'East', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def west 		= new Location(code: "03", names_en: 'West', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def kigali 		= new Location(code: "01", names_en: 'Kigali City', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
+			def gasabo 		= new Location(code: "0102", names_en: 'Gasabo', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
+			def kicukiro 	= new Location(code: "0103", names_en: 'Kicukiro', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
+			def nyarugenge 	= new Location(code: "0101", names_en: 'Nyarugenge', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
+			def burera 		= new Location(code: "0404", names_en: 'Burera', parent: north, level: LocationLevel.findByCode('district')).save(failOnError: true)
 		}
 	}
 	
 	static def createDataLocations() {
 		if (!DataLocation.count()) {
-			[	new DataLocation(code: "butaro_hd", names_en: 'Butaro HD', type: DataLocationType.findByCode('district_hospital')),
-				new DataLocation(code: "kivuye_cs", names_en: 'Kivuye CS', type: DataLocationType.findByCode('health_center')),
-				new DataLocation(code: "rusasa_cs", names_en: 'Rusasa CS', type: DataLocationType.findByCode('health_center'))
-			].each {Location.findByCode('burera').addToDataLocations(it).save(failOnError: true)}
+			[	new DataLocation(code: "322", names_en: 'Butaro HD', type: DataLocationType.findByCode('district_hospital')),
+				new DataLocation(code: "327", names_en: 'Kivuye CS', type: DataLocationType.findByCode('health_center')),
+				new DataLocation(code: "332", names_en: 'Rusasa CS', type: DataLocationType.findByCode('health_center'))
+			].each {Location.findByCode('0404').addToDataLocations(it).save(failOnError: true)}
 		}
 	}
 	

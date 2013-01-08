@@ -95,6 +95,10 @@
           width: 28px
     
   &.number
+    //slister start
+    tr:hover
+      background: #f9f9f9
+      //slister end
     td, th
       padding: 7px 15px
       //slister start
@@ -106,6 +110,10 @@
         text-align: right
       &:last-child
         border-right: 1px solid $filler - #111
+      //slister start
+      &:hover
+        background: #f9f9f9
+        //slister end
     .program tbody
       td:last-child
         border-right: none
@@ -133,75 +141,6 @@
         border-right: none
       td
         padding-top: 3px
-        
-.map-wrap
-  border: 1px solid $filler
-  //slister start
-  //margin-bottom: 1px
-  //slister end
-  margin-top: 5px
-  position: relative
-  width: 968px
-
-.map_legend
-  li
-    font-size: 11px
-    margin: 15px 15px 10px 0px !important
-    span
-      display: block
-      float: left
-      height: 10px
-      margin-right: 5px
-      width: 10px
-      
-    //slister start
-    .indicator-best
-      background: $best
-    .indicator-middle
-      background: $middle
-    .indicator-worst
-      background: $worst
-      //slister end
-
-//slister start
-.map  
-  //font-size: 17px
-  font-weight: bold  
-  height: 500px
-  margin: 10px auto 0px  
-  width: 948px
-
-  .report-value-marker-true
-    color: $primary
-    font-size: 25px
-    opacity: 1
-  .report-value-marker-false
-    color: $worst
-    font-size: 20px    
-    font-weight: normal
-    opacity: 0.5
-  .report-value-marker-number
-    opacity: 0.75
-  .report-value-marker-string, .report-value-marker-text
-    font-size: 15px
-    opacity: 0.75
-  .report-value-marker-na
-    font-size: 12px
-    color: darkgray
-    //opacity: 0.5
-
-  .indicator-best
-    color: $best
-  .indicator-middle
-    color: $middle
-  .indicator-worst
-    color: $worst
-
-  .leaflet-popup
-    bottom: 0px !important
-  .leaflet-control-attribution a
-    font-size: 11px
-    //slister end
 
 .switch
   background: #fff
