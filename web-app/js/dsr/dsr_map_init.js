@@ -60,7 +60,7 @@ function mapPolygonValues(data){
 		        "coordinates": latLng
 			},
 			"properties":{
-				"locationCode": $(mapTableValue).data('location-code'),
+				"locationCode": $(mapTableValue).attr('data-location-code'),
 				"locationName": $(mapTableValue).data('location-names'),
 				"indicatorName": indicatorName,
 				"rawValue": rawValue,
@@ -130,6 +130,8 @@ function polygonValueFeatureToLayer(feature, latlng) {
    	return geojsonMarker;		
 }
 
+//TODO dsr polygon value layer interactions
+
 // dsr point value layer 
 // point value -> (symbol = report value type) x (font size = report value)
 // point value label -> location name
@@ -168,7 +170,7 @@ function mapPointValues(reportLocationCodes){
 					        "coordinates": f.geometry.coordinates
 						},
 						"properties":{
-							"locationCode": $(mapTableValue).data('location-code'),
+							"locationCode": $(mapTableValue).attr('data-location-code'),
 							"locationName": $(mapTableValue).data('location-names'),
 							"indicatorClass": $(mapTableValue).data('indicator-class'),
 							"indicatorName": $(mapTableValue).data('indicator-names'),
@@ -292,3 +294,5 @@ function pointValueFeatureToLayer(feature, latlng) {
 	   	return geojsonMarker;
 	}
 }
+
+//TODO dsr point value layer interactions

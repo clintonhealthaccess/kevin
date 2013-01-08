@@ -100,7 +100,7 @@ function mapPolygonValues(data){
 			        "coordinates": latLng
 				},
 				"properties":{
-					"locationCode": $(mapTableValue).data('location-code'),
+					"locationCode": $(mapTableValue).attr('data-location-code'),
 					"locationName": $(mapTableValue).data('location-names'),
 					"indicatorClass": indicatorClass,
 					"indicatorName": indicatorName,
@@ -197,16 +197,16 @@ function highlightPolygonValueFeature(e) {
     var target = e.target;
     var indicatorClass = target.feature.properties.indicatorClass
     var rawValue = target.feature.properties.rawValue
-    var reportValueLabel = target.feature.properties.reportValueIcon
+    var polygonValueLabel = target.feature.properties.reportValueIcon
     var locationCode = target.feature.properties.locationCode
     if(rawValue != null){
-    	if(reportValueLabel){
+    	if(polygonValueLabel){
     		var indicatorName = target.feature.properties.indicatorName
     		locationValueLayerMap[indicatorName].eachLayer(function (layerData) {
 				var fRawValue = layerData.feature.properties.rawValue;
-				var fReportValueLabel = layerData.feature.properties.reportValueIcon
+				var fPolygonValueLabel = layerData.feature.properties.reportValueIcon
 				var fLocationCode = layerData.feature.properties.locationCode;
-				if(fRawValue == rawValue && fLocationCode == locationCode && !fReportValueLabel){
+				if(fRawValue == rawValue && fLocationCode == locationCode && !fPolygonValueLabel){
 					layerData.setStyle({
 				    	fillColor: mapMarkerDarkerColors[indicatorClass],
 					    color: mapMarkerDarkerColors[indicatorClass],
@@ -225,25 +225,25 @@ function highlightPolygonValueFeature(e) {
 		    });    		
     	}
     }
-    //TODO highlight map table value
+    // highlight map table report value
     var mapTableValue = $('.js-map-table-value[data-location-code="'+locationCode+'"][data-indicator-class="'+indicatorClass+'"]').parent('td');
-    $(mapTableValue).css('background-color', '#f9f9f9');
+    $(mapTableValue).addClass('highlighted-table');
 }
 
 function resetPolygonValueFeature(e) {
 	var target = e.target;
     var indicatorClass = target.feature.properties.indicatorClass
     var rawValue = target.feature.properties.rawValue
-    var reportValueLabel = target.feature.properties.reportValueIcon
+    var polygonValueLabel = target.feature.properties.reportValueIcon
     var locationCode = target.feature.properties.locationCode
     if(rawValue != null){
-    	if(reportValueLabel){
+    	if(polygonValueLabel){
     		var indicatorName = target.feature.properties.indicatorName
     		locationValueLayerMap[indicatorName].eachLayer(function (layerData) {
 				var fRawValue = layerData.feature.properties.rawValue;
-				var fReportValueLabel = layerData.feature.properties.reportValueIcon
+				var fPolygonValueLabel = layerData.feature.properties.reportValueIcon
 				var fLocationCode = layerData.feature.properties.locationCode;
-				if(fRawValue == rawValue && fLocationCode == locationCode && !fReportValueLabel){
+				if(fRawValue == rawValue && fLocationCode == locationCode && !fPolygonValueLabel){
 					layerData.setStyle({
 						fillColor: mapMarkerColors[indicatorClass],
 					    weight: 0,
@@ -260,6 +260,10 @@ function resetPolygonValueFeature(e) {
 			});
     	}
     }
+    // reset map table report value
+    var mapTableValue = $('.js-map-table-value[data-location-code="'+locationCode+'"][data-indicator-class="'+indicatorClass+'"]').parent('td');
+    $(mapTableValue).removeClass('highlighted-table');
+
 }
 
 // fct point value layer 
@@ -287,6 +291,9 @@ function mapPointValues(reportLocationCodes){
 
 				var indicatorName = $(mapTableValue).data('indicator-names')
 				var mapValue = $(mapTableValue).children('div.report-value-number').children('div.report-value');
+				var rawValue = $(mapValue).data('report-value-raw');
+				var reportValue = $(mapValue).data('report-value');
+
 				fosaLocations.push(fosaid+"");
 
 				if(!f.geometry){
@@ -300,15 +307,27 @@ function mapPointValues(reportLocationCodes){
 					        "coordinates": f.geometry.coordinates
 						},
 						"properties":{
-							"locationCode": $(mapTableValue).data('location-code'),
+							"locationCode": $(mapTableValue).attr('data-location-code'),
 							"locationName": $(mapTableValue).data('location-names'),
 							"indicatorClass": $(mapTableValue).data('indicator-class'),
 							"indicatorName": $(mapTableValue).data('indicator-names'),
-							"rawValue": $(mapValue).data('report-value-raw'),
-							"reportValue": $(mapValue).data('report-value'),
-							"reportValueType": $(mapValue).data('report-value-type')
+							"rawValue": rawValue,
+							"reportValue": reportValue
 						}
 					};
+
+					// if value != null, add value
+					if(rawValue != null){
+						var geojsonPointFeature = createGeoJsonPointFeature(feature);			
+						var locationValueLayer = locationValueLayerMap[indicatorName];
+						locationValueLayer.addData(geojsonPointFeature);
+					}
+
+					// always add value label
+					feature.properties.reportValueIcon = reportValueLabelIcon;
+					var geojsonPointFeature = createGeoJsonPointFeature(feature);
+					var locationValueLayer = locationValueLayerMap[indicatorName];
+					locationValueLayer.addData(geojsonPointFeature);
 				}
 			});								
 		});						
@@ -397,7 +416,9 @@ function highlightPointValueFeature(e) {
     var locationCode = target.feature.properties.locationCode
     if(rawValue != null){
     	if(reportValueLabel){
-    		// do nothing
+    		// highlight map table location row
+	    	var mapTableRow = $('.js-map-table-location[data-location-code="'+locationCode+'"]').parent('td').parent('tr');
+	    	$(mapTableRow).addClass('highlighted-table');
     	}
     	else{
     		highlightPolygonValueFeature(e);  		
@@ -410,9 +431,12 @@ function resetPointValueFeature(e) {
     var indicatorClass = target.feature.properties.indicatorClass
     var rawValue = target.feature.properties.rawValue
     var reportValueLabel = target.feature.properties.reportValueIcon
+    var locationCode = target.feature.properties.locationCode
     if(rawValue != null){
     	if(reportValueLabel){
-    		// do nothing
+    		// reset map table location row
+	    	var mapTableRow = $('.js-map-table-location[data-location-code="'+locationCode+'"]').parent('td').parent('tr');
+		    $(mapTableRow).removeClass('highlighted-table');
     	}
     	else{
     		resetPolygonValueFeature(e);

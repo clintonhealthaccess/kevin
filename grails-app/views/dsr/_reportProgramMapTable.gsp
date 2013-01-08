@@ -8,7 +8,7 @@
 				</td>
 				<g:if test="${reportIndicators != null && !reportIndicators.empty}">
 					<g:each in="${reportIndicators}" var="indicator" status="i">
-						<td class="${currentIndicators.contains(indicator) ? 'js-selected-indicator' : ''}">
+						<td class="${currentIndicators.contains(indicator) ? 'js-selected-indicator selected-indicator' : ''}">
 							<div class="js-map-table-indicator" 
 								data-indicator-code="${indicator.code}" 
 								data-indicator-names="${i18n(field:indicator.names)}"

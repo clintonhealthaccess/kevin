@@ -99,14 +99,15 @@ function createEastWestOffset(boundsLat, center){
 
 //TODO
 function getMinRawValue(){
-	var maxRawValue = 0;
-	$('div.js-map-table-value.js-selected-value').each(function(){	        
+	var minRawValue;
+	$('div.js-map-table-value.js-selected-value').each(function(index){
 		var value = $(this).children('div.report-value').data('report-value-raw');
-		if(parseFloat(value) > maxRawValue)
-			maxRawValue = parseFloat(value);
+		if(index == 0) 
+			minRawValue = parseFloat(value); 
+		if(parseFloat(value) < minRawValue)
+			minRawValue = parseFloat(value);
 	});
-	maxRawValue = maxRawValue > 0 ? maxRawValue : 1;
-	return maxRawValue;
+	return minRawValue;
 }
 
 function getMaxRawValue(){
