@@ -60,85 +60,18 @@ public class UtilUnitSpec extends UnitSpec {
 		htmlString.equals(noHtmlString);
 	}
 	
-	def "test contains id"() {
-		expect:
-		Utils.containsId("\$123", 123)
-		!Utils.containsId("\$1234", 123)
-		Utils.containsId("\$1 + \$2", 1)
-		Utils.containsId("\$1 + \$2", 2)
-		Utils.containsId("\$1+\$2", 1)
-		Utils.containsId("\$1+\$2", 2)
-		!Utils.containsId("1+2", 2)
-		!Utils.containsId("1+2", 2)
+	def "get string value for value with number, percentage format, and rounded to 2 places"() {
 		
-		Utils.containsId("\$10218[_].test\n", 10218)
-		Utils.containsId("\$10218\n", 10218)
-		Utils.containsId(
-			"(\$10218[_].basic.monthly_targets.july + \n" +
-			"\$10218[_].basic.monthly_targets.august + \n" +
-			"\$10218[_].basic.monthly_targets.september + \n" +
-			"\$10218[_].basic.monthly_targets.october + \n" +
-			"\$10218[_].basic.monthly_targets.november + \n" +
-			"\$10218[_].basic.monthly_targets.december + \n" +
-			"\$10218[_].basic.monthly_targets.january + \n" +
-			"\$10218[_].basic.monthly_targets.february + \n" +
-			"\$10218[_].basic.monthly_targets.march + \n" +
-			"\$10218[_].basic.monthly_targets.april+ \n" +
-			"\$10218[_].basic.monthly_targets.may + \n" +
-			"\$10218[_].basic.monthly_targets.june) == \n" +
-			"\$10218[_].basic.targets.target_number_of_cases", 10218)
-	}
-	
-	def "test parse date"() {
 		when:
-		Utils.parseDate("12-rr-2011")
+		def value = Value.VALUE_NUMBER(0.579)
+		def type = Type.TYPE_NUMBER()
+		def format = "#%"
+		def rounded = '2'
+		def stringValue = Utils.getStringValue(value, type, null, format, null, rounded)
 		
 		then:
-		thrown ParseException
+		stringValue == "58%"
 		
 	}
 	
-	def "test getStringValue"(){
-		setup:
-		boolean boolValue= true;
-		def nowDate = new Date();
-		
-		def typeString = Type.TYPE_STRING();
-		def typeDate = Type.TYPE_DATE();
-		def typeNumber = Type.TYPE_NUMBER();
-		def typeBool = Type.TYPE_BOOL();
-		def typeEnum = Type.TYPE_ENUM();
-	
-		def valueBool = Value.VALUE_BOOL(boolValue);
-		def valueString = Value.VALUE_STRING("Value Text");
-		def valueNumber = Value.VALUE_NUMBER(100);
-		def valueDate = Value.VALUE_DATE(nowDate);
-		
-		when:
-		def string = Utils.getValueString(typeString,valueString);
-		def number = Utils.getValueString(typeString,valueNumber);
-		def date = Utils.getValueString(typeString,valueDate);
-		def bool = Utils.getValueString(typeString,valueBool);
-		def enumValue= Utils.getValueString(typeEnum,valueString);
-		
-		then:
-		string.equals("Value Text");
-		number.equals("100");
-		bool.equals(boolValue.toString());
-		enumValue.equals("Value Text")
-		date.equals(Utils.formatDate(nowDate));	
-			
-	}
-
-	def "test format export code"(){
-		when:
-		def normalString = Utils.formatExportCode("blah")
-		def emptyString = Utils.formatExportCode("")
-		def nullString = Utils.formatExportCode(null)
-		
-		then:
-		normalString == "~blah~"
-		emptyString == "~~"
-		nullString == "~null~"
-	}
 }

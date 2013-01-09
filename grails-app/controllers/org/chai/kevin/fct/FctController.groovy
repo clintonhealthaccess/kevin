@@ -13,7 +13,7 @@ import org.chai.kevin.reports.ReportEntity
 import org.chai.kevin.reports.ReportExportService
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
-import org.chai.kevin.util.Utils.ReportType;
+import org.chai.kevin.reports.ReportService.ReportType;
 import org.chai.kevin.util.Utils;
 
 class FctController extends AbstractController {

@@ -35,6 +35,7 @@ import org.chai.kevin.survey.SurveyTableQuestion;
 import org.chai.kevin.survey.SurveyTableRow;
 import org.chai.kevin.survey.SurveyValueService;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.util.DataUtils;
 import org.chai.kevin.value.Value;
 import org.chai.location.CalculationLocation;
 import org.chai.location.DataLocation;
@@ -212,8 +213,8 @@ public class SurveyExportService {
 					for(SurveyTableColumn surveyTableColumn : surveyTableColumns){						
 						SurveyElement surveyElement = surveyTableRow.getSurveyElements().get(surveyTableColumn);						
 						List<String> surveyQuestionItems = new ArrayList<String>();	
-						String surveyQuestionRow = Utils.noNull(surveyTableRow.getNames());						
-						String surveyQuestionColumn = Utils.noNull(surveyTableColumn.getNames());
+						String surveyQuestionRow = DataUtils.noNull(surveyTableRow.getNames());						
+						String surveyQuestionColumn = DataUtils.noNull(surveyTableColumn.getNames());
 						surveyQuestionItems.add(surveyQuestionRow);
 						surveyQuestionItems.add(surveyQuestionColumn);
 						FormEnteredValue formEnteredValue = null;
@@ -228,7 +229,7 @@ public class SurveyExportService {
 				for(SurveyCheckboxOption surveyCheckboxOption : surveyCheckboxOptions){
 					SurveyElement surveyElement = surveyCheckboxOption.getSurveyElement();					
 					List<String> surveyQuestionItems = new ArrayList<String>();						
-					String surveyCheckboxName = Utils.noNull(surveyCheckboxOption.getNames());																	
+					String surveyCheckboxName = DataUtils.noNull(surveyCheckboxOption.getNames());																	
 					surveyQuestionItems.add(surveyCheckboxName);
 					FormEnteredValue formEnteredValue = null;
 					if(surveyElement != null) formEnteredValue = surveyElementValueMap.get(surveyElement);
@@ -273,7 +274,7 @@ public class SurveyExportService {
 					Enum enume = enumService.getEnumByCode(enumCode);
 					List<EnumOption> enumOptions = enume.getAllEnumOptions();
 					for(EnumOption enumOption : enumOptions)
-						surveyQuestionItems.add(Utils.noNull(enumOption.getNames()));
+						surveyQuestionItems.add(DataUtils.noNull(enumOption.getNames()));
 				}
 				for(String surveyQuestionItem : surveyQuestionItems)
 					dataPoint.add(formatExportDataItem(surveyQuestionItem));
@@ -290,18 +291,18 @@ public class SurveyExportService {
 			SurveySection surveySection, SurveyQuestion surveyQuestion, SurveyElement surveyElement){
 		
 		SurveyExportDataPoint dataPoint = new SurveyExportDataPoint();
-		dataPoint.add(formatExportDataItem(Utils.noNull(survey.getNames())));
+		dataPoint.add(formatExportDataItem(DataUtils.noNull(survey.getNames())));
 		
 		for (LocationLevel level : getLevels()){			
 			Location parent = dataLocation.getParentOfLevel(level);
-			if (parent != null) dataPoint.add(Utils.noNull(parent.getNames()));
+			if (parent != null) dataPoint.add(DataUtils.noNull(parent.getNames()));
 			else dataPoint.add("");
 		}
-		dataPoint.add(formatExportDataItem(Utils.noNull(dataLocation.getNames())));
-		dataPoint.add(formatExportDataItem(Utils.noNull(dataLocation.getType().getNames())));			
-		dataPoint.add(formatExportDataItem(Utils.noNull(surveyProgram.getNames())));
-		dataPoint.add(formatExportDataItem(Utils.noNull(surveySection.getNames())));
-		dataPoint.add(formatExportDataItem(Utils.noNull(surveyQuestion.getType().toString())));
+		dataPoint.add(formatExportDataItem(DataUtils.noNull(dataLocation.getNames())));
+		dataPoint.add(formatExportDataItem(DataUtils.noNull(dataLocation.getType().getNames())));			
+		dataPoint.add(formatExportDataItem(DataUtils.noNull(surveyProgram.getNames())));
+		dataPoint.add(formatExportDataItem(DataUtils.noNull(surveySection.getNames())));
+		dataPoint.add(formatExportDataItem(DataUtils.noNull(surveyQuestion.getType().toString())));
 		
 		if(surveyElement != null){
 			DataElement<?> dataElement = surveyElement.getDataElement();
@@ -321,7 +322,7 @@ public class SurveyExportService {
 			surveyExportDataPoint.add(formatExportDataItem(null));
 		}
 		if(dataValue != null && !dataValue.isNull()){
-			surveyExportDataPoint.add(formatExportDataItem(Utils.getValueString(dataType,dataValue)));
+			surveyExportDataPoint.add(formatExportDataItem(DataUtils.getValueString(dataType,dataValue)));
 		}
 	}
 	
@@ -372,7 +373,7 @@ public class SurveyExportService {
 				String surveyQuestionItem = null;								
 				for(String genericTypeKey : this.getGenericTypes().keySet()){
 					if(!this.getGenericTypes().get(genericTypeKey).getType().equals(ValueType.LIST)){
-						surveyQuestionItem = Utils.noNull(surveyElement.getHeaders(languageService.getCurrentLanguage()).get(genericTypeKey));
+						surveyQuestionItem = DataUtils.noNull(surveyElement.getHeaders(languageService.getCurrentLanguage()).get(genericTypeKey));
 						if(surveyQuestionItem != null && !surveyQuestionItem.isEmpty()) 
 							dataPoint.add(formatExportDataItem(surveyQuestionItem));						
 					}
@@ -383,7 +384,7 @@ public class SurveyExportService {
 					if(enume != null){
 						List<EnumOption> enumOptions = enume.getAllEnumOptions();
 						for(EnumOption enumOption : enumOptions){
-							surveyQuestionItem = Utils.noNull(enumOption.getNames());
+							surveyQuestionItem = DataUtils.noNull(enumOption.getNames());
 							if(surveyQuestionItem != null && !surveyQuestionItem.isEmpty()) 
 								dataPoint.add(formatExportDataItem(surveyQuestionItem));
 						}	

@@ -26,7 +26,10 @@ import org.supercsv.io.ICsvMapReader
 public class EntityImporter extends FileImporter {
 
 	private static final Log log = LogFactory.getLog(EntityImporter.class);
+	
 	private static final String CODE_HEADER = "code";
+	private final static String CODE_PATTERN =  "~[^~]+~"
+	
 	
 	private SessionFactory sessionFactory;
 	private ImporterErrorManager manager;
@@ -292,13 +295,13 @@ public class EntityImporter extends FileImporter {
 		
 		private List<?> getImportValues(Importable importable, Object value, Class<?> importableClazz, String header){
 			List<?> importEntities = new ArrayList<Object>();
-			String codePattern = ImportExportConstant.CODE_PATTERN;
+			String codePattern = CODE_PATTERN;
 			Pattern pattern = Pattern.compile(codePattern);
 			Matcher matcher = pattern.matcher(value);
 			while(matcher.find()){
 				String entityCode = matcher.group();
 				if(entityCode != null && !entityCode.isEmpty()){
-					entityCode = entityCode.replaceAll(ImportExportConstant.CODE_DELIMITER, "");
+					entityCode = entityCode.replaceAll(CODE_DELIMITER, "");
 					Object importEntity = findEntityByCode(entityCode, importableClazz);
 					if(importEntity != null){
 						importEntity = getImportValue(importable, importEntity);

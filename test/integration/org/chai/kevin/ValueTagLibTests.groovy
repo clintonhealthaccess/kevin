@@ -5,7 +5,7 @@ import grails.test.GroovyPagesTestCase;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.util.Utils;
+import org.chai.kevin.util.DataUtils;
 import org.chai.kevin.value.Value;
 
 class ValueTagLibTests extends GroovyPagesTestCase {
@@ -177,7 +177,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 				'value': Value.VALUE_BOOL(true),
 				'type': Type.TYPE_BOOL()
 			]
-		), '<span class="tooltip" original-title="true"><span class="report-value-true">&#10003;</span></span>'
+		), '<div class="report-value-true"><span class="tooltip" original-title="true">&#10003;</span></div>'
 	}
 	
 	def testReportValueBool() {
@@ -187,7 +187,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 				'value': Value.VALUE_BOOL(true),
 				'type': Type.TYPE_BOOL()	
 			]
-		), '<span class="report-value-true">&#10003;</span>'
+		), '<div class="report-value-true">&#10003;</div>'
 		
 		assertEquals applyTemplate(
 			'<g:reportValue value="${value}" type="${type}"/>',
@@ -195,7 +195,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 				'value': Value.VALUE_BOOL(false),
 				'type': Type.TYPE_BOOL()
 			]
-		), '<span class="report-value-false">&#10007;</span>'			
+		), '<div class="report-value-false">&#10007;</div>'			
 	}
 	
 	def testReportValueNull() {
@@ -316,7 +316,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 		assertEquals applyTemplate(
 			'<g:adminValue value="${value}" type="${type}"/>',
 			[
-				'value': Value.VALUE_DATE(Utils.parseDate("01-01-2000")),
+				'value': Value.VALUE_DATE(DataUtils.parseDate("01-01-2000")),
 				'type': Type.TYPE_DATE()
 			]
 		), '\"01-01-2000\"'

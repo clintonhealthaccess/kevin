@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory
 import org.chai.kevin.form.FormElement.ElementCalculator
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyQuestion
-import org.chai.kevin.util.Utils
+import org.chai.kevin.util.DataUtils
 import org.chai.location.DataLocation
 
 @I18nFields
@@ -85,7 +85,7 @@ public class FormSkipRule {
 		if (skippedFormElements.containsKey(element)) {
 			String text = skippedFormElements.get(element);
 			if (text.isEmpty()) result.add(text);
-			result.addAll(Utils.split(text, FormElement.FIELD_DELIMITER));
+			result.addAll(DataUtils.split(text, FormElement.FIELD_DELIMITER));
 		}
 		return result;
 	}

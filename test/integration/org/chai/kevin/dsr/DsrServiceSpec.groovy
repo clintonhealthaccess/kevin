@@ -7,11 +7,12 @@ import org.chai.location.Location;
 import org.chai.location.LocationLevel;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.reports.ReportService.ReportType;
 
 class DsrServiceSpec extends DsrIntegrationTests {
 
 	def dsrService
-	def refreshValueService
+	def reportService
 	
 	def "get dsr"() {
 		setup:
@@ -26,7 +27,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 
 		when:
 		def dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
@@ -36,7 +37,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 
 		when:
 		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_NUMBER(10d))
-		refreshValueService.flushCaches()
+		reportService.flushCaches()
 		dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
 
 		then:
@@ -57,7 +58,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		refreshCalculation()
 
 		when:
@@ -85,7 +86,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		refreshCalculation()
 
 		when:
@@ -112,7 +113,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		refreshCalculation()
 
 		when:
@@ -132,14 +133,14 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(CODE(1))
 		def burera = Location.findByCode(BURERA)
-		def mode = newMode("1", CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		def mode = newMode("1", CODE(2), Type.TYPE_NUMBER())
 		def category = newDsrTargetCategory(CODE(3), program, 1)
 		def target = newDsrTarget(CODE(4), mode, category)
 		def types = new HashSet([
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		refreshCalculation()
 
 		when:
@@ -148,9 +149,9 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		then:
 		dsrTable != null
 		dsrTable.hasData() == true
-		dsrTable.getTableReportValue(DataLocation.findByCode(BUTARO), target).value == Value.VALUE_LIST([v(1)])
-		dsrTable.getTableReportValue(DataLocation.findByCode(KIVUYE), target).value == Value.VALUE_LIST([v(1)])
-		dsrTable.getTableReportValue(Location.findByCode(BURERA), target).value == Value.VALUE_LIST([v(1)])
+		dsrTable.getModeList(DataLocation.findByCode(BUTARO), target) == [v(1)]
+		dsrTable.getModeList(DataLocation.findByCode(KIVUYE), target) == [v(1)]
+		dsrTable.getModeList(Location.findByCode(BURERA), target) == [v(1)]
 	}
 	
 	def "get dsr with raw data element data"(){
@@ -167,7 +168,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def category = newDsrTargetCategory(CODE(2), program, 1)
 		def target = newDsrTarget(CODE(3), 1, rawDataElement, category)
 		newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_NUMBER(10d))
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 
 		when:
 		def dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
@@ -180,7 +181,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 
 		when:
 		newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(KIVUYE), Value.VALUE_NUMBER(10d))
-		refreshValueService.flushCaches()
+		reportService.flushCaches()
 		dsrTable = dsrService.getDsrTable(location, period, types, category, reportType)
 
 		then:
@@ -202,7 +203,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]])
 		def category = newDsrTargetCategory(CODE(2), program, 1)
 		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, category)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		refreshNormalizedDataElement()
 
 		when:
@@ -227,7 +228,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10"]])
 		def category = newDsrTargetCategory(CODE(2), program, 1)
 		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, category)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		refreshNormalizedDataElement()
 
 		when:
@@ -253,7 +254,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]])
 		def category = newDsrTargetCategory(CODE(3), program, 1)
 		def target = newDsrTarget(CODE(4), 1, normalizedDataElement, category)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		refreshNormalizedDataElement()
 
 		when:
@@ -280,7 +281,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		refresh()
 
 		when:
@@ -306,7 +307,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def target1 = newDsrTarget(CODE(3), 1, dataElement1, category)
 		def dataElement2 = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
 		def target2 = newDsrTarget(CODE(5), 2, dataElement2, category)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		refresh()
 
 		when:
@@ -344,7 +345,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		setupLocationTree()
 
 		when:
-		def dsrSkipLevels = dsrService.getSkipViewLevels(Utils.ReportType.MAP)
+		def dsrSkipLevels = dsrService.getSkipViewLevels(ReportType.MAP)
 
 		then:
 		dsrSkipLevels.equals(s([
@@ -354,7 +355,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		]))
 		
 		when:
-		dsrSkipLevels = dsrService.getSkipViewLevels(Utils.ReportType.TABLE)
+		dsrSkipLevels = dsrService.getSkipViewLevels(ReportType.TABLE)
 		
 		then:
 		dsrSkipLevels.equals(s([

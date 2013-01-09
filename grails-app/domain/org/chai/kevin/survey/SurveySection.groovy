@@ -37,6 +37,7 @@ import i18nfields.I18nFields
 import org.apache.commons.collections.CollectionUtils
 import org.chai.kevin.Exportable
 import org.chai.kevin.util.Utils
+import org.chai.kevin.util.DataUtils
 import org.chai.location.DataLocationType
 
 @I18nFields
@@ -77,11 +78,11 @@ class SurveySection implements Exportable {
 	}
 	
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString, Utils.DEFAULT_TYPE_CODE_DELIMITER);
+		return DataUtils.split(typeCodeString, DataUtils.DEFAULT_TYPE_CODE_DELIMITER);
 	}
 	
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes, Utils.DEFAULT_TYPE_CODE_DELIMITER);
+		this.typeCodeString = DataUtils.unsplit(typeCodes, DataUtils.DEFAULT_TYPE_CODE_DELIMITER);
 	}
 
 	public Survey getSurvey() {
@@ -91,7 +92,7 @@ class SurveySection implements Exportable {
 	@SuppressWarnings("unchecked")
 	public Set<String> getTypeApplicable() {
 		return new HashSet<String>(CollectionUtils.intersection(
-				Utils.split(this.typeCodeString, Utils.DEFAULT_TYPE_CODE_DELIMITER),
+				DataUtils.split(this.typeCodeString, DataUtils.DEFAULT_TYPE_CODE_DELIMITER),
 				this.program.getTypeApplicable()));
 	}
 

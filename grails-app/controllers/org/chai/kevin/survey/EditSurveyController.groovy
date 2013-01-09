@@ -35,7 +35,7 @@ import org.chai.location.DataLocation
 import org.chai.location.DataLocationType;
 import org.chai.kevin.security.UserType;
 import org.chai.kevin.survey.summary.SummaryService
-import org.chai.kevin.util.Utils
+import org.chai.kevin.util.DataUtils
 import org.hibernate.SessionFactory
 
 class EditSurveyController extends AbstractController {
@@ -80,7 +80,7 @@ class EditSurveyController extends AbstractController {
 		if (page == null) valid = false
 		else if (location == null) valid = false
 		else {
-			if (types != null && !Utils.split(types, Utils.DEFAULT_TYPE_CODE_DELIMITER).contains(location.type.code)) valid = false
+			if (types != null && !DataUtils.split(types, DataUtils.DEFAULT_TYPE_CODE_DELIMITER).contains(location.type.code)) valid = false
 		}
 
 		if (!valid) {

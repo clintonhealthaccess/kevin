@@ -37,6 +37,7 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.util.DataUtils;
 import org.chai.location.DataLocationType;
 
 class SurveySimpleQuestion extends SurveyQuestion implements Exportable {
@@ -68,7 +69,7 @@ class SurveySimpleQuestion extends SurveyQuestion implements Exportable {
 			throw new IllegalArgumentException("survey element does not belong to question (simple)");
 		}
 		return new HashSet<String>(CollectionUtils.intersection(
-			Utils.split(this.getTypeCodeString(), Utils.DEFAULT_TYPE_CODE_DELIMITER),
+			DataUtils.split(this.getTypeCodeString(), DataUtils.DEFAULT_TYPE_CODE_DELIMITER),
 			this.getSection().getTypeApplicable())
 		);
 	}

@@ -11,7 +11,7 @@ import org.chai.location.DataLocationType;
 import org.chai.location.DataLocation;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElement;
-import org.chai.kevin.util.Utils;
+import org.chai.kevin.util.DataUtils;
 import org.chai.kevin.value.Value;
 import org.hibernate.FlushMode;
 import org.hibernate.Query;
@@ -142,7 +142,7 @@ class FormElementService {
 	
 	static def filter(def rules, Long id) {
 		return rules.findAll { rule ->
-			return Utils.containsId(rule.expression, id)
+			return DataUtils.containsId(rule.expression, id)
 		}
 	}
 	

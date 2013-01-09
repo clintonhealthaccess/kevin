@@ -1,6 +1,6 @@
-package org.chai.kevin.data;
+package org.chai.kevin.dsr;
 
-/*
+/* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -15,7 +15,7 @@ package org.chai.kevin.data;
  *     * Neither the name of the <organization> nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,30 +28,29 @@ package org.chai.kevin.data;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import groovy.transform.EqualsAndHashCode;
-import i18nfields.I18nFields
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
+import org.chai.kevin.reports.AbstractReportTarget;
+import org.chai.location.CalculationLocation;
+import org.chai.kevin.reports.ReportTable;
+import org.chai.kevin.value.Value;
+import org.chai.kevin.data.Mode
 
-@i18nfields.I18nFields
-@EqualsAndHashCode(includes='code')
-public class Source {
-
-	String code;
-	String names;
-	String descriptions;
+public class DsrTable extends ReportTable {
 	
-	static i18nFields = ['names', 'descriptions']
-	
-	static mapping = {
-		table 'dhsst_data_source'
-		cache true
-		code unique: true
+	public DsrTable(Map valueMap, List targetOptions) {
+		super(valueMap, targetOptions);
 	}
 	
-	static constraints =  {
-		code (nullable: false, blank: false, unique: true)
-		names (nullable: true)
-		descriptions (nullable: true)
+	public List<Value> getModeList(CalculationLocation location, AbstractReportTarget indicator) {
+		if(indicator.data.getClass().equals(Mode.class)) {
+			return getTableReportValue(location, indicator).getValueList()
+		}
+		else return null;
 	}
 
 }

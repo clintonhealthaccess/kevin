@@ -219,13 +219,13 @@ log4j = {
 }
 
 environments {
-	/* test {
+	test {
 		log4j = {
 			rootLogger="error,stdout"
 			
 			off 'ExpressionLog'
 		}
-	} */
+	}
 	demo {
 		log4j = {
 			rootLogger="error,stdout"
@@ -296,6 +296,18 @@ sync.site.url = "http://resmap-stg.instedd.org/api/sites/${itemid}.json"
 
 sync.site.username = "username"
 sync.site.password = "password"
+sync.type.ignore = ["PS", "CLIN", "DISP", "FOSACOM"]
+sync.type.mapping = [
+	"CS": "health_center",
+	"DH": "district_hospital"
+]
+
+sync.activity.feed.url = 'http://facilities.moh.gov.rw/api/activity.rss?collection_ids[]=26&page=all'
+sync.full.list.url = 'http://facilities.moh.gov.rw/api/collections/26.json'
+sync.site.url = 'http://facilities.moh.gov.rw/api/sites/${itemid}.json'
+
+sync.site.username = "fterrier@clintonhealthaccess.org"
+sync.site.password = "viveinstedd"
 sync.type.ignore = ["PS", "CLIN", "DISP", "FOSACOM"]
 sync.type.mapping = [
 	"CS": "health_center",

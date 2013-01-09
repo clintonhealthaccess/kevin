@@ -13,7 +13,6 @@ class DataController extends AbstractController {
 	def taskService
 	def dataService
 	def valueService
-	def refreshValueService
 	
 	def reportService
 	def surveyService
@@ -117,7 +116,7 @@ class DataController extends AbstractController {
 				dataService.save(data)
 			}
 			
-			refreshValueService.flushCaches()
+			reportService.flushCaches()
 			
 			flash.message = message(code: 'data.values.deleted')
 			redirect(uri: getTargetURI())

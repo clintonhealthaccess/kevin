@@ -17,7 +17,7 @@ class ModeControllerSpec extends IntegrationTests {
 		when:
 		modeController.params.code = CODE(1)
 		modeController.params.expression = "1"
-		modeController.params.type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		modeController.params.type = Type.TYPE_NUMBER()
 		modeController.saveWithoutTokenCheck()
 		
 		then:
@@ -34,7 +34,7 @@ class ModeControllerSpec extends IntegrationTests {
 		when: //code = null
 		modeController.params.code = null
 		modeController.params.expression = "1"
-		modeController.params.type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		modeController.params.type = Type.TYPE_NUMBER()
 		modeController.saveWithoutTokenCheck()
 		
 		then:
@@ -43,7 +43,7 @@ class ModeControllerSpec extends IntegrationTests {
 		when: //expression = null
 		modeController.params.code = CODE(1)
 		modeController.params.expression = null
-		modeController.params.type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		modeController.params.type = Type.TYPE_NUMBER()
 		modeController.saveWithoutTokenCheck()
 		
 		then:
@@ -57,22 +57,13 @@ class ModeControllerSpec extends IntegrationTests {
 		
 		then:
 		Mode.count() == 0
-		
-		when: //type != Type.TYPE_LIST(Type listType)
-		modeController.params.code = CODE(1)
-		modeController.params.expression = "1"
-		modeController.params.type = Type.TYPE_NUMBER()
-		modeController.saveWithoutTokenCheck()
-		
-		then:
-		Mode.count() == 0
 	}
 	
 	def "delete mode deletes values"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def mode = newMode("1", CODE(1),  Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		def mode = newMode("1", CODE(1), Type.TYPE_NUMBER())
 		newModePartialValue(mode, period, Location.findByCode(RWANDA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1")) 
 		modeController = new ModeController()
 		
@@ -89,7 +80,7 @@ class ModeControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def mode = newMode("1", CODE(1),  Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		def mode = newMode("1", CODE(1), Type.TYPE_NUMBER())
 		newModePartialValue(mode, period, Location.findByCode(RWANDA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1"))
 		modeController = new ModeController()
 		
@@ -106,7 +97,7 @@ class ModeControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def mode = newMode("1", CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		def mode = newMode("1", CODE(1), Type.TYPE_NUMBER())
 		modeController = new ModeController()
 		def time1 = mode.timestamp
 		

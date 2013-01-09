@@ -7,7 +7,7 @@ import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.util.Utils
 import org.chai.location.CalculationLocation
 
-class DashboardProgram extends ReportEntity implements DashboardEntity, Exportable {
+class DashboardProgram extends ReportEntity implements DashboardEntity {
 
 	ReportProgram program;
 	Integer weight;
@@ -45,11 +45,6 @@ class DashboardProgram extends ReportEntity implements DashboardEntity, Exportab
 	@Override
 	public String toString() {
 		return "DashboardProgram[getId()=" + getId() + ", getCode()=" + getCode() + "]";
-	}
-
-	@Override
-	public String toExportString() {
-		return "[" + Utils.formatExportCode(getCode()) + "]";
 	}
 
 }

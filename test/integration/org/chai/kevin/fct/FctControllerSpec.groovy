@@ -1,4 +1,4 @@
-package org.chai.kevin.fct
+	package org.chai.kevin.fct
 
 import org.chai.location.LocationService
 import org.chai.kevin.IntegrationTests
@@ -6,6 +6,7 @@ import org.chai.location.DataLocationType;
 import org.chai.location.Location;
 import org.chai.location.LocationLevel;
 import org.chai.kevin.util.Utils
+import org.chai.kevin.reports.ReportService.ReportType;
 
 class FctControllerSpec extends FctIntegrationTests {
 
@@ -31,7 +32,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		def target = newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		
 		when: "valid table"
 		fctController = new FctController()
@@ -198,7 +199,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		
 		when:
 		fctController = new FctController()
@@ -220,7 +221,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("1", CODE(2))
 		def target = newFctTarget(CODE(3), 1, program)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		
 		when:
 		fctController = new FctController()
@@ -245,7 +246,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		def sum = newSum("1", CODE(2))
 		def target = newFctTarget(CODE(3), 1, program)
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		
 		when:
 		fctController = new FctController()

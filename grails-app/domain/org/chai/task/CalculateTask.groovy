@@ -10,6 +10,7 @@ class CalculateTask extends Task {
 
 	def dataService
 	def refreshValueService
+	def reportService
 	def messageSource
 	
 	Integer dataId
@@ -23,7 +24,7 @@ class CalculateTask extends Task {
 		if (data != null) {
 			if (data instanceof NormalizedDataElement) refreshValueService.refreshNormalizedDataElement(data, this)
 			else if (data instanceof Calculation<CalculationPartialValue>) refreshValueService.refreshCalculation(data, this)
-			refreshValueService.flushCaches()
+			reportService.flushCaches()
 		}
 	}
 	

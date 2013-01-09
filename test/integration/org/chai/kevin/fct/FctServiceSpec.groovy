@@ -6,6 +6,8 @@ import org.chai.location.DataLocationType
 import org.chai.location.Location
 import org.chai.location.LocationLevel
 import org.chai.kevin.util.Utils
+import org.chai.kevin.reports.ReportService.ReportType;
+
 
 class FctServiceSpec extends FctIntegrationTests { 
 
@@ -23,7 +25,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		def targetOption = newFctTargetOption(CODE(4), 1, target, sum)
 		def location = Location.findByCode(RWANDA)
 		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		def fctTable = null
 		refresh()
 		
@@ -55,7 +57,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		def location = Location.findByCode(RWANDA)
 		def level = locationService.getLevelAfter(location.getLevel(), new HashSet([LocationLevel.findByCode(SECTOR)]))
 		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		def fctTable = null
 		
 		when:	
@@ -66,10 +68,9 @@ class FctServiceSpec extends FctIntegrationTests {
 		then:
 		fctTable.getTableReportValue(Location.findByCode("dummy"), targetOption) == null
 		fctTable.getTableReportValue(Location.findByCode(NORTH), targetOption).getValue().numberValue == 2d
-		fctTable.getTableReportValue(Location.findByCode(NORTH), targetOption).getAverage().numberValue == 1d
-				
+		fctTable.getTableReportValue(Location.findByCode(NORTH), targetOption).getAverage().numberValue == 1d			
 	}
-
+	
 	def "get fct table report value"() {
 		setup:
 		setupLocationTree()
@@ -81,7 +82,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		def targetOption = newFctTargetOption(CODE(4), 1, target, sum)
 		def location = Location.findByCode(RWANDA)
 		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		def fctTable = null
 		refresh()
 		
@@ -114,7 +115,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		refresh()
 		def location = Location.findByCode(RWANDA)
 		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 
 		when:
 		def fctTable = fctService.getFctTable(location, target, period, dataLocationTypes, reportType)

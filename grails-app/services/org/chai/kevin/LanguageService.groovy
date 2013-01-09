@@ -29,7 +29,6 @@ package org.chai.kevin
 */
 
 import org.apache.commons.lang.LocaleUtils
-import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Type
 import org.chai.kevin.data.Type.ValueType
 import org.chai.kevin.util.Utils
@@ -44,13 +43,8 @@ class LanguageService implements ApplicationContextAware {
 	ApplicationContext applicationContext
 	
 	def grailsApplication
-	def dataServiceBean
 	
 	static transactional = false
-	
-	DataService getDataService() {
-		return applicationContext.getBean("dataService")
-	}
 	
 	List<Locale> getAvailableLocales() {
 		return getAvailableLanguages().collect {LocaleUtils.toLocale(it)}
@@ -72,58 +66,4 @@ class LanguageService implements ApplicationContextAware {
 		return getCurrentLocale().getLanguage();
 	}
 	
-	String getStringValue(Value value, Type type, def enums = null, def format = null, def zero = null, def rounded = null) {
-		if (value == null || value.isNull()) return null
-		def result;
-		switch (type.type) {
-			case ValueType.BOOL:
-				if (value.booleanValue) result = '<span class="report-value-true">&#10003;</span>'
-				else result = '<span class="report-value-false">&#10007;</span>'
-				break;
-			case (ValueType.ENUM):
-				def enume = null
-				if (enums == null) enume = dataService.findEnumByCode(type.enumCode);
-				else enume = enums?.get(type.enumCode)
-				if (enume == null) result = value.enumValue
-				else {
-					def option = enume?.getOptionForValue(value.enumValue)
-					if (option == null) result = value.enumValue
-					else result = Utils.noNull(option.names)
-				}
-				break;
-			case (ValueType.NUMBER):
-				if (zero != null && value.numberValue == 0) result = zero
-				else result = Utils.formatNumber(format, rounded!=null?value.numberValue.round(Integer.parseInt(rounded)):value.numberValue)
-				break;
-			case (ValueType.LIST):
-				result = []
-				if(value.listValue != null && !value.listValue.empty){
-					def listValues = value.listValue.sort()
-					for(Value listValue : listValues){
-						if (log.isDebugEnabled()) log.debug("getStringValue(listType="+type.listType+", listValue="+listValue.value+")");
-						def stringValue = getStringValue(listValue, type.listType)
-						result.add(stringValue)
-					}
-					switch(type.listType.type){
-						case ValueType.BOOL:
-							result = result.join('&nbsp;&nbsp;&nbsp;')
-							break;
-						case ValueType.ENUM:
-						case ValueType.NUMBER:
-						case ValueType.STRING:
-						case ValueType.TEXT:
-							result = result.join(', ')
-							break;
-					}
-				}
-				break;
-			case (ValueType.MAP):
-				// TODO
-				break;
-			default:
-				result = value.stringValue
-		}
-		if (log.isDebugEnabled()) log.debug("getStringValue(type="+type.type+", result="+result+")");
-		return result;
-	}	
 }

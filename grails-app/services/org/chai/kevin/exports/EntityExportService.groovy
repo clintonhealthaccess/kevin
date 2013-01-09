@@ -28,13 +28,15 @@ public class EntityExportService {
 	
 	private static final Log log = LogFactory.getLog(EntityExportService.class);
 	
+	private final static String CSV_FILE_EXTENSION = ".csv";	
+	public final static String CODE_DELIMITER = "~";
+	public final static String VALUE_NOT_EXPORTABLE = "VALUE_NOT_EXPORTABLE";	
+	
 	private SessionFactory sessionFactory;
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}		
-	
-	private final static String CSV_FILE_EXTENSION = ".csv";	
 	
 	public String getExportFilename(Class<?> clazz){
 		String exportFilename = clazz.getSimpleName().replaceAll("[^a-zA-Z0-9]", "") + "_";
@@ -179,13 +181,13 @@ public class EntityExportService {
 				exportValue += (Long)getValue(value, "id");
 			}
 			if (hasField(value, "code")) {
-				if (!exportValue.isEmpty()) exportValue += ImportExportConstant.CODE_DELIMITER;
+				if (!exportValue.isEmpty()) exportValue += EntityExportService.CODE_DELIMITER;
 				exportValue += (String)getValue(value, "code");
 			}
 		}
 		//value is not exportable or a primitive type
 		else {
-			exportValue = ImportExportConstant.VALUE_NOT_EXPORTABLE;
+			exportValue = EntityExportService.VALUE_NOT_EXPORTABLE;
 		}
 		
 		if (log.isDebugEnabled()) log.debug("export value: "+exportValue);

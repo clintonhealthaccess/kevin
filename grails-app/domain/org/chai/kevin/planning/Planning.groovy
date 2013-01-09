@@ -6,8 +6,7 @@ import i18nfields.I18nFields
 import javax.persistence.Transient
 
 import org.chai.kevin.Period
-import org.chai.kevin.util.Utils
-
+import org.chai.kevin.util.DataUtils
 
 @I18nFields
 //@EqualsAndHashCode(includes='id')
@@ -50,11 +49,11 @@ class Planning {
 	}
 	
 	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString, Utils.DEFAULT_TYPE_CODE_DELIMITER);
+		return DataUtils.split(typeCodeString, DataUtils.DEFAULT_TYPE_CODE_DELIMITER);
 	}
 	
 	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes, Utils.DEFAULT_TYPE_CODE_DELIMITER);
+		this.typeCodeString = DataUtils.unsplit(typeCodes, DataUtils.DEFAULT_TYPE_CODE_DELIMITER);
 	}
 	
 	@Override

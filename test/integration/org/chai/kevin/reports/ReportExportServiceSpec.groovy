@@ -16,6 +16,7 @@ import org.chai.location.LocationLevel;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue
 import org.chai.kevin.value.Value;
+import org.chai.kevin.reports.ReportService.ReportType;
 
 class ReportExportServiceSpec extends ReportIntegrationTests {
 
@@ -39,7 +40,7 @@ class ReportExportServiceSpec extends ReportIntegrationTests {
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		refresh()
 		
 		when:
@@ -79,7 +80,7 @@ class ReportExportServiceSpec extends ReportIntegrationTests {
 		def targetOption = FctIntegrationTests.newFctTargetOption(CODE(4), ['en': 'Option'], 1, target, sum)
 		def location = Location.findByCode(NORTH)
 		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		def fctTable = null
 		refresh()
 		
@@ -124,7 +125,7 @@ class ReportExportServiceSpec extends ReportIntegrationTests {
 			DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP),
 			DataLocationType.findByCode(HEALTH_CENTER_GROUP)
 		])
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		
 		when:
 		def file = reportExportService.getReportExportFilename("ReportsDSR", location, program, period)
