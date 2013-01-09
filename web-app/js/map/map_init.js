@@ -1,4 +1,4 @@
-var map
+var map = null;
 var mapLayers = []
 
 var basePolygonLayer = L.geoJson(null, {

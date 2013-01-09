@@ -1,6 +1,9 @@
-// TODO coordsToLatlng( <Array> coords) or coordsToLatlngs( <Array> coords, <Number> levelsDeep?) 
-// 0 = array of points, 1 = arrays of array of points
+// create polygon coordinates
 function createPolygonCoordinates(feature, createLatLngCoordinates){
+
+	// TODO coordsToLatlng( <Array> coords) or coordsToLatlngs( <Array> coords, <Number> levelsDeep?) 
+	// 0 = array of points, 1 = arrays of array of points
+
 	// create polygon coordinates
 	var polygonCoordinates = []
 	var coordinates = []
@@ -22,6 +25,7 @@ function createPolygonCoordinates(feature, createLatLngCoordinates){
 	return polygonCoordinates;
 }
 
+// create geojson features
 function createGeoJsonPolygonFeature(feature){
 	// create geojson polygon feature
 	var geoJsonPolygonFeature = {
@@ -39,7 +43,6 @@ function createGeoJsonPolygonFeature(feature){
 	};
 	return geoJsonPolygonFeature;
 }
-
 function createGeoJsonPointFeature(feature){
 	// create geojson point feature
 	var geoJsonPointFeature = {
@@ -59,6 +62,7 @@ function createGeoJsonPointFeature(feature){
 		    	"radiusValue": feature.properties.radiusValue,
 		    	"reportValue": feature.properties.reportValue,
 		    	"reportValueType": feature.properties.reportValueType,
+		    	"reportValueSize": feature.properties.reportValueSize,
 		    	"reportValueIcon": feature.properties.reportValueIcon
 		        // "popupContent": 'Location: '+locationName+'<br /> '+indicatorName+': '+reportValue
 		    }
@@ -66,6 +70,7 @@ function createGeoJsonPointFeature(feature){
 	return geoJsonPointFeature;
 }
 
+// sort map by value
 // http://stackoverflow.com/questions/4969121/in-javascript-is-there-an-easy-way-to-sort-key-value-pairs-by-the-value-and-re
 function sortMapByValue(O){
 	var A= [];
@@ -84,16 +89,18 @@ function sortMapByValue(O){
     return A.reverse();
 }
 
+// create latLng north/south of a given latLng
 function createNorthSouthOffset(boundsLng, center){
 	var boundsLng = center.lng+((boundsLng-center.lng)/4);
 	return [center.lat, boundsLng];
 }
-
+// create latLng east/west of a given latLng
 function createEastWestOffset(boundsLat, center){
 	var boundsLat = center.lat+((boundsLat-center.lat)/4);
 	return [boundsLat, center.lng];
 }
 
+// get min/max raw values
 function getMinRawValue(){
 	var minRawValue;
 	$('div.js-map-table-value.js-selected-value').each(function(index){
@@ -105,7 +112,6 @@ function getMinRawValue(){
 	});
 	return minRawValue;
 }
-
 function getMaxRawValue(){
 	var maxRawValue = 0;
 	$('div.js-map-table-value.js-selected-value').each(function(){	        
@@ -117,41 +123,39 @@ function getMaxRawValue(){
 	return maxRawValue;
 }
 
+// fosa location missing coordinates
 function missingFosaCoordinates(fosaid){
-	//fosa coordinates missing
 	$('.nav-table td[data-location-code="'+fosaid+'"]').append('&#185;');
 }
-
+// fosa location missing
 function missingFosaLocations(fosaLocations, locations){
-	//fosa locations missing
 	for(var i = 0 ; i < locations.length; i++){
 		var location = locations[i];
-		//fosa location missing
 		if(fosaLocations.indexOf(location) < 0)
 			$('.nav-table td[data-location-code="'+location+'"]').append('&#178;');
 	}
 }
 
+// highlight/reset map table row
 function highlightMapTableLocation(locationCode){
 	// highlight map table location row
     var mapTableRow = $('.js-map-table-location[data-location-code="'+locationCode+'"]').parent('td').parent('tr');
     $(mapTableRow).addClass('highlighted-table');
 }
-
 function resetMapTableLocation(locationCode){
 	// reset map table location row
 	var mapTableRow = $('.js-map-table-location[data-location-code="'+locationCode+'"]').parent('td').parent('tr');
     $(mapTableRow).removeClass('highlighted-table');
 }
 
+// highlight/reset map table cell
 function highlightMapTableValue(locationCode, indicatorCode){
-	// highlight map table report value
+	// highlight map table report value cell
     var mapTableValue = $('.js-map-table-value[data-location-code="'+locationCode+'"][data-indicator-code="'+indicatorCode+'"]').parent('td');
     $(mapTableValue).addClass('highlighted-table');
 }
-
 function resetMapTableValue(locationCode, indicatorCode){
-	// reset map table report value
+	// reset map table report value cell
     var mapTableValue = $('.js-map-table-value[data-location-code="'+locationCode+'"][data-indicator-code="'+indicatorCode+'"]').parent('td');
     $(mapTableValue).removeClass('highlighted-table');
 }

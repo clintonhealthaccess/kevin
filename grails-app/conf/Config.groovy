@@ -281,7 +281,6 @@ report.skip.levels = ["sector"]
 dashboard.skip.levels = []
 fct.skip.levels = []
 dsr.skip.levels = []
-dsr.view.map.skip.levels = ["country", "province"]
 survey.skip.levels = ["sector"]
 survey.export.skip.levels = ["country", "sector"]
 

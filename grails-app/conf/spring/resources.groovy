@@ -63,7 +63,6 @@ def config = CH.config
 Set<String> reportSkipLevels = config.report.skip.levels
 Set<String> dashboardSkipLevels = config.dashboard.skip.levels
 Set<String> dsrSkipLevels = config.dsr.skip.levels
-Set<String> dsrViewMapSkipLevels = config.dsr.view.map.skip.levels
 Set<String> fctSkipLevels = config.fct.skip.levels
 Set<String> surveySkipLevels = config.survey.skip.levels
 Set<String> surveyExportSkipLevels = config.survey.export.skip.levels
@@ -153,7 +152,6 @@ beans = {
 		reportService = ref("reportService")
 		valueService = ref("valueService")
 		locationSkipLevels = dsrSkipLevels
-		viewMapSkipLevels = dsrViewMapSkipLevels
 	}
 	
 	fctService(FctService){

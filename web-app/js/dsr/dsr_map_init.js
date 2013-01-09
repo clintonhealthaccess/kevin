@@ -1,29 +1,32 @@
-var locationValueLayer
+var locationValueLayer = null;
 var locationValueLayers = []
 
-function dsrMap(childrenCollectData, currentLocationCode, reportLocationCodes){
+function dsrMap(childrenCollectData, currentIndicatorIsCalculation, currentLocationCode, reportLocationCodes){
 	
-	var geoJsonLayerOptions = null;
+	if(childrenCollectData || currentIndicatorIsCalculation){
+		var geoJsonLayerOptions = null;
 
-	if(childrenCollectData){
-		geoJsonLayerOptions = {
-			pointToLayer: pointValueFeatureToLayer,
-			onEachFeature: onEachPointValueFeature
-		};
-	}
-	else{
-		geoJsonLayerOptions = {
-			pointToLayer: polygonValueFeatureToLayer,
-			onEachFeature: onEachPolygonValueFeature
-		};
+		if(childrenCollectData){
+			geoJsonLayerOptions = {
+				pointToLayer: pointValueFeatureToLayer,
+				onEachFeature: onEachPointValueFeature
+			};
+		}
+		else{
+			geoJsonLayerOptions = {
+				pointToLayer: polygonValueFeatureToLayer,
+				onEachFeature: onEachPolygonValueFeature
+			};
+		}
+
+		var mapTableIndicator = $('.js-map-table-indicator.js-selected-indicator');
+		var indicatorName = $(mapTableIndicator).data('indicator-names');
+		locationValueLayer = L.geoJson(null, geoJsonLayerOptions);
+		locationValueLayers.push(locationValueLayer);
+		
+		mapPolygons(childrenCollectData, currentLocationCode, reportLocationCodes);
 	}
 
-	var mapTableIndicator = $('.js-map-table-indicator.js-selected-indicator');
-	var indicatorName = $(mapTableIndicator).data('indicator-names');
-	locationValueLayer = L.geoJson(null, geoJsonLayerOptions);
-	locationValueLayers.push(locationValueLayer);
-	
-	mapPolygons(childrenCollectData, currentLocationCode, reportLocationCodes);
     mapLayers = locationValueLayers;
     createTheMap();
 
@@ -213,7 +216,16 @@ function mapPointValues(reportLocationCodes){
 					locationValueLayer.addData(geojsonPointFeature);
 
 					// add point
-					feature.properties.reportValueType = $(mapValue).data('report-value-type');
+					var rawValue = $(mapValue).data('report-value-raw');
+					var reportValueType = $(mapValue).data('report-value-type');
+					feature.properties.reportValueType = $(mapValue).data('report-value-type');					
+					if(reportValueType == 'NUMBER'){
+						rawValue = parseFloat(rawValue);				
+						var maxRawValue = getMaxRawValue();
+						var percentageMaxRawValue = parseFloat(rawValue/maxRawValue);
+						var reportValueSize = parseInt(percentageMaxRawValue*20)+10; //min: 10px max: 30px
+					}
+					feature.properties.reportValueSize = reportValueSize;
 					var geojsonPointFeature = createGeoJsonPointFeature(feature);
 					locationValueLayer.addData(geojsonPointFeature);
 				}
@@ -240,10 +252,9 @@ function pointValueFeatureToLayer(feature, latlng) {
 	// point value
 	if(reportValueType){
 		if(rawValue != null){
-			var rawValueFontSize = null;
 			var labelClassName = null;
 			
-			pointValueLabel = new L.Icon.Label.Default({					
+			var pointValue = new L.Icon.Label.Default({					
 					iconUrl: pointValueLabel,
 					iconSize: new L.Point(20, 20),
 					hideIcon: true,
@@ -257,40 +268,36 @@ function pointValueFeatureToLayer(feature, latlng) {
 			switch(reportValueType){			
 				case 'BOOL':
 					if(rawValue)
-						pointValueLabel.options.labelClassName += 'report-value-marker-true'
+						pointValue.options.labelClassName += 'report-value-marker-true'
 					else
-						pointValueLabel.options.labelClassName += 'report-value-marker-false'
+						pointValue.options.labelClassName += 'report-value-marker-false'
 					break;
 				case 'STRING':
-					pointValueLabel.options.labelClassName += 'report-value-marker-string'
+					pointValue.options.labelClassName += 'report-value-marker-string'
 					break;				
 				case 'TEXT':
-					pointValueLabel.options.labelClassName += 'report-value-marker-text'
+					pointValue.options.labelClassName += 'report-value-marker-text'
 					break;			
 				case 'NUMBER':
-					rawValue = parseFloat(rawValue);				
-					var maxRawValue = getMaxRawValue();
-					if(rawValue/maxRawValue > 0.5){
-						rawValueFontSize = parseInt((rawValue/maxRawValue)*20)+10; //min: 10px max: 30px
-						pointValueLabel.options.labelFontSize = rawValueFontSize + 'px'
-					}
-					pointValueLabel.options.labelClassName += 'report-value-marker-number'
+					var reportValueSize = feature.properties.reportValueSize;
+					pointValue.options.labelFontSize = reportValueSize + 'px'
+					pointValue.options.labelClassName += 'report-value-marker-number'
 					break;
 				//TODO get rid of this case
 				case 'LIST':
-					pointValueLabel.options.labelClassName += 'report-value-marker-string'
+					pointValue.options.labelClassName += 'report-value-marker-string'
 					break;
 				default:
-					pointValueLabel.options.labelClassName += 'report-value-marker-na'
+					pointValue.options.labelClassName += 'report-value-marker-na'
 					break;
 			}
 			
-			var geojsonMarkerOptions = {icon: pointValueLabel};
+			var geojsonMarkerOptions = {icon: pointValue};
 			var geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
 		   	return geojsonMarker;	
 		}
 		else{
-			pointValueLabel = new L.Icon.Label.Default({					
+			pointValue = new L.Icon.Label.Default({					
 				iconUrl: pointValueLabel,
 				iconSize: new L.Point(20, 20),
 				hideIcon: true,
@@ -300,7 +307,7 @@ function pointValueFeatureToLayer(feature, latlng) {
 				labelClassName: rawValue == null ? 'report-value-marker-na' : 'report-value-marker-label',
 				shadowUrl: null
 			});
-			var geojsonMarkerOptions = {icon: pointValueLabel};
+			var geojsonMarkerOptions = {icon: pointValue};
 			var geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
 		   	return geojsonMarker;
 		}
@@ -341,8 +348,14 @@ function highlightPointValueFeature(e) {
     var locationCode = target.feature.properties.locationCode
     if(rawValue != null){
     	if(reportValueType){
+    		// highlight map marker number, the only map marker without a constant font size
+    		if(reportValueType == 'NUMBER'){
+    			var fontSize = parseFloat(target.feature.properties.reportValueSize);
+    			var valueLabel = $(target._icon).children('.report-value-marker-number');
+    			$(valueLabel).css('font-size', fontSize+2);
+    		} 
     		// highlight map table cell
-	    	highlightMapTableValue(locationCode, indicatorCode);
+	    	highlightMapTableValue(locationCode, indicatorCode);	    	   		
     	}
     	else{
     		// highlight map table row
@@ -359,8 +372,14 @@ function resetPointValueFeature(e) {
     var locationCode = target.feature.properties.locationCode
     if(rawValue != null){
     	if(reportValueType){
+    		// reset map marker, the only map marker without a constant font size
+    		if(reportValueType == 'NUMBER'){
+    			var fontSize = parseFloat(target.feature.properties.reportValueSize);
+    			var valueLabel = $(target._icon).children('.report-value-marker-number');
+    			$(valueLabel).css('font-size', fontSize);
+    		}
     		// reset map table cell
-    		resetMapTableValue(locationCode, indicatorCode);
+    		resetMapTableValue(locationCode, indicatorCode);    		
     	}
     	else{
     		// reset map table row

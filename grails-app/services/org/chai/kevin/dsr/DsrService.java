@@ -33,7 +33,6 @@ public class DsrService {
 	private ReportService reportService;
 	private ValueService valueService;
 	private Set<String> locationSkipLevels;
-	private Set<String> viewMapSkipLevels;
 	
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
@@ -54,18 +53,16 @@ public class DsrService {
 		}
 		
 		List<DsrTarget> targets = category.getAllTargets();
-		Map<CalculationLocation, Map<DsrTarget, DataValue>> valueMap = new HashMap<CalculationLocation, Map<DsrTarget, DataValue>>();				
-		if (!getSkipViewLevels(reportType).contains(location.getLevel())) {
-			for (DsrTarget target : targets) {
-				for(CalculationLocation calculationLocation : calculationLocations){
-					if(!valueMap.containsKey(calculationLocation))
-						valueMap.put(calculationLocation, new HashMap<DsrTarget, DataValue>());	
-					if (target.getData() instanceof Calculation) {
-						valueMap.get(calculationLocation).put(target, getDsrValue(target, (Calculation)target.getData(), calculationLocation, period, types));
-					}	
-					else if (target.getData() instanceof DataElement && calculationLocation instanceof DataLocation) {
-						valueMap.get(calculationLocation).put(target, getDsrValue((DataElement)target.getData(), (DataLocation) calculationLocation, period));	
-					}
+		Map<CalculationLocation, Map<DsrTarget, DataValue>> valueMap = new HashMap<CalculationLocation, Map<DsrTarget, DataValue>>();
+		for (DsrTarget target : targets) {
+			for(CalculationLocation calculationLocation : calculationLocations){
+				if(!valueMap.containsKey(calculationLocation))
+					valueMap.put(calculationLocation, new HashMap<DsrTarget, DataValue>());	
+				if (target.getData() instanceof Calculation) {
+					valueMap.get(calculationLocation).put(target, getDsrValue(target, (Calculation)target.getData(), calculationLocation, period, types));
+				}	
+				else if (target.getData() instanceof DataElement && calculationLocation instanceof DataLocation) {
+					valueMap.get(calculationLocation).put(target, getDsrValue((DataElement)target.getData(), (DataLocation) calculationLocation, period));	
 				}
 			}
 		}
@@ -103,25 +100,8 @@ public class DsrService {
 	public void setLocationSkipLevels(Set<String> locationSkipLevels) {
 		this.locationSkipLevels = locationSkipLevels;
 	}
-
-	public void setViewMapSkipLevels(Set<String> viewMapSkipLevels){
-		this.viewMapSkipLevels = viewMapSkipLevels;
-	}
 	
 	public Set<LocationLevel> getSkipLocationLevels(){
 		return reportService.getSkipReportLevels(locationSkipLevels);
-	}
-	
-	public Set<LocationLevel> getSkipViewLevels(ReportType reportType){
-		Set<LocationLevel> skipViewLevels = new HashSet<LocationLevel>();
-		switch(reportType){
-		case MAP:
-			skipViewLevels = reportService.getSkipReportLevels(viewMapSkipLevels);
-			break;
-		case TABLE:
-		default:
-			skipViewLevels = reportService.getSkipReportLevels(null);
-		}
-		return skipViewLevels;
 	}
 }
