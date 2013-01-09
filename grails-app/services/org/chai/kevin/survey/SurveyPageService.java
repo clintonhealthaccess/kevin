@@ -387,6 +387,7 @@ public class SurveyPageService {
 		if (!enteredProgram.getClosed()) {
 			Map<SurveyElement, FormEnteredValue> affectedElements = new HashMap<SurveyElement, FormEnteredValue>();
 			// first we save the values
+			Set<SurveyElement> elementsToValidate = new HashSet<SurveyElement>();
 			for (SurveyElement element : elements) {
 				if (log.isDebugEnabled()) log.debug("setting new value for element: "+element);
 				
@@ -407,10 +408,14 @@ public class SurveyPageService {
 				
 				// if it is a checkbox question, we need to reset the values to null
 				// FIXME THIS IS A HACK
-				resetCheckboxQuestion(dataLocation, element, affectedElements);
+				elementsToValidate.addAll(resetCheckboxQuestion(dataLocation, element, affectedElements));
+				elementsToValidate.add(element);
 			}
+			
+			sessionFactory.getCurrentSession().flush();
 			// we evaluate the rules
-			surveyPage = evaluateRulesAndSave(dataLocation, elements, affectedElements);
+			surveyPage = evaluateRulesAndSave(dataLocation, new ArrayList<SurveyElement>(elementsToValidate), affectedElements);
+			//surveyPage = evaluateRulesAndSave(dataLocation, elements, affectedElements);
 		}
 
 		if (log.isDebugEnabled()) log.debug("modify(...)="+surveyPage);
@@ -518,9 +523,11 @@ public class SurveyPageService {
 
 	// FIXME HACK 
 	// TODO get rid of this
-	private void resetCheckboxQuestion(DataLocation dataLocation, SurveyElement element, Map<SurveyElement, FormEnteredValue> affectedElements) {
+	private List<SurveyElement> resetCheckboxQuestion(DataLocation dataLocation, SurveyElement element, Map<SurveyElement, FormEnteredValue> affectedElements) {
 		if (log.isDebugEnabled()) log.debug("resetCheckboxQuestion(dataLocation="+dataLocation+", element="+element+", affectedElements="+affectedElements+")");
 		if (log.isDebugEnabled()) log.debug("resetting question: "+element.getSurveyQuestion());
+		
+		List<SurveyElement> result = new ArrayList<SurveyElement>();
 		if (element.getSurveyQuestion().getType() == QuestionType.CHECKBOX) {
 			if (log.isDebugEnabled()) log.debug("checking if checkbox question needs to be reset");
 			boolean reset = true;
@@ -533,18 +540,21 @@ public class SurveyPageService {
 			for (SurveyElement elementInQuestion : element.getSurveyQuestion().getSurveyElements(dataLocation.getType())) {
 				FormEnteredValue enteredValueForElementInQuestion = formElementService.getOrCreateFormEnteredValue(dataLocation, elementInQuestion);
 
-				if (reset) enteredValueForElementInQuestion.getValue().setJsonObject(Value.NULL_INSTANCE().getJsonObject());
+				if (reset) enteredValueForElementInQuestion.getValidatable().getValue().setJsonObject(Value.NULL_INSTANCE().getJsonObject());
 				else if (enteredValueForElementInQuestion.getValue().isNull()) {
-					enteredValueForElementInQuestion.getValue().setJsonObject(enteredValueForElementInQuestion.getType().getValue(false).getJsonObject());
+					enteredValueForElementInQuestion.getValidatable().getValue().setJsonObject(enteredValueForElementInQuestion.getType().getValue(false).getJsonObject());
 				}
 				
 				SurveyService.setUserAndTimestamp(enteredValueForElementInQuestion);
 				
 				enteredValueForElementInQuestion.updateFromValidatable();
 				formElementService.save(enteredValueForElementInQuestion);
+				
 				affectedElements.put(elementInQuestion, enteredValueForElementInQuestion);
+				result.add(elementInQuestion);
 			}
 		}
+		return result;
 	}
 	
 	private void setProgramStatus(SurveyEnteredProgram program, DataLocation dataLocation) {

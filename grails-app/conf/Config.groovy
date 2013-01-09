@@ -214,7 +214,7 @@ log4j = {
 		   'org.chai.kevin.service.imports.NominativeDataImporter',
 		   'org.chai.kevin.service.imports.DataImporter',
 		   'org.chai.kevin.service.imports.DataImporterSpec'
-		   //'org.hibernate.type'
+		   // 'org.hibernate.type'
 		   
 }
 

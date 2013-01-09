@@ -486,6 +486,37 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		FormEnteredValue.list()[0].value.getAttribute("invalid").contains(rule2.id+"")
 	}
 	
+	def "test invalid values with checkbox option"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(CODE(1), period)
+		newSurveyProgram(CODE(2), survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(CODE(1), survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(CODE(1), program, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newCheckboxQuestion(CODE(1), section, 1, [(HEALTH_CENTER_GROUP)])
+		
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_BOOL()))
+		def element2 = newSurveyElement(question1, newRawDataElement(CODE(2), Type.TYPE_BOOL()))
+		
+		def option1 = newCheckboxOption(CODE(1), question1, 1, [(HEALTH_CENTER_GROUP)], element1)
+		def option2 = newCheckboxOption(CODE(2), question1, 2, [(HEALTH_CENTER_GROUP)], element2)
+		
+		def question2 = newSimpleQuestion(CODE(2), section, 1, [(HEALTH_CENTER_GROUP)])
+		def element3 = newSurveyElement(question2, newRawDataElement(CODE(3), Type.TYPE_BOOL()))
+		
+		def rule1 = newFormValidationRule(CODE(1), element3, "", [(HEALTH_CENTER_GROUP)], "\$"+element3.id+" and \$"+element1.id, true, [])
+		
+		when:
+		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element3, element2], [("elements["+element2.id+"].value"): "1", ("elements["+element3.id+"].value"): "1"])
+		
+		then:
+		FormEnteredValue.count() == 3
+		FormEnteredValue.list().find{it.formElement == element1}.value.booleanValue == false
+		FormEnteredValue.list().find{it.formElement == element3}.value.getAttribute("invalid").contains(rule1.id+"")
+	}
+	
 	def "test modify does not touch unmodified values"() {
 		setup:
 		setupLocationTree()
