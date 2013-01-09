@@ -7,12 +7,14 @@ function dsrMap(childrenCollectData, currentLocationCode, reportLocationCodes){
 
 	if(childrenCollectData){
 		geoJsonLayerOptions = {
-			pointToLayer: pointValueFeatureToLayer
+			pointToLayer: pointValueFeatureToLayer,
+			onEachFeature: onEachPointValueFeature
 		};
 	}
 	else{
 		geoJsonLayerOptions = {
-			pointToLayer: polygonValueFeatureToLayer
+			pointToLayer: polygonValueFeatureToLayer,
+			onEachFeature: onEachPolygonValueFeature
 		};
 	}
 
@@ -38,6 +40,7 @@ function mapPolygonValues(data){
 
 		// map 1 point label per location
 		var mapTableValue = $('.js-map-table-value.js-selected-value[data-location-code="'+fosaid+'"]');
+		var indicatorCode = $(mapTableValue).data('indicator-code');
 		var indicatorName = $(mapTableValue).data('indicator-names');
 
 		var polygonCoordinates = createPolygonCoordinates(dataFeature, false);
@@ -62,6 +65,7 @@ function mapPolygonValues(data){
 			"properties":{
 				"locationCode": $(mapTableValue).attr('data-location-code'),
 				"locationName": $(mapTableValue).data('location-names'),
+				"indicatorCode": indicatorCode,
 				"indicatorName": indicatorName,
 				"rawValue": rawValue,
 				"reportValue": reportValue,
@@ -130,7 +134,31 @@ function polygonValueFeatureToLayer(feature, latlng) {
    	return geojsonMarker;		
 }
 
-//TODO dsr polygon value layer interactions
+// dsr polygon value layer interactions
+
+function onEachPolygonValueFeature(feature, layer) {
+	layer.on({
+        mouseover: highlightPolygonValueFeature,
+        mouseout: resetPolygonValueFeature,
+        // click: zoomToFeature
+   	});
+}
+
+function highlightPolygonValueFeature(e) {
+    var target = e.target;
+    var indicatorCode = target.feature.properties.indicatorCode;
+    var locationCode = target.feature.properties.locationCode
+    // highlight map table cell
+    highlightMapTableValue(locationCode, indicatorCode);
+}
+
+function resetPolygonValueFeature(e) {
+	var target = e.target;
+	var indicatorCode = target.feature.properties.indicatorCode;
+    var locationCode = target.feature.properties.locationCode
+    // reset map table cell
+    resetMapTableValue(locationCode, indicatorCode);
+}
 
 // dsr point value layer 
 // point value -> (symbol = report value type) x (font size = report value)
@@ -155,7 +183,6 @@ function mapPointValues(reportLocationCodes){
 
 			$(mapTableValues).each(function(index, mapTableValue){
 
-				var indicatorName = $(mapTableValue).data('indicator-names')
 				var mapValue = $(mapTableValue).children('div.report-value');
 				fosaLocations.push(fosaid+"");
 
@@ -173,6 +200,7 @@ function mapPointValues(reportLocationCodes){
 							"locationCode": $(mapTableValue).attr('data-location-code'),
 							"locationName": $(mapTableValue).data('location-names'),
 							"indicatorClass": $(mapTableValue).data('indicator-class'),
+							"indicatorCode": $(mapTableValue).data('indicator-code'),
 							"indicatorName": $(mapTableValue).data('indicator-names'),
 							"rawValue": $(mapValue).data('report-value-raw'),
 							"reportValue": $(mapValue).data('report-value'),
@@ -295,4 +323,48 @@ function pointValueFeatureToLayer(feature, latlng) {
 	}
 }
 
-//TODO dsr point value layer interactions
+// dsr point value layer interactions
+
+function onEachPointValueFeature(feature, layer) {
+	layer.on({
+        mouseover: highlightPointValueFeature,
+        mouseout: resetPointValueFeature,
+        // click: zoomToFeature
+   	});
+}
+
+function highlightPointValueFeature(e) {
+    var target = e.target;
+    var rawValue = target.feature.properties.rawValue
+    var reportValueType = target.feature.properties.reportValueType
+	var indicatorCode = target.feature.properties.indicatorCode
+    var locationCode = target.feature.properties.locationCode
+    if(rawValue != null){
+    	if(reportValueType){
+    		// highlight map table cell
+	    	highlightMapTableValue(locationCode, indicatorCode);
+    	}
+    	else{
+    		// highlight map table row
+	    	highlightMapTableLocation(locationCode);	
+    	}
+    }
+}
+
+function resetPointValueFeature(e) {
+	var target = e.target;
+	var rawValue = target.feature.properties.rawValue
+	var reportValueType = target.feature.properties.reportValueType
+	var indicatorCode = target.feature.properties.indicatorCode
+    var locationCode = target.feature.properties.locationCode
+    if(rawValue != null){
+    	if(reportValueType){
+    		// reset map table cell
+    		resetMapTableValue(locationCode, indicatorCode);
+    	}
+    	else{
+    		// reset map table row
+    		resetMapTableLocation(locationCode);
+    	}
+    }
+}

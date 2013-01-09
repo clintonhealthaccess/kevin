@@ -94,7 +94,7 @@ function mapPolygons(childrenCollectData, currentLocationCode, reportLocationCod
 			var geojsonPolygonFeature = createGeoJsonPolygonFeature(polygonFeature);
 			basePolygonLayer.addData(geojsonPolygonFeature);
 			
-			// add polygon label
+			// add polygon label if children are not facilities
 			if(!childrenCollectData){
 				var center = L.multiPolygon(polygonCoordinates).getBounds().getCenter();
 				var multiPolygonCenter = [center.lat, center.lng];
@@ -111,7 +111,6 @@ function mapPolygons(childrenCollectData, currentLocationCode, reportLocationCod
 						"reportValueIcon": reportValueLabelIcon
 					}
 				};
-
 				var geojsonPointFeature = createGeoJsonPointFeature(polygonLabelFeature);
 				basePolygonLayer.addData(geojsonPointFeature);
 			}
@@ -172,17 +171,18 @@ function highlightPolygonFeature(e) {
 			var fLocationCode = layerData.feature.properties.locationCode;
 			var fPolygonLabel = layerData.feature.properties.reportValueIcon
 			if(fLocationCode == locationCode && !fPolygonLabel){
+				// highlight map polygon
 				layerData.setStyle({
 			        fillOpacity: 0.85,
 			        weight: 3
 			    });
 			}
 		});
-		// highlight map table location row
-	    var mapTableRow = $('.js-map-table-location[data-location-code="'+locationCode+'"]').parent('td').parent('tr');
-	    $(mapTableRow).addClass('highlighted-table');
+		// highlight map table row
+		highlightMapTableLocation(locationCode);
 	}
 	else{
+		// highlight map polygon
 		polygon.setStyle({
 	        fillOpacity: 0.85,
 	        weight: 3
@@ -195,11 +195,11 @@ function resetPolygonFeature(e) {
     var polygonLabel = polygon.feature.properties.reportValueIcon
     var locationCode = polygon.feature.properties.locationCode
     if(polygonLabel){
-    	// reset map table location row
-    	var mapTableRow = $('.js-map-table-location[data-location-code="'+locationCode+'"]').parent('td').parent('tr');
-	    $(mapTableRow).removeClass('highlighted-table');
+    	// reset map table row
+    	resetMapTableLocation(locationCode);
     }
 	else{
+		// reset map polygon
 		basePolygonLayer.resetStyle(polygon);	
 	}
 

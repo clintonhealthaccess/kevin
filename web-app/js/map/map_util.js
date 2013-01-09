@@ -1,7 +1,3 @@
-// function zoomToFeature(e) {
-//    map.fitBounds(e.target.getBounds());
-// }
-
 // TODO coordsToLatlng( <Array> coords) or coordsToLatlngs( <Array> coords, <Number> levelsDeep?) 
 // 0 = array of points, 1 = arrays of array of points
 function createPolygonCoordinates(feature, createLatLngCoordinates){
@@ -57,6 +53,7 @@ function createGeoJsonPointFeature(feature){
 		    	"locationCode": feature.properties.locationCode,
 		    	"locationName": feature.properties.locationName,
 		    	"indicatorClass": feature.properties.indicatorClass,
+		    	"indicatorCode": feature.properties.indicatorCode,
 		    	"indicatorName": feature.properties.indicatorName,
 		    	"rawValue": feature.properties.rawValue,
 		    	"radiusValue": feature.properties.radiusValue,
@@ -69,7 +66,7 @@ function createGeoJsonPointFeature(feature){
 	return geoJsonPointFeature;
 }
 
-// TODO http://stackoverflow.com/questions/4969121/in-javascript-is-there-an-easy-way-to-sort-key-value-pairs-by-the-value-and-re
+// http://stackoverflow.com/questions/4969121/in-javascript-is-there-an-easy-way-to-sort-key-value-pairs-by-the-value-and-re
 function sortMapByValue(O){
 	var A= [];
     for(var p in O){
@@ -97,7 +94,6 @@ function createEastWestOffset(boundsLat, center){
 	return [boundsLat, center.lng];
 }
 
-//TODO
 function getMinRawValue(){
 	var minRawValue;
 	$('div.js-map-table-value.js-selected-value').each(function(index){
@@ -134,4 +130,28 @@ function missingFosaLocations(fosaLocations, locations){
 		if(fosaLocations.indexOf(location) < 0)
 			$('.nav-table td[data-location-code="'+location+'"]').append('&#178;');
 	}
+}
+
+function highlightMapTableLocation(locationCode){
+	// highlight map table location row
+    var mapTableRow = $('.js-map-table-location[data-location-code="'+locationCode+'"]').parent('td').parent('tr');
+    $(mapTableRow).addClass('highlighted-table');
+}
+
+function resetMapTableLocation(locationCode){
+	// reset map table location row
+	var mapTableRow = $('.js-map-table-location[data-location-code="'+locationCode+'"]').parent('td').parent('tr');
+    $(mapTableRow).removeClass('highlighted-table');
+}
+
+function highlightMapTableValue(locationCode, indicatorCode){
+	// highlight map table report value
+    var mapTableValue = $('.js-map-table-value[data-location-code="'+locationCode+'"][data-indicator-code="'+indicatorCode+'"]').parent('td');
+    $(mapTableValue).addClass('highlighted-table');
+}
+
+function resetMapTableValue(locationCode, indicatorCode){
+	// reset map table report value
+    var mapTableValue = $('.js-map-table-value[data-location-code="'+locationCode+'"][data-indicator-code="'+indicatorCode+'"]').parent('td');
+    $(mapTableValue).removeClass('highlighted-table');
 }

@@ -38,8 +38,8 @@ function fctMap(childrenCollectData, currentLocationCode, reportLocationCodes){
 
 // fct polygon value layer 
 // polygon value -> combination of (color = indicator) x (radius size = raw value)
-// indicator -> best = green, middle = yellow, worst = red
 // polygon value label -> report value
+// indicator -> best = green, middle = yellow, worst = red
 
 function mapPolygonValues(data){
 	jQuery.each(data.features, function(i,dataFeature){
@@ -63,6 +63,7 @@ function mapPolygonValues(data){
 			
 			var mapTableIndicator = $('.js-map-table-indicator[data-indicator-code="'+sortedIndicator+'"]');
 			var indicatorClass = $(mapTableIndicator).data('indicator-class');
+			var indicatorCode = $(mapTableIndicator).data('indicator-code');
 			var indicatorName = $(mapTableIndicator).data('indicator-names');
 			
 			var polygonCoordinates = createPolygonCoordinates(dataFeature, false);
@@ -103,6 +104,7 @@ function mapPolygonValues(data){
 					"locationCode": $(mapTableValue).attr('data-location-code'),
 					"locationName": $(mapTableValue).data('location-names'),
 					"indicatorClass": indicatorClass,
+					"indicatorCode": indicatorCode,
 					"indicatorName": indicatorName,
 					"rawValue": rawValue,
 					"reportValue": reportValue
@@ -195,6 +197,7 @@ function onEachPolygonValueFeature(feature, layer) {
 
 function highlightPolygonValueFeature(e) {
     var target = e.target;
+    var indicatorCode = target.feature.properties.indicatorCode
     var indicatorClass = target.feature.properties.indicatorClass
     var rawValue = target.feature.properties.rawValue
     var polygonValueLabel = target.feature.properties.reportValueIcon
@@ -207,6 +210,7 @@ function highlightPolygonValueFeature(e) {
 				var fPolygonValueLabel = layerData.feature.properties.reportValueIcon
 				var fLocationCode = layerData.feature.properties.locationCode;
 				if(fRawValue == rawValue && fLocationCode == locationCode && !fPolygonValueLabel){
+					// highlight map point
 					layerData.setStyle({
 				    	fillColor: mapMarkerDarkerColors[indicatorClass],
 					    color: mapMarkerDarkerColors[indicatorClass],
@@ -217,6 +221,7 @@ function highlightPolygonValueFeature(e) {
 			});
     	}
     	else{
+    		// highlight map point
     		target.setStyle({
 		    	fillColor: mapMarkerDarkerColors[indicatorClass],
 			    color: mapMarkerDarkerColors[indicatorClass],
@@ -225,13 +230,13 @@ function highlightPolygonValueFeature(e) {
 		    });    		
     	}
     }
-    // highlight map table report value
-    var mapTableValue = $('.js-map-table-value[data-location-code="'+locationCode+'"][data-indicator-class="'+indicatorClass+'"]').parent('td');
-    $(mapTableValue).addClass('highlighted-table');
+    // highlight map table cell
+    highlightMapTableValue(locationCode, indicatorCode);
 }
 
 function resetPolygonValueFeature(e) {
 	var target = e.target;
+	var indicatorCode = target.feature.properties.indicatorCode
     var indicatorClass = target.feature.properties.indicatorClass
     var rawValue = target.feature.properties.rawValue
     var polygonValueLabel = target.feature.properties.reportValueIcon
@@ -244,6 +249,7 @@ function resetPolygonValueFeature(e) {
 				var fPolygonValueLabel = layerData.feature.properties.reportValueIcon
 				var fLocationCode = layerData.feature.properties.locationCode;
 				if(fRawValue == rawValue && fLocationCode == locationCode && !fPolygonValueLabel){
+					// reset map point
 					layerData.setStyle({
 						fillColor: mapMarkerColors[indicatorClass],
 					    weight: 0,
@@ -253,6 +259,7 @@ function resetPolygonValueFeature(e) {
 			});
     	}
     	else{
+    		// reset map point
     		target.setStyle({
 				fillColor: mapMarkerColors[indicatorClass],
 			    weight: 0,
@@ -260,16 +267,14 @@ function resetPolygonValueFeature(e) {
 			});
     	}
     }
-    // reset map table report value
-    var mapTableValue = $('.js-map-table-value[data-location-code="'+locationCode+'"][data-indicator-class="'+indicatorClass+'"]').parent('td');
-    $(mapTableValue).removeClass('highlighted-table');
-
+    // reset map table cell
+    resetMapTableValue(locationCode, indicatorCode);
 }
 
 // fct point value layer 
-// point value -> combination of (color = indicator) x (radius size = 10)
-// indicator -> best = green, middle = yellow, worst = red
+// point value -> combination of (color = indicator) x (radius size = constant 10)
 // point value label -> location name
+// indicator -> best = green, middle = yellow, worst = red
 
 function mapPointValues(reportLocationCodes){
 	var fosaLocations = [];
@@ -309,6 +314,7 @@ function mapPointValues(reportLocationCodes){
 						"properties":{
 							"locationCode": $(mapTableValue).attr('data-location-code'),
 							"locationName": $(mapTableValue).data('location-names'),
+							"indicatorCode": $(mapTableValue).data('indicator-code'),
 							"indicatorClass": $(mapTableValue).data('indicator-class'),
 							"indicatorName": $(mapTableValue).data('indicator-names'),
 							"rawValue": rawValue,
@@ -416,11 +422,11 @@ function highlightPointValueFeature(e) {
     var locationCode = target.feature.properties.locationCode
     if(rawValue != null){
     	if(reportValueLabel){
-    		// highlight map table location row
-	    	var mapTableRow = $('.js-map-table-location[data-location-code="'+locationCode+'"]').parent('td').parent('tr');
-	    	$(mapTableRow).addClass('highlighted-table');
+    		// highlight map table row
+    		highlightMapTableLocation(locationCode);
     	}
     	else{
+    		// highlight map point
     		highlightPolygonValueFeature(e);  		
     	}
     }
@@ -434,11 +440,11 @@ function resetPointValueFeature(e) {
     var locationCode = target.feature.properties.locationCode
     if(rawValue != null){
     	if(reportValueLabel){
-    		// reset map table location row
-	    	var mapTableRow = $('.js-map-table-location[data-location-code="'+locationCode+'"]').parent('td').parent('tr');
-		    $(mapTableRow).removeClass('highlighted-table');
+    		// reset map table row
+    		resetMapTableLocation(locationCode);
     	}
     	else{
+    		// reset map point
     		resetPolygonValueFeature(e);
     	}
     }
