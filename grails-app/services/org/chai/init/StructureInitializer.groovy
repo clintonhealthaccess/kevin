@@ -126,17 +126,21 @@ public class StructureInitializer {
 			def kigali 		= new Location(code: "kigali", names_en: 'Kigali City', parent: rwanda, level: LocationLevel.findByCode('province')).save(failOnError: true)
 			def gasabo 		= new Location(code: "gasabo", names_en: 'Gasabo', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
 			def kicukiro 	= new Location(code: "kicukiro", names_en: 'Kicukiro', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
-			def nyarugenge 	= new Location(code: "Nyarugenge", names_en: 'Nyarugenge', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
+			def nyarugenge 	= new Location(code: "nyarugenge", names_en: 'Nyarugenge', parent: kigali, level: LocationLevel.findByCode('district')).save(failOnError: true)
 			def burera 		= new Location(code: "burera", names_en: 'Burera', parent: north, level: LocationLevel.findByCode('district')).save(failOnError: true)
+			
+			def bureraSector = new Location(code: "burera_sector", names_en: 'Burera Sector', parent: burera, level: LocationLevel.findByCode('sector')).save(failOnError: true)
 		}
 	}
 	
 	static def createDataLocations() {
 		if (!DataLocation.count()) {
-			[	new DataLocation(code: "butaro_hd", names_en: 'Butaro HD', type: DataLocationType.findByCode('district_hospital')),
-				new DataLocation(code: "kivuye_cs", names_en: 'Kivuye CS', type: DataLocationType.findByCode('health_center')),
-				new DataLocation(code: "rusasa_cs", names_en: 'Rusasa CS', type: DataLocationType.findByCode('health_center'))
+			[	new DataLocation(code: "butaro_hd", names_en: 'Butaro HD', type: DataLocationType.findByCode('district_hospital'))
 			].each {Location.findByCode('burera').addToDataLocations(it).save(failOnError: true)}
+			
+			[	new DataLocation(code: "kivuye_cs", names_en: 'Kivuye CS', type: DataLocationType.findByCode('health_center')),
+				new DataLocation(code: "rusasa_cs", names_en: 'Rusasa CS', type: DataLocationType.findByCode('health_center'))
+			].each {Location.findByCode('burera_sector').addToDataLocations(it).save(failOnError: true)}
 		}
 	}
 	
