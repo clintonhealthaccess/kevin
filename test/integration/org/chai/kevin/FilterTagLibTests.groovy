@@ -111,6 +111,30 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		assertTrue html.contains("Rwanda")
 	}
 	
+	def testLocationFilterWithSkipLevels() {
+		def country = IntegrationTests.newLocationLevel(IntegrationTests.NATIONAL, 1)
+		def province = IntegrationTests.newLocationLevel(IntegrationTests.PROVINCE, 2)
+		def district = IntegrationTests.newLocationLevel(IntegrationTests.DISTRICT, 3)
+		def rwanda = IntegrationTests.newLocation(["en":IntegrationTests.RWANDA], IntegrationTests.RWANDA, country)
+		def north = IntegrationTests.newLocation(["en":IntegrationTests.NORTH], IntegrationTests.NORTH, rwanda, province)
+		def burera = IntegrationTests.newLocation(["en":IntegrationTests.BURERA], IntegrationTests.BURERA, north, district)
+		def hc = IntegrationTests.newDataLocationType(["en":IntegrationTests.HEALTH_CENTER_GROUP], IntegrationTests.HEALTH_CENTER_GROUP);
+		def butaro = IntegrationTests.newDataLocation(["en":IntegrationTests.BUTARO], IntegrationTests.BUTARO, burera, hc)
+		
+		def html = applyTemplate(
+			'<g:locationFilter selected="${location}" skipLevels="${skipLevels}"/>',
+			[
+				'location': rwanda,
+				'skipLevels': [province]
+			]
+		)
+		
+		assertTrue html.contains("href=\"/test?location="+rwanda.id+"\"")
+		assertTrue html.contains("href=\"/test?location="+burera.id+"\"")
+		assertFalse html.contains("href=\"/test?location="+north.id+"\"")
+		
+	}
+	
 	def testLocationFilterWithNoSelectedLocationTypes() {
 		def hc = IntegrationTests.newDataLocationType(["en":'not in config'], 'not_in_config', 1);
 		def country = IntegrationTests.newLocationLevel(IntegrationTests.NATIONAL, 1)

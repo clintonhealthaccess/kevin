@@ -127,16 +127,20 @@ class FilterTagLib {
 		Location.withTransaction {
 			def model = excludeLinkParams(attrs)
 			def location = attrs['selected']
+			def skipLevels = attrs['skipLevels']
 			def selectedTypes = attrs['selectedTypes']
 			if (selectedTypes == null) selectedTypes = DataLocationType.list([cache: true])
 			def locationFilterRoot = locationService.getRootLocation()	
 			def locationFilterTree = []
-			if (locationFilterRoot != null && !selectedTypes.empty) locationFilterTree.addAll locationFilterRoot.collectTreeWithDataLocations(attrs['skipLevels'], selectedTypes)
+			if (locationFilterRoot != null && !selectedTypes.empty) locationFilterTree.addAll locationFilterRoot.collectTreeWithDataLocations(skipLevels, selectedTypes)
+			
+			if (log.debugEnabled) log.debug("displaying filter with location: ${location}, skip levels: ${skipLevels}, selected types: ${selectedTypes}, tree: ${locationFilterTree}")
 			model << 
 				[
 					currentLocation: location,
 					locationFilterRoot: locationFilterRoot, 
 					locationFilterTree: locationFilterTree,
+					skipLevels: skipLevels,
 					selectedTypes: selectedTypes
 				]
 			out << render(template:'/tags/filter/locationFilter', model:model)

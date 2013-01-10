@@ -124,7 +124,7 @@ grails.project.dependency.resolution = {
 		compile ":rabbitmq-tasks:0.5.4"
 		
 		// application plugins
-		compile ':chai-locations:0.5-CHAI'
+		compile ':chai-locations:0.5.1-CHAI'
 		compile ':chai-kevin-data:0.1-CHAI'
 		
 		// cloud foundry support
