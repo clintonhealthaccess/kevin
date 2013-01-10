@@ -112,12 +112,15 @@ function polygonValueFeatureToLayer(feature, latlng) {
 			else
 				polygonValueLabel.options.labelClassName += 'report-value-marker-false'
 			break;
+		case 'ENUM':
+			polygonValueLabel.options.labelClassName += 'report-value-marker-enum'
+			break;				
 		case 'STRING':
 			polygonValueLabel.options.labelClassName += 'report-value-marker-string'
 			break;				
 		case 'TEXT':
 			polygonValueLabel.options.labelClassName += 'report-value-marker-text'
-			break;			
+			break;		
 		case 'NUMBER':
 			rawValue = parseFloat(rawValue);				
 			var maxRawValue = getMaxRawValue();

@@ -1029,24 +1029,24 @@ textarea.login-field { width: 400px; height: 50px; text-align: left; }
 /* line 63, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-number { opacity: 0.75; }
 /* line 68, ../../src/stylesheets/partials/_maps.sass */
-.map .report-value-marker-string, .map .report-value-marker-text { font-size: 15px; opacity: 0.75; }
-/* line 72, ../../src/stylesheets/partials/_maps.sass */
-.map .report-value-marker-string:hover, .map .report-value-marker-text:hover { font-size: 16px !important; }
-/* line 74, ../../src/stylesheets/partials/_maps.sass */
+.map .report-value-marker-enum, .map .report-value-marker-string, .map .report-value-marker-text { font-size: 15px; opacity: 0.75; }
+/* line 73, ../../src/stylesheets/partials/_maps.sass */
+.map .report-value-marker-enum:hover, .map .report-value-marker-string:hover, .map .report-value-marker-text:hover { font-size: 16px !important; }
+/* line 75, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-label { font-size: 20px; }
-/* line 76, ../../src/stylesheets/partials/_maps.sass */
+/* line 77, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-label:hover { font-size: 21px !important; }
-/* line 78, ../../src/stylesheets/partials/_maps.sass */
+/* line 79, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-polygon-label, .map .report-value-marker-point-label { font-size: 12px; color: black; opacity: 0.75; }
-/* line 83, ../../src/stylesheets/partials/_maps.sass */
+/* line 84, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-polygon-label:hover, .map .report-value-marker-point-label:hover { font-size: 13px !important; }
-/* line 85, ../../src/stylesheets/partials/_maps.sass */
+/* line 86, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-na { font-size: 14px; color: gray; opacity: 0.75; }
-/* line 89, ../../src/stylesheets/partials/_maps.sass */
+/* line 90, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-na:hover { font-size: 15px !important; }
-/* line 92, ../../src/stylesheets/partials/_maps.sass */
+/* line 93, ../../src/stylesheets/partials/_maps.sass */
 .map .leaflet-popup { bottom: 0px !important; }
-/* line 94, ../../src/stylesheets/partials/_maps.sass */
+/* line 95, ../../src/stylesheets/partials/_maps.sass */
 .map .leaflet-control-attribution a { font-size: 11px; }
 
 /* line 1, ../../src/stylesheets/partials/_tipsy.sass */
@@ -1110,7 +1110,7 @@ textarea.login-field { width: 400px; height: 50px; text-align: left; }
 /* line 57, ../../src/stylesheets/partials/_report.sass */
 .report-value-false { color: lightblue; }
 
-/* line 63, ../../src/stylesheets/partials/_report.sass */
+/* line 66, ../../src/stylesheets/partials/_report.sass */
 .tooltip-help { vertical-align: middle; }
 
 /* line 1, ../../src/stylesheets/partials/_graphs.sass */
