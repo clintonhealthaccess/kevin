@@ -9,6 +9,7 @@ import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
+
 class PlanningEntryUnitSpec extends UnitSpec {
 	
 	def "get value"() {

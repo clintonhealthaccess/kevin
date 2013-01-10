@@ -13,6 +13,7 @@ import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type.ValueType;
 
 import org.chai.kevin.data.Type;
+import org.chai.kevin.util.DataUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 
@@ -52,7 +53,7 @@ class ValueTagLib {
 					}
 					break;
 				case ValueType.NUMBER:
-					def reportValue = languageService.getStringValue(value, type, null, format, rounded)
+					def reportValue = Utils.getStringValue(value, type, null, format, rounded)
 					out << '<div class="report-value"'+
 							' data-report-value="'+reportValue+'"'+
 							' data-report-value-raw="'+value.numberValue+'"'+
@@ -60,7 +61,7 @@ class ValueTagLib {
 							reportValue+'</div>'
 					break;
 				default:
-					def reportValue = languageService.getStringValue(value, type, null, format, rounded)
+					def reportValue = Utils.getStringValue(value, type, null, format, rounded)
 					out << '<div class="report-value"'+
 							' data-report-value="'+reportValue+'"'+
 							' data-report-value-raw="'+reportValue+'"'+
@@ -80,7 +81,7 @@ class ValueTagLib {
 			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
 		}
 		else {
-			out << languageService.getStringValue(value, type, null, format, null, rounded)
+			out << Utils.getStringValue(value, type, null, format, null, rounded as Integer)
 		}
 	}
 	
@@ -94,7 +95,11 @@ class ValueTagLib {
 				message(code: 'fct.report.chart.tooltip.datalocations')+': '+totalLocations
 	}
 	
+	/**
+	 *
+	 */
 	def reportValue = { attrs, body ->
+		def valueList = attrs['valueList']
 		def value = attrs['value']
 		def type = attrs['type']
 		def format = attrs['format']
@@ -104,11 +109,54 @@ class ValueTagLib {
 		if (value == null || value.isNull()) {
 			out << '<div class="report-value-null">'+
 					reportTooltip(tooltip, message(code: 'report.value.null')+'')+
-					'</div>'
+				'</div>'
 		}
 		else {
-			out << reportTooltip(tooltip, languageService.getStringValue(value, type, null, format, rounded))
+			if (valueList != null) {
+				def result = ''
+				valueList = valueList.sort()
+				for (Value listValue : valueList){
+					result += getReportValue(listValue, type, format, rounded, tooltip)
+					switch(type.listType){
+						case ValueType.BOOL:
+							result += result.join('&nbsp;&nbsp;&nbsp;')
+							break;
+						default:
+							result += result.join(', ')
+							break;
+					}
+				}
+
+				out << result
+			}
+			else {
+				out << getReportValue(value, type, format, rounded, tooltip)
+			}
 		}
+	}
+	
+	def String getReportValue(def value, def type, def format, def rounded, def tooltip) {
+		if (log.isDebugEnabled()) log.debug("getReportValue(value="+value+", type="+type+")");
+		def result = ''
+		
+		switch (type.type) {
+		case ValueType.BOOL:
+			if (value.booleanValue){
+				result += '<div class="report-value-true">'+
+						reportTooltip(tooltip, '&#10003;')+
+						'</div>'
+			}
+			else {
+				result += '<div class="report-value-false">'+
+						reportTooltip(tooltip, '&#10007;')+
+						'</div>'
+			}
+			break;
+		default:
+			result += reportTooltip(tooltip, Utils.getStringValue(value, type, null, format, rounded))
+		}
+			
+		return result
 	}
 	
 	def String reportTooltip(String tooltip, String value){
@@ -141,7 +189,7 @@ class ValueTagLib {
 		
 		def result = null
 		if (value != null && !value.isNull()) {
-			result = languageService.getStringValue(value, type, enums, format, zero)
+			result = Utils.getStringValue(value, type, enums, format, zero)
 		}
 		if (result == null && nullText != null) out << nullText
 		else out << result
@@ -160,7 +208,7 @@ class ValueTagLib {
 					break;
 				case (ValueType.DATE):
 					printableValue.append '"'
-					printableValue.append  Utils.formatDate(value.dateValue)
+					printableValue.append  DataUtils.formatDate(value.dateValue)
 					printableValue.append '"'
 					break;
 				case (ValueType.NUMBER):

@@ -16,8 +16,8 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
-import org.chai.kevin.reports.ReportTable;
-import org.chai.kevin.util.Utils.ReportType;
+import org.chai.kevin.dsr.DsrTable;
+import org.chai.kevin.reports.ReportService.ReportType;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ValueService;
 import org.chai.location.CalculationLocation;
@@ -36,7 +36,7 @@ public class DsrService {
 	
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
-	public ReportTable getDsrTable(Location location, Period period, Set<DataLocationType> types, DsrTargetCategory category, ReportType reportType) {
+	public DsrTable getDsrTable(Location location, Period period, Set<DataLocationType> types, DsrTargetCategory category, ReportType reportType) {
 		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",location="+location+",types="+types+",category="+category+",reportType="+reportType+")");
 
 		Set<LocationLevel> skips = reportService.getSkipReportLevels(locationSkipLevels);
@@ -67,7 +67,7 @@ public class DsrService {
 			}
 		}
 			
-		ReportTable dsrTable = new ReportTable(valueMap, targets);
+		DsrTable dsrTable = new DsrTable(valueMap, targets);
 		if (log.isDebugEnabled()) log.debug("getDsrTable(...)="+dsrTable);
 		return dsrTable;
 	}

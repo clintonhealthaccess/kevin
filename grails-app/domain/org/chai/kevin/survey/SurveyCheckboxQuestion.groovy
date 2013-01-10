@@ -36,6 +36,7 @@ import java.util.Set;
 
 import org.chai.kevin.Exportable;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.util.DataUtils;
 import org.chai.location.DataLocationType;
 
 import org.apache.commons.collections.CollectionUtils
@@ -83,7 +84,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion implements Exportable
 	public List<SurveyCheckboxOption> getOptions(DataLocationType type) {
 		List<SurveyCheckboxOption> result = new ArrayList<SurveyCheckboxOption>();
 		for (SurveyCheckboxOption surveyCheckboxOption : getOptions()) {
-			if (Utils.split(surveyCheckboxOption.getTypeCodeString(), Utils.DEFAULT_TYPE_CODE_DELIMITER)
+			if (DataUtils.split(surveyCheckboxOption.getTypeCodeString(), DataUtils.DEFAULT_TYPE_CODE_DELIMITER)
 					.contains(type.getCode()))
 				result.add(surveyCheckboxOption);
 		}
@@ -100,7 +101,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion implements Exportable
 				found = true;
 				optionOrgUnitUuIds.addAll(CollectionUtils.intersection(
 					option.getTypeApplicable(),
-					Utils.split(this.getTypeCodeString(), Utils.DEFAULT_TYPE_CODE_DELIMITER))
+					DataUtils.split(this.getTypeCodeString(), DataUtils.DEFAULT_TYPE_CODE_DELIMITER))
 				);
 			}
 		}

@@ -1,4 +1,4 @@
-<%@ page import="org.chai.kevin.util.Utils" %>
+<%@ page import="org.chai.kevin.reports.ReportService.ReportType" %>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -22,10 +22,10 @@
 				<g:topLevelReportTabs linkParams="${params}" exclude="${['fctTarget', 'reportType']}" />
 				<g:if test="${fctTable != null}">
 					<ul>
-						<g:if test="${currentView == Utils.ReportType.MAP}">
+						<g:if test="${currentView == ReportType.MAP}">
 							<g:render template="/fct/map"/>
 						</g:if>
-						<g:elseif test="${currentView == Utils.ReportType.TABLE && fctTable.hasData()}">
+						<g:elseif test="${currentView == ReportType.TABLE && fctTable.hasData()}">
 							<g:render template="/fct/table"/>								
 						</g:elseif>
 						<g:else>

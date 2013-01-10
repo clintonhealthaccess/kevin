@@ -6,6 +6,7 @@ import org.chai.location.Location
 import org.chai.location.LocationLevel
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.util.Utils
+import org.chai.kevin.reports.ReportService.ReportType
 
 class DsrControllerSpec extends DsrIntegrationTests {
 
@@ -32,7 +33,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def target = newDsrTarget(CODE(4), 1, dataElement, category)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		
 		when: "valid table"
 		dsrController = new DsrController()
@@ -64,7 +65,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def target = newDsrTarget(CODE(4), 1, dataElement, category)
-		def reportType = Utils.ReportType.MAP
+		def reportType = ReportType.MAP
 		
 		when: "valid table"
 		dsrController = new DsrController()
@@ -97,7 +98,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def target = newDsrTarget(CODE(4), 1, dataElement, category)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		
 		when: "valid table"
 		dsrController = new DsrController()
@@ -124,7 +125,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def target = newDsrTarget(CODE(4), 1, dataElement, category)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		
 		when: "valid table"
 		dsrController = new DsrController()
@@ -149,7 +150,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
 		def category = newDsrTargetCategory(CATEGORY1, program, 0)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		
 		when:
 		dsrController = new DsrController()
@@ -182,7 +183,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def target = newDsrTarget(CODE(4), 1, dataElement, category)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		
 		when: "no parameters"
 		dsrController = new DsrController()
@@ -204,7 +205,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def target = newDsrTarget(CODE(4), 1, dataElement, category)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		
 		when: "invalid parameters"
 		dsrController = new DsrController()
@@ -232,7 +233,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def target = newDsrTarget(CODE(4), 1, dataElement, category)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		
 		when: "valid location parameter"
 		dsrController = new DsrController()
@@ -260,7 +261,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def target = newDsrTarget(CODE(4), 1, dataElement, category)
-		def reportType = Utils.ReportType.MAP
+		def reportType = ReportType.MAP
 		
 		when: "invalid parameters"
 		dsrController = new DsrController()
@@ -289,7 +290,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def target = newDsrTarget(CODE(4), 1, dataElement, category)
-		def reportType = Utils.ReportType.TABLE
+		def reportType = ReportType.TABLE
 		
 		when: "valid table"
 		dsrController = new DsrController()

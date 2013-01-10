@@ -138,7 +138,7 @@ class EntityExportServiceSpec extends IntegrationTests {
 		then:
 		entityData[0].equals("testCode")
 		entityData[2].equals("ieCode")
-		entityData[3].equals(ImportExportConstant.VALUE_NOT_EXPORTABLE)
+		entityData[3].equals(EntityExportService.VALUE_NOT_EXPORTABLE)
 	}
 	
 	def "test entity fields that are exportable lists and not exportable lists"(){

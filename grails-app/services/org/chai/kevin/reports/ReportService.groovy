@@ -26,18 +26,22 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
-@SuppressWarnings("unused")
-@Transactional(readOnly=true)
+import grails.plugin.springcache.annotations.CacheFlush;
+
 public class ReportService {
 	
-	private static final Log log = LogFactory.getLog(ReportService.class);
+	static transactional = true
 	
-	private LocationService locationService;
-	private ValueService valueService;
-	private DataService dataService;
-	private LanguageService languageService;
-	private SessionFactory sessionFactory;
-	private Set<String> skipLevels;
+	public enum ReportType {MAP, TABLE};
+	
+	def grailsApplication
+	
+	LocationService locationService;
+	ValueService valueService;
+	DataService dataService;
+	LanguageService languageService;
+	SessionFactory sessionFactory;
+	Set<String> skipLevels;
 	
 	public ReportProgram getRootProgram() {
 		ReportProgram program = (ReportProgram)sessionFactory.getCurrentSession().createCriteria(ReportProgram.class)
@@ -85,28 +89,9 @@ public class ReportService {
 		return indicators;
 	}
 	
-	public void setLocationService(LocationService locationService) {
-		this.locationService = locationService;
-	}
-	
-	public void setValueService(ValueService valueService) {
-		this.valueService = valueService;
-	}
-	
-	public void setDataService(DataService dataService) {
-		this.dataService = dataService;
-	}
-	
-	public void setLanguageService(LanguageService languageService) {
-		this.languageService = languageService;
-	}
-	
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-	
-	public void setSkipLevels(Set<String> skipLevels) {
-		this.skipLevels = skipLevels;
+	@CacheFlush(["dsrCache", "dashboardCache", "fctCache"])
+	public void flushCaches(){
+		
 	}
 	
 	public Set<LocationLevel> getSkipReportLevels(Set<String> skipLevels) {
@@ -114,8 +99,8 @@ public class ReportService {
 		
 		//add report-specific skip levels
 		if (skipLevels != null) allSkipLevels.addAll(skipLevels);
-		//add report-generic skip levels
-		allSkipLevels.addAll(this.skipLevels);
+		// add report-generic skip levels
+		allSkipLevels.addAll(grailsApplication.config.report.skip.levels);
 		
 		Set<LocationLevel> levels = new HashSet<LocationLevel>();
 		for (String skipLevel : allSkipLevels) {

@@ -73,7 +73,6 @@ grails.project.dependency.resolution = {
 		libResolver.addArtifactPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]")
 		libResolver.addIvyPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/ivys/ivy-[revision].xml")
 		libResolver.name = "github"
-//		libResolver.settings = ivySettings
 		resolver libResolver
     }
     dependencies {
@@ -113,7 +112,6 @@ grails.project.dependency.resolution = {
 		compile ":compass-sass:0.7"
 		compile ":google-analytics:2.0"
 		compile ":quartz:1.0-RC2"
-		compile ":constraints:0.8.0"
 		compile ":cached-resources:1.0"
 		compile ":cache-headers:1.1.5"
 		compile ":svn:1.0.2"
@@ -121,10 +119,13 @@ grails.project.dependency.resolution = {
 		compile ":mail:1.0.1"
 		compile ":build-info-tag:0.3.1"
 		compile ":yui-minify-resources:0.1.5"
-		compile ":rabbitmq-tasks:0.5.3-SNAPSHOT"
 		compile ":i18n-fields:0.6.3-CHAI"
 		compile ':mail-on-exception:0.1'
+		compile ":rabbitmq-tasks:0.5.4"
+		
+		// application plugins
 		compile ':chai-locations:0.5-CHAI'
+		compile ':chai-kevin-data:0.1-CHAI'
 		
 		// cloud foundry support
 		compile ":cloud-foundry:1.2.3"

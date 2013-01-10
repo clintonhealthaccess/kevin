@@ -37,7 +37,7 @@ import org.chai.kevin.Period
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.util.Utils
-import org.chai.kevin.util.Utils.ReportType
+import org.chai.kevin.reports.ReportService.ReportType
 import org.chai.location.DataLocationType
 import org.chai.location.Location
 import org.chai.location.LocationService

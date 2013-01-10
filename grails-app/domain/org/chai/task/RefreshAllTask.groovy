@@ -8,6 +8,7 @@ import org.chai.kevin.data.NormalizedDataElement;
 class RefreshAllTask extends Task {
 
 	def refreshValueService
+	def reportService
 	
 	public RefreshAllTask() {
 		super();
@@ -15,7 +16,7 @@ class RefreshAllTask extends Task {
 	
 	def executeTask() {
 		refreshValueService.refreshAll(this)
-		refreshValueService.flushCaches()
+		reportService.flushCaches()
 	}
 	
 	String getInformation() {

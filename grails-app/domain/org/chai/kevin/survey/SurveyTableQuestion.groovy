@@ -35,6 +35,7 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Exportable;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.util.DataUtils;
 import org.chai.location.DataLocationType;
 
 @I18nFields
@@ -85,7 +86,7 @@ class SurveyTableQuestion extends SurveyQuestion implements Exportable {
 	public List<SurveyTableRow> getRows(DataLocationType type) {
 		List<SurveyTableRow> result = new ArrayList<SurveyTableRow>();
 		for (SurveyTableRow surveyTableRow : getRows()) {
-			if (Utils.split(surveyTableRow.getTypeCodeString(), Utils.DEFAULT_TYPE_CODE_DELIMITER).contains(type.getCode()))
+			if (DataUtils.split(surveyTableRow.getTypeCodeString(), DataUtils.DEFAULT_TYPE_CODE_DELIMITER).contains(type.getCode()))
 				result.add(surveyTableRow);
 		}
 		return result;
@@ -94,7 +95,7 @@ class SurveyTableQuestion extends SurveyQuestion implements Exportable {
 	public List<SurveyTableColumn> getColumns(DataLocationType type) {
 		List<SurveyTableColumn> result = new ArrayList<SurveyTableColumn>();
 		for (SurveyTableColumn surveyTableColumn : getColumns()) {
-			if (Utils.split(surveyTableColumn.getTypeCodeString(), Utils.DEFAULT_TYPE_CODE_DELIMITER).contains(type.getCode()))
+			if (DataUtils.split(surveyTableColumn.getTypeCodeString(), DataUtils.DEFAULT_TYPE_CODE_DELIMITER).contains(type.getCode()))
 				result.add(surveyTableColumn);
 		}
 		return result;
@@ -127,7 +128,7 @@ class SurveyTableQuestion extends SurveyQuestion implements Exportable {
 			CollectionUtils.intersection(
 				CollectionUtils.intersection(
 					columnRowOrgUnitUuIDs, 
-					Utils.split(this.getTypeCodeString(), Utils.DEFAULT_TYPE_CODE_DELIMITER)
+					DataUtils.split(this.getTypeCodeString(), DataUtils.DEFAULT_TYPE_CODE_DELIMITER)
 				),
 				getSection().getTypeApplicable()	
 			)

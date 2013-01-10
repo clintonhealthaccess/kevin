@@ -363,13 +363,13 @@ class DataInitializer {
 		if (!Mode.count()) {
 			// geographical access - use of solar
 			new Mode(code: 'use_solar_mode_bool', expression: '(\$'+NormalizedDataElement.findByCode('use_solar').id+')', 
-				type: Type.TYPE_LIST(Type.TYPE_BOOL())).save(failOnError: true)
+				type: Type.TYPE_BOOL()).save(failOnError: true)
 			// geographical access - primary energy source
 			new Mode(code: 'primary_energy_source_mode_enum', expression: '(\$'+NormalizedDataElement.findByCode('primary_energy_source_enum').id+')', 
-				type: Type.TYPE_LIST(Type.TYPE_ENUM('energy_source'))).save(failOnError: true)
+				type: Type.TYPE_ENUM('energy_source')).save(failOnError: true)
 			// geographical access - TODO mode number
 			new Mode(code: 'number_of_motos_mode_number', expression: '(\$'+RawDataElement.findByCode('number_of_motos').id+')', 
-				type: Type.TYPE_LIST(Type.TYPE_NUMBER())).save(failOnError: true)
+				type: Type.TYPE_NUMBER()).save(failOnError: true)
 			// geographical access - TODO mode string/text
 		}
 	}
