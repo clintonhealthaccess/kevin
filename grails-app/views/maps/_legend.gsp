@@ -4,19 +4,30 @@
 		<li>
 			<span class="${i == indicators.size()-1 ? 'indicator-worst': i == 0 ? 'indicator-best': 'indicator-middle'}"></span>
 			<g:i18n field="${indicator.names}" />
+			<span class="${i == indicators.size()-1 ? 'indicator-worst': i == 0 ? 'indicator-best': 'indicator-middle'}-dark"></span>
 		</li>
 	</g:each>
 </ul>
 <!-- map colors -->
 <r:script>
-	var best = $('.map_legend .indicator-best');
-	var middle = $('.map_legend .indicator-middle');
-	var worst = $('.map_legend .indicator-worst');
+	var best = $('.map_legend .indicator-best').css('background-color');
+	var middle = $('.map_legend .indicator-middle').css('background-color');
+	var worst = $('.map_legend .indicator-worst').css('background-color');
 	
 	var mapMarkerColors = {
-		'indicator-best' : $(best).length == 1 ? rgb2hex($(best).css('background-color')) : 'green',		//green
-		'indicator-middle': $(middle).length == 1 ? rgb2hex($(middle).css('background-color')) : 'yellow',	//yellow
-		'indicator-worst': $(worst).length == 1 ? rgb2hex($(worst).css('background-color')) : 'red'			//red
+		'indicator-best' : best != null ? rgb2hex(best) : 'green',
+		'indicator-middle': middle != null ? rgb2hex(middle) : 'yellow',
+		'indicator-worst': worst != null ? rgb2hex(worst) : 'red'
+	}
+
+	var bestDark = $('.map_legend .indicator-best-dark').css('background-color');
+	var middleDark = $('.map_legend .indicator-middle-dark').css('background-color');
+	var worstDark = $('.map_legend .indicator-worst-dark').css('background-color');
+
+	var mapMarkerDarkerColors = {
+		'indicator-best' : bestDark != null ? rgb2hex(bestDark) : 'darkGreen',
+		'indicator-middle': middleDark != null ? rgb2hex(middleDark) : 'darkYellow',
+		'indicator-worst': worstDark != null ? rgb2hex(worstDark) : 'darkRed'
 	}
 
 	function rgb2hex(rgb){

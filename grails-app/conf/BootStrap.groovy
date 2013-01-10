@@ -168,7 +168,7 @@ class BootStrap {
 			SurveyInitializer.createSurveySkipRules()
 			
 			// refresh
-			surveyPageService.refresh(Location.findByCode('rwanda'), Survey.findByCode('survey_period2'), false, true, null);
+			surveyPageService.refresh(Location.findByCode('0'), Survey.findByCode('survey_period2'), false, true, null);
 			
 			// exports
 			ExportInitializer.createDataElementExports()

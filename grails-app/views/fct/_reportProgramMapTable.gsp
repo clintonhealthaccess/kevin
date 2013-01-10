@@ -25,33 +25,38 @@
 				</g:else>
 			</tr>
 			<g:each in="${reportLocations}" var="location">
-				<tr>					
-					<td data-location-code="${location.code}">
-						<g:if test="${location.collectsData()}"><g:i18n field="${location.names}" /></g:if>
-						<g:else>
-							<%
-								locationLinkParams = [:]
-								locationLinkParams.putAll linkParams
-								locationLinkParams['location'] = location.id+""
-							%>
-							<a href="${createLink(controller: controllerName, action: actionName,  params: locationLinkParams)}">
-							<g:i18n field="${location.names}" /></a>
-						</g:else>
+				<tr>
+					<td>
+						<div class="js-map-table-location" 
+							data-location-code="${location.code}" 
+							data-location-names="${i18n(field: location.names)}">
+							<g:if test="${location.collectsData()}">
+								<g:i18n field="${location.names}" />
+							</g:if>
+							<g:else>
+								<%
+									locationLinkParams = [:]
+									locationLinkParams.putAll linkParams
+									locationLinkParams['location'] = location.id+""
+								%>
+								<a href="${createLink(controller: controllerName, action: actionName,  params: locationLinkParams)}">
+								<g:i18n field="${location.names}" /></a>
+							</g:else>
+						</div>
 					</td>
 					<g:if test="${reportIndicators != null && !reportIndicators.empty}">
 						<g:each in="${reportIndicators}" var="indicator" status="i">
 							<td>
-								<g:set var="reportMapValue" value="${reportTable.getTableReportValue(location, indicator)?.value}"/>
-								<div class="js-map-table-value
-										${reportMapValue != null && !reportMapValue.isNull() && reportMapValue.numberValue > 0 ? 'js-selected-value':''}"
-										data-location-code="${location.code}" 
-										data-location-names="${i18n(field: location.names)}" 
-										data-indicator-code="${indicator.code}" 
-										data-indicator-names="${i18n(field:indicator.names)}"
-										data-indicator-class="${i == reportIndicators.size()-1 ? 'indicator-worst': i == 0 ? 'indicator-best': 'indicator-middle'}">
+								<g:set var="mapValue" value="${reportTable.getTableReportValue(location, indicator)?.value}"/>
+								<div class="js-map-table-value ${mapValue != null && !mapValue.isNull() && mapValue.numberValue > 0 ? 'js-selected-value':''}"
+									data-location-code="${location.code}" 
+									data-location-names="${i18n(field: location.names)}" 
+									data-indicator-code="${indicator.code}" 
+									data-indicator-names="${i18n(field:indicator.names)}"
+									data-indicator-class="${i == reportIndicators.size()-1 ? 'indicator-worst': i == 0 ? 'indicator-best': 'indicator-middle'}">
 									<div class="report-value-number">
 										<g:reportMapValue 
-											value="${reportMapValue}"
+											value="${mapValue}"
 											type="${indicator.type}"
 											format="${indicator.numberFormat}"/>
 									</div>

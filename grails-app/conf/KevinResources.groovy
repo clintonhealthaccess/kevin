@@ -158,14 +158,14 @@ modules = {
 	valuefilter {
 		dependsOn 'jquery'
 				
-		resource url: '/js/valuefilter_init.js', bundle: 'core'
+		resource url: '/js/fct/valuefilter_init.js', bundle: 'core'
 	}
 	
 	leaflet {
 		dependsOn 'jquery'
 		
-		resource url: 'http://cdn.leafletjs.com/leaflet-0.4/leaflet.js'
-		resource url: 'http://cdn.leafletjs.com/leaflet-0.4/leaflet.css'
+		resource url: 'http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.js'
+		resource url: 'http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css'
 		
 		resource url: '/js/jquery/leafleticon/jquery.leaflet-icon-label.js'
 		resource url: '/js/jquery/leafleticon/jquery.leaflet-icon-label.css'
@@ -174,9 +174,10 @@ modules = {
 	map {
 		dependsOn 'jquery,leaflet'
 		
-		resource url: '/js/map_init.js'
+		resource url: '/js/map/map_init.js'
+		resource url: '/js/map/map_util.js'
 	}
-	
+
 	// Start resources for pages
 	list {
 		dependsOn 'core,spinner,form,fieldselection,cluetip,dropdown,explanation,chosen'
@@ -192,14 +193,18 @@ modules = {
 
 	dsr {
 		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,map'
+
+		resource url: '/js/dsr/dsr_map_init.js'
 	}
 
 	fct {
 		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,valuefilter,map'
+
+		resource url: '/js/fct/fct_map_init.js'
 	}
 	
 	dashboard {
-		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen,chartanimation,comparefilter'
+		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen,chartanimation,comparefilter,map'
 	}
 
 	cost {

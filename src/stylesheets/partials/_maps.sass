@@ -1,2 +1,97 @@
 #maps #map_canvas
   height: 640px
+
+.map-wrap
+  border: 1px solid $filler
+  //slister start
+  //margin-bottom: 1px
+  //slister end
+  margin-top: 5px
+  position: relative
+  width: 968px
+
+.map_legend
+  li
+    font-size: 11px
+    margin: 15px 15px 10px 0px !important
+    span
+      display: block
+      float: left
+      height: 10px
+      margin-right: 5px
+      width: 10px
+      
+    //slister start
+    .indicator-best
+      background: $best
+    .indicator-middle
+      background: $middle
+    .indicator-worst
+      background: $worst
+
+    .indicator-best-dark
+      background: $best - #090909
+      display: none
+    .indicator-middle-dark
+      background: $middle - #090909
+      display: none
+    .indicator-worst-dark
+      background: $worst - #090909
+      display: none
+      //slister end
+
+//slister start
+.map  
+  font-weight: bold  
+  height: 500px
+  margin: 10px auto 0px  
+  width: 948px
+
+  .report-value-marker-true
+    color: $primary
+    font-size: 25px
+    opacity: 1
+    &:hover
+      font-size: 26px !important
+  .report-value-marker-false
+    color: $worst
+    font-size: 20px    
+    font-weight: normal
+    opacity: 0.5
+    &:hover
+      font-size: 21px !important
+  .report-value-marker-number
+    //$font-size: 10px !default
+    opacity: 0.75
+    // &:hover
+    //   font-size: $font-size+1px !important
+  .report-value-marker-enum,
+  .report-value-marker-string, 
+  .report-value-marker-text
+    font-size: 15px
+    opacity: 0.75
+    &:hover
+      font-size: 16px !important
+  .report-value-marker-label
+    font-size: 20px
+    &:hover
+      font-size: 21px !important
+  .report-value-marker-polygon-label,
+  .report-value-marker-point-label
+    font-size: 12px
+    color: black
+    opacity: 0.75
+    &:hover
+      font-size: 13px !important
+  .report-value-marker-na
+    font-size: 14px
+    color: gray
+    opacity: 0.75
+    &:hover
+      font-size: 15px !important
+
+  .leaflet-popup
+    bottom: 0px !important
+  .leaflet-control-attribution a
+    font-size: 11px
+    //slister end
