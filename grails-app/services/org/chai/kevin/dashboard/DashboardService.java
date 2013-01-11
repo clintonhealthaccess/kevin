@@ -47,7 +47,12 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class DashboardService {
+
+	private static final Log log = LogFactory.getLog(DashboardService.class);
 
 	private ReportService reportService;
 	private SessionFactory sessionFactory;
@@ -56,6 +61,7 @@ public class DashboardService {
 	
 	@Transactional(readOnly = true)
 	public Dashboard getDashboard(Location location, ReportProgram program, Period period, Set<DataLocationType> types, boolean compare) {
+		if (log.isDebugEnabled()) log.debug("getDashboard(location="+location+", program="+program+", period="+period+", types="+types+")");
 
 		// LOCATIONS
 		List<CalculationLocation> locations = new ArrayList<CalculationLocation>();
@@ -79,10 +85,13 @@ public class DashboardService {
 		Map<CalculationLocation, Map<DashboardEntity, Value>> valueMap = getValues(locations, dashboardEntities, period, types);
 		
 		List<Location> locationPath = calculateLocationPath(location);
-		return new Dashboard(valueMap, locationPath, this);
+		Dashboard dashboard = new Dashboard(valueMap, locationPath, this);
+		if (log.isDebugEnabled()) log.debug("getDashboard(...)="+dashboard);
+		return dashboard;
 	}
 	
 	private Map<CalculationLocation, Map<DashboardEntity, Value>> getValues(List<CalculationLocation> locations, List<DashboardEntity> dashboardEntities, Period period, Set<DataLocationType> types) {
+		if (log.isDebugEnabled()) log.debug("getValues(locations="+locations+", dashboardEntities="+dashboardEntities+", period="+period+", types="+types+")");
 		Map<CalculationLocation, Map<DashboardEntity, Value>> valueMap = new HashMap<CalculationLocation, Map<DashboardEntity, Value>>();
 
 		for (CalculationLocation location : locations) {

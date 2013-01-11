@@ -1,7 +1,7 @@
 <%@ page import="org.chai.kevin.data.Enum" %>
 <%@ page import="org.chai.kevin.data.Source" %>
 <%@ page import="org.chai.kevin.data.Type.ValueType" %>
-<%@ page import="org.chai.kevin.util.Utils"%>
+<%@ page import="org.chai.kevin.util.DataUtils"%>
 
 <div class="row">
 	<span class="type"><g:message code="entity.type.label"/>:</span>
@@ -21,7 +21,7 @@
 
 <g:each in="${periodValues}" status="i" var="periodValue">
 	<div class="row box">
-		<span>${Utils.formatDate(periodValue.key.startDate)} - ${Utils.formatDate(periodValue.key.endDate)}</span>:
+		<span>${DataUtils.formatDate(periodValue.key.startDate)} - ${DataUtils.formatDate(periodValue.key.endDate)}</span>:
 		<span class="bold">${periodValue.value} values</span>
 		<g:if test="${valuesWithError.containsKey(periodValue.key)}">
 			, with error: <span class="bold">${valuesWithError[periodValue.key]} values</span>

@@ -1,4 +1,4 @@
-<%@page import="org.chai.kevin.util.Utils"%>
+<%@page import="org.chai.kevin.util.DataUtils"%>
 
 <ul class="tab-subnav horizontal">
 	<li>
@@ -34,7 +34,7 @@
 				<g:each in="${surveyElements}" status="i" var="surveyElement"> 
 					<g:set var="question" value="${surveyElement.key.surveyQuestion}" /> 
 					<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-						<td>${Utils.formatDate(question.section.program.survey.period.startDate)} &harr; ${Utils.formatDate(question.section.program.survey.period.endDate)}</td>
+						<td>${DataUtils.formatDate(question.section.program.survey.period.startDate)} &harr; ${DataUtils.formatDate(question.section.program.survey.period.endDate)}</td>
 						<td>${i18n(field:question.section.program.survey.names)}</td>
 						<td><g:stripHtml field="${i18n(field: question.names)}" chars="100"/></a></td>
 						<td>${surveyElement.value}</td>

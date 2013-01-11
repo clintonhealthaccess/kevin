@@ -1,4 +1,4 @@
-<%@page import="org.chai.kevin.util.Utils"%>
+<%@page import="org.chai.kevin.util.DataUtils"%>
 
 <html>
     <head>
@@ -28,7 +28,7 @@
 							from="${types}" value="${cmd==null?types*.code:cmd*.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 						
 						<g:selectFromList name="periodId" label="${message(code:'expression.test.periods.label')}" bean="${cmd}" field="periodId" 
-							from="${periods}" value="${cmd==null?(periods.size() > 0?periods[periods.size()-1].id:''):cmd?.periodId}" values="${periods.collect{Utils.formatDate(it.startDate)+' to '+Utils.formatDate(it.endDate)}}" optionKey="id"/>
+							from="${periods}" value="${cmd==null?(periods.size() > 0?periods[periods.size()-1].id:''):cmd?.periodId}" values="${periods.collect{DataUtils.formatDate(it.startDate)+' to '+DataUtils.formatDate(it.endDate)}}" optionKey="id"/>
 						
 						<div class="row">
 							<button type="submit"><g:message code="expression.test.button.label"/></button>

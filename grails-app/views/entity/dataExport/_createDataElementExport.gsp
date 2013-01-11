@@ -1,4 +1,4 @@
-<%@page import="org.chai.kevin.util.Utils"%>
+<%@page import="org.chai.kevin.util.DataUtils"%>
 <div class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">
@@ -14,7 +14,7 @@
 				<g:input name="code" label="${message(code:'entity.code.label')}" bean="${exporter}" field="code"/>
 				
 				<g:selectFromList name="periodIds" label="${message(code:'period.label')}" bean="${exporter}" field="periods" 
-					from="${periods}" value="${exporter.periods*.id}" values="${periods.collect{Utils.formatDate(it.startDate)+' to '+Utils.formatDate(it.endDate)}}" optionKey="id" multiple="true"/>
+					from="${periods}" value="${exporter.periods*.id}" values="${periods.collect{DataUtils.formatDate(it.startDate)+' to '+DataUtils.formatDate(it.endDate)}}" optionKey="id" multiple="true"/>
 				
 				<g:selectFromList name="typeCodes" label="${message(code:'entity.datalocationtype.label')}" bean="${exporter}" field="typeCodeString" 
  					from="${types}" value="${exporter.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
