@@ -20,7 +20,7 @@
 			</div>
 			<div class="main">
 				<!-- TODO get rid of reportType from exclude list when all maps are implemented -->
-				<g:topLevelReportTabs linkParams="${params}" exclude="${['dsrCategory', 'indicators', 'reportType']}" />
+				<g:topLevelReportTabs linkParams="${params}" exclude="${['dsrCategory', 'indicators']}" />
 				<g:if test="${dsrTable != null}">
 					<ul>
 						<g:if test="${currentView == ReportType.MAP}">

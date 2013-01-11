@@ -21,9 +21,10 @@ function fctMap(childrenCollectData, currentLocationCode, reportLocationCodes){
 
 	var mapTableIndicators = $('.js-map-table-indicator');
 	$(mapTableIndicators).each(function(index, mapTableIndicator){
+		var indicatorCode = $(mapTableIndicator).data('indicator-code');
 		var indicatorName = $(mapTableIndicator).data('indicator-names');
 		var locationValueLayer = L.geoJson(null, geoJsonLayerOptions);
-		locationValueLayerMap[indicatorName] = locationValueLayer;
+		locationValueLayerMap[indicatorCode] = locationValueLayer;
 		overlays[indicatorName] = locationValueLayer;
 		locationValueLayers.push(locationValueLayer);
 	});
@@ -114,14 +115,14 @@ function mapPolygonValues(data){
 			// if value != null, add value
 			if(rawValue != null){
 				var geojsonPointFeature = createGeoJsonPointFeature(feature);			
-				var locationValueLayer = locationValueLayerMap[indicatorName];
+				var locationValueLayer = locationValueLayerMap[indicatorCode];
 				locationValueLayer.addData(geojsonPointFeature);
 			}
 
 			// always add value label
 			feature.properties.reportValueIcon = reportValueLabelIcon;
 			var geojsonPointFeature = createGeoJsonPointFeature(feature);
-			var locationValueLayer = locationValueLayerMap[indicatorName];
+			var locationValueLayer = locationValueLayerMap[indicatorCode];
 			locationValueLayer.addData(geojsonPointFeature);
 		});
 							
@@ -204,8 +205,7 @@ function highlightPolygonValueFeature(e) {
     var locationCode = target.feature.properties.locationCode
     if(rawValue != null){
     	if(polygonValueLabel){
-    		var indicatorName = target.feature.properties.indicatorName
-    		locationValueLayerMap[indicatorName].eachLayer(function (layerData) {
+    		locationValueLayerMap[indicatorCode].eachLayer(function (layerData) {
 				var fRawValue = layerData.feature.properties.rawValue;
 				var fPolygonValueLabel = layerData.feature.properties.reportValueIcon
 				var fLocationCode = layerData.feature.properties.locationCode;
@@ -243,8 +243,7 @@ function resetPolygonValueFeature(e) {
     var locationCode = target.feature.properties.locationCode
     if(rawValue != null){
     	if(polygonValueLabel){
-    		var indicatorName = target.feature.properties.indicatorName
-    		locationValueLayerMap[indicatorName].eachLayer(function (layerData) {
+    		locationValueLayerMap[indicatorCode].eachLayer(function (layerData) {
 				var fRawValue = layerData.feature.properties.rawValue;
 				var fPolygonValueLabel = layerData.feature.properties.reportValueIcon
 				var fLocationCode = layerData.feature.properties.locationCode;
@@ -294,7 +293,7 @@ function mapPointValues(reportLocationCodes){
 
 			$(mapTableValues).each(function(index, mapTableValue){
 
-				var indicatorName = $(mapTableValue).data('indicator-names')
+				var indicatorCode = $(mapTableValue).data('indicator-code')
 				var mapValue = $(mapTableValue).children('div.report-value-number').children('div.report-value');
 				var rawValue = $(mapValue).data('report-value-raw');
 				var reportValue = $(mapValue).data('report-value');
@@ -314,8 +313,8 @@ function mapPointValues(reportLocationCodes){
 						"properties":{
 							"locationCode": $(mapTableValue).attr('data-location-code'),
 							"locationName": $(mapTableValue).data('location-names'),
-							"indicatorCode": $(mapTableValue).data('indicator-code'),
 							"indicatorClass": $(mapTableValue).data('indicator-class'),
+							"indicatorCode": $(mapTableValue).data('indicator-code'),
 							"indicatorName": $(mapTableValue).data('indicator-names'),
 							"rawValue": rawValue,
 							"reportValue": reportValue
@@ -325,14 +324,14 @@ function mapPointValues(reportLocationCodes){
 					// if value != null, add value
 					if(rawValue != null){
 						var geojsonPointFeature = createGeoJsonPointFeature(feature);			
-						var locationValueLayer = locationValueLayerMap[indicatorName];
+						var locationValueLayer = locationValueLayerMap[indicatorCode];
 						locationValueLayer.addData(geojsonPointFeature);
 					}
 
 					// always add value label
 					feature.properties.reportValueIcon = reportValueLabelIcon;
 					var geojsonPointFeature = createGeoJsonPointFeature(feature);
-					var locationValueLayer = locationValueLayerMap[indicatorName];
+					var locationValueLayer = locationValueLayerMap[indicatorCode];
 					locationValueLayer.addData(geojsonPointFeature);
 				}
 			});								
@@ -416,7 +415,6 @@ function onEachPointValueFeature(feature, layer) {
 
 function highlightPointValueFeature(e) {
     var target = e.target;
-    var indicatorClass = target.feature.properties.indicatorClass
     var rawValue = target.feature.properties.rawValue
     var reportValueLabel = target.feature.properties.reportValueIcon
     var locationCode = target.feature.properties.locationCode
@@ -434,7 +432,6 @@ function highlightPointValueFeature(e) {
 
 function resetPointValueFeature(e) {
 	var target = e.target;
-    var indicatorClass = target.feature.properties.indicatorClass
     var rawValue = target.feature.properties.rawValue
     var reportValueLabel = target.feature.properties.reportValueIcon
     var locationCode = target.feature.properties.locationCode

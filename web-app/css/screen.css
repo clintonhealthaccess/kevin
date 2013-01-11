@@ -1021,11 +1021,11 @@ textarea.login-field { width: 400px; height: 50px; text-align: left; }
 /* line 50, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-true { color: #258cd5; font-size: 25px; opacity: 1; }
 /* line 54, ../../src/stylesheets/partials/_maps.sass */
-.map .report-value-marker-true:hover { font-size: 26px !important; }
+.map .report-value-marker-true:hover { font-size: 27px !important; }
 /* line 56, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-false { color: #e93100; font-size: 20px; font-weight: normal; opacity: 0.5; }
 /* line 61, ../../src/stylesheets/partials/_maps.sass */
-.map .report-value-marker-false:hover { font-size: 21px !important; }
+.map .report-value-marker-false:hover { font-size: 22px !important; }
 /* line 63, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-number { opacity: 0.75; }
 /* line 68, ../../src/stylesheets/partials/_maps.sass */

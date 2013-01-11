@@ -57,6 +57,7 @@ function mapPolygonValues(data){
 
 		// position each point label per indicator
 		var latLng = null;
+		//TODO figure out why this returns NorthWest bounds
 		var northWest = bounds.getSouthEast();
 		latLng = createNorthSouthOffset(northWest.lng, center);
 
@@ -78,6 +79,13 @@ function mapPolygonValues(data){
 		};
 
 		// add point label
+		if(reportValueType == 'NUMBER'){
+			rawValue = parseFloat(rawValue);				
+			var maxRawValue = getMaxRawValue();
+			var percentageMaxRawValue = parseFloat(rawValue/maxRawValue);
+			var reportValueSize = parseInt(percentageMaxRawValue*20)+10; //min: 10px max: 30px
+		}
+		feature.properties.reportValueSize = reportValueSize;
 		var geojsonPointFeature = createGeoJsonPointFeature(feature);
 		locationValueLayer.addData(geojsonPointFeature);
 							
@@ -122,12 +130,8 @@ function polygonValueFeatureToLayer(feature, latlng) {
 			polygonValueLabel.options.labelClassName += 'report-value-marker-text'
 			break;		
 		case 'NUMBER':
-			rawValue = parseFloat(rawValue);				
-			var maxRawValue = getMaxRawValue();
-			if(rawValue/maxRawValue > 0.5){
-				rawValueFontSize = parseInt((rawValue/maxRawValue)*20)+10; //min: 10px max: 30px
-				polygonValueLabel.options.labelFontSize = rawValueFontSize + 'px'
-			}
+			var reportValueSize = feature.properties.reportValueSize;
+			polygonValueLabel.options.labelFontSize = reportValueSize + 'px'
 			polygonValueLabel.options.labelClassName += 'report-value-marker-number'
 			break;	
 		default:
@@ -275,6 +279,9 @@ function pointValueFeatureToLayer(feature, latlng) {
 					else
 						pointValue.options.labelClassName += 'report-value-marker-false'
 					break;
+				case 'ENUM':
+					pointValue.options.labelClassName += 'report-value-marker-enum'
+					break;				
 				case 'STRING':
 					pointValue.options.labelClassName += 'report-value-marker-string'
 					break;				
@@ -285,10 +292,6 @@ function pointValueFeatureToLayer(feature, latlng) {
 					var reportValueSize = feature.properties.reportValueSize;
 					pointValue.options.labelFontSize = reportValueSize + 'px'
 					pointValue.options.labelClassName += 'report-value-marker-number'
-					break;
-				//TODO get rid of this case
-				case 'LIST':
-					pointValue.options.labelClassName += 'report-value-marker-string'
 					break;
 				default:
 					pointValue.options.labelClassName += 'report-value-marker-na'

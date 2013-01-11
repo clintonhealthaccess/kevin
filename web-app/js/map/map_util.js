@@ -64,7 +64,6 @@ function createGeoJsonPointFeature(feature){
 		    	"reportValueType": feature.properties.reportValueType,
 		    	"reportValueSize": feature.properties.reportValueSize,
 		    	"reportValueIcon": feature.properties.reportValueIcon
-		        // "popupContent": 'Location: '+locationName+'<br /> '+indicatorName+': '+reportValue
 		    }
 	};
 	return geoJsonPointFeature;
