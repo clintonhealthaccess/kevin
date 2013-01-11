@@ -34,7 +34,11 @@ class FctController extends AbstractController {
 		if (program == null) return null
 		
 		if(params.int('fctTarget') != null){
-			fctTarget = FctTarget.get(params.int('fctTarget'))
+			try {
+				fctTarget = FctTarget.get(params.int('fctTarget'))
+			} catch (Exception e) {
+				fctTarget = null
+			}
 			
 			// reset the target if it doesn't belong to the right program
 			if (fctTarget != null) {
