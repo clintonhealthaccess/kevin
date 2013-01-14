@@ -1,4 +1,4 @@
-<%@page import="org.chai.kevin.util.Utils"%>
+<%@page import="org.chai.kevin.util.DataUtils"%>
 <table class="listing">
 	<thead>
 		<tr>
@@ -27,8 +27,8 @@
 					</ul>
 				</td>
 				<td>${period.code}</td>
-				<td>${Utils.formatDate(period.startDate)}</td>
-				<td>${Utils.formatDate(period.endDate)}</td>
+				<td>${DataUtils.formatDate(period.startDate)}</td>
+				<td>${DataUtils.formatDate(period.endDate)}</td>
 				<td>${period?.defaultSelected?'\u2713':''}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 

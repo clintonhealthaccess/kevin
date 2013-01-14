@@ -75,13 +75,48 @@ class PlanningType {
 		return result;
 	}
 	
-	public void setSectionDescriptions(Map<String, Map<String, String>> sectionDescriptions) {
-		planningTypeSectionMaps?.clear()
-		sectionDescriptions.each {
-			def sectionMap = new PlanningTypeSectionMap(section: it.key)
-			sectionMap.setNamesMap(it.value)
-			addToPlanningTypeSectionMaps(sectionMap)
+	public Map<String, Map<String, String>> getSectionDescriptions() {
+		def result = [:]
+		planningTypeSectionMaps?.each {
+			def map = [:]
+			domainClass.grailsApplication.config.i18nFields.locales.each{ language ->
+				map.put(language, it.getNames(new Locale(language)))
+			}
+			result.put(it.section, map)
 		}
+		return result
+	}
+	
+	public void setSectionDescriptions(Map<String, Map<String, String>> sectionDescriptions) {
+		if (log.debugEnabled) log.debug('old section map: '+planningTypeSectionMaps)
+		
+		def oldPlanningTypeSectionMap = new ArrayList(planningTypeSectionMaps?:[])
+
+		def newSections = []
+		sectionDescriptions.each {
+			if (oldPlanningTypeSectionMap.find{old -> old.section == it.key}) {
+				oldPlanningTypeSectionMap.find{old -> old.section == it.key}.setNamesMap(it.value)
+			}
+			else {
+				def sectionMap = new PlanningTypeSectionMap(section: it.key)
+				sectionMap.setNamesMap(it.value)
+				
+				if (log.debugEnabled) log.debug('adding section map: '+sectionMap)
+				addToPlanningTypeSectionMaps(sectionMap)
+			}
+			newSections.add(it.key)
+		}
+		
+		oldPlanningTypeSectionMap.each {
+			if (!newSections.contains(it.section)) {
+				def toRemove = planningTypeSectionMaps.find{current -> it.section == current.section}
+				
+				if (log.debugEnabled) log.debug('removing section map: '+toRemove)
+				removeFromPlanningTypeSectionMaps(toRemove)
+			}
+		}
+		
+		if (log.debugEnabled) log.debug('new section map: '+planningTypeSectionMaps)
 	}
 
 	public Period getPeriod() {

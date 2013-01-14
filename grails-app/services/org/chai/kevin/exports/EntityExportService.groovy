@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.util.ImportExportConstant;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.util.DataUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.transaction.annotation.Transactional;
@@ -163,7 +164,7 @@ public class EntityExportService {
 		}
 		//value is a date
 		else if(valueClazz.equals(Date.class)){
-			exportValue = Utils.formatDate((Date) value);
+			exportValue = DataUtils.formatDate((Date) value);
 		}
 		else if (Collection.class.isAssignableFrom(valueClazz)){
 			//value is a collection

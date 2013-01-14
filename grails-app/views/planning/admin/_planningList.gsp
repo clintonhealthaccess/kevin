@@ -1,4 +1,4 @@
-<%@page import="org.chai.kevin.util.Utils"%>
+<%@page import="org.chai.kevin.util.DataUtils"%>
 
 <table class="listing">
 	<thead>
@@ -32,7 +32,7 @@
 				<td><g:i18n field="${planning.names}" /></td>
 				<td>${planning.typeCodeString}</td>
 				<td>${planning?.active?'\u2713':''}</td>
-				<td>${Utils.formatDate(planning.period.startDate)}</td>
+				<td>${DataUtils.formatDate(planning.period.startDate)}</td>
 				<td>${planning.planningTypes.size()}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 

@@ -1,4 +1,4 @@
-<%@page import="org.chai.kevin.util.Utils"%>
+<%@page import="org.chai.kevin.util.DataUtils"%>
 
 <div class="entity-form-container togglable">
 	<div class="entity-form-header">
@@ -23,7 +23,7 @@
 							<div>
 								<a class="${i==0?'no-link':''} expression-period-link" href="#" 
 									onclick="$('.js_expression-period').hide();$('#js_expression-period-${period.id}').show();$('.expression-period-link').removeClass('no-link');$(this).addClass('no-link');return false;">
-									${Utils.formatDate(period.startDate)} to ${Utils.formatDate(period.endDate)}
+									${DataUtils.formatDate(period.startDate)} to ${DataUtils.formatDate(period.endDate)}
 								</a>
 							</div>
 						</g:each>

@@ -99,8 +99,6 @@ class FormElement implements Exportable {
 				
 				if (log.debugEnabled) log.debug('removing header map: '+toRemove)
 				removeFromFormElementHeadersMaps(toRemove)
-				// formElementHeadersMaps?.remove(toRemove)
-				// toRemove.delete()
 			}
 		}
 		
