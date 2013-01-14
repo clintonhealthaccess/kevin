@@ -4,7 +4,7 @@
 			<th/>
 			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />  		    
   			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q]" title="${message(code: 'entity.name.label')}" />
-  			<g:sortableColumn property="data.code" params="[q:params.q]" title="${message(code: 'dsr.target.calculationelement.label')}" />
+  			<g:sortableColumn property="data.code" params="[q:params.q]" title="${message(code: 'dsr.target.calculation.label')}" />
   			<g:sortableColumn property="average" params="[q:params.q]" title="${message(code: 'dsr.target.datatype.label')}" />
   			<g:sortableColumn property="${i18nField(field: 'category.names')}" params="[q:params.q]" title="${message(code: 'dsr.target.category.label')}" />
 			<g:sortableColumn property="order" params="[q:params.q]" title="${message(code: 'entity.order.label')}" />
@@ -31,7 +31,7 @@
 					<g:i18n field="${target.names}"/>
 				</td>
 				<td>${target.data.code}</td>
-				<td>${target.average != null && target.average ? message(code: 'average.label') : target.data.class.getSimpleName()}</td>
+				<td>${target.average != null && target.average ? message(code: 'average.label') : message(code: target.data.class.getSimpleName().toLowerCase()+'.label')}</td>
 				<td>
 					<g:i18n field="${target.category?.names}"/>
 				</td>
