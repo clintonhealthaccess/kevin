@@ -42,10 +42,14 @@ import org.chai.location.Location;
 import org.chai.location.LocationLevel;
 import org.chai.kevin.value.Value;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class Dashboard {
 	
 	DashboardService dashboardService
 	
+	private static Log log = LogFactory.getLog(Dashboard.class)
 	private static Type DASHBOARD_TYPE = Type.TYPE_NUMBER();
 	private static String format = "#%";
 	
@@ -73,7 +77,8 @@ public class Dashboard {
 		return dashboardService.collectDashboardEntitiesWithTargets(entity.getReportProgram()).sort({it.order})
 	}
 	
-	public Value getPercentage(CalculationLocation location, DashboardEntity dashboardEntity) {		
+	public Value getPercentage(CalculationLocation location, DashboardEntity dashboardEntity) {
+		if (log.isDebugEnabled()) log.debug("getPercentage(location=${location}, dashboardEntity=${dashboardEntity})")
 		return valueMap.get(location).get(dashboardEntity);
 	}
 	

@@ -1,4 +1,4 @@
-	package org.chai.kevin.fct
+package org.chai.kevin.fct
 
 import org.chai.location.LocationService
 import org.chai.kevin.IntegrationTests
@@ -6,6 +6,9 @@ import org.chai.location.DataLocationType;
 import org.chai.location.Location;
 import org.chai.location.LocationLevel;
 import org.chai.kevin.util.Utils
+import org.chai.kevin.reports.ReportProgram
+import org.chai.kevin.dashboard.DashboardIntegrationTests
+import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.reports.ReportService.ReportType;
 
 class FctControllerSpec extends FctIntegrationTests {
@@ -141,6 +144,30 @@ class FctControllerSpec extends FctIntegrationTests {
 		then:
 		fctController.response.redirectedUrl.contains("/fct/view/")
 		fctController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(BURERA).id+"/"+target.id)
+		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
+		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
+	}
+	
+	def "get dsr with invalid parameters corresponding to dashboard, redirect with correct parameter"() {
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		setupProgramTree()
+		DashboardIntegrationTests.setupDashboardTree()
+		def target = newFctTarget(CODE(3), 1, ReportProgram.findByCode(ROOT))
+		
+		when:
+		fctController = new FctController()
+		fctController.params.period = period.id
+		fctController.params.program = ReportProgram.findByCode(ROOT).id
+		fctController.params.location = Location.findByCode(BURERA).id
+		fctController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		fctController.params.fctTarget = DashboardTarget.findByCode(TARGET1)
+		def model = fctController.view()
+		
+		then:
+		fctController.response.redirectedUrl.contains("/fct/view/")
+		fctController.response.redirectedUrl.contains(period.id+"/"+ReportProgram.findByCode(ROOT).id+"/"+Location.findByCode(BURERA).id)
 		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}

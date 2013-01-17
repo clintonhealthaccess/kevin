@@ -60,8 +60,12 @@ class DsrController extends AbstractController {
 		
 		if (program == null) return null	
 		
-		if(params.int('dsrCategory') != null){
-			dsrTargetCategory = DsrTargetCategory.get(params.int('dsrCategory'))
+		if(params.int('dsrCategory') != null) {
+			try {
+				dsrTargetCategory = DsrTargetCategory.get(params.int('dsrCategory'))
+			} catch (Exception e) {
+				dsrTargetCategory = null
+			}
 			if (log.debugEnabled) log.debug('found DsrTargetCategory in params: '+dsrTargetCategory)
 			
 			// reset the category if it doesn't belong to the right program

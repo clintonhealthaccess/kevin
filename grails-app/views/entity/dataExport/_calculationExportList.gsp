@@ -1,4 +1,4 @@
-<%@page import="org.chai.kevin.util.Utils"%>
+<%@page import="org.chai.kevin.util.DataUtils"%>
 
 <table class="listing">
 	<thead>
@@ -29,7 +29,7 @@
   				<td>
   					${export.typeCodeString}
   				</td>
-  				<td>${Utils.formatDateWithTime(export.date)}</td>
+  				<td>${DataUtils.formatDateWithTime(export.date)}</td>
   				<td>
 	  				<div class="js_dropdown dropdown"> 
 						<a class="js_dropdown-link with-highlight" href="#"><g:message code="entity.list.manage.label"/></a>

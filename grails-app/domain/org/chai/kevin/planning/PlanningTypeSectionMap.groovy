@@ -20,7 +20,7 @@ class PlanningTypeSectionMap implements Serializable {
 		table 'dhsst_planning_type_descriptions'
 		id composite: ['section', 'planningType']
 		
-		header column: 'sectionDescriptions_KEY'
+		section column: 'sectionDescriptions_KEY'
 		planningType column: 'PlanningType'
 		version false
 	}

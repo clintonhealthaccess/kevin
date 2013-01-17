@@ -66,7 +66,7 @@ public class UtilUnitSpec extends UnitSpec {
 		def value = Value.VALUE_NUMBER(0.579)
 		def type = Type.TYPE_NUMBER()
 		def format = "#%"
-		def rounded = '2'
+		def rounded = 2
 		def stringValue = Utils.getStringValue(value, type, null, format, null, rounded)
 		
 		then:

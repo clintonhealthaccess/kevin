@@ -5,7 +5,7 @@ import org.apache.shiro.authc.UnknownAccountException
 import org.apache.shiro.authc.SimpleAccount
 import org.apache.shiro.authz.permission.WildcardPermission
 import org.chai.kevin.security.User;
-import org.chai.kevin.util.Utils;
+import org.chai.kevin.util.DataUtils;
 
 class DbRealm {
     static authTokenClass = org.apache.shiro.authc.UsernamePasswordToken
@@ -120,7 +120,7 @@ class DbRealm {
         // against the required one.
 		results.each { permissionString ->
 			if (retval == null) {
-				retval = Utils.split(permissionString, User.PERMISSION_DELIMITER).find { permission ->
+				retval = DataUtils.split(permissionString, User.PERMISSION_DELIMITER).find { permission ->
 		            // Create a real permission instance from the database
 		            // permission.
 		            def perm = shiroPermissionResolver.resolvePermission(permission)

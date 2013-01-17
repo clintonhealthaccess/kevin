@@ -1,4 +1,4 @@
-<%@page import="org.chai.kevin.util.Utils"%>
+<%@page import="org.chai.kevin.util.DataUtils"%>
 
 <table class="listing">
 	<thead>
@@ -32,7 +32,7 @@
 				<td>${survey.code}</td>
 				<td><g:i18n field="${survey.names}" /></td>				
 				<td><g:i18n field="${survey.descriptions}" /></td>
-				<td>${Utils.formatDate(survey.period.startDate)}</td>
+				<td>${DataUtils.formatDate(survey.period.startDate)}</td>
 				<td>${survey?.active?'\u2713':''}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 

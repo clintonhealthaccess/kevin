@@ -6,6 +6,8 @@ import org.chai.location.Location
 import org.chai.location.LocationLevel
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.util.Utils
+import org.chai.kevin.dashboard.DashboardIntegrationTests
+import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.reports.ReportService.ReportType
 
 class DsrControllerSpec extends DsrIntegrationTests {
@@ -249,6 +251,33 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		dsrController.response.redirectedUrl.contains("/dsr/view/")
 		dsrController.response.redirectedUrl.contains(reportType.toString().toLowerCase()+"?")
 		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(BURERA).id+"/"+category.id)
+		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
+		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
+	}
+	
+	def "get dsr with invalid parameters corresponding to dashboard, redirect with correct parameter"() {
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		setupProgramTree()
+		DashboardIntegrationTests.setupDashboardTree()
+		def category = newDsrTargetCategory(CATEGORY1, ReportProgram.findByCode(ROOT), 0)
+		def reportType = ReportType.TABLE
+		
+		when:
+		dsrController = new DsrController()
+		dsrController.params.period = period.id
+		dsrController.params.program = ReportProgram.findByCode(ROOT).id
+		dsrController.params.location = Location.findByCode(BURERA).id
+		dsrController.params.dataLocationTypes = [DataLocationType.findByCode(HEALTH_CENTER_GROUP).id, DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		dsrController.params.dsrCategory = DashboardTarget.findByCode(TARGET1)
+		dsrController.params.reportType = reportType.toString().toLowerCase()
+		def model = dsrController.view()
+		
+		then:
+		dsrController.response.redirectedUrl.contains("/dsr/view/")
+		dsrController.response.redirectedUrl.contains(reportType.toString().toLowerCase())
+		dsrController.response.redirectedUrl.contains(period.id+"/"+ReportProgram.findByCode(ROOT).id+"/"+Location.findByCode(BURERA).id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
