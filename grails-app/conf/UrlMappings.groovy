@@ -36,7 +36,7 @@ class UrlMappings {
 		"/contact"(controller:'home', action:"contact")
 		"/upgrade"(controller:'home', action:"upgrade")
 		
-		"/dashboard/$action/$period?/$program?/$location?"(controller:"dashboard")
+		"/dashboard/$action/$period?/$program?/$location?/$dashboardEntity?/$reportType?"(controller:"dashboard")
 		
 		"/cost/$action/$period?/$program?/$location?"(controller:"cost")
 

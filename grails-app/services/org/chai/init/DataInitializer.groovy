@@ -1,6 +1,7 @@
 package org.chai.init
 
 import org.chai.kevin.Period
+import org.chai.kevin.data.Aggregation
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.Mode
@@ -341,20 +342,20 @@ class DataInitializer {
 			]).save(failOnError: true)
 		}
 	}
-	
+
 	static def createSums() {
 		if (!Summ.count()) {
 			// energy - consistent energy
-			new Summ(code: 'energy_consistent_count', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_consistent').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
+			new Summ(code: 'energy_consistent_sum', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_consistent').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
 			// energy - limited energy
-			new Summ(code: 'energy_limited_count', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_limited').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
+			new Summ(code: 'energy_limited_sum', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_limited').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
 			// energy - consistent energy
-			new Summ(code: 'energy_none_count', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_none').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
+			new Summ(code: 'energy_none_sum', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_none').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
 			
 			// human resources - above recommended population per doctor
-			new Summ(code: 'population_per_doctor_above', expression: 'if (\$'+NormalizedDataElement.findByCode('population_per_doctor').id+' < 10000) 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
+			new Summ(code: 'population_per_doctor_above_sum', expression: 'if (\$'+NormalizedDataElement.findByCode('population_per_doctor').id+' < 10000) 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
 			// human resources - below recommended population per doctor
-			new Summ(code: 'population_per_doctor_below', expression: 'if (\$'+NormalizedDataElement.findByCode('population_per_doctor').id+
+			new Summ(code: 'population_per_doctor_below_sum', expression: 'if (\$'+NormalizedDataElement.findByCode('population_per_doctor').id+
 				' >= 10000 or \$'+NormalizedDataElement.findByCode('population_per_doctor').id+' == "null") 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
 		}
 	}
@@ -367,10 +368,17 @@ class DataInitializer {
 			// geographical access - primary energy source
 			new Mode(code: 'primary_energy_source_mode_enum', expression: '(\$'+NormalizedDataElement.findByCode('primary_energy_source_enum').id+')', 
 				type: Type.TYPE_ENUM('energy_source')).save(failOnError: true)
-			// geographical access - TODO mode number
+			// geographical access - number of motos
 			new Mode(code: 'number_of_motos_mode_number', expression: '(\$'+RawDataElement.findByCode('number_of_motos').id+')', 
 				type: Type.TYPE_NUMBER()).save(failOnError: true)
-			// geographical access - TODO mode string/text
+		}
+	}
+
+	static def createAggregations() {
+		if (!Aggregation.count()) {
+			// human resources - population per doctor
+			new Aggregation(code: 'population_per_doctor_aggregation', expression: '(\$'+NormalizedDataElement.findByCode('population_per_doctor').id+')', 
+				type: Type.TYPE_NUMBER()).save(failOnError: true)
 		}
 	}
 	

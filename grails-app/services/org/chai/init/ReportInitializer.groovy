@@ -1,9 +1,12 @@
 package org.chai.init
 
+import org.chai.kevin.data.Aggregation
 import org.chai.kevin.data.NormalizedDataElement
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Mode
 import org.chai.kevin.data.Summ
+import org.chai.kevin.dashboard.DashboardProgram
+import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.dsr.DsrTarget
 import org.chai.kevin.dsr.DsrTargetCategory
 import org.chai.kevin.fct.FctTarget
@@ -14,19 +17,19 @@ class ReportInitializer {
 
 	static def createReportPrograms() {
 		if (!ReportProgram.count()) {
-			def root 				= new ReportProgram(code: "strategic_programs", names_en: "Strategic Programs", parent: null).save(failOnError: true)
-			def geographical_access = new ReportProgram(code: "geographical_access", names_en: "Geographical Access", parent: root, order: 1).save(failOnError: true)
-			def service_delivery	= new ReportProgram(code: "service_delivery", names_en: "Service Delivery", parent: root, order: 2).save(failOnError: true)
-			def human_resources		= new ReportProgram(code: "human_resources", names_en: "Human Resources", parent: root, order: 3).save(failOnError: true)
+			def strategic_programs 	= new ReportProgram(code: "strategic_programs", names_en: "Strategic Programs", parent: null).save(failOnError: true)
+			def geographical_access = new ReportProgram(code: "geographical_access", names_en: "Geographical Access", parent: strategic_programs, order: 1).save(failOnError: true)
+			def service_delivery	= new ReportProgram(code: "service_delivery", names_en: "Service Delivery", parent: strategic_programs, order: 2).save(failOnError: true)
+			def human_resources		= new ReportProgram(code: "human_resources", names_en: "Human Resources", parent: strategic_programs, order: 3).save(failOnError: true, flush: true)
 		}
 	}
-	
+
 	static def createDsrTargetCategories() {
 		if (!DsrTargetCategory.count()) {
 			new DsrTargetCategory(code: 'sd_critical_indicators', names_en: 'Critical Indicators', program: ReportProgram.findByCode('service_delivery'), order: 1).save(failOnError: true)
 			new DsrTargetCategory(code: 'ga_energy', names_en: 'Energy', program: ReportProgram.findByCode('geographical_access'), order: 1).save(failOnError: true)
 			new DsrTargetCategory(code: 'ga_patient_access', names_en: 'Patient Access', program: ReportProgram.findByCode('geographical_access'), order: 1).save(failOnError: true)
-			new DsrTargetCategory(code: 'water_plumbing', names_en: 'Water & Plumbing', program: ReportProgram.findByCode('geographical_access'), order: 2).save(failOnError: true)
+			new DsrTargetCategory(code: 'ga_water_plumbing', names_en: 'Water & Plumbing', program: ReportProgram.findByCode('geographical_access'), order: 2).save(failOnError: true)
 		}
 	}
 	
@@ -49,7 +52,7 @@ class ReportInitializer {
 			
 			// geographical access - rainwater harvesting
 			[	new DsrTarget(code: 'rainwater_harvesting', names_en: 'Rainwater Harvesting', data: NormalizedDataElement.findByCode('rainwater_harvesting'))
-			].each {DsrTargetCategory.findByCode('water_plumbing').addToTargets(it).save(failOnError: true)}
+			].each {DsrTargetCategory.findByCode('ga_water_plumbing').addToTargets(it).save(failOnError: true)}
 		}
 	}
 	
@@ -63,15 +66,31 @@ class ReportInitializer {
 	static def createFctTargetOptions() {
 		if (!FctTargetOption.count()) {
 			// energy supply
-			[	new FctTargetOption(code: 'fct_energy_supply_consistent', names_en: 'Facilities with sufficient Energy Supply', data: Summ.findByCode('energy_consistent_count')),
-				new FctTargetOption(code: 'fct_energy_supply_limited', names_en: 'Facilities with limited Energy Supply', data: Summ.findByCode('energy_limited_count')),
-				new FctTargetOption(code: 'fct_energy_supply_none', names_en: 'Facilities with no Energy Supply', data: Summ.findByCode('energy_none_count'))
+			[	new FctTargetOption(code: 'fct_energy_supply_consistent', names_en: 'Facilities with sufficient Energy Supply', data: Summ.findByCode('energy_consistent_sum')),
+				new FctTargetOption(code: 'fct_energy_supply_limited', names_en: 'Facilities with limited Energy Supply', data: Summ.findByCode('energy_limited_sum')),
+				new FctTargetOption(code: 'fct_energy_supply_none', names_en: 'Facilities with no Energy Supply', data: Summ.findByCode('energy_none_sum'))
 			].each {FctTarget.findByCode('energy_supply').addToTargetOptions(it).save(failOnError: true)}
 			
 			// human resources
-			[	new FctTargetOption(code: 'population_doctor_above', names_en: 'Facilities at or above recommended', data: Summ.findByCode('population_per_doctor_above')),
-				new FctTargetOption(code: 'population_doctor_below', names_en: 'Facilities below the recommended', data: Summ.findByCode('population_per_doctor_below'))
+			[	new FctTargetOption(code: 'population_doctor_above', names_en: 'Facilities at or above recommended', data: Summ.findByCode('population_per_doctor_above_sum')),
+				new FctTargetOption(code: 'population_doctor_below', names_en: 'Facilities below the recommended', data: Summ.findByCode('population_per_doctor_below_sum'))
 			].each {FctTarget.findByCode('hr_population').addToTargetOptions(it).save(failOnError: true)}
+		}
+	}
+
+	// TODO figure out why ReportProgram.findByCode('strategic_programs') is returning null
+	static def createDashboardPrograms() {
+		if (!DashboardProgram.count()) {
+			new DashboardProgram(code: "da_strategic_programs", progam: ReportProgram.findByCode('strategic_programs'), weight: 0).save(failOnError: true)
+			new DashboardProgram(code: "da_human_resources", program: ReportProgram.findByCode('human_resources'), weight: 1).save(failOnError: true)
+		}
+	}
+
+	static def createDashboardTargets() {
+		if (!DashboardTarget.count()) {
+			// human resources
+			[	new DashboardTarget(code: 'dashboard_popular_per_doctor', names_en: 'Population Per Doctor', program: ReportProgram.findByCode('human_resources'), weight: 1, data: Aggregation.findByCode('population_per_doctor_aggregation'))
+			].each {ReportProgram.findByCode('human_resources').addToTargets(it).save(failOnError: true)}
 		}
 	}
 	

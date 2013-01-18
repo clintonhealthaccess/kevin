@@ -205,6 +205,8 @@ modules = {
 	
 	dashboard {
 		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen,chartanimation,comparefilter,map'
+
+		resource url: '/js/dashboard/dashboard_map_init.js'
 	}
 
 	cost {

@@ -49,6 +49,7 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.security.User;
 import org.chai.task.Task;
 import org.chai.task.Task.TaskStatus;
@@ -150,14 +151,18 @@ class BootStrap {
 			DataInitializer.createNormalizedDataElements();
 			DataInitializer.createSums();
 			DataInitializer.createModes();
+			DataInitializer.createAggregations();
 			refreshValueService.refreshAll(null)
 			
 			// we initialize the reports
 			ReportInitializer.createReportPrograms();
+			if (log.isDebugEnabled()) log.debug('report program strategic programs = '+ReportProgram.findByCode('strategic_programs'));
 			ReportInitializer.createDsrTargetCategories();
 			ReportInitializer.createDsrTargets();
 			ReportInitializer.createFctTargets();
 			ReportInitializer.createFctTargetOptions();
+			// ReportInitializer.createDashboardPrograms();
+			// ReportInitializer.createDashboardTargets();
 			
 			// we initialize the survey
 			SurveyInitializer.createSurveys()
