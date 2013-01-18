@@ -16,7 +16,7 @@
 			from="${programs}" value="${entity.program?.id}" values="${programs.collect{i18n(field:it.names)}}" />
 		
 		<g:selectFromList name="data.id" label="${message(code:'dashboard.target.calculation.label')}" bean="${entity}" field="data" optionKey="id" multiple="false"
-			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[classes:['Sum', 'Aggregation']])}"
+			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[classes:['Summ', 'Aggregation']])}"
 			from="${calculations}" value="${entity?.data?.id}" values="${calculations.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 				
 		<g:input name="weight" label="${message(code:'dashboard.target.weight.label')}" bean="${entity}" field="weight"/>
