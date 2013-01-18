@@ -20,7 +20,7 @@ class ReportInitializer {
 			def strategic_programs 	= new ReportProgram(code: "strategic_programs", names_en: "Strategic Programs", parent: null).save(failOnError: true)
 			def geographical_access = new ReportProgram(code: "geographical_access", names_en: "Geographical Access", parent: strategic_programs, order: 1).save(failOnError: true)
 			def service_delivery	= new ReportProgram(code: "service_delivery", names_en: "Service Delivery", parent: strategic_programs, order: 2).save(failOnError: true)
-			def human_resources		= new ReportProgram(code: "human_resources", names_en: "Human Resources", parent: strategic_programs, order: 3).save(failOnError: true, flush: true)
+			def human_resources		= new ReportProgram(code: "human_resources", names_en: "Human Resources", parent: strategic_programs, order: 3).save(failOnError: true)
 		}
 	}
 
@@ -81,7 +81,7 @@ class ReportInitializer {
 	// TODO figure out why ReportProgram.findByCode('strategic_programs') is returning null
 	static def createDashboardPrograms() {
 		if (!DashboardProgram.count()) {
-			new DashboardProgram(code: "da_strategic_programs", progam: ReportProgram.findByCode('strategic_programs'), weight: 0).save(failOnError: true)
+			new DashboardProgram(code: "da_strategic_programs", program: ReportProgram.findByCode('strategic_programs'), weight: 0).save(failOnError: true)
 			new DashboardProgram(code: "da_human_resources", program: ReportProgram.findByCode('human_resources'), weight: 1).save(failOnError: true)
 		}
 	}
@@ -89,8 +89,7 @@ class ReportInitializer {
 	static def createDashboardTargets() {
 		if (!DashboardTarget.count()) {
 			// human resources
-			[	new DashboardTarget(code: 'dashboard_popular_per_doctor', names_en: 'Population Per Doctor', program: ReportProgram.findByCode('human_resources'), weight: 1, data: Aggregation.findByCode('population_per_doctor_aggregation'))
-			].each {ReportProgram.findByCode('human_resources').addToTargets(it).save(failOnError: true)}
+			new DashboardTarget(code: 'dashboard_popular_per_doctor', names_en: 'Population Per Doctor', program: ReportProgram.findByCode('human_resources'), weight: 1, data: Aggregation.findByCode('population_per_doctor_aggregation')).save(failOnError: true)
 		}
 	}
 	
