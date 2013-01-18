@@ -29,7 +29,7 @@ package org.chai.kevin.dsr
 */
 
 import grails.plugin.springcache.annotations.CacheFlush;
-
+import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.AbstractEntityController;
 
 class DsrTargetCategoryController extends AbstractEntityController {
@@ -54,7 +54,10 @@ class DsrTargetCategoryController extends AbstractEntityController {
 	}
 	
 	def getModel(def entity) {
-		[ category: entity ]
+		[ 
+			category: entity,
+			programs: ReportProgram.list()
+		]
 	}
 	
 	def getEntityClass(){
