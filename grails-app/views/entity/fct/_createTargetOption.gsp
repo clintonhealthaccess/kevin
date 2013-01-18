@@ -13,7 +13,7 @@
 			from="${targets}" value="${targetOption.target?.id}" values="${targets.collect{i18n(field:it.names)}}" />
 
 		<g:selectFromList name="data.id" label="${message(code:'fct.targetoption.sum.label')}" bean="${targetOption}" field="data" optionKey="id" multiple="false"
-			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'Sum'])}"
+			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'Summ'])}"
 			from="${sums}" value="${targetOption.data?.id}" values="${sums.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 		
 		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${targetOption}" field="order"/>
