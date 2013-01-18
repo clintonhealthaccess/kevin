@@ -13,8 +13,8 @@
 		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${category}" field="code"/>
 		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${category}" field="order"/>
 	
-		<g:selectFromList name="program.id" label="${message(code:'dsr.target.program.label')}" bean="${target}" field="program" optionKey="id" multiple="false"
-			from="${programs}" value="${target.program?.id}" values="${programs.collect{i18n(field:it.names)}}" />
+		<g:selectFromList name="program.id" label="${message(code:'dsr.target.program.label')}" bean="${category}" field="program" optionKey="id" multiple="false"
+			from="${programs}" value="${category.program?.id}" values="${programs.collect{i18n(field:it.names)}}" />
 		
 		<g:if test="${category?.id != null}">
 			<input type="hidden" name="id" value="${category.id}"></input>
