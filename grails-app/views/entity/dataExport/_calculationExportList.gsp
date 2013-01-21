@@ -29,7 +29,7 @@
   				<td>
   					${export.typeCodeString}
   				</td>
-  				<td>${DataUtils.formatDateWithTime(export.date)}</td>
+  				<td>${DataUtils.formatDate(export.date)}</td>
   				<td>
 	  				<div class="js_dropdown dropdown"> 
 						<a class="js_dropdown-link with-highlight" href="#"><g:message code="entity.list.manage.label"/></a>

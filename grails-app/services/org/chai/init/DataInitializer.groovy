@@ -1,6 +1,7 @@
 package org.chai.init
 
 import org.chai.kevin.Period
+import org.chai.kevin.data.Aggregation
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.Mode
@@ -144,72 +145,72 @@ class DataInitializer {
 	static def createRawDataElementValues() {
 		if (!RawDataElementValue.count()) {
 			// in_facility_birth - period1
-			newValue('butaro_hd', 'period1', 'in_facility_birth', Value.VALUE_NUMBER(456))
-			newValue('kivuye_cs', 'period1', 'in_facility_birth', Value.VALUE_NUMBER(23))
-			newValue('rusasa_cs', 'period1', 'in_facility_birth', Value.VALUE_NUMBER(45))
+			newValue('322', 'period1', 'in_facility_birth', Value.VALUE_NUMBER(456))
+			newValue('327', 'period1', 'in_facility_birth', Value.VALUE_NUMBER(23))
+			newValue('332', 'period1', 'in_facility_birth', Value.VALUE_NUMBER(45))
 			
 			// in_facility_birth - period2
-			newValue('butaro_hd', 'period2', 'in_facility_birth', Value.VALUE_NUMBER(789))
-			newValue('kivuye_cs', 'period2', 'in_facility_birth', Value.VALUE_NUMBER(36))
-			newValue('rusasa_cs', 'period2', 'in_facility_birth', Value.VALUE_NUMBER(33))
+			newValue('322', 'period2', 'in_facility_birth', Value.VALUE_NUMBER(789))
+			newValue('327', 'period2', 'in_facility_birth', Value.VALUE_NUMBER(36))
+			newValue('332', 'period2', 'in_facility_birth', Value.VALUE_NUMBER(33))
 			
 			// out_facility_birth - period1
-			newValue('butaro_hd', 'period1', 'out_facility_birth', Value.VALUE_NUMBER(322))
-			newValue('kivuye_cs', 'period1', 'out_facility_birth', Value.VALUE_NUMBER(12))
-			newValue('rusasa_cs', 'period1', 'out_facility_birth', Value.VALUE_NUMBER(32))
+			newValue('322', 'period1', 'out_facility_birth', Value.VALUE_NUMBER(322))
+			newValue('327', 'period1', 'out_facility_birth', Value.VALUE_NUMBER(12))
+			newValue('332', 'period1', 'out_facility_birth', Value.VALUE_NUMBER(32))
 			
 			// out_facility_birth - period2
-			newValue('butaro_hd', 'period2', 'out_facility_birth', Value.VALUE_NUMBER(233))
-			newValue('kivuye_cs', 'period2', 'out_facility_birth', Value.VALUE_NUMBER(13))
-			newValue('rusasa_cs', 'period2', 'out_facility_birth', Value.VALUE_NUMBER(21))
+			newValue('322', 'period2', 'out_facility_birth', Value.VALUE_NUMBER(233))
+			newValue('327', 'period2', 'out_facility_birth', Value.VALUE_NUMBER(13))
+			newValue('332', 'period2', 'out_facility_birth', Value.VALUE_NUMBER(21))
 			
 			// energy_source - period1
-			newValue('butaro_hd', 'period1', 'energy_source', Value.VALUE_STRING('national_grid'))
-			newValue('kivuye_cs', 'period1', 'energy_source', Value.VALUE_STRING('generator'))
-			newValue('rusasa_cs', 'period1', 'energy_source', Value.VALUE_STRING('solar'))
+			newValue('322', 'period1', 'energy_source', Value.VALUE_STRING('national_grid'))
+			newValue('327', 'period1', 'energy_source', Value.VALUE_STRING('generator'))
+			newValue('332', 'period1', 'energy_source', Value.VALUE_STRING('solar'))
 			
 			// energy_source - period2
-			newValue('butaro_hd', 'period2', 'energy_source', Value.VALUE_STRING('national_grid'))
-			newValue('kivuye_cs', 'period2', 'energy_source', Value.VALUE_STRING('other'))
-			newValue('rusasa_cs', 'period2', 'energy_source', Value.VALUE_STRING('solar'))
+			newValue('322', 'period2', 'energy_source', Value.VALUE_STRING('national_grid'))
+			newValue('327', 'period2', 'energy_source', Value.VALUE_STRING('other'))
+			newValue('332', 'period2', 'energy_source', Value.VALUE_STRING('solar'))
 			
 			// percent_needs_covered - period1
-			newValue('butaro_hd', 'period1', 'energy_needs_covered', Value.VALUE_STRING('75'))
-			newValue('kivuye_cs', 'period1', 'energy_needs_covered', Value.VALUE_STRING('50'))
-			newValue('rusasa_cs', 'period1', 'energy_needs_covered', Value.VALUE_STRING('0'))
+			newValue('322', 'period1', 'energy_needs_covered', Value.VALUE_STRING('75'))
+			newValue('327', 'period1', 'energy_needs_covered', Value.VALUE_STRING('50'))
+			newValue('332', 'period1', 'energy_needs_covered', Value.VALUE_STRING('0'))
 			
 			// percent_needs_covered - period2
-			newValue('butaro_hd', 'period2', 'energy_needs_covered', Value.VALUE_STRING('100'))
-			newValue('kivuye_cs', 'period2', 'energy_needs_covered', Value.VALUE_STRING('75'))
-			newValue('rusasa_cs', 'period2', 'energy_needs_covered', Value.VALUE_STRING('0'))
+			newValue('322', 'period2', 'energy_needs_covered', Value.VALUE_STRING('100'))
+			newValue('327', 'period2', 'energy_needs_covered', Value.VALUE_STRING('75'))
+			newValue('332', 'period2', 'energy_needs_covered', Value.VALUE_STRING('0'))
 			
 			// catchment_area - period1
-			newValue('butaro_hd', 'period1', 'catchment_area', Value.VALUE_NUMBER(250000))
-			newValue('kivuye_cs', 'period1', 'catchment_area', Value.VALUE_NUMBER(25000))
-			newValue('rusasa_cs', 'period1', 'catchment_area', Value.VALUE_NUMBER(12000))
+			newValue('322', 'period1', 'catchment_area', Value.VALUE_NUMBER(250000))
+			newValue('327', 'period1', 'catchment_area', Value.VALUE_NUMBER(25000))
+			newValue('332', 'period1', 'catchment_area', Value.VALUE_NUMBER(12000))
 			
 			// catchment_area - period2
-			newValue('butaro_hd', 'period2', 'catchment_area', Value.VALUE_NUMBER(260000))
-			newValue('kivuye_cs', 'period2', 'catchment_area', Value.VALUE_NUMBER(26000))
-			newValue('rusasa_cs', 'period2', 'catchment_area', Value.VALUE_NUMBER(13000))
+			newValue('322', 'period2', 'catchment_area', Value.VALUE_NUMBER(260000))
+			newValue('327', 'period2', 'catchment_area', Value.VALUE_NUMBER(26000))
+			newValue('332', 'period2', 'catchment_area', Value.VALUE_NUMBER(13000))
 			
 			// number_of_doctors - period1
-			newValue('butaro_hd', 'period1', 'number_of_doctors', Value.VALUE_NUMBER(5))
-			newValue('kivuye_cs', 'period1', 'number_of_doctors', Value.VALUE_NUMBER(2))
-			newValue('rusasa_cs', 'period1', 'number_of_doctors', Value.VALUE_NUMBER(1))
+			newValue('322', 'period1', 'number_of_doctors', Value.VALUE_NUMBER(5))
+			newValue('327', 'period1', 'number_of_doctors', Value.VALUE_NUMBER(2))
+			newValue('332', 'period1', 'number_of_doctors', Value.VALUE_NUMBER(1))
 			
 			// number_of_motos - period1
-			newValue('butaro_hd', 'period1', 'number_of_motos', Value.VALUE_NUMBER(2))
-			newValue('kivuye_cs', 'period1', 'number_of_motos', Value.VALUE_NUMBER(0))
-			newValue('rusasa_cs', 'period1', 'number_of_motos', Value.VALUE_NUMBER(0))
+			newValue('322', 'period1', 'number_of_motos', Value.VALUE_NUMBER(2))
+			newValue('327', 'period1', 'number_of_motos', Value.VALUE_NUMBER(0))
+			newValue('332', 'period1', 'number_of_motos', Value.VALUE_NUMBER(0))
 			
 			// number_of_motos - period2
-			newValue('butaro_hd', 'period2', 'number_of_motos', Value.VALUE_NUMBER(1))
-			newValue('kivuye_cs', 'period2', 'number_of_motos', Value.VALUE_NUMBER(2))
-			newValue('rusasa_cs', 'period2', 'number_of_motos', Value.VALUE_NUMBER(1))
+			newValue('322', 'period2', 'number_of_motos', Value.VALUE_NUMBER(1))
+			newValue('327', 'period2', 'number_of_motos', Value.VALUE_NUMBER(2))
+			newValue('332', 'period2', 'number_of_motos', Value.VALUE_NUMBER(1))
 			
 			// human_resources - period2
-			newValue('butaro_hd', 'period2', 'human_resources', Value.VALUE_LIST([
+			newValue('322', 'period2', 'human_resources', Value.VALUE_LIST([
 				Value.VALUE_MAP([
 					"family_name": Value.VALUE_STRING("Kahigiso"),
 					"given_name": Value.VALUE_STRING("Jean"),
@@ -232,7 +233,7 @@ class DataInitializer {
 					])
 				])
 			]))
-			newValue('kivuye_cs', 'period2', 'human_resources', Value.VALUE_LIST([
+			newValue('327', 'period2', 'human_resources', Value.VALUE_LIST([
 				Value.VALUE_MAP([
 					"family_name": Value.VALUE_STRING("Lister"),
 					"given_name": Value.VALUE_STRING("Susan"),
@@ -248,7 +249,7 @@ class DataInitializer {
 					])
 				]),
 			]))
-			newValue('rusasa_cs', 'period2', 'human_resources', Value.VALUE_LIST([
+			newValue('332', 'period2', 'human_resources', Value.VALUE_LIST([
 				Value.VALUE_MAP([
 					"family_name": Value.VALUE_STRING("Mota"),
 					"given_name": Value.VALUE_STRING("Antonio"),
@@ -341,20 +342,20 @@ class DataInitializer {
 			]).save(failOnError: true)
 		}
 	}
-	
+
 	static def createSums() {
 		if (!Summ.count()) {
 			// energy - consistent energy
-			new Summ(code: 'energy_consistent_count', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_consistent').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
+			new Summ(code: 'energy_consistent_sum', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_consistent').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
 			// energy - limited energy
-			new Summ(code: 'energy_limited_count', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_limited').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
+			new Summ(code: 'energy_limited_sum', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_limited').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
 			// energy - consistent energy
-			new Summ(code: 'energy_none_count', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_none').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
+			new Summ(code: 'energy_none_sum', expression: 'if (\$'+NormalizedDataElement.findByCode('energy_none').id+') 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
 			
 			// human resources - above recommended population per doctor
-			new Summ(code: 'population_per_doctor_above', expression: 'if (\$'+NormalizedDataElement.findByCode('population_per_doctor').id+' < 10000) 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
+			new Summ(code: 'population_per_doctor_above_sum', expression: 'if (\$'+NormalizedDataElement.findByCode('population_per_doctor').id+' < 10000) 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
 			// human resources - below recommended population per doctor
-			new Summ(code: 'population_per_doctor_below', expression: 'if (\$'+NormalizedDataElement.findByCode('population_per_doctor').id+
+			new Summ(code: 'population_per_doctor_below_sum', expression: 'if (\$'+NormalizedDataElement.findByCode('population_per_doctor').id+
 				' >= 10000 or \$'+NormalizedDataElement.findByCode('population_per_doctor').id+' == "null") 1 else 0', type: Type.TYPE_NUMBER()).save(failOnError: true)
 		}
 	}
@@ -367,10 +368,17 @@ class DataInitializer {
 			// geographical access - primary energy source
 			new Mode(code: 'primary_energy_source_mode_enum', expression: '(\$'+NormalizedDataElement.findByCode('primary_energy_source_enum').id+')', 
 				type: Type.TYPE_ENUM('energy_source')).save(failOnError: true)
-			// geographical access - TODO mode number
+			// geographical access - number of motos
 			new Mode(code: 'number_of_motos_mode_number', expression: '(\$'+RawDataElement.findByCode('number_of_motos').id+')', 
 				type: Type.TYPE_NUMBER()).save(failOnError: true)
-			// geographical access - TODO mode string/text
+		}
+	}
+
+	static def createAggregations() {
+		if (!Aggregation.count()) {
+			// human resources - population per doctor
+			new Aggregation(code: 'population_per_doctor_aggregation', expression: '(\$'+NormalizedDataElement.findByCode('population_per_doctor').id+')', 
+				type: Type.TYPE_NUMBER()).save(failOnError: true)
 		}
 	}
 	

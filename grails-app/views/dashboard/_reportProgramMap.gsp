@@ -1,4 +1,3 @@
-<%@ page import="org.chai.kevin.data.Type.ValueType" %>
 <div class='map-wrap'>	
 	<div id="map" class="map" />
 	
@@ -7,6 +6,6 @@
 		var currentLocationCode = "${currentLocation.code}";
 		var reportLocationCodes = "${reportLocations.collect{it.code}.join('|')}";
 		var reportValueLabelIcon = "${resource(dir:'images',file:'/maps/report-value-null.png')}";
-		fctMap(childrenCollectData, currentLocationCode, reportLocationCodes);
+		dashboardMap(childrenCollectData, currentLocationCode, reportLocationCodes);
 	</r:script>
 </div>
