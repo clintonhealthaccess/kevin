@@ -84,11 +84,6 @@ public class Utils {
 	public static String parseNumber(String string){
 		return string.replaceAll("[^0-9]", "");
 	}
-	
-	public static String formatDateWithTime(Date date) {
-		if (date == null) return null;
-		return new SimpleDateFormat(DATE_FORMAT_TIME).format(date);
-	}
 
 	public static String stripHtml(String htmlString) {
 		String noHtmlString;
