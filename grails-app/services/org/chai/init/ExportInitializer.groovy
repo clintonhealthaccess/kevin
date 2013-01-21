@@ -10,7 +10,7 @@ class ExportInitializer {
 	static def createDataElementExports() {
 		if (!DataElementExport.count()) {
 			new DataElementExport(code: 'hr_rwanda_export', date: new Date(), typeCodes: ['district_hospital', 'health_center'])
-			.addToLocations(Location.findByCode('rwanda'))
+			.addToLocations(Location.findByCode('0'))
 			.addToPeriods(Period.findByCode('period1'))
 			.addToPeriods(Period.findByCode('period2'))
 			.addToDataElements(RawDataElement.findByCode('human_resources'))

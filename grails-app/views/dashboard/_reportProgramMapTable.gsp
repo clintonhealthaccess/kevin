@@ -11,8 +11,7 @@
 						<td>
 							<div class="js-map-table-indicator" 
 								data-indicator-code="${indicator.code}" 
-								data-indicator-names="${i18n(field:indicator.names)}"
-								data-indicator-class="${i == reportIndicators.size()-1 ? 'indicator-worst': i == 0 ? 'indicator-best': 'indicator-middle'}">
+								data-indicator-names="${i18n(field:indicator.names)}">
 								<g:i18n field="${indicator.names}" />
 								<g:render template="/templates/help_tooltip" 
 									model="[names: i18n(field: indicator.names), descriptions: i18n(field: indicator.descriptions)]" />
@@ -27,6 +26,7 @@
 			<g:each in="${reportLocations}" var="location">
 				<tr>
 					<td>
+						<!-- location -->
 						<div class="js-map-table-location" 
 							data-location-code="${location.code}" 
 							data-location-names="${i18n(field: location.names)}">
@@ -46,35 +46,52 @@
 					</td>
 					<g:if test="${reportIndicators != null && !reportIndicators.empty}">
 						<g:each in="${reportIndicators}" var="indicator" status="i">
+							<g:set var="mapValue" value="${reportTable.getPercentage(location, indicator)}" />
 							<td>
-								<g:set var="mapValue" value="${reportTable.getTableReportValue(location, indicator)?.value}"/>
+								<!-- map report value -->
 								<div class="js-map-table-value ${mapValue != null && !mapValue.isNull() && mapValue.numberValue > 0 ? 'js-selected-value':''}"
 									data-location-code="${location.code}" 
 									data-location-names="${i18n(field: location.names)}" 
 									data-indicator-code="${indicator.code}" 
-									data-indicator-names="${i18n(field:indicator.names)}"
-									data-indicator-class="${i == reportIndicators.size()-1 ? 'indicator-worst': i == 0 ? 'indicator-best': 'indicator-middle'}">
-									<div class="report-value-number">
-										<g:reportMapValue 
-											value="${mapValue}"
-											type="${indicator.type}"
-											format="${indicator.numberFormat}"/>
-									</div>
-									<g:if test="${!location.collectsData()}">
-										<div class="report-value-percentage hidden">
-											<g:reportMapValue
-												value="${reportTable.getTableReportValue(location, indicator)?.average}" 
-												type="${indicator.type}" 
-												format="${indicator.percentageFormat?:'#%'}"
-												rounded="2"
+									data-indicator-names="${i18n(field:indicator.names)}">
+									<div class="report-value">
+										<g:reportMapValue
+												value="${mapValue}" 
+												type="${reportTable.type}" 
+												format="${reportTable.format?:'#%'}"
+												rounded="0"
 											/>
-										</div>
-									</g:if>
+									</div>
 								</div>
+							</td>
+							<td>
+								<!-- map report value bar -->
+								<g:if test="${mapValue.isNull()}">
+									<div class="js_bar_horizontal tooltip horizontal-bar"
+										data-entity="${indicator.id}"
+										data-percentage="null"
+										style="width:0%;"
+										original-title="null"></div>
+								</g:if>
+								<g:elseif test="${mapValue.numberValue <= 1}">
+									<div class="js_bar_horizontal tooltip horizontal-bar"
+										data-entity="${indicator.id}"
+										data-percentage="${g.reportValue(value: mapValue, type: dashbFoard.type, format: reportTable.format)}"
+										style="width:${g.reportValue(value: mapValue, type: reportTable.type, format: reportTable.format)}"
+										original-title="${g.reportValue(value: mapValue, type: reportTable.type, format: reportTable.format)}"></div>
+								</g:elseif>
+								<g:else>
+									<div class="js_bar_horizontal tooltip horizontal-bar expand-bar"
+										data-entity="${indicator.id}"
+										data-percentage="${g.reportValue(value: mapValue, type: reportTable.type, format: reportTable.format)}"
+										style="width:100%;"
+										original-title="${g.reportValue(value: mapValue, type: reportTable.type, format: reportTable.format)}"></div>
+								</g:else> 
 							</td>
 						</g:each>
 					</g:if>
 					<g:else>
+						<td></td>
 						<td></td>
 					</g:else>
 				</tr>

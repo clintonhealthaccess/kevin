@@ -19,7 +19,7 @@
 			</div>
 			<div class="main">
 				<!-- TODO get rid of reportType from exclude list when all maps are implemented -->
-				<g:topLevelReportTabs linkParams="${params}" exclude="${['fctTarget', 'reportType']}" />
+				<g:topLevelReportTabs linkParams="${params}" exclude="${['fctTarget']}" />
 				<g:if test="${fctTable != null}">
 					<ul>
 						<g:if test="${currentView == ReportType.MAP}">

@@ -30,6 +30,7 @@ class ValueTagLib {
 		if (value == null || value.isNull()) {
 			out << '<div class="report-value report-value-null"'+
 					' data-report-value="'+message(code: 'report.value.null')+'"'+
+					' data-report-value-raw="null"'+
 					' data-report-value-type="null">'+
 					message(code: 'report.value.null')+'</div>'
 		}
