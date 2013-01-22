@@ -31,8 +31,6 @@ class LocationController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		
-		if (params.names!=null) entity.names = params.names
 	}
 
 	def getModel(def entity) {
@@ -53,6 +51,13 @@ class LocationController extends AbstractEntityController {
 		return new Location();
 	}
 
+	def saveEntity(def entity) {
+		super.saveEntity(entity)
+		
+		// refresh cache
+		if (entity.parent != null) entity.parent.addToChildren(entity)
+	}
+	
 	def deleteEntity(def entity) {
 		if (entity.children != null && entity.children.size() != 0) {
 			flash.message = message(code: 'location.haschildren', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Location {0} still has associated children.')

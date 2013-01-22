@@ -49,6 +49,13 @@ class ReportProgramController extends AbstractEntityController{
 		return new ReportProgram()
 	}
 	
+	def saveEntity(def entity) {
+		super.saveEntity(entity)
+		
+		// refresh cache
+		if (entity.parent != null) entity.parent.addToChildren(entity)
+	}
+	
 	def getLabel() {
 		return "reports.program.label"
 	}
@@ -66,7 +73,7 @@ class ReportProgramController extends AbstractEntityController{
 	}
 	
 	def bindParams(def entity) {
-		entity.properties = params	
+		entity.properties = params
 	}
 	
 	def search = {
