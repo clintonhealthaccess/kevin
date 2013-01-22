@@ -1,3 +1,11 @@
+var basePolygonLayer = L.geoJson(null, {
+	style: function (feature){
+		return feature.properties && feature.properties.style;
+	},
+	pointToLayer: polygonFeatureToLayer,
+	onEachFeature: onEachPolygonFeature
+});
+
 var locationValueLayer = null;
 var locationValueLayers = []
 
@@ -41,53 +49,58 @@ function mapPolygonValues(data){
 		
 		var fosaid = dataFeature.properties.code;
 
-		// map 1 point label per location
+		// map 1 point label per location with report value, na value
 		var mapTableValue = $('.js-map-table-value.js-selected-value[data-location-code="'+fosaid+'"]');
-		var indicatorCode = $(mapTableValue).data('indicator-code');
-		var indicatorName = $(mapTableValue).data('indicator-names');
 
-		var polygonCoordinates = createPolygonCoordinates(dataFeature, false);
-		var bounds = L.multiPolygon(polygonCoordinates).getBounds();
-		var center = bounds.getCenter();
+		if(mapTableValue.size() == 1){
+			
+			var indicatorCode = $(mapTableValue).data('indicator-code');
+			var indicatorName = $(mapTableValue).data('indicator-names');
 
-		var mapReportValue = $(mapTableValue).children('div.report-value');
-		var rawValue = $(mapReportValue).data('report-value-raw');
-		var reportValue = $(mapReportValue).data('report-value');
-		var reportValueType = $(mapReportValue).data('report-value-type');
+			var polygonCoordinates = createPolygonCoordinates(dataFeature, false);
+			var bounds = L.multiPolygon(polygonCoordinates).getBounds();
+			var center = bounds.getCenter();
 
-		// position each point label per indicator
-		var latLng = null;
-		//TODO figure out why this returns NorthWest bounds
-		var northWest = bounds.getSouthEast();
-		latLng = createNorthSouthOffset(northWest.lng, center);
+			var mapReportValue = $(mapTableValue).children('div.report-value');
+			var rawValue = $(mapReportValue).data('report-value-raw');
+			var reportValue = $(mapReportValue).data('report-value');
+			var reportValueType = $(mapReportValue).data('report-value-type');
 
-		var feature = {
-			"id": fosaid,
-		    "geometry": {
-		        "coordinates": latLng
-			},
-			"properties":{
-				"locationCode": $(mapTableValue).attr('data-location-code'),
-				"locationName": $(mapTableValue).data('location-names'),
-				"indicatorCode": indicatorCode,
-				"indicatorName": indicatorName,
-				"rawValue": rawValue,
-				"reportValue": reportValue,
-				"reportValueType": reportValueType,
-				"reportValueIcon": reportValueLabelIcon
+			// position each point label per indicator
+			var latLng = null;
+			//TODO figure out why this returns NorthWest bounds
+			var northWest = bounds.getSouthEast();
+			latLng = createNorthSouthOffset(northWest.lng, center);
+
+			var feature = {
+				"id": fosaid,
+			    "geometry": {
+			        "coordinates": latLng
+				},
+				"properties":{
+					"locationCode": $(mapTableValue).attr('data-location-code'),
+					"locationName": $(mapTableValue).data('location-names'),
+					"indicatorCode": indicatorCode,
+					"indicatorName": indicatorName,
+					"rawValue": rawValue,
+					"reportValue": reportValue,
+					"reportValueType": reportValueType,
+					"reportValueIcon": reportValueLabelIcon
+				}
+			};
+
+			// add point label
+			if(reportValueType == 'NUMBER'){
+				rawValue = parseFloat(rawValue);				
+				var maxRawValue = getMaxRawValue();
+				var percentageMaxRawValue = parseFloat(rawValue/maxRawValue);
+				var reportValueSize = parseInt(percentageMaxRawValue*20)+10; //min: 10px max: 30px
+				reportValueSize = reportValueSize > 30 ? 30 : (reportValueSize < 10 ? 10 : reportValueSize);
 			}
-		};
-
-		// add point label
-		if(reportValueType == 'NUMBER'){
-			rawValue = parseFloat(rawValue);				
-			var maxRawValue = getMaxRawValue();
-			var percentageMaxRawValue = parseFloat(rawValue/maxRawValue);
-			var reportValueSize = parseInt(percentageMaxRawValue*20)+10; //min: 10px max: 30px
+			feature.properties.reportValueSize = reportValueSize;
+			var geojsonPointFeature = createGeoJsonPointFeature(feature);
+			locationValueLayer.addData(geojsonPointFeature);
 		}
-		feature.properties.reportValueSize = reportValueSize;
-		var geojsonPointFeature = createGeoJsonPointFeature(feature);
-		locationValueLayer.addData(geojsonPointFeature);
 							
 	});
 }
@@ -155,19 +168,55 @@ function onEachPolygonValueFeature(feature, layer) {
 }
 
 function highlightPolygonValueFeature(e) {
+	//TODO mimic highlight polygon feature to prevent 'unhilight' when hovering over polygon value
+
     var target = e.target;
-    var indicatorCode = target.feature.properties.indicatorCode;
+    var rawValue = target.feature.properties.rawValue
+    var reportValueType = target.feature.properties.reportValueType
+	var indicatorCode = target.feature.properties.indicatorCode
     var locationCode = target.feature.properties.locationCode
+    if(rawValue != null){
+    	if(reportValueType){
+    		// highlight map marker number, the only map marker without a constant font size
+    		if(reportValueType == 'NUMBER'){
+    			var fontSize = parseFloat(target.feature.properties.reportValueSize);
+    			var valueLabel = $(target._icon).children('.report-value-marker-number');
+    			$(valueLabel).css('font-size', fontSize+2);
+    		} 
+    		// highlight map table cell
+	    	highlightMapTableValue(locationCode, indicatorCode);	    	   		
+    	}
+    	else{
+    		// highlight map table row
+	    	highlightMapTableLocation(locationCode);	
+    	}
+    }
     // highlight map table cell
     highlightMapTableValue(locationCode, indicatorCode);
 }
 
 function resetPolygonValueFeature(e) {
 	var target = e.target;
-	var indicatorCode = target.feature.properties.indicatorCode;
+	var rawValue = target.feature.properties.rawValue
+	var reportValueType = target.feature.properties.reportValueType
+	var indicatorCode = target.feature.properties.indicatorCode
     var locationCode = target.feature.properties.locationCode
-    // reset map table cell
-    resetMapTableValue(locationCode, indicatorCode);
+    if(rawValue != null){
+    	if(reportValueType){
+    		// reset map marker, the only map marker without a constant font size
+    		if(reportValueType == 'NUMBER'){
+    			var fontSize = parseFloat(target.feature.properties.reportValueSize);
+    			var valueLabel = $(target._icon).children('.report-value-marker-number');
+    			$(valueLabel).css('font-size', fontSize);
+    		}
+    		// reset map table cell
+    		resetMapTableValue(locationCode, indicatorCode);    		
+    	}
+    	else{
+    		// reset map table row
+    		resetMapTableLocation(locationCode);
+    	}
+    }
 }
 
 // dsr point value layer 

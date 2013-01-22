@@ -1,3 +1,11 @@
+var basePolygonLayer = L.geoJson(null, {
+	style: function (feature){
+		return feature.properties && feature.properties.style;
+	},
+	pointToLayer: polygonFeatureToLayer,
+	onEachFeature: onEachPolygonFeature
+});
+
 var locationValueLayerMap = []
 var locationValueLayers = []
 var overlays = []

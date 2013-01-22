@@ -29,12 +29,12 @@
 							<g:render template="/fct/table"/>								
 						</g:elseif>
 						<g:else>
-							<p class="nav-help"><g:message code="fct.report.table.noselection.label"/></p>
+							<p class="nav-help"><g:message code="report.table.noselection.label"/></p>
 						</g:else>
 					</ul>				              			              
 	        	</g:if>
 	        	<g:else>
-	        		<p class="nav-help"><g:message code="fct.report.table.noselection.label"/></p>
+	        		<p class="nav-help"><g:message code="report.table.noselection.label"/></p>
 	        	</g:else>
             </div>
 		</div>

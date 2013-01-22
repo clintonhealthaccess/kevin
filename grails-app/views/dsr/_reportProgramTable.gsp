@@ -4,7 +4,7 @@
 			<th>
 				<g:render template="/templates/reportExpandCollapse"/>
 				<br/><br/>
-				<div class="left" style="margin-left:4px"><g:render template="/templates/reportLocationParent"/></div>
+				<div class="left" style="margin-left:4px"><g:reportLocationParent linkParams="${params}"/></div>
 			</th>
 			<g:if test="${dsrTable.indicators != null && !dsrTable.indicators.empty}">
 				<g:each in="${dsrTable.indicators}" var="target">

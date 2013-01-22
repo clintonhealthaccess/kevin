@@ -36,8 +36,8 @@ import org.chai.kevin.LanguageService
 import org.chai.kevin.Period
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
-import org.chai.kevin.util.Utils
 import org.chai.kevin.reports.ReportService.ReportType
+import org.chai.kevin.util.Utils
 import org.chai.location.DataLocationType
 import org.chai.location.Location
 import org.chai.location.LocationService
@@ -85,6 +85,8 @@ class DsrController extends AbstractController {
 			}
 		}
 		
+		if (log.isDebugEnabled()) log.debug("dsr.view, program:"+program+", getDsrTargetCategory:"+dsrTargetCategory)	
+
 		return dsrTargetCategory
 	}
 	
@@ -100,8 +102,8 @@ class DsrController extends AbstractController {
 	public Set<DsrTarget> getDsrIndicators(def reportType, def category){
 		Set<DsrTarget> dsrIndicators = null
 		
-		if(reportType == ReportType.TABLE) return dsrIndicators
-		
+		if(reportType == ReportType.TABLE || category == null) return dsrIndicators
+
 		if(params.list('indicators') != null && !params.list('indicators').empty){
 			dsrIndicators = new HashSet<DsrTarget>()
 			
@@ -124,12 +126,15 @@ class DsrController extends AbstractController {
 		if (dsrIndicators == null) {
 			dsrIndicators = new HashSet<DsrTarget>()
 			
+
 			def targets = category.getAllTargets()
 			if(!targets.empty){
 				dsrIndicators.addAll(targets.sort({it.order}).first())
 			}			
 		}
 		
+		if (log.isDebugEnabled()) log.debug("dsr.view, reportType:"+reportType+", category:"+category+", getDsrIndicators:"+dsrIndicators)
+
 		return dsrIndicators
 	}
 	
@@ -154,7 +159,8 @@ class DsrController extends AbstractController {
 		
 		def redirected = false
 		// we check if we need to redirect, but only when some of the high level filters are null
-		if (period != null && program != null && location != null) {
+		if (period != null && program != null && location != null && dsrCategory != null) {
+
 			// building params for redirection checks
 			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id, 
 								'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(), 							

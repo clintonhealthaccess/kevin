@@ -3,7 +3,7 @@
 		<tbody>
 			<tr class='parent'>
 				<td>
-					<div class="left"><g:render template="/templates/reportLocationParent"/></div>
+					<div class="left"><g:reportLocationParent linkParams="${params}"/></div>
 					<g:i18n field="${currentLocation.names}" />					
 				</td>
 				<g:if test="${reportIndicators != null && !reportIndicators.empty}">
@@ -37,7 +37,8 @@
 			</tr>
 			<g:each in="${reportLocations}" var="location">
 				<tr>					
-					<td data-location-code="${location.code}">
+					<td>
+						<!-- location -->
 						<div class="js-map-table-location" 
 							data-location-code="${location.code}" 
 							data-location-names="${i18n(field: location.names)}">
@@ -57,9 +58,10 @@
 					</td>
 					<g:if test="${reportIndicators != null && !reportIndicators.empty}">
 						<g:each in="${reportIndicators}" var="indicator" status="i">
-							<g:if test="${mapSkipLevels != null && mapSkipLevels.contains(currentLocation.level)}"><td></td></g:if>
-							<g:else>
+							<g:set var="mapValue" value="${reportTable.getTableReportValue(location, indicator)}"/>
+							<g:if test="${mapValue != null || location.collectsData()}">
 								<td class="${currentIndicators.contains(indicator) ? 'selected' : ''}">
+									<!-- map table report value -->
 									<div class="js-map-table-value ${currentIndicators.contains(indicator) ? 'js-selected-value' : ''}"
 											data-location-code="${location.code}" 
 											data-location-names="${i18n(field: location.names)}" 
@@ -67,11 +69,14 @@
 											data-indicator-names="${i18n(field:indicator.names)}"
 											data-indicator-class="${'indicator-'+i}">
 										<g:reportMapValue 
-											value="${reportTable.getTableReportValue(location, indicator)?.value}" 
+											value="${indicator.average ? mapValue?.average : mapValue?.value}"
 											type="${indicator.getType()}" 
 											format="${indicator.getFormat()}"/>
 									</div>
 								</td>
+							</g:if>
+							<g:else>
+								<td></td>
 							</g:else>
 						</g:each>
 					</g:if>

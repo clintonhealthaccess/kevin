@@ -59,6 +59,16 @@ class FilterTagLib {
 		def model = excludeLinkParams(attrs)
 		out << render(template:'/templates/reportView', model:model)
 	}
+
+	def reportProgramParent = {attrs, body ->
+		def model = excludeLinkParams(attrs)
+		out << render(template:'/templates/reportProgramParent', model:model)
+	}
+
+	def reportLocationParent = {attrs, body ->
+		def model = excludeLinkParams(attrs)
+		out << render(template:'/templates/reportLocationParent', model:model)
+	}
 	
 	def reportExport = {attrs, body ->
 		def model = excludeLinkParams(attrs)
@@ -93,9 +103,14 @@ class FilterTagLib {
 	def periodFilter = {attrs, body ->
 		Period.withTransaction {
 			def model = excludeLinkParams(attrs)
+			def period = attrs['selected']
+
+			if (log.isDebugEnabled()) 
+				log.debug('periodFilter:'+period)
+
 			model << 
 				[
-					currentPeriod: attrs['selected'],
+					currentPeriod: period,
 					periods: Period.list([cache: true])
 				]
 			out << render(template:'/tags/filter/periodFilter', model:model)
@@ -134,7 +149,7 @@ class FilterTagLib {
 			def locationFilterTree = []
 			if (locationFilterRoot != null && !selectedTypes.empty) locationFilterTree.addAll locationFilterRoot.collectTreeWithDataLocations(skipLevels, selectedTypes)
 			
-			if (log.debugEnabled) log.debug("displaying filter with location: ${location}, skip levels: ${skipLevels}, selected types: ${selectedTypes}, tree: ${locationFilterTree}")
+			if (log.debugEnabled) log.debug("locationFilter: displaying filter with location: ${location}, skip levels: ${skipLevels}, selected types: ${selectedTypes}, tree: ${locationFilterTree}")
 			model << 
 				[
 					currentLocation: location,
@@ -154,6 +169,10 @@ class FilterTagLib {
 			if (attrs['selected'] == null) currentLocationTypes = []
 			else currentLocationTypes = attrs['selected'].asList().sort{it.order}
 			def dataLocationTypes = DataLocationType.list([cache: true]).sort{it.order}
+
+			if (log.isDebugEnabled()) 
+				log.debug('dataLocationTypeFilter:'+currentLocationTypes)
+
 			model << 
 				[
 					currentLocationTypes: currentLocationTypes,

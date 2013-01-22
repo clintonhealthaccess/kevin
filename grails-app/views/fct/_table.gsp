@@ -1,5 +1,5 @@
 <li>
-	<g:render template="/templates/reportTitle" model="[program: currentProgram, title: i18n(field:currentProgram.names), file: 'star_small.png']"/>
+	<g:render template="/templates/reportTitle" model="[entity: currentProgram, title: i18n(field:currentProgram.names), file: 'star_small.png']"/>
 	<g:reportExport linkParams="${params}" />
 	<g:reportView linkParams="${params}"/>                            																
 	<div class="selector">
@@ -10,7 +10,7 @@
 </li>
 <li>
 	<g:render template="/templates/reportTitle" model="[title: i18n(field:currentLocation.names), file: 'marker_small.png']"/>
-	<g:render template="/templates/reportLocationParent"/>
+	<g:reportLocationParent linkParams="${params}"/>
 	<div>
 		<div>
 			<g:message code="fct.report.datalocationtype"/>:

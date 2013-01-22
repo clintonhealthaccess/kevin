@@ -43,14 +43,7 @@
     //slister start
     text-align: right 
     &:first-child 
-      border-right: 1px solid $primary
-    //&:nth-child(2)
-      //background: $filler
-      //border-left: 1px solid $filler - #111
-      //border-right: 1px solid $primary
-      //color: $primary
-      //font-weight: bold
-      //text-align: right 
+      border-right: 1px solid $primary 
       //slister end
     a
       font-size: 11px
@@ -121,7 +114,7 @@
     .selected-indicator
       background: #f9f9f9
       color: black
-    .highlighted-table
+    .highlight-table
       border: 2px solid $yes !important
       //slister end
       
@@ -129,6 +122,13 @@
     td, th
       &:first-child
         width: 199px
+      &:nth-child(2)
+        background: $filler
+        border-left: 1px solid $filler - #111
+        border-right: 1px solid $primary
+        color: $primary
+        font-weight: bold
+        text-align: right
       &:last-child
         +box-shadow($filler - #060606 3px 0 0 inset)
         border-right: 1px solid $filler - #111

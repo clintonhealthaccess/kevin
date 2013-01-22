@@ -38,13 +38,11 @@
 	<r:script>
 	$(document).ready(function() {
 		var averageDiv = $('#js-average-checkbox').parent('div.row');
-		averageDiv.hide();
 		var selectDataFromList = $('select[name="data.id"]');
 		$(selectDataFromList).change(function(){
 			var selectedData = $('.chzn-single span').html();
-			if(selectedData.indexOf('[${Summ.class.simpleName}]') > -1)
-				$(averageDiv).show()
-			else $(averageDiv).hide()
+			if(selectedData.indexOf('[${Summ.class.simpleName}]') < 0)
+				$(averageDiv).hide()
 		});
 	});
 	</r:script>

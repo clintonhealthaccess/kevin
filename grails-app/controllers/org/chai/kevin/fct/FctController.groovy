@@ -31,7 +31,7 @@ class FctController extends AbstractController {
 	public FctTarget getFctTarget(def program){
 		def fctTarget = null
 		
-		if (program == null) return null
+		if (program == null) return fctTarget
 		
 		if(params.int('fctTarget') != null){
 			try {
@@ -55,6 +55,9 @@ class FctController extends AbstractController {
 				fctTarget = targets.first()			
 			}
 		}
+
+		if (log.isDebugEnabled()) log.debug("fct.view, program:"+program+", getFctTarget:"+fctTarget)
+
 		return fctTarget
 	}	
 	
@@ -78,7 +81,7 @@ class FctController extends AbstractController {
 		
 		def redirected = false
 		// we check if we need to redirect, but only when some of the high level filters are null
-		if (period != null && program != null && location != null) {
+		if (period != null && program != null && location != null && fctTarget != null) {
 			
 			// building params for redirection checks
 			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id,

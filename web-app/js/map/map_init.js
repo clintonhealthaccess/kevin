@@ -1,14 +1,6 @@
 var map = null;
 var mapLayers = []
 
-var basePolygonLayer = L.geoJson(null, {
-	style: function (feature){
-		return feature.properties && feature.properties.style;
-	},
-	pointToLayer: polygonFeatureToLayer,
-	onEachFeature: onEachPolygonFeature
-});
-
 function createTheMap(){
 	var mapBaseLayer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
 		maxZoom: 18,
@@ -43,7 +35,7 @@ function mapTheMap(mapLocationValueLayer){
 	// alert("after creating the map ");
 }
 
-// base polygon layer
+// dsr & fct base polygon layer
 // polygon -> color = blue/green #99D8C9/#2CA25F
 // polygon label -> location name
 
@@ -68,16 +60,26 @@ function mapPolygons(childrenCollectData, currentLocationCode, reportLocationCod
 
 			var polygonCoordinates = createPolygonCoordinates(dataFeature, false);
 
-			// color fillColor/color
-			// blue/green #99D8C9/#2CA25F
-			// orange #FDAE6B/#E6550D
-			// purple #BCBDDC/#756BB1
 			var polygonStyle = {
-				color: "#2CA25F",
-				weight: 1.5,
-				fillColor: "#99D8C9",
-			    fillOpacity: 0.75
-			};
+					color: "#2CA25F",
+					weight: 1.5,
+					fillColor: "#99D8C9",
+				    fillOpacity: 0.75
+				};
+
+			if(!childrenCollectData){
+				var polygonValuesTotal = $('.js-map-table-value[data-location-code="'+fosaid+'"] .report-value').size();
+				var polygonValuesNull = $('.js-map-table-value[data-location-code="'+fosaid+'"] .report-value-null').size();
+
+				if(polygonValuesTotal == polygonValuesNull){
+					polygonStyle = {
+						color: "#969696",
+						weight: 1.5,
+						fillColor: "#BDBDBD",
+					    fillOpacity: 0.75
+					};
+				}
+			}
 
 			// add polygon
 			var polygonFeature = {
@@ -167,17 +169,17 @@ function highlightPolygonFeature(e) {
     var polygonLabel = polygon.feature.properties.reportValueIcon
     var locationCode = polygon.feature.properties.locationCode
 	if(polygonLabel){
-		basePolygonLayer.eachLayer(function (layerData) {
-			var fLocationCode = layerData.feature.properties.locationCode;
-			var fPolygonLabel = layerData.feature.properties.reportValueIcon
-			if(fLocationCode == locationCode && !fPolygonLabel){
-				// highlight map polygon
-				layerData.setStyle({
-			        fillOpacity: 0.85,
-			        weight: 3
-			    });
-			}
-		});
+		// basePolygonLayer.eachLayer(function (layerData) {
+		// 	var fLocationCode = layerData.feature.properties.locationCode;
+		// 	var fPolygonLabel = layerData.feature.properties.reportValueIcon
+		// 	if(fLocationCode == locationCode && !fPolygonLabel){
+		// 		// highlight map polygon
+		// 		layerData.setStyle({
+		// 	        fillOpacity: 0.85,
+		// 	        weight: 3
+		// 	    });
+		// 	}
+		// });
 		// highlight map table row
 		highlightMapTableLocation(locationCode);
 	}

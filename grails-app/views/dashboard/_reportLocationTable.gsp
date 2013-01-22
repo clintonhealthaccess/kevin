@@ -1,55 +1,117 @@
-<table class="horizontal-graph">
-	<thead>
-	  <tr>
-		<th><g:i18n field="${currentLocation.names}"/></th>
-		<th><g:message code="dashboard.report.table.score"/></th>
-		<th></th>
-	  </tr>
-	</thead>
+<table class="nav-table graph">
 	<tbody>
-		<g:each in="${dashboard.getLocations(currentLocation, locationSkipLevels, currentLocationTypes)}" var="location">
-			<tr>
-				<g:set var="percentageValue" />
-				<td><g:if test="${!location.collectsData()}">
-						<% def childLocationLinkParams = new HashMap(params) %>
-						<% childLocationLinkParams['location'] = location.id+"" %>
-						<a href="${createLink(controller:controllerName, action:actionName, params:childLocationLinkParams)}">
-						<g:i18n field="${location.names}" /></a>
+		<tr class='parent'>
+			<g:set var="percentageValue" value="${reportTable.getPercentage(currentLocation, reportIndicator)}" />
+			<td>
+				<!-- location -->
+				<g:i18n field="${currentLocation.names}" />
+			</td>
+			<td>
+				<!-- map report value -->
+				<div class="js-map-table-value ${percentageValue != null && !percentageValue.isNull() && percentageValue.numberValue > 0 ? 'js-selected-value':''}"
+					data-location-code="${currentLocation.code}" 
+					data-location-names="${i18n(field: currentLocation.names)}" 
+					data-indicator-code="${reportIndicator.code}" 
+					data-indicator-names="${i18n(field:reportIndicator.names)}">
+					<g:reportMapValue
+						value="${percentageValue}" 
+						type="${reportTable.type}" 
+						format="${reportTable.format?:'#%'}"
+						rounded="0"
+					/>
+				</div>
+			</td>
+			<td>
+				<!-- map report value bar -->
+				<g:if test="${percentageValue != null && !percentageValue.isNull()}">
+					<g:if test="${percentageValue.numberValue > 1}">
+						<div class="js_bar_horizontal tooltip horizontal-bar expand-bar"
+							data-entity="${reportIndicator.id}"
+							data-percentage="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"
+							style="width:100%;"
+							original-title="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"></div>
 					</g:if>
 					<g:else>
-						<g:i18n field="${location.names}" />
-					</g:else>
-				</td>
-				<td><g:set var="percentageValue" value="${dashboard.getPercentage(location, dashboardEntity)}" />
-					<g:if test="${!percentageValue.isNull()}">
-						<g:reportValue value="${percentageValue}" type="${dashboard.type}" format="${dashboard.format}"/>
-					</g:if>
-					<g:else>
-						<g:message code="report.value.na"/>
-					</g:else></td>
-				<td>
-					<!-- percentage value -->
-					<g:if test="${percentageValue.isNull()}">
 						<div class="js_bar_horizontal tooltip horizontal-bar"
-							data-entity="${currentProgram.id}"
+							data-entity="${reportIndicator.id}"
+							data-percentage="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"
+							style="width:${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"
+							original-title="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"></div>
+					</g:else>
+				</g:if>
+				<g:else>
+					<div class="js_bar_horizontal tooltip horizontal-bar"
+						data-entity="${reportIndicator.id}"
+						data-percentage="null"
+						style="width:0%;"
+						original-title="null"></div>
+				</g:else> 
+			</td>
+		</tr>
+		<g:each in="${reportLocations}" var="location">
+			<tr>
+				<g:set var="percentageValue" value="${reportTable.getPercentage(location, reportIndicator)}" />
+				<td>
+					<!-- location -->
+					<div class="js-map-table-location" 
+						data-location-code="${location.code}" 
+						data-location-names="${i18n(field: location.names)}">
+						<g:if test="${location.collectsData()}">
+							<g:i18n field="${location.names}" />
+						</g:if>
+						<g:else>
+							<%
+								locationLinkParams = [:]
+								locationLinkParams.putAll linkParams
+								locationLinkParams['location'] = location.id+""
+							%>
+							<a href="${createLink(controller: controllerName, action: actionName,  params: locationLinkParams)}">
+							<g:i18n field="${location.names}" /></a>
+						</g:else>
+					</div>
+				</td>
+				<td>
+					<!-- map report value -->
+					<div class="js-map-table-value ${percentageValue != null && !percentageValue.isNull() && percentageValue.numberValue > 0 ? 'js-selected-value':''}"
+						data-location-code="${location.code}" 
+						data-location-names="${i18n(field: location.names)}" 
+						data-indicator-code="${reportIndicator.code}" 
+						data-indicator-names="${i18n(field:reportIndicator.names)}">
+						<div class="report-value">
+							<g:reportMapValue
+									value="${percentageValue}" 
+									type="${reportTable.type}" 
+									format="${reportTable.format?:'#%'}"
+									rounded="0"
+								/>
+						</div>
+					</div>
+				</td>
+				<td>
+					<!-- map report value bar -->
+					<g:if test="${percentageValue != null && !percentageValue.isNull()}">
+						<g:if test="${percentageValue.numberValue > 1}">
+							<div class="js_bar_horizontal tooltip horizontal-bar expand-bar"
+								data-entity="${reportIndicator.id}"
+								data-percentage="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"
+								style="width:100%;"
+								original-title="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"></div>
+						</g:if>
+						<g:else>
+							<div class="js_bar_horizontal tooltip horizontal-bar"
+								data-entity="${reportIndicator.id}"
+								data-percentage="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"
+								style="width:${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"
+								original-title="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"></div>
+						</g:else>
+					</g:if>
+					<g:else>
+						<div class="js_bar_horizontal tooltip horizontal-bar"
+							data-entity="${reportIndicator.id}"
 							data-percentage="null"
 							style="width:0%;"
 							original-title="null"></div>
-					</g:if>
-					<g:elseif test="${percentageValue.numberValue <= 1}">
-						<div class="js_bar_horizontal tooltip horizontal-bar"
-							data-entity="${currentProgram.id}"
-							data-percentage="${g.reportValue(value: percentageValue, type: dashboard.type, format: dashboard.format)}"
-							style="width:${g.reportValue(value: percentageValue, type: dashboard.type, format: dashboard.format)}"
-							original-title="${g.reportValue(value: percentageValue, type: dashboard.type, format: dashboard.format)}"></div>
-					</g:elseif>
-					<g:else>
-						<div class="js_bar_horizontal tooltip horizontal-bar expand-bar"
-							data-entity="${currentProgram.id}"
-							data-percentage="${g.reportValue(value: percentageValue, type: dashboard.type, format: dashboard.format)}"
-							style="width:100%;"
-							original-title="${g.reportValue(value: percentageValue, type: dashboard.type, format: dashboard.format)}"></div>
-					</g:else> 					
+					</g:else>
 				</td>
 			</tr>
 		</g:each>

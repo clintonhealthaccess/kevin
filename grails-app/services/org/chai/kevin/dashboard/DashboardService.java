@@ -37,6 +37,7 @@ import java.util.Set;
 
 import org.chai.kevin.Period;
 import org.chai.location.CalculationLocation;
+import org.chai.location.DataLocation;
 import org.chai.location.DataLocationType;
 import org.chai.location.Location;
 import org.chai.location.LocationLevel;
@@ -60,31 +61,38 @@ public class DashboardService {
 	private DashboardValueService dashboardPercentageService;	
 	
 	@Transactional(readOnly = true)
-	public Dashboard getDashboard(Location location, ReportProgram program, Period period, Set<DataLocationType> types, boolean compare) {
-		if (log.isDebugEnabled()) log.debug("getDashboard(location="+location+", program="+program+", period="+period+", types="+types+")");
+	public Dashboard getDashboard(CalculationLocation calculationLocation, ReportProgram program, DashboardEntity dashboardEntity, Period period, Set<DataLocationType> types, boolean compare) {
+		if (log.isDebugEnabled()) log.debug("getDashboard(location="+calculationLocation+", program="+program+", dashboardEntity="+dashboardEntity+", period="+period+", types="+types+")");
 
 		// LOCATIONS
 		List<CalculationLocation> locations = new ArrayList<CalculationLocation>();
 		// we need the current location
-		locations.add(location);
-		// we need the immediate children (data location + location)
+		locations.add(calculationLocation);
+		// we need the immediate children (locations + data locations)
 		Set<LocationLevel> skipLevels = getSkipLocationLevels();
 		if (!compare) {
-			locations.addAll(location.getChildrenEntitiesWithDataLocations(skipLevels, types));
-			locations.addAll(location.getDataLocations(skipLevels, types));
+			if(calculationLocation instanceof Location){
+				List<CalculationLocation> childLocations = ((Location)calculationLocation).getChildrenEntitiesWithDataLocations(skipLevels, types);
+				locations.addAll(childLocations);
+			}
+			locations.addAll(calculationLocation.getDataLocations(skipLevels, types));
 		}
 		
 		// DASHBOARD ENTITIES
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();
 		// we need the current entity
-		dashboardEntities.add(getDashboardProgram(program));
-		// we need the immediate children entities
+		dashboardEntities.add(dashboardEntity);
+		// we need the immediate children (programs + targets)
 		dashboardEntities.addAll(collectDashboardEntitiesWithTargets(program));
 		
 		// we retrieve the values for the given list of locations and dashboard entities
 		Map<CalculationLocation, Map<DashboardEntity, Value>> valueMap = getValues(locations, dashboardEntities, period, types);
 		
-		List<Location> locationPath = calculateLocationPath(location);
+		Location locationPathLocation = null;
+		if(calculationLocation instanceof Location) locationPathLocation = (Location) calculationLocation;
+		else if(calculationLocation instanceof DataLocation) locationPathLocation = ((DataLocation)calculationLocation).getLocation();
+		List<Location> locationPath = calculateLocationPath(locationPathLocation);
+
 		Dashboard dashboard = new Dashboard(valueMap, locationPath, this);
 		if (log.isDebugEnabled()) log.debug("getDashboard(...)="+dashboard);
 		return dashboard;

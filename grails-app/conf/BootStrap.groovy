@@ -161,8 +161,8 @@ class BootStrap {
 			ReportInitializer.createDsrTargets();
 			ReportInitializer.createFctTargets();
 			ReportInitializer.createFctTargetOptions();
-			// ReportInitializer.createDashboardPrograms();
-			// ReportInitializer.createDashboardTargets();
+			ReportInitializer.createDashboardPrograms();
+			ReportInitializer.createDashboardTargets();
 			
 			// we initialize the survey
 			SurveyInitializer.createSurveys()
