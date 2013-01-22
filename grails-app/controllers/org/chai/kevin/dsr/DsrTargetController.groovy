@@ -38,7 +38,6 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.location.DataLocationType;
-import org.chai.kevin.reports.ReportProgram;
 
 import org.chai.kevin.AbstractEntityController
 
@@ -66,9 +65,7 @@ class DsrTargetController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			target: entity,
-			programs: ReportProgram.list(),
 			categories: DsrTargetCategory.list(),
-//			dataElements: entity.dataElement!=null?[entity.dataElement]:[],
 			data: entity.data!=null?[entity.data]:[]
 		]
 	}
