@@ -15,8 +15,6 @@ class DataLocationController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
-		
-		if (params.names!=null) entity.names = params.names
 	}
 
 	def getModel(def entity) {
@@ -52,7 +50,11 @@ class DataLocationController extends AbstractEntityController {
 			}
 		}
 		entity.needsReview = false
+		
 		super.saveEntity(entity)
+		
+		// refreshing cache
+		if (entity.location != null) entity.location.addToDataLocations(entity)
 	}
 	
 	def deleteEntity(def entity) {

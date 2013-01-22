@@ -10,6 +10,7 @@ class ReportProgram extends ReportEntity implements Exportable {
 	static hasMany = [children: ReportProgram]
 	
 	static mapping = {
+		cache true
 		table 'dhsst_report_program'
 		parent column: 'parent'
 		children cache: true
