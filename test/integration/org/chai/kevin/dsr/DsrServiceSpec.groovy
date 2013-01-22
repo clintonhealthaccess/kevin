@@ -340,27 +340,5 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		]))
 	}
 	
-	def "get dsr skip view levels"(){
-		setup:
-		setupLocationTree()
-
-		when:
-		def dsrSkipLevels = dsrService.getSkipViewLevels(ReportType.MAP)
-
-		then:
-		dsrSkipLevels.equals(s([
-			LocationLevel.findByCode(NATIONAL),
-			LocationLevel.findByCode(PROVINCE),
-			LocationLevel.findByCode(SECTOR)
-		]))
-		
-		when:
-		dsrSkipLevels = dsrService.getSkipViewLevels(ReportType.TABLE)
-		
-		then:
-		dsrSkipLevels.equals(s([
-			LocationLevel.findByCode(SECTOR)
-		]))
-	}
 
 }

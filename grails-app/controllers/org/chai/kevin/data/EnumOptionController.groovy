@@ -66,11 +66,10 @@ class EnumOptionController extends AbstractEntityController {
 	}
 	
 	def saveEntity(def entity) {
-		entity.enume.addToEnumOptions(entity)
-		entity.enume.save()
-		entity.save()
+		super.saveEntity(entity)
 		
-		sessionFactory.evictCollection("org.chai.kevin.data.Enum.enumOptions", entity.enume.id)
+		// refresh cache
+		entity.enume.addToEnumOptions(entity)
 	}
 	
 	def deleteEntity(def entity) {

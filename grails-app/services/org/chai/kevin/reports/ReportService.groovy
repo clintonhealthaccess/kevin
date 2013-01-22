@@ -62,6 +62,8 @@ public class ReportService {
 	}
 	
 	public <T extends ReportTarget> boolean collectReportTree(Class<T> clazz, ReportProgram program, List<ReportProgram> collectedPrograms, List<T> collectedTargets) {
+		if (log.debugEnabled) log.debug("collectReportTree(clazz=${clazz}, program=${program}, collectedPrograms=${collectedPrograms}, collectedTargets=${collectedTargets})")
+		
 		boolean hasTargets = false;
 		for (ReportProgram child : program.getAllChildren()) {
 			hasTargets = hasTargets | collectReportTree(clazz, child, collectedPrograms, collectedTargets);
@@ -69,7 +71,8 @@ public class ReportService {
 		
 		//report target tree list
 		List<T> targets = program.getReportTargets(clazz);
-		if (log.isDebugEnabled()) log.debug("collectReportTree(program="+program+",targets="+targets+")");
+		if (log.isDebugEnabled()) log.debug("found immediate targets for program ${program}: ${targets}");
+		
 		if(!targets.isEmpty()){
 			hasTargets = true;
 			if (collectedTargets != null) collectedTargets.addAll(targets);	
