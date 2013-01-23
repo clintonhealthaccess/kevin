@@ -52,7 +52,6 @@
 					<% childProgramLinkParams['program'] = entity.program.id+"" %>
 					<% childProgramLinkParams['dashboardEntity'] = entity.id+"" %>
 					<g:set var="childEntity" value="${entity.isTarget() ? entity : entity.program}" />
-
 					<g:if test="${childEntity == dashboardEntity}">
 						<g:i18n field="${childEntity.names}" />
 					</g:if>

@@ -99,7 +99,33 @@ class FilterTagLib {
 		]
 		out << render(template:'/fct/reportTargetFilter', model:model)
 	}
-	
+
+	def reportIndicatorFilter = {attrs, body ->
+		def model = excludeLinkParams(attrs)
+		def currentIndicator = attrs['selected']
+		def indicatorClazz = attrs['selectedIndicatorClass']
+		def indicatorParam = attrs['selectedIndicatorParam']
+		def currentProgram = attrs['program']
+
+		def indicators = []
+		if(currentProgram.children == null || currentProgram.children.empty) {
+			indicators = reportService.collectReportTargets(indicatorClazz, currentProgram).sort({it.order})
+		}
+
+		if (log.isDebugEnabled()) {
+				log.debug('reportIndicatorFilter:'+currentIndicator+', currentProgram:'+currentProgram+
+							', indicatorClazz:'+indicatorClazz+', indicatorParam:'+indicatorParam+', indicators'+indicators)
+			}
+
+		model <<
+		[
+			currentIndicator: currentIndicator,
+			indicators: indicators,
+			indicatorParam: indicatorParam
+		]
+		out << render(template:'/templates/reportIndicatorFilter', model:model)
+	}
+
 	def periodFilter = {attrs, body ->
 		Period.withTransaction {
 			def model = excludeLinkParams(attrs)
@@ -121,16 +147,20 @@ class FilterTagLib {
 		ReportProgram.withTransaction {
 			def model = excludeLinkParams(attrs)
 			def selectedProgram = attrs['selected']
-			def selectedClass = attrs['selectedTargetClass']
+			def selectedTargetClass = attrs['selectedTargetClass']
+			def showProgramData = attrs['showProgramData']
 			def programRoot = reportService.getRootProgram()
-			def programTree = reportService.collectReportProgramTree(selectedClass, programRoot)
+			def programTree = reportService.collectReportProgramTree(selectedTargetClass, programRoot)
 			
-			if (log.isDebugEnabled()) 
-				log.debug('programFilter:'+programTree+', selectedProgram:'+selectedProgram+', selectedClass:'+selectedClass)
+			if (log.isDebugEnabled()) {
+				log.debug('programFilter:'+programTree+', selectedProgram:'+selectedProgram+
+							', selectedTargetClass:'+selectedTargetClass+', showProgramData'+showProgramData)
+			}
 				
 			model << 
 				[
 					currentProgram: selectedProgram,
+					showProgramData: showProgramData,
 					programRoot: programRoot,
 					programTree: programTree			
 				]				

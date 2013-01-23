@@ -14,7 +14,7 @@
 	</head>
 	<body>
 		<div id="report">
-			<div class="filter-bar">			
+			<div class="filter-bar">
 				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params]"/>
 			</div>
 			<div class="main">
