@@ -4,13 +4,13 @@
 		<td>
 			<span style="margin-left: ${level*20}px;"><g:i18n field="${location.names}"/></span>
 		</td>
-		<g:each in="${dsrTable.indicators}" var="target">
+		<g:each in="${dsrTable.indicators}" var="indicator">
 			<td>
 				<g:reportValue
-					tooltip="${i18n(field: target.names)}"
-					value="${dsrTable.getTableReportValue(location, target)?.value}" 
-					type="${target.data.type}" 
-					format="${target.format}"/>	
+					tooltip="${i18n(field: indicator.names)}"
+					value="${dsrTable.getTableReportValue(location, indicator)?.value}" 
+					type="${indicator.data.type}" 
+					format="${indicator.format}"/>
 			</td>
 		</g:each>
 	</tr>
@@ -22,15 +22,16 @@
 			<td class="js_foldable-toggle ${location.id == currentLocation.id ? 'toggled': ''}">
 				<span style="margin-left: ${level*20}px;"><g:i18n field="${location.names}"/></span>
 			</td>
-			<g:each in="${dsrTable.indicators}" var="target">
+			<g:each in="${dsrTable.indicators}" var="indicator">
 				<td>
-					<g:if test="${dsrTable.getTableReportValue(location, target) != null}">
+					<g:set var="tableValue" value="${dsrTable.getTableReportValue(location, indicator)}"/>
+					<g:if test="${tableValue != null && !tableValue.isNull()}">
 						<g:reportValue
-							tooltip="${i18n(field: target.names)}"
-							value="${dsrTable.getTableReportValue(location, target)?.value}"
-							listValue="${dsrTable.getModeList(location, target)}"
-							type="${target.data.type}"
-							format="${target.format}"/>
+							tooltip="${i18n(field: indicator.names)}"
+							value="${indicator.average ? tableValue?.average : tableValue?.value}"
+							listValue="${dsrTable.getModeList(location, indicator)}"
+							type="${indicator.data.type}"
+							format="${indicator.format}"/>
 					</g:if>
 				</td>
 			</g:each>

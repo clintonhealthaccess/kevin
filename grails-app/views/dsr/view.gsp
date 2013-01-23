@@ -19,7 +19,6 @@
 				<g:render template="/templates/topLevelReportFilters"/>
 			</div>
 			<div class="main">
-				<!-- TODO get rid of reportType from exclude list when all maps are implemented -->
 				<g:topLevelReportTabs linkParams="${params}" exclude="${['dsrCategory', 'indicators']}" />
 				<g:if test="${dsrTable != null}">
 					<ul>
@@ -30,12 +29,12 @@
 							<g:render template="/dsr/table"/>								
 						</g:elseif>
 						<g:else>
-							<p class="nav-help"><g:message code="dsr.report.table.noselection.label"/></p>
+							<p class="nav-help"><g:message code="report.table.noselection.label"/></p>
 						</g:else>
 					</ul>
 				</g:if>
 				<g:else>
-					<p class="nav-help"><g:message code="dsr.report.table.noselection.label"/></p>
+					<p class="nav-help"><g:message code="report.table.noselection.label"/></p>
 				</g:else>
 			</div>		
 		</div>		

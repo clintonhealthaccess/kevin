@@ -64,8 +64,8 @@ public class Dashboard {
 		this.dashboardService = dashboardService
 	}
 	
-	public List<CalculationLocation> getLocations(Location parent, def skipLevels, def types) {
-		//gets all location children and data locations
+	public List<CalculationLocation> getLocations(CalculationLocation parent, def skipLevels, def types) {
+		// gets all immediate children (locations + data locations)
 		def result = new ArrayList<CalculationLocation>();
 		result.addAll(parent.getChildren(skipLevels));
 		result.addAll(parent.getDataLocations(skipLevels, types));
@@ -79,7 +79,7 @@ public class Dashboard {
 	
 	public Value getPercentage(CalculationLocation location, DashboardEntity dashboardEntity) {
 		if (log.isDebugEnabled()) log.debug("getPercentage(location=${location}, dashboardEntity=${dashboardEntity})")
-		return valueMap.get(location).get(dashboardEntity);
+		return valueMap.get(location)?.get(dashboardEntity);
 	}
 	
 	public Type getType() {

@@ -131,7 +131,7 @@ environments {
 		grails.resources.processing.enabled = true
 		
 		//NEVER COMMIT THIS !!!
-		grails.gsp.reload.enable = true
+		//grails.gsp.reload.enable = true
 	}
 	development {
 		grails.resources.cdn.enabled = false

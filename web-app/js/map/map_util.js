@@ -139,22 +139,22 @@ function missingFosaLocations(fosaLocations, locations){
 function highlightMapTableLocation(locationCode){
 	// highlight map table location row
     var mapTableRow = $('.js-map-table-location[data-location-code="'+locationCode+'"]').parent('td').parent('tr');
-    $(mapTableRow).addClass('highlighted-table');
+    $(mapTableRow).addClass('highlight-table');
 }
 function resetMapTableLocation(locationCode){
 	// reset map table location row
 	var mapTableRow = $('.js-map-table-location[data-location-code="'+locationCode+'"]').parent('td').parent('tr');
-    $(mapTableRow).removeClass('highlighted-table');
+    $(mapTableRow).removeClass('highlight-table');
 }
 
 // highlight/reset map table cell
 function highlightMapTableValue(locationCode, indicatorCode){
 	// highlight map table report value cell
     var mapTableValue = $('.js-map-table-value[data-location-code="'+locationCode+'"][data-indicator-code="'+indicatorCode+'"]').parent('td');
-    $(mapTableValue).addClass('highlighted-table');
+    $(mapTableValue).addClass('highlight-table');
 }
 function resetMapTableValue(locationCode, indicatorCode){
 	// reset map table report value cell
     var mapTableValue = $('.js-map-table-value[data-location-code="'+locationCode+'"][data-indicator-code="'+indicatorCode+'"]').parent('td');
-    $(mapTableValue).removeClass('highlighted-table');
+    $(mapTableValue).removeClass('highlight-table');
 }

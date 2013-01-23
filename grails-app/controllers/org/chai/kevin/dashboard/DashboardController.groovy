@@ -29,12 +29,16 @@ package org.chai.kevin.dashboard
 */
 
 import org.chai.kevin.AbstractController
-import org.chai.location.LocationService
 import org.chai.kevin.Period
-import org.chai.location.DataLocationType
-import org.chai.location.Location
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
+import org.chai.kevin.reports.ReportService.ReportType
+import org.chai.kevin.util.Utils
+import org.chai.location.CalculationLocation
+import org.chai.location.DataLocation
+import org.chai.location.DataLocationType
+import org.chai.location.Location
+import org.chai.location.LocationService
 
 class DashboardController extends AbstractController {
 	
@@ -45,7 +49,9 @@ class DashboardController extends AbstractController {
 	}		
 	
 	private def getDashboardEntity(def program) {		
-		DashboardEntity entity = dashboardService.getDashboardProgram(program)
+		DashboardEntity entity = DashboardTarget.get(params.int('dashboardEntity'))
+		if(entity != null && !entity.program.equals(program)) entity = null
+		if(entity == null) entity = dashboardService.getDashboardProgram(program)
 		return entity
 	}
 	
@@ -55,8 +61,10 @@ class DashboardController extends AbstractController {
 		// entities from params
 		Period period = getPeriod()									
 		ReportProgram program = getProgram(DashboardTarget.class)
-		Location location = getLocation()
+		CalculationLocation location = getCalculationLocation()
+		// if (log.isDebugEnabled()) log.debug("dashboard.view, location:"+location)
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()
+		ReportType reportType = getReportType()
 		
 		// other information we need in the view
 		DashboardEntity dashboardEntity = getDashboardEntity(program)
@@ -64,9 +72,12 @@ class DashboardController extends AbstractController {
 		
 		def redirected = false
 		// we check if we need to redirect, but only when some of the high level filters are null
-		if (period != null && program != null && location != null) {
+		if (period != null && program != null && location != null && dashboardEntity != null) {
 			// building params for redirection checks
-			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id, 'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort()]
+			def reportParams = ['period':period.id, 'program':program.id, 'location':location.id, 
+								'dataLocationTypes':dataLocationTypes.collect{ it.id }.sort(),
+								'dashboardEntity': dashboardEntity.id,
+								'reportType':reportType.toString().toLowerCase()]
 			
 			// we check if we should redirect
 			def newParams = redirectIfDifferent(reportParams)
@@ -80,7 +91,7 @@ class DashboardController extends AbstractController {
 		if (!redirected) {
 			def dashboard
 			if (dashboardEntity != null) {
-				dashboard = dashboardService.getDashboard(location, program, period, dataLocationTypes, false);
+				dashboard = dashboardService.getDashboard(location, program, dashboardEntity, period, dataLocationTypes, false);
 			}
 						
 			if (log.isDebugEnabled()) log.debug('dashboard: '+dashboard+", root program: "+program+", root location: "+location)
@@ -90,9 +101,10 @@ class DashboardController extends AbstractController {
 				currentProgram: program,
 				currentLocation: location,
 				currentLocationTypes: dataLocationTypes,
-				selectedTargetClass: DashboardTarget.class,
+				currentView: reportType,
 				
-				dashboard: dashboard,
+				dashboardTable: dashboard,
+				selectedTargetClass: DashboardTarget.class,
 				dashboardEntity: dashboardEntity,
 				locationSkipLevels: locationSkipLevels			
 			]
@@ -105,7 +117,8 @@ class DashboardController extends AbstractController {
 		// entities from params
 		Period period = getPeriod()	
 		ReportProgram program = getProgram(DashboardTarget.class)
-		Location location = getLocation()
+		CalculationLocation location = getCalculationLocation()
+		if (log.isDebugEnabled()) log.debug("dashboard.view, location:"+location)
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 		
 		// other information we need in the view

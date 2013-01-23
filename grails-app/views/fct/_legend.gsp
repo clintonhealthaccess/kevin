@@ -1,4 +1,4 @@
-<!-- map legend -->
+<!-- fct map legend -->
 <ul class="horizontal map_legend">
 	<g:each in="${indicators}" var="indicator" status="i">
 		<li>
@@ -8,7 +8,7 @@
 		</li>
 	</g:each>
 </ul>
-<!-- map colors -->
+<!-- fct map colors -->
 <r:script>
 	var best = $('.map_legend .indicator-best').css('background-color');
 	var middle = $('.map_legend .indicator-middle').css('background-color');

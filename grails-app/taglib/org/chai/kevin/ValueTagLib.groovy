@@ -27,7 +27,14 @@ class ValueTagLib {
 		def format = attrs['format']
 		def rounded = attrs['rounded']
 		
-		if (value == null || value.isNull()) {
+		if (value == null) {
+			out << '<div class="report-value report-value-null"'+
+					' data-report-value="'+message(code: 'report.value.null')+'"'+
+					' data-report-value-raw="null"'+
+					' data-report-value-type="null">'+
+					message(code: 'report.value.null')+'</div>'
+		}
+		else if (value.isNull()) {
 			out << '<div class="report-value report-value-null"'+
 					' data-report-value="'+message(code: 'report.value.null')+'"'+
 					' data-report-value-raw="null"'+

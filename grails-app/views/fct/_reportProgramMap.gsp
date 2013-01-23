@@ -1,4 +1,3 @@
-<%@ page import="org.chai.kevin.data.Type.ValueType" %>
 <div class='map-wrap'>	
 	<div id="map" class="map" />
 	
