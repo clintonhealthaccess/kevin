@@ -20,7 +20,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 			]
 		), '<div class="report-value report-value-null"'+
 			' data-report-value="N/A"'+
-			' data-report-value-type="null">N/A</div>'
+			' data-report-value-raw="null" data-report-value-type="null">N/A</div>'
 	}
 	
 	def testReportMapValueBool() {
