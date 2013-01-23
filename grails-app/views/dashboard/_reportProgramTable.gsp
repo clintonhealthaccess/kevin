@@ -7,33 +7,40 @@
 				<g:i18n field="${currentProgram.names}" />
 			</td>
 			<td>
-				<g:if test="${!percentageValue.isNull()}">
-					<g:reportValue value="${percentageValue}" type="${dashboardTable.type}" format="${dashboardTable.format}"/>
+				<g:if test="${dashboardEntity.isTarget()}">
+					<g:message code="dashboard.report.table.score"/>
 				</g:if>
 				<g:else>
-					<g:message code="report.value.na"/>
+					<g:if test="${percentageValue != null && !percentageValue.isNull()}">
+						<g:reportValue value="${percentageValue}" type="${dashboardTable.type}" format="${dashboardTable.format}"/>
+					</g:if>
+					<g:else>
+						<g:message code="report.value.na"/>
+					</g:else>
 				</g:else>
-				</td>					
+			</td>					
 			<td>
 				<!-- percentage value -->
-				<g:if test="${percentageValue.isNull()}">
-					<div class="js_bar_horizontal tooltip horizontal-bar" 
-						data-percentage="null"
-						style="width:0%"							 
-						original-title="null"></div>
+				<g:if test="${!dashboardEntity.isTarget()}">
+					<g:if test="${percentageValue == null || percentageValue.isNull()}">
+						<div class="js_bar_horizontal tooltip horizontal-bar" 
+							data-percentage="null"
+							style="width:0%"							 
+							original-title="null"></div>
+					</g:if>
+					<g:elseif test="${percentageValue.numberValue <= 1}">
+						<div class="js_bar_horizontal tooltip horizontal-bar" 
+							data-percentage="${g.reportValue(value: percentageValue, type: dashboardTable.type, format: dashboardTable.format)}"
+							style="width:${g.reportValue(value: percentageValue, type: dashboardTable.type, format: dashboardTable.format)}"							 
+							original-title="${g.reportValue(value: percentageValue, type: dashboardTable.type, format: dashboardTable.format)}"></div>
+					</g:elseif>
+					<g:else>
+						<div class="js_bar_horizontal tooltip horizontal-bar expand-bar" 
+							data-percentage="${g.reportValue(value: percentageValue, type: dashboardTable.type, format: dashboardTable.format)}"
+							style="width:100%"
+							original-title="${g.reportValue(value: percentageValue, type: dashboardTable.type, format: dashboardTable.format)}"></div>
+					</g:else>
 				</g:if>
-				<g:elseif test="${percentageValue.numberValue <= 1}">
-					<div class="js_bar_horizontal tooltip horizontal-bar" 
-						data-percentage="${g.reportValue(value: percentageValue, type: dashboardTable.type, format: dashboardTable.format)}"
-						style="width:${g.reportValue(value: percentageValue, type: dashboardTable.type, format: dashboardTable.format)}"							 
-						original-title="${g.reportValue(value: percentageValue, type: dashboardTable.type, format: dashboardTable.format)}"></div>
-				</g:elseif>
-				<g:else>
-					<div class="js_bar_horizontal tooltip horizontal-bar expand-bar" 
-						data-percentage="${g.reportValue(value: percentageValue, type: dashboardTable.type, format: dashboardTable.format)}"
-						style="width:100%"
-						original-title="${g.reportValue(value: percentageValue, type: dashboardTable.type, format: dashboardTable.format)}"></div>
-				</g:else>
 			</td>
 		</tr>
 		<g:set var="dashboardEntities" value="${dashboardEntity.isTarget() ? dashboardEntity : dashboardTable.getIndicators(dashboardEntity)}" />
