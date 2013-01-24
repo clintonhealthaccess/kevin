@@ -7,7 +7,7 @@
 				<g:i18n field="${currentLocation.names}" />
 			</td>
 			<td>
-				<!-- map report value -->
+				<!-- percentage value -->
 				<div class="js-map-table-value ${percentageValue != null && !percentageValue.isNull() && percentageValue.numberValue > 0 ? 'js-selected-value':''}"
 					data-location-code="${currentLocation.code}" 
 					data-location-names="${i18n(field: currentLocation.names)}" 
@@ -18,33 +18,34 @@
 						type="${reportTable.type}" 
 						format="${reportTable.format?:'#%'}"
 						rounded="0"
+						tooltip="${reportIndicator.isTarget() ? i18n(field:reportIndicator.names) : i18n(field:currentProgram.names)}"
 					/>
 				</div>
 			</td>
 			<td>
-				<!-- map report value bar -->
+				<!-- percentage value bar -->
 				<g:if test="${percentageValue != null && !percentageValue.isNull()}">
+					<g:set var="indicator" value="${reportIndicator.isTarget() ? reportIndicator : currentProgram}" />
 					<g:if test="${percentageValue.numberValue > 1}">
-						<div class="js_bar_horizontal tooltip horizontal-bar expand-bar"
-							data-entity="${reportIndicator.id}"
+						<div class="js_bar_horizontal tooltip horizontal-bar-4"
 							data-percentage="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"
 							style="width:100%;"
-							original-title="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"></div>
+							original-title="${i18n(field: indicator.names)}: ${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"></div>
 					</g:if>
 					<g:else>
-						<div class="js_bar_horizontal tooltip horizontal-bar"
-							data-entity="${reportIndicator.id}"
+						<g:set var="colorValue" value="${percentageValue.numberValue}"/>
+						<g:set var="colorClass" value="${colorValue < 0.26 ? 0 : (colorValue < 0.51 ? 1 : (colorValue < 0.76 ? 2 : (colorValue < 1.01 ? 3 : 4)))}"/>
+						<div class="js_bar_horizontal tooltip horizontal-bar-${colorClass}"
 							data-percentage="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"
 							style="width:${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"
-							original-title="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"></div>
+							original-title="${i18n(field: indicator.names)}: ${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"></div>
 					</g:else>
 				</g:if>
 				<g:else>
-					<div class="js_bar_horizontal tooltip horizontal-bar"
-						data-entity="${reportIndicator.id}"
+					<div class="js_bar_horizontal tooltip horizontal-bar-na"
 						data-percentage="null"
 						style="width:0%;"
-						original-title="null"></div>
+						original-title="${i18n(field:reportIndicator.names)}"></div>
 				</g:else> 
 			</td>
 		</tr>
@@ -71,7 +72,7 @@
 					</div>
 				</td>
 				<td>
-					<!-- map report value -->
+					<!-- percentage value -->
 					<div class="js-map-table-value ${percentageValue != null && !percentageValue.isNull() && percentageValue.numberValue > 0 ? 'js-selected-value':''}"
 						data-location-code="${location.code}" 
 						data-location-names="${i18n(field: location.names)}" 
@@ -83,34 +84,35 @@
 									type="${reportTable.type}" 
 									format="${reportTable.format?:'#%'}"
 									rounded="0"
+									tooltip="${reportIndicator.isTarget() ? i18n(field:reportIndicator.names) : i18n(field:currentProgram.names)}"
 								/>
 						</div>
 					</div>
 				</td>
 				<td>
-					<!-- map report value bar -->
+					<!-- percentage value bar -->
 					<g:if test="${percentageValue != null && !percentageValue.isNull()}">
+						<g:set var="indicator" value="${reportIndicator.isTarget() ? reportIndicator : currentProgram}" />
 						<g:if test="${percentageValue.numberValue > 1}">
-							<div class="js_bar_horizontal tooltip horizontal-bar expand-bar"
-								data-entity="${reportIndicator.id}"
+							<div class="js_bar_horizontal tooltip horizontal-bar-4"
 								data-percentage="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"
 								style="width:100%;"
-								original-title="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"></div>
+								original-title="${i18n(field: indicator.names)}: ${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"></div>
 						</g:if>
 						<g:else>
-							<div class="js_bar_horizontal tooltip horizontal-bar"
-								data-entity="${reportIndicator.id}"
+							<g:set var="colorValue" value="${percentageValue.numberValue}"/>
+							<g:set var="colorClass" value="${colorValue < 0.26 ? 0 : (colorValue < 0.51 ? 1 : (colorValue < 0.76 ? 2 : (colorValue < 1.01 ? 3 : 4)))}"/>
+							<div class="js_bar_horizontal tooltip horizontal-bar-${colorClass}"
 								data-percentage="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"
 								style="width:${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"
-								original-title="${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"></div>
+								original-title="${i18n(field: indicator.names)}: ${g.reportValue(value: percentageValue, type: reportTable.type, format: reportTable.format)}"></div>
 						</g:else>
 					</g:if>
 					<g:else>
-						<div class="js_bar_horizontal tooltip horizontal-bar"
-							data-entity="${reportIndicator.id}"
+						<div class="js_bar_horizontal tooltip horizontal-bar-na"
 							data-percentage="null"
 							style="width:0%;"
-							original-title="null"></div>
+							original-title="${i18n(field:reportIndicator.names)}"></div>
 					</g:else>
 				</td>
 			</tr>

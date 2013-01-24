@@ -66,12 +66,12 @@
 											data-location-code="${location.code}" 
 											data-location-names="${i18n(field: location.names)}" 
 											data-indicator-code="${indicator.code}" 
-											data-indicator-names="${i18n(field:indicator.names)}"
-											data-indicator-class="${'indicator-'+i}">
+											data-indicator-names="${i18n(field:indicator.names)}">
 										<g:reportMapValue 
 											value="${indicator.average ? mapValue?.average : mapValue?.value}"
 											type="${indicator.getType()}" 
-											format="${indicator.getFormat()}"/>
+											format="${indicator.getFormat()}"
+											tooltip="${i18n(field:indicator.names)}"/>
 									</div>
 								</td>
 							</g:if>

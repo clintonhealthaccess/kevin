@@ -60,7 +60,8 @@
 										<g:reportMapValue 
 											value="${mapValue}"
 											type="${indicator.type}"
-											format="${indicator.numberFormat}"/>
+											format="${indicator.numberFormat}"
+											tooltip="${i18n(field:indicator.names)}"/>
 									</div>
 									<g:if test="${!location.collectsData()}">
 										<div class="report-value-percentage hidden">
@@ -69,7 +70,7 @@
 												type="${indicator.type}" 
 												format="${indicator.percentageFormat?:'#%'}"
 												rounded="2"
-											/>
+												tooltip="${i18n(field:indicator.names)}"/>
 										</div>
 									</g:if>
 								</div>

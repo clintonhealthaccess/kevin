@@ -45,21 +45,78 @@
     &:last-child
       width: 605px
 
-.horizontal-bar
-  background: $primary
+.horizontal-bar-na
+  background: $quartileNa
   height: 20px
   opacity: 0.7
   position: relative
   width: 0
   z-index: 5
-  +linear-gradient(color-stops($primary + #111, $primary - #111))
+  +linear-gradient(color-stops($quartileNa + #111, $quartileNa - #111))
   +transition(all 2s ease)
   &:hover, &:focus
     opacity: 1
-  &.expand-bar
-    background: url('../images/expand-bar.png') no-repeat center right $primary
-  
-    
+
+.horizontal-bar-0
+  background: $quartile0
+  height: 20px
+  opacity: 0.7
+  position: relative
+  width: 0
+  z-index: 5
+  +linear-gradient(color-stops($quartile0 + #111, $quartile0 - #111))
+  +transition(all 2s ease)
+  &:hover, &:focus
+    opacity: 1
+
+.horizontal-bar-1
+  background: $quartile1
+  height: 20px
+  opacity: 0.7
+  position: relative
+  width: 0
+  z-index: 5
+  +linear-gradient(color-stops($quartile1 + #111, $quartile1 - #111))
+  +transition(all 2s ease)
+  &:hover, &:focus
+    opacity: 1
+
+.horizontal-bar-2
+  background: $quartile2
+  height: 20px
+  opacity: 0.7
+  position: relative
+  width: 0
+  z-index: 5
+  +linear-gradient(color-stops($quartile2 + #111, $quartile2 - #111))
+  +transition(all 2s ease)
+  &:hover, &:focus
+    opacity: 1
+
+.horizontal-bar-3
+  background: $quartile3
+  height: 20px
+  opacity: 0.7
+  position: relative
+  width: 0
+  z-index: 5
+  +linear-gradient(color-stops($quartile3 + #111, $quartile3 - #111))
+  +transition(all 2s ease)
+  &:hover, &:focus
+    opacity: 1
+
+.horizontal-bar-4
+  background: $quartile2
+  height: 20px
+  opacity: 0.7
+  position: relative
+  width: 0
+  z-index: 5
+  +linear-gradient(color-stops($quartile4 + #111, $quartile4 - #111))
+  +transition(all 2s ease)
+  &:hover, &:focus
+    opacity: 1
+
 .horizontal-bar-avg
   background: $primary
   height: 12px

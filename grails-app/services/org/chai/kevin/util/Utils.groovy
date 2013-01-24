@@ -60,12 +60,16 @@ import org.chai.kevin.value.Value;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.util.DataUtils;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * @author Jean Kahigiso M.
  * 
  */
 public class Utils {
 	
+	private static final Log log = LogFactory.getLog(Utils.class);
+
 	private final static String ZIP_FILE_EXTENSION = ".zip";	
 	private final static String DATE_FORMAT_TIME = "dd-MM-yyyy hh:mm:ss";
 
@@ -170,8 +174,14 @@ public class Utils {
 				}
 				break;
 			case (ValueType.NUMBER):
-				if (zero != null && value.numberValue == 0) result = zero
-				else result = Utils.formatNumber(format, rounded!=null?value.numberValue.round(rounded):value.numberValue)
+				if (zero != null && value.numberValue == 0){
+					result = zero
+					if (log.isDebugEnabled()) log.debug("utils.getStringValue(), value:"+value+", numberValue:"+value.numberValue+", zero:"+zero+", result:"+result)
+				}
+				else {
+					result = Utils.formatNumber(format, (rounded!=null ? value.numberValue.round(rounded) : value.numberValue))
+					if (log.isDebugEnabled()) log.debug("utils.getStringValue(), value:"+value+", numberValue:"+value.numberValue+", rounded:"+rounded+", result:"+result)
+				}
 				break;
 			case (ValueType.MAP):
 				// TODO

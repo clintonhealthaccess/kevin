@@ -26,54 +26,66 @@ class ValueTagLib {
 		def type = attrs['type']
 		def format = attrs['format']
 		def rounded = attrs['rounded']
+		def tooltip = attrs['tooltip'] as String
 		
 		if (value == null) {
+			def reportValue = message(code: 'report.value.null')
 			out << '<div class="report-value report-value-null"'+
-					' data-report-value="'+message(code: 'report.value.null')+'"'+
+					' data-report-value="'+reportValue+'"'+
 					' data-report-value-raw="null"'+
 					' data-report-value-type="null">'+
-					message(code: 'report.value.null')+'</div>'
+					(tooltip ? reportTooltip(tooltip, reportValue) : reportValue)+
+					'</div>'
 		}
 		else if (value.isNull()) {
+			def reportValue = message(code: 'report.value.null')
 			out << '<div class="report-value report-value-null"'+
-					' data-report-value="'+message(code: 'report.value.null')+'"'+
+					' data-report-value="'+reportValue+'"'+
 					' data-report-value-raw="null"'+
 					' data-report-value-type="null">'+
-					message(code: 'report.value.null')+'</div>'
+					(tooltip ? reportTooltip(tooltip, reportValue) : reportValue)+
+					'</div>'
 		}
 		else {
 			switch (type.type) {
 				case ValueType.BOOL:
 					if (value.booleanValue){
+						def reportValue = '&#10003;'
 						out << '<div class="report-value report-value-true"'+
 								' data-report-value="&#10003;"'+
 								' data-report-value-raw="'+value.booleanValue+'"'+
 								' data-report-value-type="'+type.type+'">'+
-								'&#10003;</div>'
+								(tooltip ? reportTooltip(tooltip, reportValue) : reportValue)+
+								'</div>'
 					}
 					else{
+						def reportValue = '&#10007;'
 						out << '<div class="report-value report-value-false"'+
 								' data-report-value="&#10007;"'+
 								' data-report-value-raw="'+value.booleanValue+'"'+
 								' data-report-value-type="'+type.type+'">'+
-								'&#10007;</div>'
+								(tooltip ? reportTooltip(tooltip, reportValue) : reportValue)+
+								'</div>'
 					}
 					break;
 				case ValueType.NUMBER:
-					def reportValue = Utils.getStringValue(value, type, null, format, rounded)
+					def reportValue = Utils.getStringValue(value, type, null, format, null, rounded as Integer)
+					if (log.isDebugEnabled()) log.debug("valueTagLib.getMapValue(), value:"+value+", type:"+type+", format:"+format+", rounded:"+rounded+", reportValue:"+reportValue)
 					out << '<div class="report-value"'+
 							' data-report-value="'+reportValue+'"'+
 							' data-report-value-raw="'+value.numberValue+'"'+
 							' data-report-value-type="'+type.type+'">'+
-							reportValue+'</div>'
+							(tooltip ? reportTooltip(tooltip, reportValue) : reportValue)+
+							'</div>'
 					break;
 				default:
-					def reportValue = Utils.getStringValue(value, type, null, format, rounded)
+					def reportValue = Utils.getStringValue(value, type, null, format, null, rounded as Integer)
 					out << '<div class="report-value"'+
 							' data-report-value="'+reportValue+'"'+
 							' data-report-value-raw="'+reportValue+'"'+
 							' data-report-value-type="'+type.type+'">'+
-							reportValue+'</div>'
+							(tooltip ? reportTooltip(tooltip, reportValue) : reportValue)+
+							'</div>'
 			}
 		}
 	}
@@ -82,13 +94,13 @@ class ValueTagLib {
 		def value = attrs['value']
 		def type = attrs['type']
 		def format = attrs['format']
-		def rounded = attrs['rounded']
+		def rounded = attrs['rounded'] as Integer
 		
 		if (value == null || value.isNull()) {
 			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
 		}
 		else {
-			out << Utils.getStringValue(value, type, null, format, null, rounded as Integer)
+			out << Utils.getStringValue(value, type, null, format, null, rounded)
 		}
 	}
 	
@@ -110,12 +122,13 @@ class ValueTagLib {
 		def value = attrs['value']
 		def type = attrs['type']
 		def format = attrs['format']
-		def rounded = attrs['rounded']
-		def tooltip = attrs['tooltip'].toString()
+		def rounded = attrs['rounded'] as Integer
+		def tooltip = attrs['tooltip'] as String
 		
 		if (value == null || value.isNull()) {
+			def reportValue = message(code: 'report.value.null')+''
 			out << '<div class="report-value-null">'+
-					reportTooltip(tooltip, message(code: 'report.value.null')+'')+
+					reportTooltip(tooltip, reportValue)+
 				'</div>'
 		}
 		else {
@@ -143,7 +156,7 @@ class ValueTagLib {
 	}
 	
 	def String getReportValue(def value, def type, def format, def rounded, def tooltip) {
-		if (log.isDebugEnabled()) log.debug("getReportValue(value="+value+", type="+type+")");
+		if (log.isDebugEnabled()) log.debug("valueTagLib.getReportValue(value="+value+", type="+type+")");
 		def result = ''
 		
 		switch (type.type) {
@@ -160,15 +173,18 @@ class ValueTagLib {
 			}
 			break;
 		default:
-			result += reportTooltip(tooltip, Utils.getStringValue(value, type, null, format, rounded))
+			def reportValue = Utils.getStringValue(value, type, null, format, null, rounded)
+			result += reportTooltip(tooltip, reportValue)
 		}
 			
 		return result
 	}
 	
 	def String reportTooltip(String tooltip, String value){
-		if(tooltip != null && tooltip != "null" && tooltip != "")
+		if(tooltip != null && tooltip != "null" && tooltip != ""){
+			tooltip = tooltip+': '+value
 			return '<span class="tooltip" original-title="'+tooltip+'">'+value+'</span>'
+		}
 		else
 			return value;
 	}

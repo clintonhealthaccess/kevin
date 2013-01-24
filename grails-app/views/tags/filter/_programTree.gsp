@@ -5,6 +5,7 @@
 	<% linkParams = programLinkParams %>
 	<g:if test="${program.children != null && !program.children.empty && !programTree.disjoint(program.children)}">
 		<!-- program is a branch sub-program -->
+		<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a>
 		<g:if test="${showProgramData}">
 			<a class="dropdown-link js_dropdown-link parameter" data-type="program"
 					data-location="${program.id}"
@@ -13,7 +14,6 @@
 			</a>
 		</g:if>
 		<g:else>
-			<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a>
 			<g:i18n field="${program.names}"/>
 		</g:else>
 	</g:if>

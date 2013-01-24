@@ -4,7 +4,7 @@
 		<select name="indicator" onchange="$(document).find('#js_indicator-'+$(this).val())[0].click();">
 			<g:if test="${currentIndicator == null ? 'selected="selected"' : ''}">
 				<option>
-					<g:message code="report.indicator.noselection.label"/>
+					<g:i18n field="${program.names}" />
 				</option>
 			</g:if>
 			<g:each in="${indicators}" var="indicator">

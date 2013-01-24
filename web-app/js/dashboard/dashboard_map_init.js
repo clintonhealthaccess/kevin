@@ -70,7 +70,7 @@ function mapDashboardPolygons(childrenCollectData, currentLocationCode, reportLo
 			var polygonFillColor = null;
 			var polygonColor = null;
 			if(rawValue != null){
-				var quartile = rawValue < 0.26 ? 0 : (rawValue < 0.5 ? 1 : (rawValue < 0.75 ? 2 : (rawValue < 1.0 ? 3 : 4)));
+				var quartile = rawValue < 0.26 ? 0 : (rawValue < 0.51 ? 1 : (rawValue < 0.76 ? 2 : (rawValue < 1.01 ? 3 : 4)));
 				quartile = 'indicator-quartile-'+quartile
 				polygonFillColor = mapPolygonColors[quartile]
 				polygonColor = mapPolygonColorsDark[quartile]
