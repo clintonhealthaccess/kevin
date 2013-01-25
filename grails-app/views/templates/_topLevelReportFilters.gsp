@@ -2,7 +2,8 @@
 	linkParams="${params}" 
 	selected="${currentProgram}"
 	selectedTargetClass="${selectedTargetClass}"
-	exclude="${['dashboardEntity', 'dsrCategory', 'fctTarget', 'indicators']}" />
+	showProgramData="${showProgramData}"
+	exclude="${['dashboardEntity', 'dsrCategory', 'fctTarget', 'indicators']}"/>
 <g:locationFilter 
 	linkParams="${params}" 
 	selected="${currentLocation}"

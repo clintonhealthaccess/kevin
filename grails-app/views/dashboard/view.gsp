@@ -18,7 +18,7 @@
 	<body>
 		<div id="report">
 			<div class="filter-bar">
-				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params]"/>
+				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params, showProgramData: true]"/>
 			</div>
 			<div class="main">
 				<g:topLevelReportTabs linkParams="${params}" exclude="${['dashboardEntity']}" />

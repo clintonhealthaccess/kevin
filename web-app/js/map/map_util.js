@@ -124,14 +124,14 @@ function getMaxRawValue(){
 
 // fosa location missing coordinates
 function missingFosaCoordinates(fosaid){
-	$('.nav-table td[data-location-code="'+fosaid+'"]').append('&#185;');
+	$('.js-map-table-location[data-location-code="'+fosaid+'"]').append('&#185;');
 }
 // fosa location missing
 function missingFosaLocations(fosaLocations, locations){
 	for(var i = 0 ; i < locations.length; i++){
 		var location = locations[i];
 		if(fosaLocations.indexOf(location) < 0)
-			$('.nav-table td[data-location-code="'+location+'"]').append('&#178;');
+			$('.js-map-table-location[data-location-code="'+location+'"]').append('&#178;');
 	}
 }
 

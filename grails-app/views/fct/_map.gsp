@@ -4,7 +4,9 @@
 	<g:reportView linkParams="${params}"/>
 	
 	<div class="selector">
-		<g:reportTargetFilter selected="${currentTarget}" program="${currentProgram}" linkParams="${params}" />
+		<g:reportIndicatorFilter selected="${currentTarget}" 
+			selectedIndicatorClass="${selectedTargetClass}" selectedIndicatorParam="fctTarget" 
+			program="${currentProgram}" linkParams="${params}"/>
 	</div>
 	
 	<!-- legend -->

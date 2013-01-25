@@ -151,7 +151,7 @@ function polygonValueFeatureToLayer(feature, latlng) {
 		// var wrapperAnchorValue = rawValue < 10 ? new L.Point(6, 10) : (rawValue < 100 ? new L.Point(11, 10) : new L.Point(17, 10));
 
 		// if fct report value is percentage, we need extra room for the '%', uncomment line below
-		var wrapperAnchorValue = rawValue < 1 ? new L.Point(19, 10) : (rawValue < 10 ? new L.Point(24, 10) : new L.Point(29, 10));
+		var wrapperAnchorValue = rawValue < 0.1 ? new L.Point(14, 10) : (rawValue < 1 ? new L.Point(19, 10) : (rawValue < 10 ? new L.Point(24, 10) : new L.Point(29, 10)));
 
 		var reportValueIcon = feature.properties.reportValueIcon;
 		reportValueIcon = new L.Icon.Label.Default({					
@@ -178,11 +178,11 @@ function polygonValueFeatureToLayer(feature, latlng) {
 
 		// if fct raw value is percentage, we need extra room for the '%', uncomment lines below
 		var radiusValue = parseInt(rawValue*25)+10;
-		radiusValue = radiusValue < 10 ? 10 : (radiusValue > 35 ? 35 : radiusValue);
+		radiusValue = radiusValue < 15 ? 15 : (radiusValue > 35 ? 35 : radiusValue);
 		radiusValue = rawValue < 1 ? radiusValue*1.33 : (rawValue < 10 ? radiusValue*1.66 : radiusValue*2);
 
 		var geojsonMarkerOptions = {
-			radius: radiusValue,
+			radius: rawValue == 0 ? 0 : radiusValue,
 		    fillColor: mapMarkerColors[indicatorClass],
 		    color: mapMarkerColors[indicatorClass],
 		    weight: 1,

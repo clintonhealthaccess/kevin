@@ -4,6 +4,13 @@
 	<g:render template="/templates/reportTitle" model="[entity: reportTitleEntity, title: i18n(field: reportTitleEntity.names), descriptions: i18n(field: reportTitleEntity.names), file: 'star_small.png']"/>
 	<g:reportProgramParent linkParams="${params}" exclude="${['dashboardEntity']}" />
 	<g:reportView linkParams="${params}" />
+
+	<div class="selector">
+		<g:reportIndicatorFilter selected="${dashboardEntity.isTarget() ? dashboardEntity : null}" 
+			selectedIndicatorClass="${selectedTargetClass}" selectedIndicatorParam="dashboardEntity" 
+			program="${currentProgram}" linkParams="${params}"/>
+	</div>
+
 	<!-- legend -->
 	<g:render template="/dashboard/legend" />
 
