@@ -19,7 +19,6 @@
 							value="${percentageValue}" 
 							type="${reportTable.type}" 
 							format="${reportTable.format?:'#%'}"
-							rounded="0"
 							tooltip="${reportIndicator.isTarget() ? i18n(field:reportIndicator.names) : i18n(field:currentProgram.names)}"
 						/>
 					</div>
@@ -87,7 +86,6 @@
 								value="${percentageValue}" 
 								type="${reportTable.type}" 
 								format="${reportTable.format?:'#%'}"
-								rounded="0"
 								tooltip="${reportIndicator.isTarget() ? i18n(field:reportIndicator.names) : i18n(field:currentProgram.names)}"
 							/>
 						</div>
