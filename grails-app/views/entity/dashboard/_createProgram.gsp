@@ -12,7 +12,7 @@
 		<g:selectFromList name="program.id" label="${message(code:'dashboard.program.label')}" bean="${entity}" field="program" optionKey="id" multiple="false"
 			from="${programs}" value="${entity.program?.id}" values="${programs.collect{i18n(field:it.names)}}" />
 		
-		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${target}" field="code"/>
+		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${entity}" field="code"/>
 		<g:input name="weight" label="${message(code:'dashboard.program.weight.label')}" bean="${entity}" field="weight"/>
 		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${entity}" field="order"/>
 		
