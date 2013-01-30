@@ -125,7 +125,7 @@ grails.project.dependency.resolution = {
 		
 		// application plugins
 		compile ':chai-locations:0.5.1-CHAI'
-		compile ':chai-kevin-data:0.1.3-CHAI'
+		compile ':chai-kevin-data:0.1.4-CHAI'
 		
 		// cloud foundry support
 		compile ":cloud-foundry:1.2.3"
