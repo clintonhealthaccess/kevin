@@ -70,8 +70,8 @@ grails.project.dependency.resolution = {
 		 * Configure our resolver.
 		 */
 		def libResolver = new GrailsRepoResolver(null, null);
-		libResolver.addArtifactPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]")
-		libResolver.addIvyPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/ivys/ivy-[revision].xml")
+		libResolver.addArtifactPattern("https://github.com/clintonhealthaccess/repository/raw/master/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]")
+		libResolver.addIvyPattern("https://github.com/clintonhealthaccess/repository/raw/master/[organisation]/[module]/ivys/ivy-[revision].xml")
 		libResolver.name = "github"
 		resolver libResolver
     }
@@ -125,7 +125,7 @@ grails.project.dependency.resolution = {
 		
 		// application plugins
 		compile ':chai-locations:0.5.1-CHAI'
-		compile ':chai-kevin-data:0.1.5-CHAI'
+		compile ':chai-kevin-data:0.1.6-CHAI'
 		
 		// cloud foundry support
 		compile ":cloud-foundry:1.2.3"
