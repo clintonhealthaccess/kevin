@@ -146,7 +146,7 @@ environments {
 		grails.resources.mappers.yuijsminify.disable=true
 	}
 	demo {
-		grails.serverURL = 'http://kevin.cloudfoundry.com'
+		grails.serverURL = 'http://kevin-demo.cloudfoundry.com'
 		grails.resources.cdn.enabled = false
 		grails.resources.processing.enabled = true
 		grails.resources.mappers.yuicssminify.disable = false
@@ -243,7 +243,7 @@ environments {
 		google.analytics.enabled = true
 		google.analytics.webPropertyID = "UA-4227513-4"
 		google.analytics.customTrackingCode = [
-			[_setDomainName: "kevin.cloudfoundry.com"], "_trackPageview"
+			[_setDomainName: "kevin-demo.cloudfoundry.com"], "_trackPageview"
 		]
 	}
 }
@@ -273,7 +273,7 @@ environments {
 		site.icon = "http://localhost:8080/kevin/images/apple-touch-icon.png"
 	}
 	demo {
-		site.icon = "http://kevin.cloudfoundry.com/images/apple-touch-icon.png"
+		site.icon = "http://kevin-demo.cloudfoundry.com/images/apple-touch-icon.png"
 	}
 }
 
