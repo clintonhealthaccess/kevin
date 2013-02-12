@@ -87,6 +87,11 @@ class SurveySummaryController extends AbstractController {
 		])
 	}
 
+	/**
+	 * refreshes the survey, copying the values from RawDataElementValue to FormEnteredValue, and the following flags:
+	 * reset - if set to true, resets the values in FormEnteredValue if they already exist.
+	 * closeIfComplete - if set to true, closes the programs that are complete and valid
+	 */
 	def refresh = {
 		if (log.isDebugEnabled()) log.debug("survey.refresh, params:"+params)
 
