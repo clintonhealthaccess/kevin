@@ -25,6 +25,7 @@ abstract class ImportTask extends Task {
 		return FileType.NONE;
 	}
 	
+	// TODO take progress param
 	private void importFile(def importer, File file, String encoding, Character delimiter, ImporterErrorManager errorManager){
 		switch (getFileType(inputFilename)) {
 		case FileType.ZIP:

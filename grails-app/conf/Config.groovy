@@ -261,7 +261,6 @@ mailOnException.email.from = "no-reply@dhsst.org"
 mailOnException.error.view = "/error"
 
 site.entity.list.max = 40
-site.admin.email = "admin@dhsst.org"
 site.contact.email = "contact@dhsst.org"
 site.from.email = "no-reply@dhsst.org"
 
