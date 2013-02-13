@@ -443,11 +443,69 @@ TODO
 
 ### Import
 
+There are 2 ways to import data into the system, the general data import, that can be used to import any type of data, and the general data import, that can be used to import data of a complex type in a more intuitive format than the general import.
 
-#### Nominative data import
+Both imports take as input a CSV file.
 
 #### General data import
 
+Here is the format for the import CSV file :
+
+	location_code, period_code, data_code, data_value, value_address
+	
+	- location_code: the code of the data location
+	- period_code: the code of the period
+	- data_code: the code of the raw data element
+	- data_value: the value to import
+	- value_address: the address of the field if importing values of complex types
+
+If we go back to our example above with the list of staff, here is an example of a CSV file that can be imported. Headers must be included in the file:
+
+	location_code, period_code, data_code, data_value, value_address
+	Burera CS      2009         [Staff]    Susan       [0].first_name
+	Burera CS      2009         [Staff]    Smith       [0].last_name
+	Burera CS      2009         [Staff]    29          [0].age
+	Burera CS      2009         [Staff]    Giselle     [1].first_name
+	Burera CS      2009         [Staff]    Johnson     [1].last_name
+	Burera CS      2009         [Staff]    58          [1].birthday
+
+Using the general data import, any data of any period for any data location can be imported in the same CSV file. Whenever an element referred to in the file (data, period or location) is not found, an error is reported. Also if a value cannot be parsed or an address does not exist, an error is reported.
+
+If importing values of a single type, the ```value_address``` field has to be empty (it should still be present in the file). If a value already exists, it will be overwritten by the import.
+
+#### Nominative data import
+
+Nominative data import helps import values of a data element of type ```list```. When using this data import, both the period and data element have to be externally specified. If using the import frontend, those have to be input in the form.
+
+	location_code, <value_address_1>, <value_address_2>, <value_address_3>, …
+	
+	- location_code: the code of the data location
+	- <value_address_X>: the address of the values present in that column, ommitting the [_].
+	
+Let's take the same example as above, and turn it into a nominative data import. the ```[Staff]``` data element and ```2009``` period will be selected externally:
+
+	location_code, first_name, last_name, age
+	Burera CS,     Susan,      Smith,     29
+	Burera CS,     Giselle,    Johnson,   58
+	
+This is very handy to import data that is given to use in a row format. Whenever a location referred to in the file is not found, an error is reported. Also if a value cannot be parsed or an address does not exist, an error is reported.
+
+#### Value format
+
+So that the import works, the values must be formatted in a special way depending on their type:
+
+	- bool: TRUE or FALSE (in capital letters)
+	- date: dd-MM-yyyy - example: 02-01-2011 for 2nd of January 2011, the extra zeros are important
+	- enum: the value is it is in the enum option
+	- string: the string as it should be
+	- text: the text as it should be
+	- number: the number in xx.x format if decimal or just xx of integer
+	
+#### Notes on code
+
+The importers all extends the class DataImporter, which extends FileImporter. FileImporter accepts import in both CSV and zipped format. If a zip file is used, all files packaged in the zip will be imported.
+
+The ImportExportConstant file contains various constants used in the export and import mechanism (such as expected headers, etc...)
 
 Reports
 ---
