@@ -510,14 +510,116 @@ The ImportExportConstant file contains various constants used in the export and 
 Reports
 ---
 
+The basis of the report is the report program tree. The tree defines a structure to which are attached the report targets of the different report types. There are currently 3 report types in the system, the dashboard, the district summary reports and the facility count tables.
+
+All reports are structured the same way. They all define their own targets. A target is linked to one report program and refers to a data element or calculation, that will be displayed in the report. Whether to target refers to a data element or a calculation is up to the specific report type to decide.
+
+The report class structure is as follows :
+
+	ReportEntity
+		ReportProgram
+	
+		AbstractReportTarget
+			(properties)
+			- Data
+			- ReportProgram
+			
+			(sub-classes)
+			DashboardTarget
+			DSRTarget
+			FCTTarget
+
+Since the relationship between AbstractReportTarget and ReportProgram is one-to-many, there is a method in  ReportProgram that retrieves all targets of a certain class belonging to it :
+
+	// returns all the targets of class *clazz* belonging to this program
+	public <T extends ReportTarget> List<T> getReportTargets(Class<T> clazz);
+
+The ReportService provides several methods that help handle reports :
+
+	public ReportProgram getRootProgram();
+	
+	public <T extends ReportTarget> List<T> collectReportTargets(Class<T> clazz, ReportProgram program);
+	
+	public <T extends ReportTarget> List<ReportProgram> collectReportProgramTree(Class<T> clazz, ReportProgram program);
+	
+	public List<AbstractReportTarget> getReportTargets(Data<?> data);
+	
+	public void flushCaches();
+	
+
+
+
 Planning
 ---
 
-Users
+TODO
+
+Users & roles
 ---
+
+The application uses the [grails-shiro][grails-shiro] plugin to manage access. We use the default access control basec on controller name and action, plus several custom permissions that gives the user access to menu items, survey and planning. The non-default permissions are listed here :
+
+
+	menu:reports - display the reports link in the menu
+	menu:survey - display the survey link in the menu
+	menu:planning - display the planning link in the menu
+	menu:admin - display the admin link in the menu
+	editSurvey:<action_name>:<id> - gives access to the action <action_name> in survey edition for data location with id <id>
+	
+Next to the custom permissions, there are 2 custom roles that are defined here :
+
+	report-read-only - gives the following permissions		menu:reports
+		dashboard:*
+		dsr:*
+		maps:*
+		fct:*
+		
+	survey-read-only - gives the following permissions
+		menu:survey
+		editSurvey:view
+		editSurvey:summaryPage
+		editSurvey:sectionTable
+		editSurvey:programTable
+		editSurvey:surveyPage
+		editSurvey:programPage
+		editSurvey:sectionPage
+		editSurvey:print
+
+There are 3 types of users in the system. Those types define what basic permissions a user gets when it is first created. Permissions can be added later. Below is the explanation of those types :
+
+	// SURVEY user gets report-all-readonly role and the permissions necessary to edit his own survey
+	SURVEY
+		roles - report-all-readonly
+		permissions - editSurvey:view, editSurvey:*:<id>, menu:survey, home:*
+	
+	// PLANNING user gets report-all-readonly role and the permissions necessary to edit his own planning
+	PLANNING
+		roles - report-all-readonly 
+		permissions - editPlanning:view, editPlanning:*:<id>, menu:planning, home:* 
+	
+	// OTHER user gets report-all-readonly role and access to the landing page
+	OTHER
+		roles - report-all-readonly
+		permissions - home:*
+
+If a user is of ```SURVEY``` or ```PLANNING``` type, then a data location should be specified as part of the user. That data location will become that user default data location and he will have access to the survey or planning for that data location only.
 
 Export
 ---
+
+The export works in the opposite way of the general data import, with the format :
+
+	<data_code>, <period_code>, <location_code>, <value>, <value_address>
+	
+There is an export for data elements and one for calculations. The export for calculation will output slightly more information as it will also give the location level, and location parents of the data location.
+
+
+Cache configuration
+---
+
+Taglibs
+---
+
 
 License
 ---
@@ -531,6 +633,7 @@ The DHSST is licensed under the terms of the [BSD 3-clause License][BSD 3-clause
 [chai-locations]: http://github.com/fterrier/grails-chai-locations
 [chai-kevin-data]: http://github.com/fterrier/grails-chai-kevin-data
 [grails-mail]: http://grails.org/plugins/mail
+[grails-mail]: http://grails.org/plugins/shiro
 [mail-on-exception]: http://github.com/fterrier/mail-on-exception
 [rabbitmq-tasks]: http://github.com/fterrier/rabbitmq-tasks
 [cdn-resources]: http://grails.org/plugins/cdn-resources

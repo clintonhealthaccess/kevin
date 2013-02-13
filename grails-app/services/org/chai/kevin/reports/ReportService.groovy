@@ -43,18 +43,39 @@ public class ReportService {
 	SessionFactory sessionFactory;
 	Set<String> skipLevels;
 	
+	/**
+	 * Returns the root of the program tree. The root is the only program that has no parent.
+	 * 
+	 * @return the root of the program tree
+	 */
 	public ReportProgram getRootProgram() {
 		ReportProgram program = (ReportProgram)sessionFactory.getCurrentSession().createCriteria(ReportProgram.class)
 			.add(Restrictions.isNull("parent")).setCacheable(true).uniqueResult();
 		return program;
 	}
 	
+	/**
+	 * Returns the list of all report targets of the given class that are attached to the 
+	 * given program either directly, or attached to a descendant of the program.
+	 * 
+	 * @param clazz the class of target to return
+	 * @param program the program from which to start collecting targets
+	 * @return a list of all report targets under the given program
+	 */
 	public <T extends ReportTarget> List<T> collectReportTargets(Class<T> clazz, ReportProgram program) {
 		List<T> result = new ArrayList<T>();
 		collectReportTree(clazz, program, null, result);
 		return result;
 	}
 	
+	/**
+	 * Returns the list of all report programs under the given program that has target of the given class.
+	 * Programs who don't have targets or whose children don't have targets of the given class are not returned.
+	 *
+	 * @param clazz the class of target
+	 * @param program the program from which to start collecting targets
+	 * @return a list of all report programs that have targets of the specified class under the given program
+	 */
 	public <T extends ReportTarget> List<ReportProgram> collectReportProgramTree(Class<T> clazz, ReportProgram program) {
 		List<ReportProgram> result = new ArrayList<ReportProgram>();
 		collectReportTree(clazz, program, result, null);
@@ -84,6 +105,12 @@ public class ReportService {
 		return hasTargets;
 	}
 	
+	/**
+	 * Returns all report targets that point to the given data.
+	 * 
+	 * @param data the data to look for attached targets
+	 * @return the list of all targets attached to the given data
+	 */
 	public List<AbstractReportTarget> getReportTargets(Data<?> data) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AbstractReportTarget.class);
 		criteria.add(Restrictions.eq("data", data));
@@ -92,6 +119,9 @@ public class ReportService {
 		return indicators;
 	}
 	
+	/**
+	 * Flushes all the caches.
+	 */
 	@CacheFlush(["dsrCache", "dashboardCache", "fctCache"])
 	public void flushCaches(){
 		
