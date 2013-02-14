@@ -7,6 +7,7 @@ import grails.plugin.spock.UnitSpec
 import org.chai.kevin.data.Type;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
+import org.codehaus.groovy.control.MultipleCompilationErrorsException
 
 public class UtilUnitSpec extends UnitSpec {
 
@@ -72,6 +73,69 @@ public class UtilUnitSpec extends UnitSpec {
 		then:
 		stringValue == "58%"
 		
+	}
+	
+	def "type builder"() {
+		
+		expect:
+		Utils.buildType("type {string}") == Type.TYPE_STRING()
+		Utils.buildType("type {enume 'TheGreatEnum'}") == Type.TYPE_ENUM('TheGreatEnum')
+		
+		Utils.buildType('''
+			type { list type { string } }
+		''') == Type.TYPE_LIST(Type.TYPE_STRING())
+		Utils.buildType('''
+			type { map 
+				first_name: type {string} 
+			}
+		''') == Type.TYPE_MAP(['first_name': Type.TYPE_STRING()])
+		Utils.buildType('''
+			type { list type { map 
+				first_name: type {string}, birthday: type {date} 
+			}}
+		''') == Type.TYPE_LIST(Type.TYPE_MAP(['first_name': Type.TYPE_STRING(), 'birthday': Type.TYPE_DATE()]))
+		Utils.buildType("type {enume 'TheGreatEnum'}") == Type.TYPE_ENUM('TheGreatEnum')
+		Utils.buildType('''
+			type { map 
+				first_name: type { string }, 
+				birthday: type { date },
+				box 
+			}
+		''') == Type.TYPE_MAP(['first_name': Type.TYPE_STRING(), 'birthday': Type.TYPE_DATE()], true)
+		Utils.buildType('''
+			type { map box,
+				first_name: type { string },
+				birthday: type { date }
+			}
+		''') == Type.TYPE_MAP(['first_name': Type.TYPE_STRING(), 'birthday': Type.TYPE_DATE()], true)
+	}
+	
+	def "type builder with non-map argument first throws exception"() {
+		when:
+		Utils.buildType('''
+			type { map box first_name: type { string } }
+		''')
+		
+		then:
+		thrown MultipleCompilationErrorsException
+		
+		expect:
+		Utils.buildType('''
+			type { map box, 
+				first_name: type { string },
+				last_name: type { string }
+			}
+		''') == Type.TYPE_MAP(['first_name': Type.TYPE_STRING(), 'last_name': Type.TYPE_STRING()], true)
+	}
+	
+	def "type builder with non existing method call"() {
+		when:
+		Utils.buildType('''
+			type { no_method }
+		''')
+		
+		then:
+		thrown MissingPropertyException
 	}
 	
 }

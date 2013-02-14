@@ -13,7 +13,7 @@
 		
 		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${rawDataElement}" field="code" />
 		
-		<g:render template="/templates/typeEditor" model="[bean: rawDataElement, name: 'typeString']"/>
+		<g:render template="/templates/typeEditor" model="[bean: rawDataElement, name: 'typeBuilderString', readonly: readonly]"/>
 
 		<g:selectFromList name="source.id" label="${message(code:'rawdataelement.source.label')}" bean="${rawDataElement}" field="source" optionKey="id" multiple="false"
 			from="${sources}" value="${rawDataElement.source?.id}" values="${sources.collect{i18n(field:it.names) + '['+it.code+']'}}" />

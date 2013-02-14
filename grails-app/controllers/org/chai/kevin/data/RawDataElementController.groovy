@@ -40,6 +40,7 @@ import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyService
 import org.chai.kevin.survey.SurveyValueService;
 import org.chai.kevin.value.ValueService;
+import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hibernate.SessionFactory;
 
@@ -58,7 +59,7 @@ class RawDataElementController extends AbstractEntityController {
 
 	def createEntity() {
 		def entity = new RawDataElement();
-		entity.type = new Type();
+		// entity.type = new Type();
 		return entity;
 	}
 
@@ -71,7 +72,7 @@ class RawDataElementController extends AbstractEntityController {
 	}
 
 	def getModel(def entity) {
-		return [rawDataElement: entity, sources: Source.list()]
+		return [rawDataElement: entity, sources: Source.list(), /*readonly: valueService.getNumberOfValues(entity)*/]
 	}
 
 	def getEntityClass(){
@@ -79,7 +80,7 @@ class RawDataElementController extends AbstractEntityController {
 	}
 		
 	def saveEntity(def entity) {
-		if (entity.id != null && !params['oldType'].equals(new Type(params['typeString']))) {
+		if (entity.id != null && !params['oldType'].equals(entity.type)) {
 			def surveyElements = surveyService.getSurveyElements(entity, null);
 			if (log.isDebugEnabled()) log.debug("deleting SurveyEnteredValues for "+surveyElements);
 			surveyElements.each { element ->
@@ -90,13 +91,18 @@ class RawDataElementController extends AbstractEntityController {
 	}
 
 	def validateEntity(def entity) {
-		//TODO check for duplicate code
 		boolean valid = entity.validate()
 		if (entity.id != null && !params['oldType'].equals(entity.type) && valueService.getNumberOfValues(entity)) {
-			// error if types are different
+			// error if types are different and we don't bind the type
 			entity.errors.rejectValue('type', 'rawdataelement.type.cannotChange', 'Cannot change type because the element has associated values.')
 			valid = false
 		}
+		if (params['typeBuilderError'] != null) {
+			// if there has been an error binding type, typeBuilderError will hold the error message
+			entity.errors.rejectValue('type', 'data.type.invalid', [params['typeBuilderError']] as Object[], 'Syntax error: [{0}]')
+			valid = false
+		}
+		
 		return valid;
 	}
 	
@@ -132,11 +138,20 @@ class RawDataElementController extends AbstractEntityController {
 	def bindParams(def entity) {
 		params['oldType'] = entity.type
 		
-		bindData(entity, params, [exclude:'typeString'])
+		bindData(entity, params, [exclude:'typeBuilderString'])
 		
 		// we assign the new type only if there are no associated values
 		if (entity.id == null || !valueService.getNumberOfValues(entity)) {
-			bindData(entity, params, [include:'typeString'])
+			try {
+				if (log.debugEnabled) log.debug("binding type: "+params['typeBuilderString'])
+				// returns null if params['typeBuilderString'] is null	
+				def type = Utils.buildType(params['typeBuilderString'])
+				entity.type = type
+			} catch (Exception e) {
+				// we get here if params['typeBuilderString'] is garbage (syntax error)
+				params['typeBuilderError'] = e.getMessage()
+			}
+			if (log.debugEnabled) log.debug("entity typeString: "+entity.typeString+", is null: "+(entity.typeString == null))
 		}
 	}
 	

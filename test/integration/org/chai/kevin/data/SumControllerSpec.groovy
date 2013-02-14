@@ -71,7 +71,7 @@ class SumControllerSpec extends IntegrationTests {
 		Summ.count() == 1
 	}
 
-	def "save sum deletes values"() {
+	def "save sum does not delete values"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -85,7 +85,7 @@ class SumControllerSpec extends IntegrationTests {
 		
 		then:
 		Summ.count() == 1
-		SumPartialValue.count() == 0
+		SumPartialValue.count() == 1
 	}	
 	
 	def "save sum updates timestamp"() {

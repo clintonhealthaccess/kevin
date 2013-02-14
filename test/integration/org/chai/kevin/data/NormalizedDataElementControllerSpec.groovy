@@ -71,6 +71,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		
 		when:
 		normalizedDataElementController.params.id = normalizedDataElement.id
+		normalizedDataElementController.params['typeBuilderString'] = "type { number }"
 		normalizedDataElementController.save()
 		
 		then:
@@ -88,6 +89,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		
 		when:
 		normalizedDataElementController.params.id = normalizedDataElement.id
+		normalizedDataElementController.params['typeBuilderString'] = "type { number }"
 		Thread.sleep(1100)
 		normalizedDataElementController.save()
 		
@@ -97,7 +99,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		
 	}
 	
-	def "saving normalized data element deletes values"() {
+	def "saving normalized data element does not delete values"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -107,11 +109,12 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		
 		when:
 		normalizedDataElementController.params.id = normalizedDataElement.id
+		normalizedDataElementController.params['typeBuilderString'] = "type { number }"
 		normalizedDataElementController.save()
 		
 		then:
 		NormalizedDataElement.count() == 1
-		NormalizedDataElementValue.count() == 0
+		NormalizedDataElementValue.count() == 1
 	}
 	
 	def "cannot delete normalized data element if there are associated calculations"() {
@@ -189,7 +192,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		normalizedDataElementController = new NormalizedDataElementController()
 
 		when:
-		normalizedDataElementController.params.type = "{\"type\":\"number\"}"
+		normalizedDataElementController.params['typeBuilderString'] = "type { number }"
 		normalizedDataElementController.params.code = "code"
 		normalizedDataElementController.params['expressionMap['+period1.id+']['+type1.code+']'] = '123'
 		normalizedDataElementController.params['expressionMap['+period2.id+']['+type1.code+']'] = '456'
@@ -198,6 +201,42 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		then:
 		NormalizedDataElement.count() == 1
 		NormalizedDataElement.list()[0].expressionMap.equals( [(period1.id+''):[(type1.code):'123'], (period2.id+''):[(type1.code):'456']] )
+	}
+	
+	def "can change data element type if it has no values" () {
+		setup:
+		setupLocationTree()
+		normalizedDataElementController = new NormalizedDataElementController()
+		def period = newPeriod()
+		def dataElement = newNormalizedDataElement(["en":"data element"], CODE(1), Type.TYPE_NUMBER(), [:])
+
+		when:
+		normalizedDataElementController.params.id = dataElement.id
+		normalizedDataElementController.params.code = dataElement.code
+		normalizedDataElementController.params['typeBuilderString'] = 'type { bool }'
+		normalizedDataElementController.saveWithoutTokenCheck()
+
+		then:
+		normalizedDataElementController.response.redirectedUrl.equals(normalizedDataElementController.getTargetURI())
+		dataElement.type.equals(Type.TYPE_BOOL())
+	}
+		
+	def "cannot change data element type if it has values" () {
+		setup:
+		setupLocationTree()
+		normalizedDataElementController = new NormalizedDataElementController()
+		def period = newPeriod()
+		def dataElement = newNormalizedDataElement(["en":"data element"], CODE(1), Type.TYPE_NUMBER(), [:])
+
+		when:
+		newNormalizedDataElementValue(dataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
+		normalizedDataElementController.params.id = dataElement.id
+		normalizedDataElementController.params.code = dataElement.code
+		normalizedDataElementController.params['typeBuilderString'] = 'type { string }'
+		normalizedDataElementController.saveWithoutTokenCheck()
+
+		then:
+		(Type.TYPE_NUMBER()).equals(dataElement.type)
 	}
 	
 }

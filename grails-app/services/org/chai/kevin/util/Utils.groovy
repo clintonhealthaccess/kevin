@@ -62,6 +62,11 @@ import org.chai.kevin.util.DataUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import org.chai.kevin.data.Type;
+import org.codehaus.groovy.control.CompilerConfiguration
+import org.codehaus.groovy.control.customizers.ImportCustomizer
+
 /**
  * @author Jean Kahigiso M.
  * 
@@ -192,6 +197,35 @@ public class Utils {
 				result = value.stringValue
 		}
 		return result;
+	}
+	
+	public static Type buildType(String typeString) {
+		if (typeString == null || typeString.trim() == "") return null;
+		
+		def list = []
+		
+		def importCustomizer = new ImportCustomizer()
+		importCustomizer.addImport('TypeBuilder', 'org.chai.TypeBuilder')
+		
+		def config = new CompilerConfiguration()
+		config.addCompilationCustomizers(importCustomizer)
+		
+		def binding = new Binding(list: list)
+		def shell = new GroovyShell(Utils.class.classLoader, binding, config) 
+		shell.evaluate('''
+			static def type(def closure) {
+				def typeBuilder = new TypeBuilder()
+				def type = typeBuilder.build(closure);				
+				return type;
+			}
+			
+			def box = true
+			
+			list << 
+			''' + typeString.replaceAll("\n", " ")
+		);
+		
+		return list[0];
 	}
 	
 }

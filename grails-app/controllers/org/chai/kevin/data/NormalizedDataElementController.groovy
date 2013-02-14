@@ -34,6 +34,7 @@ import org.chai.location.DataLocationType
 import org.chai.kevin.planning.PlanningCost
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.value.Status
+import org.chai.kevin.util.Utils
 
 class NormalizedDataElementController extends AbstractEntityController {
 
@@ -71,9 +72,17 @@ class NormalizedDataElementController extends AbstractEntityController {
 		return NormalizedDataElement.class;
 	}
 	
+	def validateEntity(def entity) {
+		boolean valid = entity.validate()
+		if (params['typeBuilderError'] != null) {
+			// if there has been an error binding type, typeBuilderError will hold the error message
+			entity.errors.rejectValue('type', 'data.type.invalid', [params['typeBuilderError']] as Object[], 'Syntax error: [{0}]')
+			valid = false
+		}
+		return valid
+	}
+	
 	def saveEntity(def entity) {
-		if (entity.id != null) valueService.deleteValues(entity, null, null)
-		
 		entity.lastValueChanged = new Date()
 		entity.timestamp = new Date()
 		entity.save(flush: true)
@@ -112,6 +121,17 @@ class NormalizedDataElementController extends AbstractEntityController {
 			expressionMap[period.id+''] = periodMap
 		}
 		entity.expressionMap = expressionMap
+		
+		if (entity.id == null || !valueService.getNumberOfValues(entity)) {
+			try {
+				// returns null if params['typeBuilderString'] is null	
+				def type = Utils.buildType(params['typeBuilderString'])
+				entity.type = type
+			} catch (Exception e) {
+				// we get here if params['typeBuilderString'] is garbage (syntax error)
+				params['typeBuilderError'] = e.getMessage()
+			}
+		}
 	}
 	
 	def search = {

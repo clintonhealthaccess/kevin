@@ -54,7 +54,7 @@ class AggregationControllerSpec extends IntegrationTests {
 		AggregationPartialValue.count() == 0
 	}
 		
-	def "save aggregation deletes values"() {
+	def "save aggregation does not delete values"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -68,7 +68,7 @@ class AggregationControllerSpec extends IntegrationTests {
 		
 		then:
 		Aggregation.count() == 1
-		AggregationPartialValue.count() == 0
+		AggregationPartialValue.count() == 1
 	}
 	
 	def "save aggregation updates timestamp"() {

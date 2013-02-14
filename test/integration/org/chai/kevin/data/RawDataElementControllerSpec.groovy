@@ -37,11 +37,26 @@ class RawDataElementControllerSpec extends IntegrationTests {
 
 		when:
 		rawDataElementController.params.code = CODE(1)
-		rawDataElementController.params['typeString'] = Type.TYPE_BOOL().getJsonValue()
+		rawDataElementController.params['typeBuilderString'] = 'type {bool}'
 		rawDataElementController.saveWithoutTokenCheck()
 
 		then:
 		rawDataElementController.response.redirectedUrl.equals(rawDataElementController.getTargetURI())
+		RawDataElement.count() == 1
+	}
+	
+	def "save new data element with invalid type"() {
+		setup:
+		rawDataElementController = new RawDataElementController()
+
+		when:
+		rawDataElementController.params.code = CODE(1)
+		rawDataElementController.params['typeBuilderString'] = 'type {bo}'
+		rawDataElementController.saveWithoutTokenCheck()
+
+		then:
+		rawDataElementController.response.redirectedUrl == null
+		RawDataElement.count() == 0
 	}
 	
 	def "edit data element"() {
@@ -53,7 +68,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		rawDataElementController.params.id = dataElement.id
 		rawDataElementController.params.code = "new_code"
 		rawDataElementController.params.names_en = "new_name"
-		rawDataElementController.params['typeString'] = Type.TYPE_NUMBER().getJsonValue()
+		rawDataElementController.params['typeBuilderString'] = 'type {number}'
 		rawDataElementController.saveWithoutTokenCheck()
 
 		then:
@@ -108,7 +123,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		when:
 		rawDataElementController.params.id = dataElement.id
 		rawDataElementController.params.code = dataElement.code
-		rawDataElementController.params['typeString'] = Type.TYPE_BOOL().getJsonValue()
+		rawDataElementController.params['typeBuilderString'] = 'type {bool}'
 		rawDataElementController.saveWithoutTokenCheck()
 
 		then:
@@ -128,7 +143,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		newRawDataElementValue(dataElement, period, dataLocation, Value.NULL_INSTANCE())
 		rawDataElementController.params.id = dataElement.id
 		rawDataElementController.params.code = dataElement.code
-		rawDataElementController.params['typeString'] = Type.TYPE_STRING().getJsonValue()
+		rawDataElementController.params['typeBuilderString'] = 'type {string}'
 		rawDataElementController.saveWithoutTokenCheck()
 
 		then:
@@ -147,7 +162,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		when:
 		rawDataElementController.params.id = dataElement.id
 		rawDataElementController.params.code = dataElement.code
-		rawDataElementController.params['typeString'] = Type.TYPE_NUMBER().getJsonValue()
+		rawDataElementController.params['typeBuilderString'] = 'type {number}'
 		rawDataElementController.saveWithoutTokenCheck()
 
 		then:
@@ -176,7 +191,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		rawDataElementController = new RawDataElementController()
 		rawDataElementController.params.id = dataElement.id
 		rawDataElementController.params.code = dataElement.code
-		rawDataElementController.params['typeString'] = Type.TYPE_NUMBER().getJsonValue()
+		rawDataElementController.params['typeBuilderString'] = 'type {number}'
 		rawDataElementController.saveWithoutTokenCheck()
 		
 		then:
@@ -206,7 +221,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		rawDataElementController = new RawDataElementController()
 		rawDataElementController.params.id = dataElement.id
 		rawDataElementController.params.code = dataElement.code
-		rawDataElementController.params['typeString'] = Type.TYPE_BOOL().getJsonValue()
+		rawDataElementController.params['typeBuilderString'] = 'type {bool}'
 		rawDataElementController.saveWithoutTokenCheck()
 		
 		then:

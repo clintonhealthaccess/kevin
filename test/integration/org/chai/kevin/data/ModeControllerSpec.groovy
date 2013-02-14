@@ -17,7 +17,7 @@ class ModeControllerSpec extends IntegrationTests {
 		when:
 		modeController.params.code = CODE(1)
 		modeController.params.expression = "1"
-		modeController.params.type = Type.TYPE_NUMBER()
+		modeController.params['typeBuilderString'] = 'type { number }'
 		modeController.saveWithoutTokenCheck()
 		
 		then:
@@ -34,7 +34,7 @@ class ModeControllerSpec extends IntegrationTests {
 		when: //code = null
 		modeController.params.code = null
 		modeController.params.expression = "1"
-		modeController.params.type = Type.TYPE_NUMBER()
+		modeController.params['typeBuilderString'] = 'type { number }'
 		modeController.saveWithoutTokenCheck()
 		
 		then:
@@ -43,7 +43,7 @@ class ModeControllerSpec extends IntegrationTests {
 		when: //expression = null
 		modeController.params.code = CODE(1)
 		modeController.params.expression = null
-		modeController.params.type = Type.TYPE_NUMBER()
+		modeController.params['typeBuilderString'] = 'type { number }'
 		modeController.saveWithoutTokenCheck()
 		
 		then:
@@ -52,7 +52,7 @@ class ModeControllerSpec extends IntegrationTests {
 		when: //type = null
 		modeController.params.code = CODE(1)
 		modeController.params.expression = "1"
-		modeController.params.type = null
+		modeController.params['typeBuilderString'] = ''
 		modeController.saveWithoutTokenCheck()
 		
 		then:
@@ -73,10 +73,10 @@ class ModeControllerSpec extends IntegrationTests {
 		
 		then:
 		Mode.count() == 0
-		ModePartialValue.count() == 0 
+		ModePartialValue.count() == 0
 	}
 
-	def "save mode deletes values"() {
+	def "save mode does not delete values"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -90,7 +90,7 @@ class ModeControllerSpec extends IntegrationTests {
 		
 		then:
 		Mode.count() == 1
-		ModePartialValue.count() == 0
+		ModePartialValue.count() == 1
 	}	
 	
 	def "save mode updates timestamp"() {
@@ -103,10 +103,50 @@ class ModeControllerSpec extends IntegrationTests {
 		
 		when:
 		modeController.params.id = mode.id
+		modeController.params['typeBuilderString'] = 'type { number }'
+
 		modeController.save()
 		
 		then:
 		Mode.count() == 1
 		!Mode.list()[0].timestamp.equals(time1)
 	}	
+	
+	
+	def "can change mode type if it has no values" () {
+		setup:
+		setupLocationTree()
+		modeController = new ModeController()
+		def mode = newMode("1", CODE(1), Type.TYPE_NUMBER())
+
+		when:
+		modeController.params.id = mode.id
+		modeController.params.code = mode.code
+		modeController.params['typeBuilderString'] = 'type { bool }'
+		modeController.saveWithoutTokenCheck()
+
+		then:
+		modeController.response.redirectedUrl.equals(modeController.getTargetURI())
+		mode.type.equals(Type.TYPE_BOOL())
+	}
+		
+	def "cannot change mode type if it has values" () {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		modeController = new ModeController()
+		def mode = newMode("1", CODE(1), Type.TYPE_NUMBER())
+		newModePartialValue(mode, period, Location.findByCode(RWANDA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1"))
+
+		when:
+		modeController.params.id = mode.id
+		modeController.params.code = mode.code
+		modeController.params['typeBuilderString'] = 'type {bool}'
+		modeController.saveWithoutTokenCheck()
+
+		then:
+		modeController.response.redirectedUrl.equals(modeController.getTargetURI())
+		mode.type.equals(Type.TYPE_NUMBER())
+	}
+	
 }

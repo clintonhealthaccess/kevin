@@ -41,4 +41,5 @@ public enum UserType {
 		}
 		return result;
 	}
+	
 }
