@@ -179,23 +179,44 @@ Data can be entered into the system either by using the integrated survey tool, 
 	
 ### Survey
 
-Data can be entered using the survey part of the site. The survey, instance of **Survey** class, is broken down into programs (**SurveyProgram** class), sections (**SurveySection** class) and questions (**SurveyQuestion** cf. below). A program contains several sections and each section can have 1 or more questions. A section is set as complete when all questions in the section are completed and valid. A program is set as complete when all sections in the program are complete.
+Data can be entered using the survey part of the site. The survey, instance of Survey class, is broken down into programs (SurveyProgram class), sections (SurveySection class) and questions (SurveyQuestion class). 
+	
+								  Survey 1
+								/			\
+				Survey Program 1			 Survey Program 2
+				/				\				|
+		Section 1				Section 2		Section 3
+		/		\					|			
+	Question 1	Question 2		Question 3
 
-All questions are linked to one or several **raw data elements** through a **FormElement**. When a user fills in a survey, values entered as saved as **FormEnteredValue**. When a program is submitted, all the values saved in **FormEnteredValue** are saved in the **RawDataElementValue**. It is important to understand the difference between unsubmitted and submitted program. Only when a program is submitted, do the values entered become available as **RawDataElementValue**. Before that, they are stored as **FormEnteredValue** and only available through the survey API and not through the [data plugin API][chai-kevin-data].
+A program contains several sections and each section can have 1 or more questions. A section is set as complete when all questions in the section are complete and valid. A program is set as complete when all sections in the program are complete:
+	
+					status			explanation
+					----			-----------
+	program			complete		all sections are complete
+					valid			all sections are valid
+					closed			program has been submitted
+	
+	section			complete		all questions are complete
+					valid			all sections are valid
+	
+	question		complete		value is entered (valid or invalid)
+					valid			value entered is valid
 
-**FormElement** are therefore the survey equivalent of a **RawDataElement**, and **FormEnteredValue** the equivalent of **RawDataElementValue**. A **FormElement** holds a relationship to its corresponding **RawDataElement** and adds additional functionality in that it can also store corresponding *validation rules* and *skip rules* (see below for explanation), and a **FormEnteredValue** information on whether the value entered is valid or not, or whether it has been skipped. Validation and skip rules will be explained later.
+All questions are linked to one or several raw data elements through a FormElement. When a user fills in a survey, values entered as saved as FormEnteredValue. When a program is submitted, all the values saved in FormEnteredValue are saved in the RawDataElementValue. It is important to understand the difference between unsubmitted and submitted program. Only when a program is submitted, do the values entered become available as RawDataElementValue. Before that, they are stored as FormEnteredValue and only available through the survey API and not through the [data plugin API][chai-kevin-data].
 
-A survey is linked to a certain **Period** via the *period* property. There can be several surveys for one period. When a value is copied, the *period* property from the survey is used as the raw data element value period. The diagram below explains what happens when values are copied:
+FormElement are therefore the survey equivalent of a RawDataElement, and FormEnteredValue the equivalent of RawDataElementValue. A FormElement holds a relationship to its corresponding RawDataElement and adds additional functionality in that it can also store corresponding *validation rules* and *skip rules* (see below for explanation), and a FormEnteredValue information on whether the value entered is valid or not, or whether it has been skipped. Validation and skip rules will be explained later.
+
+A survey is linked to a certain Period via the *period* property. There can be several surveys for one period. When a value is copied, the *period* property from the survey is used as the raw data element value period. The diagram below explains what happens when values are copied:
 
 	FormElement								RawDataElement
-	|	|										|
-	|	|										|
-	|	FormEnteredValue - > (submit) - >	RawDataElementValue
-	|		- value				->				- value
-	|		- dataLocation		->				- dataLocation
-	|
-	Survey
-		- period				->				- period
+		|										|
+		|										|
+		FormEnteredValue - > (submit) - >	RawDataElementValue
+			- value				->				- value
+			- dataLocation		->				- dataLocation
+		Survey
+			- period			->				- period
 
 There can be more than one survey associated to one period, but one survey can be associated to only one period. Therefore to enter data for another period, one must use a different survey entirely.
 
@@ -203,24 +224,27 @@ All entities mentioned above can be assigned to one or more data location types,
 
 #### Survey questions
 
-There are 3 types of questions, **simple** questions, **checkbox** questions and **table** questions. All question types inherit the **SurveyQuestion** abstract class.
+There are 3 types of questions, **simple** questions, **checkbox** questions and **table** questions. All question types inherit the SurveyQuestion abstract class.
+
+A simple question is associated to only one data element of any type, checkbox questions are associated to one or more data elements of type `bool` and table questions are associated to one or more data elements of any type.
 
 ##### Simple Questions
 
-Simple questions feed results to one data element, they are instances of the **SurveySimpleQuestion** class, which links to the corresponding **FormElement**.
+Simple questions feed results to one data element, they are instances of the SurveySimpleQuestion class, which links to the corresponding FormElement.
 
 If simple questions are associated to a data element of type ```list```, it means the user will be able to add or remove elements of the list from the survey itself. 
 
 This allows the user to enumarete a list of item in the survey, for example the list of all staff. Let's say we have a data element of the following type :
 
-	- list (type: map)
-		- first_name: string
-		- last_name: string
-		- age: number
+	type { list type { map
+		first_name: type { string },
+		last_name: type { string },
+		age: type { number }
+	} }
 
 Defining a simple question associated to that data element will create on the survey what is commonly called a *nominative table*, i.e. a list of staff, where items (in this case individual staff members) can be added or removed and whose first name, last name and birthday can be specified using individual fields.
 
-If the simple question is linked to a data element of type ```list``` or ```map```, then the labels of the individual fields are found in **FormElement** *formElementHeadersMap* one-to-many relationship using **FormElementHeaderMap** object whose *header* field gives the path to the individual field in the type (cf. [data plugin README][chai-kevin-data] *Type* section), and *names* is the label. In this example, we could define the following header maps :
+If the simple question is linked to a data element of type ```list``` or ```map```, then the labels of the individual fields are stored in FormElement's *formElementHeadersMap* collection. The FormElementHeaderMap class *header* field stores the path to the individual field in the type (cf. [data plugin README][chai-kevin-data] *Type* section), and *names* stores the label. In this example, we could define the following header maps :
 
 	header				names[en]		names[fr]
 	------				---------		---------
@@ -230,17 +254,17 @@ If the simple question is linked to a data element of type ```list``` or ```map`
 
 ##### Checkbox Questions
 
-Checkbox questions feed results to one or more raw data elements of type bool and displays them as a list of checkbox options. The question itself is an instance of a **SurveyCheckboxQuestion** class and has a one-to-many relationship with **SurveyCheckboxOption**, which link to the corresponding **FormElement**. A survey checkbox option can only take form elements whose corresponding raw data element is of type ```bool```.
+Checkbox questions feed results to one or more raw data elements of type bool and displays them as a list of checkbox options. The question itself is an instance of a SurveyCheckboxQuestion class and has a one-to-many relationship with SurveyCheckboxOption, which link to the corresponding FormElement. A survey checkbox option can only take form elements whose corresponding raw data element is of type ```bool```.
 
 ##### Table Questions
 
-Table questions feed results to several data elements arranged in rows and columns. The question is an instance of the **SurveyTableQuestion** class and it has several **SurveyTableColumn** and **SurveyTableRow**. The **SurveyTableRow** object contains a map ```<SurveyTableColumn, FormElement>``` that links a certain column for a row to a certain form element. Each cell of the table therefore links to a different **FormElement** and therefore to a different **RawDataElement**.
+Table questions feed results to several data elements arranged in rows and columns. The question is an instance of the SurveyTableQuestion class and it has several SurveyTableColumn and SurveyTableRow. The SurveyTableRow object contains a map ```<SurveyTableColumn, FormElement>``` that links a certain column for a row to a certain form element. Each cell of the table therefore links to a different FormElement and therefore to a different RawDataElement.
 
 #### Validation
 
-On the survey, validation rules can be defined for individual fields. Those are instances of **FormValidationRule** and are attached to a **FormElement** and a certain *prefix*, indicating which field the rule applies on. A validation rule contains an expression. If the expression evaluates to ```false```, the field will be invalid and the *error message* defined in the rule will be displayed underneath the field.
+On the survey, validation rules can be defined for individual fields. Those are instances of FormValidationRule, and are attached to a FormElement and a certain *prefix*, indicating which field the rule applies on. A validation rule contains an expression. If the expression evaluates to ```false```, the field will be invalid and the *error message* defined in the rule will be displayed underneath the field.
 
-The *expression* in the validation rule can refer to any **FormElement** using the syntax ```$<form_element_id>```. Let's use the example of staff above, and we'll put a validation rule on the ```age``` field that it should be bigger than 0 but smaller than 100. Let's say the FormElement has id ```13```:
+The *expression* in the validation rule can refer to any FormElement using the syntax ```$<form_element_id>```. Let's use the example of staff above, and we'll put a validation rule on the ```age``` field that it should be bigger than 0 but smaller than 100. Let's say the FormElement has id ```13```:
 
 	FormElement		expression				message[en]
 	-----------		----------				-----------
@@ -269,7 +293,7 @@ If a form element is skipped, a comma-delimited list of path can be specified. T
 
 The skipped question property works similarly.
 
-#### Progress calculation
+#### Survey progress calculation
 
 When a survey is being filled out, progress is tracked using instances of the SurveyEnteredQuestion, SurveyEnteredSection and SurveyEnteredProgram classes. They are linked to their corresponding question, section and program and hold certain properties :
 
@@ -295,13 +319,13 @@ Those fields are set whenever a value is saved using the SurveyPageService, or w
 
 #### Operations on the survey
 
-Below are the various operations that can be done on a survey, using either the **SurveySummaryController** or the **EditSurveyController**.
+Below are the various operations that can be done on a survey, using either the SurveySummaryController or the EditSurveyController.
 
 ##### Refreshing the survey
 
 Refreshing a survey is the opposite of submitting a program. It takes the values that are already saved as RawDataElementValue and puts them into FormEnteredValue, creating it if it does not exist, and overwriting the value if it exists and the *reset* flag is set. It also creates the SurveyEnteredQuestion, SurveyEnteredSection and SurveyEnteredProgram. 
 
-Before rolling out a survey, it is advised to refresh the entire survey for all the data locations in the system as to create all the values in advance using **SurveySummaryController**.
+Before rolling out a survey, it is advised to refresh the entire survey for all the data locations in the system as to create all the values in advance using SurveySummaryController.
 
 	def refresh = {
 		// refreshes the survey, copying the values from RawDataElementValue 
@@ -312,7 +336,7 @@ Before rolling out a survey, it is advised to refresh the entire survey for all 
 
 ##### Saving a value
 
-The **EditSurveyController** has an ajax action that can be used to save a value when it's been entered by the user:
+The EditSurveyController has an ajax action that can be used to save a value when it's been entered by the user:
 
 	def saveValue = {
 		// takes as input :
@@ -353,16 +377,17 @@ The **EditSurveyController** has an ajax action that can be used to save a value
 		//   nullPrefixes: a list of all null fields (no value entered)
 	}
 	
-The controller calls the **SurveyPageService** modify method, whose role is to save the value, evaluate all validation and skip rules that are affected by the change and return a list of all FormEnteredValue, SurveyEnteredQuestion, SurveyEnteredSection and SurveyEnteredProgram whose properties changed because of the  value change. The action then returns a JSON version of that, which can be used by the survey Javascript.
+The controller calls the SurveyPageService modify method, whose role is to save the value, evaluate all validation and skip rules that are affected by the change and return a list of all FormEnteredValue, SurveyEnteredQuestion, SurveyEnteredSection and SurveyEnteredProgram whose properties changed because of the  value change. The action then returns a JSON version of that, which can be used by the survey Javascript.
 
-There are a few tricky things to know when saving values, particularly when it comes to handling values of complex types ```list``` and ```map```. Let's first see how to change a value inside a list, then we'll see how to add and remove rows from a list. Let's take the example we used above which was using the following type:
+There are a few tricky things to know when saving values, particularly when it comes to handling values of complex types ```list``` and ```map```. Let's first see how to change a value inside a list, then we'll see how to add and remove entries from a list. Let's take the example we used above which was using the following type:
 
-	- list (type: map)
-		- first_name: string
-		- last_name: string
-		- age: number
+	type { list type { map
+		first_name: type { string },
+		last_name: type { string },
+		age: type { number }
+	} }
 
-To change the first_name property of the first element of the list for data location of id ```10``` and in section ```2```, here is what would need to be sent to the *saveValue* action :
+To change first_name value of the first entry of the list for data location of id ```10``` and in section ```2```, here is what would need to be sent to the *saveValue* action :
 
 	Request parameter					Value
 	-----------------					-----
@@ -372,7 +397,7 @@ To change the first_name property of the first element of the list for data loca
 	suffix								[0].first_name
 	elements[13].value[0].first_name	"Giselle"
 	
-Similarly, to add a row at the end of the list (say the list currently has 1 row) :
+Similarly, to add a entry at the end of the list (say the list currently has 1 entry) :
 
 	Request parameter		Value		Remark
 	-----------------		-----		------
@@ -381,10 +406,9 @@ Similarly, to add a row at the end of the list (say the list currently has 1 row
 	element					13
 	suffix								the list we want to modify is at suffix "<empty>".
 	elements[13].value		[0]			we need to repeat that one
-	elements[13].value		[1]			this is the new row
+	elements[13].value		[1]			this is the new entry
 	
-To remove the first row (say the list currently has 2 rows) :
-
+To remove the first entry (say the list currently has 2 entries) :
 
 	Request parameter		Value		Remark
 	-----------------		-----		------
@@ -392,25 +416,25 @@ To remove the first row (say the list currently has 2 rows) :
 	section					2
 	element					13
 	suffix								the list we want to modify is at suffix "<empty>".
-	elements[13].value		[1]			this is the row that already exist
-										we just omit the row that we want to remove
+	elements[13].value		[1]			this is the entry that already exist
+										we just omit the entry that we want to remove
 
 ##### Submitting a survey program
 
-When a program is submitted, all values are copied from the **FormEnteredValue** to the corresponding **RawDataElementValue**. All values that are valid are copied as is, values that are invalid or skipped are set as a ```null``` value. The table below summarizes the different cases.
+When a program is submitted, all values are copied from the FormEnteredValue to the corresponding RawDataElementValue. All values that are valid are copied as is, values that are invalid or skipped are set as a ```null``` value. The table below summarizes the different cases.
 
 	FormEnteredValue			-			RawDataElementValue
 	----------------						-------------------
 	- value entered and valid				- value is copied
 	- value entered and invalid				- value is set to null 
 	- value not entered						- value is set to null
-	- value skipped							- value is set to null
+	- value skipped	by skip rule			- value is set to null
 
-The *period* property of the **RawDataElementValue** is set to the period referred to by the survey, as explined above, and the *dataLocation* to whichever data location is filling out the survey.
+The *period* property of the RawDataElementValue is set to the period referred to by the survey, as explined above, and the *dataLocation* to whichever data location is filling out the survey.
 
-After a program has been submitted, the values are saved as **RawDataElementValue** and therefore available to the reports (cf. below) component of the site.
+After a program has been submitted, the values are saved as RawDataElementValue and therefore available to the reports (cf. below) component of the site.
 
-To submit a program, the **EditSurveyController** provides a submit action:
+To submit a program, the EditSurveyController provides a submit action:
 
 	def submit = {
 		// submits a program, given the following parameters
@@ -428,7 +452,7 @@ Submitting a program closes the program, preventing all subsequent edits. If the
 
 ##### Cloning a survey
 
-As it can be a hassle to recreate a whole survey from scratch for a new period, existing surveys can be cloned using the **SurveyController** copy action :
+As it can be a hassle to recreate a whole survey from scratch for a new period, existing surveys can be cloned using the SurveyController copy action :
 
 	def copy = {
 		// clones a survey, takes the following parameter
@@ -545,7 +569,7 @@ The ReportService provides several methods that help handle reports :
 Planning
 ---
 
-TODO
+The planning tool has two components. A data entry component and an analytical component, called the output tables. The data entry component uses FormEnteredValue, FormValidationRule, and FormSkipRule just like the survey does. The analytical component uses NormalizedDataElement to transform entered values into tables.
 
 Users & roles
 ---
@@ -607,13 +631,6 @@ The export works in the opposite way of the general data import, with the format
 There is an export for data elements and one for calculations. The export for calculation will output slightly more information as it will also give the location level, and location parents of the data location.
 
 
-Cache configuration
----
-
-Taglibs
----
-
-
 License
 ---
 
@@ -623,8 +640,8 @@ The DHSST is licensed under the terms of the [BSD 3-clause License][BSD 3-clause
 [BSD 3-clause License]: http://www.w3.org/Consortium/Legal/2008/03-bsd-license.html
 [dhsst.org]: http://www.dhsst.org/  
 [gvm]: http://gvmtool.net/
-[chai-locations]: http://github.com/fterrier/grails-chai-locations
-[chai-kevin-data]: http://github.com/fterrier/grails-chai-kevin-data
+[chai-locations]: http://github.com/clintonhealthaccess/grails-chai-locations
+[chai-kevin-data]: http://github.com/clintonhealthaccess/chai-kevin-data
 [grails-mail]: http://grails.org/plugins/mail
 [grails-mail]: http://grails.org/plugins/shiro
 [mail-on-exception]: http://github.com/fterrier/mail-on-exception
