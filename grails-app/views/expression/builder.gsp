@@ -22,7 +22,7 @@
 					
 						<g:textarea name="expression" label="${message(code:'expression.test.expression.label')}" bean="${cmd}" field="expression" value="${cmd?.expression}" height="130" />
 						
-						<g:render template="/templates/typeEditor" model="[bean: cmd, name: 'type']"/>
+						<g:render template="/templates/typeEditor" model="[bean: cmd, name: 'typeBuilderString']"/>
 						
 						<g:selectFromList name="typeCodes" label="${message(code:'entity.datalocationtype.label')}" bean="${cmd}" field="typeCodeString" 
 							from="${types}" value="${cmd==null?types*.code:cmd*.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>

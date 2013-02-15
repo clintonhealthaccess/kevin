@@ -20,6 +20,18 @@ class ExpressionController {
 	}
 	
 	def doTest = { ExpressionTestCommand cmd ->
+		try {
+			if (log.debugEnabled) log.debug("binding type: "+params['typeBuilderString'])
+			
+			// returns null if params['typeBuilderString'] is null	
+			def type = Utils.buildType(params['typeBuilderString'])
+			cmd.type = type
+		} catch (Exception e) {
+			// we get here if params['typeBuilderString'] is garbage (syntax error)
+			params['typeBuilderError'] = e.getMessage()
+		}
+		
+		cmd.validate()
 		if (cmd.hasErrors()) {
 			def exception = null
 

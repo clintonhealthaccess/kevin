@@ -14,6 +14,7 @@ class ExpressionControllerSpec extends IntegrationTests {
 		expressionController = new ExpressionController()
 		
 		when:
+		expressionController.params.typeBuilderString = 'type { number }'
 		ExpressionTestCommand cmd = new ExpressionTestCommand(type: new Type("{\"type\":\"number\"}"), expression: '123', periodId: period.id, typeCodes: [HEALTH_CENTER_GROUP, DISTRICT_HOSPITAL_GROUP])
 		expressionController.doTest(cmd)
 		
@@ -30,6 +31,7 @@ class ExpressionControllerSpec extends IntegrationTests {
 		expressionController = new ExpressionController()
 		
 		when:
+		expressionController.params.typeBuilderString = 'type { number }'
 		ExpressionTestCommand cmd = new ExpressionTestCommand(type: new Type("{\"type\":\"number\"}"), expression: '123', periodId: period.id, typeCodes: [HEALTH_CENTER_GROUP])
 		expressionController.doTest(cmd)
 		

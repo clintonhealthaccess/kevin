@@ -200,6 +200,7 @@ public class Utils {
 	}
 	
 	public static Type buildType(String typeString) {
+		if (log.isDebugEnabled()) log.debug("buildType(typeString="+typeString+")");
 		if (typeString == null || typeString.trim() == "") return null;
 		
 		def list = []
@@ -225,6 +226,7 @@ public class Utils {
 			''' + typeString.replaceAll("\n", " ")
 		);
 		
+		if (log.isDebugEnabled()) log.debug("buildType(...)="+list[0]);
 		return list[0];
 	}
 	

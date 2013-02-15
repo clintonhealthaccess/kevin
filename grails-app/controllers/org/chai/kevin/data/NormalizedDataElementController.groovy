@@ -124,6 +124,8 @@ class NormalizedDataElementController extends AbstractEntityController {
 		
 		if (entity.id == null || !valueService.getNumberOfValues(entity)) {
 			try {
+				if (log.debugEnabled) log.debug("binding type: "+params['typeBuilderString'])
+				
 				// returns null if params['typeBuilderString'] is null	
 				def type = Utils.buildType(params['typeBuilderString'])
 				entity.type = type
@@ -131,6 +133,7 @@ class NormalizedDataElementController extends AbstractEntityController {
 				// we get here if params['typeBuilderString'] is garbage (syntax error)
 				params['typeBuilderError'] = e.getMessage()
 			}
+			if (log.debugEnabled) log.debug("entity typeString: "+entity.typeString+", is null: "+(entity.typeString == null))
 		}
 	}
 	

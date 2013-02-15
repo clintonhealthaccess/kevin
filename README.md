@@ -437,10 +437,6 @@ As it can be a hassle to recreate a whole survey from scratch for a new period, 
 	
 Copying the survey will create a duplicate of all programs, sections, questions, form elements, validation and skip rules. As all those elements will have new IDs, cloning will also update all expressions to refere to the new IDs instead of the old ones. In cases where the IDs used do not belong to the survey being cloned (as could be the case for example if a validation rule is referring to another survey's form element), then the ID is left as is.
 
-#### Survey javascript
-
-TODO
-
 ### Import
 
 There are 2 ways to import data into the system, the general data import, that can be used to import any type of data, and the general data import, that can be used to import data of a complex type in a more intuitive format than the general import.
@@ -545,9 +541,6 @@ The ReportService provides several methods that help handle reports :
 	public List<AbstractReportTarget> getReportTargets(Data<?> data);
 	
 	public void flushCaches();
-	
-
-
 
 Planning
 ---
