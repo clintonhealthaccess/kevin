@@ -1,7 +1,7 @@
 var map = null;
 var mapLayers = []
 
-function createTheMap(){
+function createTheMap(childrenCollectData){
 	var mapBaseLayer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
 		maxZoom: 18,
 		// TODO move this to message.properties?
@@ -16,10 +16,14 @@ function createTheMap(){
 		zoom: 9,
 		layers: mapLayers,
 		touchZoom: false,
-		scrollWheelZoom: false
+		scrollWheelZoom: false,
+		zoomControl: false
 		// attributionControl: false
 	});
 	L.control.scale().addTo(map);
+	L.control.zoom('topright').addTo(map);
+
+	if(childrenCollectData) L.control.layers(null, overlays).addTo(map);
 	// alert("after creating the map ");
 }
 
@@ -27,16 +31,33 @@ function mapTheMap(mapLocationValueLayer){
 	
 	var width = basePolygonLayer.getBounds().getNorthEast().lat-basePolygonLayer.getBounds().getSouthWest().lat;
 	var height = basePolygonLayer.getBounds().getNorthEast().lng-basePolygonLayer.getBounds().getSouthWest().lng;
-	
 	var area = width*height;
-	if(mapLocationValueLayer && area > 0.5) map.setView(basePolygonLayer.getBounds().getCenter(), 9);
-	else map.fitBounds(basePolygonLayer.getBounds());
-	
+
+	//alert('width '+width+', height '+height+', area '+area);
+	//alert('mapBoundsZoom '+map.getBoundsZoom(basePolygonLayer.getBounds(),false));
+
+	// if the map can zoom in to at least 11, use the default fit bounds
+	if(map.getBoundsZoom(basePolygonLayer.getBounds(),false) > 10){
+		map.fitBounds(basePolygonLayer.getBounds());
+	}
+	// else check the width, height, and area, to find possible regions to zoom in further
+	else{
+		if(width >= 1.10 && height >= 0.75 && area >= 0.83){
+			map.setView(basePolygonLayer.getBounds().getCenter(), 9);
+		}
+		// else if(width >= 0.36 && height >= 0.27 && area >= 0.10){
+		// 	map.setView(basePolygonLayer.getBounds().getCenter(), 11);
+		// }
+		else {
+			map.fitBounds(basePolygonLayer.getBounds());
+		}
+	}
+
 	// alert("after creating the map ");
 }
 
 // dsr & fct base polygon layer
-// polygon -> color = blue/green #99D8C9/#2CA25F
+// polygon -> color = blue/green #99d8c9/#2ca25f, orange #fdae6b/#e6550d
 // polygon label -> location name
 
 function mapPolygons(childrenCollectData, currentLocationCode, reportLocationCodes){
@@ -60,26 +81,13 @@ function mapPolygons(childrenCollectData, currentLocationCode, reportLocationCod
 
 			var polygonCoordinates = createPolygonCoordinates(dataFeature, false);
 
+			// orange
 			var polygonStyle = {
-					color: "#2CA25F",
-					weight: 1.5,
-					fillColor: "#99D8C9",
-				    fillOpacity: 0.75
-				};
-
-			if(!childrenCollectData){
-				var polygonValuesTotal = $('.js-map-table-value[data-location-code="'+fosaid+'"] .report-value').size();
-				var polygonValuesNull = $('.js-map-table-value[data-location-code="'+fosaid+'"] .report-value-null').size();
-
-				if(polygonValuesTotal == polygonValuesNull){
-					polygonStyle = {
-						color: "#969696",
-						weight: 1.5,
-						fillColor: "#BDBDBD",
-					    fillOpacity: 0.75
-					};
-				}
-			}
+				color: "#e6550d",
+				weight: 1.5,
+				fillColor: "#fdae6b",
+			    fillOpacity: 0.75
+			};
 
 			// add polygon
 			var polygonFeature = {

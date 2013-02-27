@@ -43,7 +43,7 @@ class FctController extends AbstractController {
 			// reset the target if it doesn't belong to the right program
 			if (fctTarget != null) {
 				if (!fctTarget.program.equals(program)) fctTarget = null
-			}			
+			}
 		}
 		
 		// set the target to the first of the program if null
@@ -53,6 +53,11 @@ class FctController extends AbstractController {
 			if(targets != null && !targets.empty){
 				targets.sort({it.order})
 				fctTarget = targets.first()			
+			}
+			else{
+				if (log.isDebugEnabled()) {
+					log.debug("fct.view, program:"+program+", fctTarget:"+fctTarget+" must have at least 1 fctTargetOption")
+				}
 			}
 		}
 
@@ -91,7 +96,11 @@ class FctController extends AbstractController {
 			
 			// we check if we should redirect
 			def newParams = redirectIfDifferent(reportParams)
-			if(newParams != null && !newParams.empty) redirect(controller: 'fct', action: 'view', params: newParams)
+			if(newParams != null && !newParams.empty) {
+				redirected = true
+				if (log.isDebugEnabled()) log.debug('fct.view, redirecting, params: '+newParams);
+				redirect(controller: 'fct', action: 'view', params: newParams)
+			}
 		}
 		
 		if (!redirected) {

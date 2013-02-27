@@ -39,7 +39,7 @@ class ValueTagLib {
 		}
 		else if (value.isNull()) {
 			def reportValue = message(code: 'report.value.null')
-			out << '<div class="report-value report-value-null"'+
+			out << '<div class="report-value report-value-is-null"'+
 					' data-report-value="'+reportValue+'"'+
 					' data-report-value-raw="null"'+
 					' data-report-value-type="null">'+

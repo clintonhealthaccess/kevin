@@ -99,6 +99,19 @@ function createEastWestOffset(boundsLat, center){
 	return [boundsLat, center.lng];
 }
 
+// get proportional font size
+function getReportValueSize(reportValueType, rawValue){
+	var reportValueSize = null;
+	if(reportValueType == 'NUMBER'){
+		rawValue = parseFloat(rawValue);				
+		var maxRawValue = getMaxRawValue();
+		var percentageMaxRawValue = parseFloat(rawValue/maxRawValue);
+		reportValueSize = parseInt(percentageMaxRawValue*15)+15; //min: 15px max: 30px
+		reportValueSize = reportValueSize > 30 ? 30 : (reportValueSize < 15 ? 15 : reportValueSize);
+	}
+	return reportValueSize;
+}
+
 // get min/max raw values
 function getMinRawValue(){
 	var minRawValue;

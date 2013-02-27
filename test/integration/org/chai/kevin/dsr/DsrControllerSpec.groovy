@@ -1,5 +1,6 @@
 package org.chai.kevin.dsr
 
+import org.chai.kevin.data.Summ
 import org.chai.kevin.data.Type
 import org.chai.location.DataLocationType
 import org.chai.location.Location
@@ -113,7 +114,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		
 		then:
 		dsrController.response.redirectedUrl.contains("/dsr/view/")
-		dsrController.response.redirectedUrl.contains(reportType.toString().toLowerCase()+"?")
+		dsrController.response.redirectedUrl.contains(reportType.toString().toLowerCase())
 		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"/"+category.id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
@@ -127,7 +128,6 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def target = newDsrTarget(CODE(4), 1, dataElement, category)
-		def reportType = ReportType.TABLE
 		
 		when: "valid table"
 		dsrController = new DsrController()
@@ -140,7 +140,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		
 		then:
 		dsrController.response.redirectedUrl.contains("/dsr/view/")
-		dsrController.response.redirectedUrl.contains(reportType.toString().toLowerCase()+"?")
+		dsrController.response.redirectedUrl.contains(ReportType.MAP.toString().toLowerCase())
 		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"/"+category.id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
@@ -185,7 +185,6 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def target = newDsrTarget(CODE(4), 1, dataElement, category)
-		def reportType = ReportType.TABLE
 		
 		when: "no parameters"
 		dsrController = new DsrController()
@@ -193,7 +192,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		
 		then:
 		dsrController.response.redirectedUrl.contains("/dsr/view/")
-		dsrController.response.redirectedUrl.contains(reportType.toString().toLowerCase()+"?")
+		dsrController.response.redirectedUrl.contains(ReportType.MAP.toString().toLowerCase())
 		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"/"+category.id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
@@ -207,7 +206,6 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def target = newDsrTarget(CODE(4), 1, dataElement, category)
-		def reportType = ReportType.TABLE
 		
 		when: "invalid parameters"
 		dsrController = new DsrController()
@@ -221,7 +219,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		
 		then:
 		dsrController.response.redirectedUrl.contains("/dsr/view/")
-		dsrController.response.redirectedUrl.contains(reportType.toString().toLowerCase()+"?")
+		dsrController.response.redirectedUrl.contains(ReportType.MAP.toString().toLowerCase())
 		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"/"+category.id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
@@ -235,7 +233,6 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def category = newDsrTargetCategory(CATEGORY1, program, 0)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def target = newDsrTarget(CODE(4), 1, dataElement, category)
-		def reportType = ReportType.TABLE
 		
 		when: "valid location parameter"
 		dsrController = new DsrController()
@@ -249,7 +246,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		
 		then:
 		dsrController.response.redirectedUrl.contains("/dsr/view/")
-		dsrController.response.redirectedUrl.contains(reportType.toString().toLowerCase()+"?")
+		dsrController.response.redirectedUrl.contains(ReportType.MAP.toString().toLowerCase())
 		dsrController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(BURERA).id+"/"+category.id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dsrController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
@@ -262,6 +259,8 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		setupProgramTree()
 		DashboardIntegrationTests.setupDashboardTree()
 		def category = newDsrTargetCategory(CATEGORY1, ReportProgram.findByCode(ROOT), 0)
+		def sum = Summ.findByCode('CODE2')
+		def target = newDsrTarget(CODE(4), 1, sum, category)
 		def reportType = ReportType.TABLE
 		
 		when:

@@ -51,7 +51,7 @@
 								<!-- map table report value -->
 								<g:set var="mapValue" value="${reportTable.getTableReportValue(location, indicator)?.value}"/>
 								<div class="js-map-table-value ${mapValue != null && !mapValue.isNull() && mapValue.numberValue > 0 ? 'js-selected-value':''}"
-									data-location-code="${location.code}" 
+									data-location-code="${location.code}"
 									data-location-names="${i18n(field: location.names)}" 
 									data-indicator-code="${indicator.code}" 
 									data-indicator-names="${i18n(field:indicator.names)}"

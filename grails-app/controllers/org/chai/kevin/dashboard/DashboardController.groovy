@@ -50,8 +50,16 @@ class DashboardController extends AbstractController {
 	
 	private def getDashboardEntity(def program) {		
 		DashboardEntity entity = DashboardTarget.get(params.int('dashboardEntity'))
-		if(entity != null && !entity.program.equals(program)) entity = null
-		if(entity == null) entity = dashboardService.getDashboardProgram(program)
+		if(entity != null){
+			// reset the entity if it doesn't belong to the right program
+			if(!entity.program.equals(program)) 
+				entity = null
+		}
+		
+		// set the entity to the program if null
+		if(entity == null) 
+			entity = dashboardService.getDashboardProgram(program)
+
 		return entity
 	}
 	
@@ -68,6 +76,7 @@ class DashboardController extends AbstractController {
 		
 		// other information we need in the view
 		DashboardEntity dashboardEntity = getDashboardEntity(program)
+		if (log.isDebugEnabled()) log.debug("dashboard.view, dashboardEntity:"+dashboardEntity)
 		def locationSkipLevels = dashboardService.getSkipLocationLevels();
 		
 		def redirected = false
@@ -84,6 +93,7 @@ class DashboardController extends AbstractController {
 			
 			if(newParams != null && !newParams.empty) {
 				redirected = true
+				if (log.isDebugEnabled()) log.debug('dashboard.view, redirecting, parems: '+newParams);
 				redirect(controller: 'dashboard', action: 'view', params: newParams)
 			}
 		}
@@ -127,7 +137,7 @@ class DashboardController extends AbstractController {
 		if (period != null && program != null && location != null && dataLocationTypes != null && dashboardEntity != null) {			
 			if (log.isDebugEnabled()) log.debug("compare dashboard for dashboardEntity: "+dashboardEntity+", root program: "+program+", root location: "+location)
 			
-			def dashboard = dashboardService.getDashboard(location, program, period, dataLocationTypes, true);
+			def dashboard = dashboardService.getDashboard(location, program, dashboardEntity, period, dataLocationTypes, true);
 			if (log.isDebugEnabled()) log.debug('compare dashboard: '+dashboard)
 			
 			def table = (String) params.get("table")

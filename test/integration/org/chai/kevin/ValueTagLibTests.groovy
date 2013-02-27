@@ -18,7 +18,7 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 				'type': Type.TYPE_BOOL(),
 				'format': null
 			]
-		), '<div class="report-value report-value-null"'+
+		), '<div class="report-value report-value-is-null"'+
 			' data-report-value="N/A"'+
 			' data-report-value-raw="null" data-report-value-type="null">N/A</div>'
 	}
@@ -173,11 +173,11 @@ class ValueTagLibTests extends GroovyPagesTestCase {
 		assertEquals applyTemplate(
 			'<g:reportValue tooltip="${tooltip}" value="${value}" type="${type}"/>',
 			[
-				'tooltip': 'true',
+				'tooltip': 'reportIndicator',
 				'value': Value.VALUE_BOOL(true),
 				'type': Type.TYPE_BOOL()
 			]
-		), '<div class="report-value-true"><span class="tooltip" original-title="true">&#10003;</span></div>'
+		), '<div class="report-value-true"><span class="tooltip" original-title="reportIndicator: &#10003;">&#10003;</span></div>'
 	}
 	
 	def testReportValueBool() {

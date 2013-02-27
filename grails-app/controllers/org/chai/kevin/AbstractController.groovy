@@ -139,7 +139,7 @@ public abstract class AbstractController {
 				reportType = ReportType.valueOf(ReportType.class, reportType.toUpperCase())
 			}
 			catch(IllegalArgumentException ex){
-				reportType = ReportType.TABLE
+				reportType = ReportType.MAP
 			}			
 		}
 		else{

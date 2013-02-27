@@ -6,21 +6,32 @@ var basePolygonLayer = L.geoJson(null, {
 	onEachFeature: onEachPolygonFeature
 });
 
+var locationNameLayer = null;
+var locationValueNaLayer = null;
 var locationValueLayer = null;
-var locationValueLayers = []
+var locationLayers = [];
+var overlays = [];
 
 function dashboardMap(childrenCollectData, currentLocationCode, reportLocationCodes){
 	
-	var geoJsonLayerOptions = null;
+	var geoJsonValueLayerOptions = null;
 
 	if(childrenCollectData){
-		geoJsonLayerOptions = {
+		geoJsonValueLayerOptions = {
 			pointToLayer: pointValueFeatureToLayer,
 			onEachFeature: onEachPointValueFeature
 		};
+
+		var geoJsonLabelLayerOptions = {
+			pointToLayer: pointLabelFeatureToLayer,
+			onEachFeature: onEachPointValueFeature
+		};
+		locationNameLayer = L.geoJson(null, geoJsonLabelLayerOptions);
+		locationLayers.push(locationNameLayer)
+		overlays["Facilities"] = locationNameLayer;
 	}
 	else{
-		geoJsonLayerOptions = {
+		geoJsonValueLayerOptions = {
 			pointToLayer: polygonValueFeatureToLayer,
 			onEachFeature: onEachPolygonValueFeature
 		};
@@ -28,13 +39,17 @@ function dashboardMap(childrenCollectData, currentLocationCode, reportLocationCo
 
 	var mapTableIndicator = $('.js-map-table-value[data-location-code="'+currentLocationCode+'"]');
 	var indicatorName = $(mapTableIndicator).data('indicator-names');
-	locationValueLayer = L.geoJson(null, geoJsonLayerOptions);
-	locationValueLayers.push(locationValueLayer);
+	locationValueLayer = L.geoJson(null, geoJsonValueLayerOptions);
+	locationLayers.push(locationValueLayer);
 	
+	locationValueNaLayer = L.geoJson(null, geoJsonValueLayerOptions);
+	overlays["N/A"] = locationValueNaLayer;
+	locationLayers.push(locationValueNaLayer);
+
 	mapDashboardPolygons(childrenCollectData, currentLocationCode, reportLocationCodes);
 
-    mapLayers = locationValueLayers;
-    createTheMap();
+    mapLayers = locationLayers;
+    createTheMap(childrenCollectData);
 
 	// alert("after everything ");
 }
@@ -67,27 +82,41 @@ function mapDashboardPolygons(childrenCollectData, currentLocationCode, reportLo
 			var rawValue = $(mapReportValue).data('report-value-raw');
 			var reportValue = $(mapReportValue).data('report-value');
 
-			var polygonFillColor = null;
-			var polygonColor = null;
-			if(rawValue != null){
-				var quartile = rawValue < 0.26 ? 0 : (rawValue < 0.51 ? 1 : (rawValue < 0.76 ? 2 : (rawValue < 1.01 ? 3 : 4)));
-				quartile = 'indicator-quartile-'+quartile
-				polygonFillColor = mapPolygonColors[quartile]
-				polygonColor = mapPolygonColorsDark[quartile]
-			
+			var polygonStyle = {}
+
+			if(childrenCollectData){
+				// orange
+				polygonStyle = {
+					color: '#e6550d',
+					weight: 1.5,
+					fillColor: '#fdae6b',
+				    fillOpacity: 0.75
+				};
 			}
 			else{
-				quartile = 'indicator-quartile-na'
-				polygonFillColor = mapPolygonColors[quartile]
-				polygonColor = mapPolygonColorsDark[quartile]
-			}
+				var polygonFillColor = null;
+				var polygonColor = null;
+				if(rawValue != null){
+					var quartile = rawValue < 0.26 ? 0 : (rawValue < 0.51 ? 1 : (rawValue < 0.76 ? 2 : (rawValue < 1.01 ? 3 : 4)));
+					quartile = 'indicator-quartile-'+quartile
+					polygonFillColor = mapPolygonColors[quartile]
+					polygonColor = mapPolygonColorsDark[quartile]
+				
+				}
+				else{
+					quartile = 'indicator-quartile-na'
+					polygonFillColor = mapPolygonColors[quartile]
+					polygonColor = mapPolygonColorsDark[quartile]
+				}
 
-			var polygonStyle = {
-				color: polygonColor,
-				weight: 1.5,
-				fillColor: polygonFillColor,
-			    fillOpacity: 0.75
-			};
+				// green
+				polygonStyle = {
+					color: polygonColor,
+					weight: 1.5,
+					fillColor: polygonFillColor,
+				    fillOpacity: 0.75
+				};
+			}
 
 			var polygonCoordinates = createPolygonCoordinates(dataFeature, false);
 
@@ -172,7 +201,7 @@ function mapPolygonValues(data){
 		
 		var fosaid = dataFeature.properties.code;
 
-		// map 1 point label per location
+		// map 1 value for the indicator for the polygon
 		var mapTableValue = $('.js-map-table-value[data-location-code="'+fosaid+'"]');
 		var mapReportValue = $(mapTableValue).children('div.report-value');
 		var rawValue = $(mapReportValue).data('report-value-raw');
@@ -206,14 +235,6 @@ function mapPolygonValues(data){
 			}
 		};
 
-		// add point label
-		if(reportValueType == 'NUMBER'){
-			rawValue = parseFloat(rawValue);				
-			var maxRawValue = getMaxRawValue();
-			var percentageMaxRawValue = parseFloat(rawValue/maxRawValue);
-			var reportValueSize = parseInt(percentageMaxRawValue*20)+10; //min: 10px max: 30px
-		}
-		feature.properties.reportValueSize = reportValueSize;
 		var geojsonPointFeature = createGeoJsonPointFeature(feature);
 		locationValueLayer.addData(geojsonPointFeature);
 							
@@ -226,9 +247,6 @@ function polygonValueFeatureToLayer(feature, latlng) {
 	var reportValue = feature.properties.reportValue;
 	var polygonValueLabel = feature.properties.reportValueIcon;
 	
-	var rawValueFontSize = null;
-	var labelClassName = null;
-	
 	if(rawValue != null){
 		polygonValueLabel = new L.Icon.Label.Default({					
 				iconUrl: polygonValueLabel,
@@ -237,13 +255,9 @@ function polygonValueFeatureToLayer(feature, latlng) {
 				labelText: reportValue+'',
 				labelAnchor: new L.Point(0, 0),
 				wrapperAnchor: new L.Point(13, 5),
-				// labelClassName: '',
+				labelClassName: 'report-value-marker-label',
 				shadowUrl: null
 		});
-		
-		var reportValueSize = feature.properties.reportValueSize;
-		polygonValueLabel.options.labelFontSize = reportValueSize + 'px'
-		polygonValueLabel.options.labelClassName += 'report-value-marker-number'
 	}
 	else{
 		polygonValueLabel = new L.Icon.Label.Default({					
@@ -253,7 +267,7 @@ function polygonValueFeatureToLayer(feature, latlng) {
 			labelText: reportValue+'',
 			labelAnchor: new L.Point(0, 0),
 			wrapperAnchor: new L.Point(13, 5),
-			labelClassName: rawValue == null ? 'report-value-marker-na' : 'report-value-marker-label',
+			labelClassName: 'report-value-marker-na',
 			shadowUrl: null
 		});
 	}
@@ -342,6 +356,7 @@ function mapPointValues(reportLocationCodes){
 		jQuery.each(data.features, function(i,f){
 
 			var fosaid = f.properties.fosaid;
+			fosaLocations.push(fosaid+"");
 
 			// map 1 point & point label per location
 			var mapTableValues = $('.js-map-table-value[data-location-code="'+fosaid+'"]');
@@ -349,7 +364,9 @@ function mapPointValues(reportLocationCodes){
 			$(mapTableValues).each(function(index, mapTableValue){
 
 				var mapValue = $(mapTableValue).children('div.report-value');
-				fosaLocations.push(fosaid+"");
+				var rawValue = $(mapValue).data('report-value-raw');
+				var reportValue = $(mapValue).data('report-value');
+				var reportValueType = $(mapValue).data('report-value-type');
 
 				if(!f.geometry){
 					// fosa coordinates missing
@@ -367,30 +384,21 @@ function mapPointValues(reportLocationCodes){
 							"indicatorClass": $(mapTableValue).data('indicator-class'),
 							"indicatorCode": $(mapTableValue).data('indicator-code'),
 							"indicatorName": $(mapTableValue).data('indicator-names'),
-							"rawValue": $(mapValue).data('report-value-raw'),
-							"reportValue": $(mapValue).data('report-value')
+							"rawValue": rawValue,
+							"reportValue": reportValue,
+							"reportValueType": reportValueType,
+							"reportValueIcon": reportValueLabelIcon
 						}
 					};
 
-					// add point
-					var rawValue = $(mapValue).data('report-value-raw');
-					var reportValueType = $(mapValue).data('report-value-type');
-					feature.properties.reportValueType = $(mapValue).data('report-value-type');					
-					if(reportValueType == 'NUMBER'){
-						rawValue = parseFloat(rawValue);				
-						var maxRawValue = getMaxRawValue();
-						var percentageMaxRawValue = parseFloat(rawValue/maxRawValue);
-						var reportValueSize = parseInt(percentageMaxRawValue*20)+10; //min: 10px max: 30px
-						reportValueSize = reportValueSize > 30 ? 30 : (reportValueSize < 10 ? 10 : reportValueSize);
-					}
-					feature.properties.reportValueSize = reportValueSize;
+					// add value
 					var geojsonPointFeature = createGeoJsonPointFeature(feature);
-					locationValueLayer.addData(geojsonPointFeature);
+					if(rawValue != null) locationValueLayer.addData(geojsonPointFeature);
+					else locationValueNaLayer.addData(geojsonPointFeature);
 
-					// add point label
-					feature.properties.reportValueIcon = reportValueLabelIcon;
+					// add value label
 					var geojsonPointFeature = createGeoJsonPointFeature(feature);
-					locationValueLayer.addData(geojsonPointFeature);
+					locationNameLayer.addData(geojsonPointFeature);
 				}
 			});								
 		});						
@@ -405,59 +413,65 @@ function mapPointValues(reportLocationCodes){
 }
 
 function pointValueFeatureToLayer(feature, latlng) {
-	
+
 	var locationName = feature.properties.locationName;
 	var rawValue = feature.properties.rawValue;
 	var reportValue = feature.properties.reportValue;
-	var reportValueType = feature.properties.reportValueType;
 	var pointValueLabel = feature.properties.reportValueIcon;
 
-	//point value label
-	if(pointValueLabel){
-			pointValueLabel = new L.Icon.Label.Default({					
+	// if rawValue != null, create a circle marker, else create an 'na' marker
+	if(rawValue != null){
+		var quartile = rawValue < 0.26 ? 0 : (rawValue < 0.51 ? 1 : (rawValue < 0.76 ? 2 : (rawValue < 1.01 ? 3 : 4)));
+		quartile = 'indicator-quartile-'+quartile
+		polygonFillColor = mapPolygonColors[quartile]
+		polygonColor = mapPolygonColorsDark[quartile]
+
+		var geojsonMarkerOptions = {
+		    radius: 10,
+		    fillColor: polygonFillColor,
+		    color: polygonFillColor,
+		    weight: 1,
+		    opacity: 1,
+		    fillOpacity: 0.75
+		};
+		var geojsonMarker = L.circleMarker(latlng, geojsonMarkerOptions);
+	   	return geojsonMarker;	
+	}
+	else{
+		var pointValue = new L.Icon.Label.Default({					
 			iconUrl: pointValueLabel,
 			iconSize: new L.Point(20, 20),
 			hideIcon: true,
-			labelText: locationName+'',
+			labelText: reportValue+'',
 			labelAnchor: new L.Point(0, 0),
-			wrapperAnchor: new L.Point(13, 15),
-			labelClassName: 'report-value-marker-point-label',
+			wrapperAnchor: new L.Point(13, 5),
+			labelClassName: 'report-value-marker-na',
 			shadowUrl: null
 		});
+		var geojsonMarkerOptions = {icon: pointValue};
+		var geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
+	   	return geojsonMarker;
 	}
-	// point value
-	else{
-		if(rawValue != null){
-			pointValueLabel = new L.Icon.Label.Default({					
-					iconUrl: reportValueLabelIcon,
-					iconSize: new L.Point(20, 20),
-					hideIcon: true,
-					labelText: reportValue+'',
-					labelAnchor: new L.Point(0, 0),
-					wrapperAnchor: new L.Point(13, 5),
-					// labelClassName: '',
-					shadowUrl: null
-			});
-			
-			var reportValueSize = feature.properties.reportValueSize;
-			pointValueLabel.options.labelFontSize = reportValueSize + 'px'
-			pointValueLabel.options.labelClassName += 'report-value-marker-number'
-		}
-		else{
-			pointValueLabel = new L.Icon.Label.Default({					
-				iconUrl: reportValueLabelIcon,
-				iconSize: new L.Point(20, 20),
-				hideIcon: true,
-				labelText: reportValue+'',
-				labelAnchor: new L.Point(0, 0),
-				wrapperAnchor: new L.Point(13, 5),
-				labelClassName: rawValue == null ? 'report-value-marker-na' : 'report-value-marker-label',
-				shadowUrl: null
-			});
-		}
-	}
+}
 
-	var geojsonMarkerOptions = {icon: pointValueLabel};
+function pointLabelFeatureToLayer(feature, latlng) {
+
+	var locationName = feature.properties.locationName;
+	var rawValue = feature.properties.rawValue;
+	var pointValueLabel = feature.properties.reportValueIcon;
+
+	var pointValue = new L.Icon.Label.Default({					
+		iconUrl: pointValueLabel,
+		iconSize: new L.Point(20, 20),
+		hideIcon: true,
+		labelText: locationName+'',
+		labelAnchor: new L.Point(0, 0),
+		// if rawValue != null, position the label to the right of value, else position the label above the value
+		wrapperAnchor: rawValue != null ? new L.Point(-12, 7) : new L.Point(13, 15),
+		labelClassName: 'report-value-marker-point-label',
+		shadowUrl: null
+	});
+	var geojsonMarkerOptions = {icon: pointValue};
 	var geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
    	return geojsonMarker;
 }

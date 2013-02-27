@@ -1,6 +1,7 @@
 package org.chai.kevin.dashboard
 
 import org.chai.location.DataLocationType;
+import org.chai.location.CalculationLocation;
 import org.chai.location.Location;
 import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportProgram;
@@ -38,6 +39,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		dashboardController.params.period = period.id
 		dashboardController.params.location = Location.findByCode(RWANDA).id
 		dashboardController.params.program = ReportProgram.findByCode(ROOT).id
+		dashboardController.params.dashboardEntity = DashboardProgram.findByCode(DASHBOARD_ROOT).id
 		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
 		
@@ -69,7 +71,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		then:
 		model == null
 		dashboardController.response.redirectedUrl.contains("/dashboard/view/")
-		dashboardController.response.redirectedUrl.contains(period.id+"/"+ReportProgram.findByCode(ROOT).id+"/"+Location.findByCode(RWANDA).id+"?")
+		dashboardController.response.redirectedUrl.contains(period.id+"/"+ReportProgram.findByCode(ROOT).id+"/"+Location.findByCode(RWANDA).id)
 	}
 	
 	def "get dashboard with no location type and no default"() {
@@ -91,6 +93,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		dashboardController.params.period = period.id
 		dashboardController.params.location = Location.findByCode(RWANDA).id
 		dashboardController.params.program = ReportProgram.findByCode(ROOT).id
+		dashboardController.params.dashboardEntity = DashboardProgram.findByCode(DASHBOARD_ROOT).id
 		def model = dashboardController.view()
 		
 		then:
@@ -117,7 +120,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		
 		then:
 		dashboardController.response.redirectedUrl.contains("/dashboard/view/")
-		dashboardController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"?")
+		dashboardController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
@@ -143,7 +146,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		
 		then:
 		dashboardController.response.redirectedUrl.contains("/dashboard/view/")
-		dashboardController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id+"?")
+		dashboardController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(RWANDA).id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
@@ -169,7 +172,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		
 		then:
 		dashboardController.response.redirectedUrl.contains("/dashboard/view/")
-		dashboardController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(BURERA).id+"?")
+		dashboardController.response.redirectedUrl.contains(period.id+"/"+program.id+"/"+Location.findByCode(BURERA).id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(HEALTH_CENTER_GROUP).id)
 		dashboardController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
@@ -210,7 +213,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		dashboardController.params.location = Location.findByCode(RWANDA).id
+		dashboardController.params.location = CalculationLocation.findByCode(RWANDA).id
 		dashboardController.params.program = ReportProgram.findByCode(ROOT).id
 		dashboardController.params.dashboardEntity = DashboardProgram.findByCode(DASHBOARD_ROOT).id
 		dashboardController.params.period = period.id
@@ -240,7 +243,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		dashboardController.params.location = Location.findByCode(RWANDA).id
+		dashboardController.params.location = CalculationLocation.findByCode(RWANDA).id
 		dashboardController.params.program = ReportProgram.findByCode(ROOT).id
 		dashboardController.params.dashboardEntity = DashboardProgram.findByCode(DASHBOARD_ROOT).id
 		dashboardController.params.period = period.id

@@ -1,10 +1,11 @@
 package org.chai.kevin.fct
 
-import org.chai.location.LocationService
+import org.chai.kevin.data.Summ
 import org.chai.kevin.IntegrationTests
 import org.chai.location.DataLocationType;
 import org.chai.location.Location;
 import org.chai.location.LocationLevel;
+import org.chai.location.LocationService
 import org.chai.kevin.util.Utils
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.dashboard.DashboardIntegrationTests
@@ -31,7 +32,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def program = newReportProgram(CODE(2))
+		def program = newReportProgram(CODE(1))
 		def target = newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
@@ -62,7 +63,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def program = newReportProgram(CODE(2))
+		def program = newReportProgram(CODE(1))
 		def target = newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
@@ -82,9 +83,10 @@ class FctControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def program = newReportProgram(CODE(2))
+		def program = newReportProgram(CODE(1))
 		def target = newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
+		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
 		
 		when: "no parameters"
 		fctController = new FctController()
@@ -102,7 +104,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def program = newReportProgram(CODE(2))
+		def program = newReportProgram(CODE(1))
 		def target = newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
@@ -127,7 +129,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def program = newReportProgram(CODE(2))
+		def program = newReportProgram(CODE(1))
 		def target = newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
@@ -148,13 +150,15 @@ class FctControllerSpec extends FctIntegrationTests {
 		fctController.response.redirectedUrl.contains("dataLocationTypes="+DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id)
 	}
 	
-	def "get dsr with invalid parameters corresponding to dashboard, redirect with correct parameter"() {
+	def "get fct with invalid parameters corresponding to dashboard, redirect with correct parameter"() {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
 		setupProgramTree()
 		DashboardIntegrationTests.setupDashboardTree()
 		def target = newFctTarget(CODE(3), 1, ReportProgram.findByCode(ROOT))
+		def sum = Summ.findByCode('CODE2')
+		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
 		
 		when:
 		fctController = new FctController()
@@ -176,7 +180,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def program = newReportProgram(CODE(2))
+		def program = newReportProgram(CODE(1))
 		def target = newFctTarget(CODE(3), 1, program)
 		def sum = newSum("1", CODE(2))
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
@@ -201,7 +205,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def program = newReportProgram(CODE(2))
+		def program = newReportProgram(CODE(1))
 		def sum = newSum("1", CODE(2))
 		def target = newFctTarget(CODE(3), 1, program)
 		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
@@ -245,7 +249,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def program = newReportProgram(CODE(2))
+		def program = newReportProgram(CODE(1))
 		def sum = newSum("1", CODE(2))
 		def target = newFctTarget(CODE(3), 1, program)
 		def reportType = ReportType.TABLE

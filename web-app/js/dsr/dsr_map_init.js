@@ -6,22 +6,33 @@ var basePolygonLayer = L.geoJson(null, {
 	onEachFeature: onEachPolygonFeature
 });
 
-var locationValueLayer = null;
-var locationValueLayers = []
+var locationNameLayer = null
+var locationValueNaLayer = null
+var locationValueLayer = null
+var locationLayers = []
+var overlays = []
 
 function dsrMap(childrenCollectData, currentIndicatorIsCalculation, currentLocationCode, reportLocationCodes){
 	
 	if(childrenCollectData || currentIndicatorIsCalculation){
-		var geoJsonLayerOptions = null;
+		var geoJsonValueLayerOptions = null;
 
 		if(childrenCollectData){
-			geoJsonLayerOptions = {
+			geoJsonValueLayerOptions = {
 				pointToLayer: pointValueFeatureToLayer,
 				onEachFeature: onEachPointValueFeature
 			};
+
+			var geoJsonLabelLayerOptions = {
+				pointToLayer: pointLabelFeatureToLayer,
+				onEachFeature: onEachPointValueFeature
+			};
+			locationNameLayer = L.geoJson(null, geoJsonLabelLayerOptions);
+			locationLayers.push(locationNameLayer)
+			overlays["Facilities"] = locationNameLayer;
 		}
 		else{
-			geoJsonLayerOptions = {
+			geoJsonValueLayerOptions = {
 				pointToLayer: polygonValueFeatureToLayer,
 				onEachFeature: onEachPolygonValueFeature
 			};
@@ -29,14 +40,18 @@ function dsrMap(childrenCollectData, currentIndicatorIsCalculation, currentLocat
 
 		var mapTableIndicator = $('.js-map-table-indicator.js-selected-indicator');
 		var indicatorName = $(mapTableIndicator).data('indicator-names');
-		locationValueLayer = L.geoJson(null, geoJsonLayerOptions);
-		locationValueLayers.push(locationValueLayer);
+		locationValueLayer = L.geoJson(null, geoJsonValueLayerOptions);
+		locationLayers.push(locationValueLayer);
 		
+		locationValueNaLayer = L.geoJson(null, geoJsonValueLayerOptions);
+		overlays["N/A"] = locationValueNaLayer;
+		locationLayers.push(locationValueNaLayer);
+
 		mapPolygons(childrenCollectData, currentLocationCode, reportLocationCodes);
 	}
 
-    mapLayers = locationValueLayers;
-    createTheMap();
+    mapLayers = locationLayers;
+    createTheMap(childrenCollectData);
 
 	// alert("after everything ");
 }
@@ -49,7 +64,7 @@ function mapPolygonValues(data){
 		
 		var fosaid = dataFeature.properties.code;
 
-		// map 1 point label per location with report value, na value
+		// map 1 value for the indicator for the polygon
 		var mapTableValue = $('.js-map-table-value.js-selected-value[data-location-code="'+fosaid+'"]');
 
 		if(mapTableValue.size() == 1){
@@ -89,15 +104,8 @@ function mapPolygonValues(data){
 				}
 			};
 
-			// add point label
-			if(reportValueType == 'NUMBER'){
-				rawValue = parseFloat(rawValue);				
-				var maxRawValue = getMaxRawValue();
-				var percentageMaxRawValue = parseFloat(rawValue/maxRawValue);
-				var reportValueSize = parseInt(percentageMaxRawValue*20)+10; //min: 10px max: 30px
-				reportValueSize = reportValueSize > 30 ? 30 : (reportValueSize < 10 ? 10 : reportValueSize);
-			}
-			feature.properties.reportValueSize = reportValueSize;
+			// add value
+			feature.properties.reportValueSize = getReportValueSize(reportValueType, rawValue);
 			var geojsonPointFeature = createGeoJsonPointFeature(feature);
 			locationValueLayer.addData(geojsonPointFeature);
 		}
@@ -236,6 +244,7 @@ function mapPointValues(reportLocationCodes){
 		jQuery.each(data.features, function(i,f){
 
 			var fosaid = f.properties.fosaid;
+			fosaLocations.push(fosaid+"");
 
 			// map 1 point & point label per location
 			var mapTableValues = $('.js-map-table-value.js-selected-value[data-location-code="'+fosaid+'"]');
@@ -243,7 +252,9 @@ function mapPointValues(reportLocationCodes){
 			$(mapTableValues).each(function(index, mapTableValue){
 
 				var mapValue = $(mapTableValue).children('div.report-value');
-				fosaLocations.push(fosaid+"");
+				var rawValue = $(mapValue).data('report-value-raw');
+				var reportValue = $(mapValue).data('report-value')
+				var reportValueType = $(mapValue).data('report-value-type');
 
 				if(!f.geometry){
 					// fosa coordinates missing
@@ -261,29 +272,21 @@ function mapPointValues(reportLocationCodes){
 							"indicatorClass": $(mapTableValue).data('indicator-class'),
 							"indicatorCode": $(mapTableValue).data('indicator-code'),
 							"indicatorName": $(mapTableValue).data('indicator-names'),
-							"rawValue": $(mapValue).data('report-value-raw'),
-							"reportValue": $(mapValue).data('report-value'),
+							"rawValue": rawValue,
+							"reportValue": reportValue,
+							"reportValueType": reportValueType,
 							"reportValueIcon": reportValueLabelIcon
 						}
 					};
 
-					// add point label
+					// add value
+					feature.properties.reportValueSize = getReportValueSize(reportValueType, rawValue);
 					var geojsonPointFeature = createGeoJsonPointFeature(feature);
-					locationValueLayer.addData(geojsonPointFeature);
+					if(rawValue != null) locationValueLayer.addData(geojsonPointFeature);
+					else locationValueNaLayer.addData(geojsonPointFeature);
 
-					// add point
-					var rawValue = $(mapValue).data('report-value-raw');
-					var reportValueType = $(mapValue).data('report-value-type');
-					feature.properties.reportValueType = $(mapValue).data('report-value-type');					
-					if(reportValueType == 'NUMBER'){
-						rawValue = parseFloat(rawValue);				
-						var maxRawValue = getMaxRawValue();
-						var percentageMaxRawValue = parseFloat(rawValue/maxRawValue);
-						var reportValueSize = parseInt(percentageMaxRawValue*20)+10; //min: 10px max: 30px
-					}
-					feature.properties.reportValueSize = reportValueSize;
-					var geojsonPointFeature = createGeoJsonPointFeature(feature);
-					locationValueLayer.addData(geojsonPointFeature);
+					// add value label
+					locationNameLayer.addData(geojsonPointFeature);
 				}
 			});								
 		});						
@@ -305,84 +308,72 @@ function pointValueFeatureToLayer(feature, latlng) {
 	var reportValueType = feature.properties.reportValueType;
 	var pointValueLabel = feature.properties.reportValueIcon;
 
-	// point value
-	if(reportValueType){
-		if(rawValue != null){
-			var labelClassName = null;
-			
-			var pointValue = new L.Icon.Label.Default({					
-					iconUrl: pointValueLabel,
-					iconSize: new L.Point(20, 20),
-					hideIcon: true,
-					labelText: reportValue+'',
-					labelAnchor: new L.Point(0, 0),
-					wrapperAnchor: new L.Point(13, 5),
-					// labelClassName: '',
-					shadowUrl: null
-			});
-			
-			switch(reportValueType){			
-				case 'BOOL':
-					if(rawValue)
-						pointValue.options.labelClassName += 'report-value-marker-true'
-					else
-						pointValue.options.labelClassName += 'report-value-marker-false'
-					break;
-				case 'ENUM':
-					pointValue.options.labelClassName += 'report-value-marker-enum'
-					break;				
-				case 'STRING':
-					pointValue.options.labelClassName += 'report-value-marker-string'
-					break;				
-				case 'TEXT':
-					pointValue.options.labelClassName += 'report-value-marker-text'
-					break;			
-				case 'NUMBER':
-					var reportValueSize = feature.properties.reportValueSize;
-					pointValue.options.labelFontSize = reportValueSize + 'px'
-					pointValue.options.labelClassName += 'report-value-marker-number'
-					break;
-				default:
-					pointValue.options.labelClassName += 'report-value-marker-na'
-					break;
-			}
-			
-			var geojsonMarkerOptions = {icon: pointValue};
-			var geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
-		   	return geojsonMarker;	
-		}
-		else{
-			pointValue = new L.Icon.Label.Default({					
-				iconUrl: pointValueLabel,
-				iconSize: new L.Point(20, 20),
-				hideIcon: true,
-				labelText: reportValue+'',
-				labelAnchor: new L.Point(0, 0),
-				wrapperAnchor: new L.Point(13, 5),
-				labelClassName: rawValue == null ? 'report-value-marker-na' : 'report-value-marker-label',
-				shadowUrl: null
-			});
-			var geojsonMarkerOptions = {icon: pointValue};
-			var geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
-		   	return geojsonMarker;
-		}
+	var pointValue = new L.Icon.Label.Default({					
+		iconUrl: pointValueLabel,
+		iconSize: new L.Point(20, 20),
+		hideIcon: true,
+		labelText: reportValue+'',
+		labelAnchor: new L.Point(0, 0),
+		wrapperAnchor: new L.Point(13, 5),
+		shadowUrl: null
+	});
+
+	// if rawValue != null, create a value marker, else create an 'na' marker
+	if(rawValue != null){
+		switch(reportValueType){			
+			case 'BOOL':
+				if(rawValue)
+					pointValue.options.labelClassName += 'report-value-marker-true'
+				else
+					pointValue.options.labelClassName += 'report-value-marker-false'
+				break;
+			case 'ENUM':
+				pointValue.options.labelClassName += 'report-value-marker-enum'
+				break;				
+			case 'STRING':
+				pointValue.options.labelClassName += 'report-value-marker-string'
+				break;				
+			case 'TEXT':
+				pointValue.options.labelClassName += 'report-value-marker-text'
+				break;			
+			case 'NUMBER':
+				var reportValueSize = feature.properties.reportValueSize;
+				pointValue.options.labelFontSize = reportValueSize + 'px'
+				pointValue.options.labelClassName += 'report-value-marker-number'
+				break;
+			default:
+				pointValue.options.labelClassName += 'report-value-marker-na'
+				break;
+		}	
 	}
-	//point value label
-	else{
-			pointValueLabel = new L.Icon.Label.Default({					
-			iconUrl: pointValueLabel,
-			iconSize: new L.Point(20, 20),
-			hideIcon: true,
-			labelText: locationName+'',
-			labelAnchor: new L.Point(0, 0),
-			wrapperAnchor: new L.Point(13, 15),
-			labelClassName: 'report-value-marker-point-label',
-			shadowUrl: null
-		});
-		var geojsonMarkerOptions = {icon: pointValueLabel};
-		var geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
-	   	return geojsonMarker;
-	}
+	else pointValue.options.labelClassName += 'report-value-marker-na'
+
+	var geojsonMarkerOptions = {icon: pointValue};
+	var geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
+   	return geojsonMarker;
+}
+
+function pointLabelFeatureToLayer(feature, latlng) {
+	
+	var locationName = feature.properties.locationName;
+	var rawValue = feature.properties.rawValue;
+	var reportValue = feature.properties.reportValue;
+	var pointValueLabel = feature.properties.reportValueIcon;
+
+	var pointValueLabel = new L.Icon.Label.Default({					
+		iconUrl: pointValueLabel,
+		iconSize: new L.Point(20, 20),
+		hideIcon: true,
+		labelText: locationName+'',
+		labelAnchor: new L.Point(0, 0),
+		// always position the label above the value
+		wrapperAnchor: new L.Point(13, 15),
+		labelClassName: 'report-value-marker-point-label',
+		shadowUrl: null
+	});
+	var geojsonMarkerOptions = {icon: pointValueLabel};
+	var geojsonMarker = L.marker(latlng, geojsonMarkerOptions);
+   	return geojsonMarker;
 }
 
 // dsr point value layer interactions

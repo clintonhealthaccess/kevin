@@ -83,6 +83,11 @@ class DsrController extends AbstractController {
 				categories.sort({it.order})
 				dsrTargetCategory = categories.first()
 			}
+			else{
+				if (log.isDebugEnabled()) {
+					log.debug("dsr.view, program:"+program+", dsrTargetCategory:"+dsrTargetCategory+" must have at least 1 dsrTarget")
+				}
+			}
 		}
 		
 		if (log.isDebugEnabled()) log.debug("dsr.view, program:"+program+", getDsrTargetCategory:"+dsrTargetCategory)	
@@ -175,6 +180,7 @@ class DsrController extends AbstractController {
 			
 			if(newParams != null && !newParams.empty) {
 				redirected = true
+				if (log.isDebugEnabled()) log.debug('dsr.view, redirecting, params: '+newParams);
 				redirect(action: 'view', params: newParams)
 			}
 		}
