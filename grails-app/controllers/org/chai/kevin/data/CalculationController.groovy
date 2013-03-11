@@ -64,7 +64,8 @@ class CalculationController extends AbstractController {
 			entityClass: getEntityClass(),
 			template: "data/calculationList",
 			code: getLabel(),
-			search: true
+			search: true,
+			addTemplate: '/entity/data/addCalculation'
 		])
 	}
 	
