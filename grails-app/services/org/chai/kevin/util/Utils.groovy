@@ -167,16 +167,24 @@ public class Utils {
 				break;
 			case (ValueType.ENUM):
 				def enume = null
-				 
-				if (enums == null) enume = Enum.findByCode(type.enumCode, [cache: true])
+				
+				if (log.isDebugEnabled()) log.debug("utils.getStringValue(), value:"+value+", type:"+type+", enums:"+enums+", enume:"+enume)
+
+				if (enums == null) 
+					enume = Enum.findByCode(type.enumCode, [cache: true])
 				else enume = enums?.get(type.enumCode)
 				
+				if (log.isDebugEnabled()) log.debug("utils.getStringValue(), value:"+value+", type:"+type+", enums:"+enums+", enume:"+enume)
+
 				if (enume == null) result = value.enumValue
 				else {
 					def option = enume?.getOptionForValue(value.enumValue)
 					if (option == null) result = value.enumValue
 					else result = DataUtils.noNull(option.names)
 				}
+
+				if (log.isDebugEnabled()) log.debug("utils.getStringValue(), value:"+value+", type:"+type+", enums:"+enums+", enume:"+enume)
+				
 				break;
 			case (ValueType.NUMBER):
 				if (zero != null && value.numberValue == 0){

@@ -12,7 +12,7 @@
 				<!-- legend -->
 				<g:render template="/dashboard/legend" />
 		</div>
-		<g:render template="/dashboard/reportCompareFilter" model="[table:'program', locationPath: dashboardTable.locationPath - currentLocation]"/>
+		%{-- <g:render template="/dashboard/reportCompareFilter" model="[table:'program', locationPath: dashboardTable.locationPath - currentLocation]"/> --}%
 		<!-- program table -->
 		<div class="horizontal-graph-wrap">
 			<g:render template="/dashboard/reportProgramTable" model="[linkParams:params, reportTable: dashboardTable, reportLocations: dashboardTable.getLocations(currentLocation, locationSkipLevels, currentLocationTypes), reportIndicator: dashboardEntity]"/>
@@ -21,7 +21,7 @@
 	<li class="push-10">
 		<g:render template="/templates/reportTitle" model="[title: i18n(field: currentLocation.names), file: 'marker_small.png']"/>
 		<g:reportLocationParent linkParams="${params}" />				
-		<g:render template="/dashboard/reportCompareFilter" model="[table:'location', locationPath: dashboardTable.locationPath]"/>
+		%{-- <g:render template="/dashboard/reportCompareFilter" model="[table:'location', locationPath: dashboardTable.locationPath]"/> --}%
 		<!-- location table -->
 		<div class="horizontal-graph-wrap">
 			<g:render template="/dashboard/reportLocationTable" model="[linkParams:params, reportTable: dashboardTable, reportLocations: dashboardTable.getLocations(currentLocation, locationSkipLevels, currentLocationTypes), reportIndicator: dashboardEntity]"/>

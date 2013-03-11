@@ -67,10 +67,12 @@ public class ReportExportService {
 	private final static String CSV_FILE_EXTENSION = ".csv";
 
 	private final static String LOCATION_HEADER = "Location";
+	private final static String LOCATIONS_HEADER = "Locations";
 	
 	private String[] getExportDataHeaders(List<AbstractReportTarget> indicators) {
 		List<String> headers = new ArrayList<String>();		
 		headers.add(LOCATION_HEADER);
+		headers.add(LOCATIONS_HEADER);
 		for (AbstractReportTarget indicator : indicators) {
 			headers.add(DataUtils.noNull(indicator.getNames()));
 		}
@@ -118,6 +120,9 @@ public class ReportExportService {
 		
 		ArrayList<String> reportExportRow = new ArrayList<String>();
 		
+		//Location
+		reportExportRow.add(DataUtils.noNull(location.getNames()));
+
 		//Locations
 		List<String> rowLocations = new ArrayList<String>();
 		for (LocationLevel level : getLevels()){			
@@ -126,7 +131,6 @@ public class ReportExportService {
 				rowLocations.add(DataUtils.noNull(parent.getNames()));
 			}
 		}
-		rowLocations.add(DataUtils.noNull(location.getNames()));
 		String locationNames = StringUtils.join(rowLocations, "-");
 		reportExportRow.add(locationNames);
 		

@@ -1,3 +1,6 @@
+<g:periodFilter 
+	linkParams="${params}" 
+	selected="${currentPeriod}"/>
 <g:programFilter 
 	linkParams="${params}" 
 	selected="${currentProgram}"
@@ -9,9 +12,6 @@
 	selected="${currentLocation}"
 	selectedTypes="${currentLocationTypes}"
 	skipLevels="${locationSkipLevels}"/>
-<g:periodFilter 
-	linkParams="${params}" 
-	selected="${currentPeriod}"/>
 <g:dataLocationTypeFilter 
 	linkParams="${params}" 
 	selected="${currentLocationTypes}" />

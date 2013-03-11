@@ -15,11 +15,11 @@
 		<div class="hidden">
 			<g:each in="${targetCategories}" var="category">
 				<%
-					newLinkParams = [:]
-					newLinkParams.putAll linkParams
-					newLinkParams['dsrCategory'] = category.id
+					reportCategoryLinkParams = [:]
+					reportCategoryLinkParams.putAll linkParams
+					reportCategoryLinkParams['dsrCategory'] = category.id
 				%>
-				<a id="js_dsr-category-${category.id}" href="${createLink(controller:controllerName, action:actionName, params:newLinkParams)}"></a>
+				<a id="js_dsr-category-${category.id}" href="${createLink(controller:controllerName, action:actionName, params:reportCategoryLinkParams)}"></a>
 			</g:each>
 		</div>
 	</g:if>
