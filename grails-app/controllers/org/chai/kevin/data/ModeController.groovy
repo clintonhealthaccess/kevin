@@ -33,6 +33,7 @@ class ModeController extends AbstractCalculationController {
 			// we get here if params['typeBuilderString'] is garbage (syntax error)
 			params['typeBuilderError'] = e.getMessage()
 		}
+		if (log.isDebugEnabled()) log.debug('bound params, entity: '+entity+', type:'+entity.type)
 	}
 
 	def validateEntity(def entity) {

@@ -141,11 +141,10 @@ class ModeControllerSpec extends IntegrationTests {
 		when:
 		modeController.params.id = mode.id
 		modeController.params.code = mode.code
-		modeController.params['typeBuilderString'] = 'type {bool}'
+		modeController.params['typeBuilderString'] = 'type { bool }'
 		modeController.saveWithoutTokenCheck()
 
 		then:
-		modeController.response.redirectedUrl.equals(modeController.getTargetURI())
 		mode.type.equals(Type.TYPE_NUMBER())
 	}
 	
