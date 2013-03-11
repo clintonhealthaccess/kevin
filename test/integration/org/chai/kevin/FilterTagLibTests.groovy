@@ -19,6 +19,28 @@ import org.hibernate.validator.cfg.defs.AssertTrueDef;
 class FilterTagLibTests extends GroovyPagesTestCase {
 
 	
+	def testPeriodFilter() {
+		def period = IntegrationTests.newPeriod()
+		
+		def html = applyTemplate(
+			'<g:periodFilter selected="${period}"/>',
+			[
+				'period': period
+			]
+		)
+		
+		assertTrue html.contains("href=\"/test?period="+period.id+"\"")
+		assertTrue html.contains("2005")
+	}
+	
+	def testPeriodFilterWhenNoPeriod() {
+		def html = applyTemplate(
+			'<g:periodFilter/>'
+		)
+		
+		assertTrue html.contains('No periods in system, please add some targets using the admin menu, or ask an administrator.')
+	}
+	
 	def testProgramFilter() {
 		def period = IntegrationTests.newPeriod()
 		IntegrationTests.setupProgramTree()
@@ -94,6 +116,19 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		assertTrue html.indexOf(IntegrationTests.PROGRAM2) < html.indexOf(IntegrationTests.PROGRAM1)
 	}
 	
+	def testProgramFilterDisplaysNothingWhenNothingSelected() {
+		def period = IntegrationTests.newPeriod()
+		IntegrationTests.setupProgramTree()
+		DashboardIntegrationTests.setupDashboardTree()
+		
+		def html = applyTemplate('<g:programFilter selectedTargetClass="${target}"/>',
+			[
+				'target': DashboardTarget.class	
+			]	
+		)
+		assertTrue html.contains('select ')
+	}
+
 	def testLocationFilter() {
 		def hc = IntegrationTests.newDataLocationType(["en":IntegrationTests.HEALTH_CENTER_GROUP], IntegrationTests.HEALTH_CENTER_GROUP);
 		def country = IntegrationTests.newLocationLevel(IntegrationTests.NATIONAL, 1)
@@ -131,8 +166,7 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		
 		assertTrue html.contains("href=\"/test?location="+rwanda.id+"\"")
 		assertTrue html.contains("href=\"/test?location="+burera.id+"\"")
-		assertFalse html.contains("href=\"/test?location="+north.id+"\"")
-		
+		assertFalse html.contains("href=\"/test?location="+north.id+"\"")	
 	}
 	
 	def testLocationFilterWithNoSelectedLocationTypes() {
@@ -171,32 +205,21 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		assertTrue html.contains('No data locations in system, please add some locations using the admin menu, or ask an administrator.')
 	}
 	
-	def testPeriodFilter() {
-		def period = IntegrationTests.newPeriod()
+	def testLocationFilterDisplaysNothingWhenNothingSelected() {
+		def hc = IntegrationTests.newDataLocationType(["en":IntegrationTests.HEALTH_CENTER_GROUP], IntegrationTests.HEALTH_CENTER_GROUP);
+		def country = IntegrationTests.newLocationLevel(IntegrationTests.NATIONAL, 1)
+		def rwanda = IntegrationTests.newLocation(["en":IntegrationTests.RWANDA], IntegrationTests.RWANDA, country)
+		def butaro = IntegrationTests.newDataLocation(["en":IntegrationTests.BUTARO], IntegrationTests.BUTARO, rwanda, hc)
 		
-		def html = applyTemplate(
-			'<g:periodFilter selected="${period}"/>',
-			[
-				'period': period
-			]
-		)
-		
-		assertTrue html.contains("href=\"/test?period="+period.id+"\"")
-		assertTrue html.contains("2005")
-	}
-	
-	def testPeriodFilterWhenNoPeriod() {
-		def html = applyTemplate(
-			'<g:periodFilter/>'
-		)
-		
-		assertTrue html.contains('No periods in system, please add some targets using the admin menu, or ask an administrator.')
+		def html = applyTemplate('<g:locationFilter />')
+		assertTrue html.contains('Please select a location')
 	}
 	
 	def testLocationTypeFilter() {
 		def hc = IntegrationTests.newDataLocationType(["en":IntegrationTests.HEALTH_CENTER_GROUP], IntegrationTests.HEALTH_CENTER_GROUP, 2);
 		def dh = IntegrationTests.newDataLocationType(["en":IntegrationTests.DISTRICT_HOSPITAL_GROUP], IntegrationTests.DISTRICT_HOSPITAL_GROUP, 1);
 		
+		// default to selected stuff
 		def html = applyTemplate(
 			'<g:dataLocationTypeFilter selected="${dataLocationTypes}"/>',
 			[
@@ -244,29 +267,6 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		)
 		
 		assertTrue html.contains('No location types in system, please add some location types using the admin menu, or ask an administrator.')
-	}
-	
-	def testLocationFilterDisplaysNothingWhenNothingSelected() {
-		def hc = IntegrationTests.newDataLocationType(["en":IntegrationTests.HEALTH_CENTER_GROUP], IntegrationTests.HEALTH_CENTER_GROUP);
-		def country = IntegrationTests.newLocationLevel(IntegrationTests.NATIONAL, 1)
-		def rwanda = IntegrationTests.newLocation(["en":IntegrationTests.RWANDA], IntegrationTests.RWANDA, country)
-		def butaro = IntegrationTests.newDataLocation(["en":IntegrationTests.BUTARO], IntegrationTests.BUTARO, rwanda, hc)
-		
-		def html = applyTemplate('<g:locationFilter />')
-		assertTrue html.contains('Please select a location')
-	}
-	
-	def testProgramFilterDisplaysNothingWhenNothingSelected() {
-		def period = IntegrationTests.newPeriod()
-		IntegrationTests.setupProgramTree()
-		DashboardIntegrationTests.setupDashboardTree()
-		
-		def html = applyTemplate('<g:programFilter selectedTargetClass="${target}"/>',
-			[
-				'target': DashboardTarget.class	
-			]	
-		)
-		assertTrue html.contains('select ')
 	}
 	
 	def testTopLevelReportTabsFilter() {

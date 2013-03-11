@@ -109,12 +109,14 @@ public abstract class AbstractController {
 		if (params.list('dataLocationTypes') != null && !params.list('dataLocationTypes').empty) {
 			def types = params.list('dataLocationTypes')
 			dataLocationTypes.addAll(types.collect{ NumberUtils.isNumber(it as String) ? DataLocationType.get(it) : null } - null)
-		}		
+			if (log.isDebugEnabled()) log.debug('abstract.view, params, dataLocationTypes: ' + dataLocationTypes);
+		}
 		
 		if(dataLocationTypes.empty){
 			dataLocationTypes.addAll(DataLocationType.findAllByDefaultSelected(true))
+			if (log.isDebugEnabled()) log.debug('abstract.view, empty, dataLocationTypes: ' + dataLocationTypes);
 		}
-		
+
 		return dataLocationTypes
 	}
 	

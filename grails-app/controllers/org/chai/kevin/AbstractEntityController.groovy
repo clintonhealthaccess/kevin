@@ -79,7 +79,8 @@ abstract class AbstractEntityController extends AbstractExportController {
 	def create = {
 		def entity = createEntity()
 		bindParams(entity);
-		
+		if (log.isInfoEnabled()) log.info("creating entity: "+entity);
+
 		def model = getModel(entity)
 		model << [template: getTemplate()]
 		model << [targetURI: getTargetURI()]
@@ -104,7 +105,7 @@ abstract class AbstractEntityController extends AbstractExportController {
 		}
 		
 		bindParams(entity)
-		if (log.isDebugEnabled()) log.debug('bound params, entity: '+entity)
+		if (log.isDebugEnabled()) log.debug('bound params, entity: '+entity+', type:'+entity.type)
 					
 		if (!validateEntity(entity)) {
 			if (log.isInfoEnabled()) log.info ("validation error in ${entity}: ${entity.errors}}")

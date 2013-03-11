@@ -1,8 +1,8 @@
 <div class="left">
 	<%
-		newLinkParams = [:]
-		newLinkParams.putAll linkParams
-		newLinkParams.remove 'location'
+		locationLinkParams = [:]
+		locationLinkParams.putAll linkParams
+		locationLinkParams.remove 'location'
 	%>
 	<span class="js_dropdown dropdown">
 		<a class="location js_dropdown-link nice-button with-highlight" href="#" data-type="location">
@@ -23,7 +23,7 @@
 							current: currentLocation,
 							location: locationFilterRoot,
 							locationFilterTree: locationFilterTree,				
-							linkParams: newLinkParams
+							linkParams: locationLinkParams
 						]" />
 				</ul>
 			</g:if>

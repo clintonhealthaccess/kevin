@@ -62,10 +62,10 @@ class ReportExportServiceSpec extends ReportIntegrationTests {
 		def lines = IntegrationTests.readLines(csvFile)
 		  
 		then:
-		lines[0] == "Location,Target"
-		lines[1] == "Rwanda-North-Burera,N/A"
-		lines[2] == "Rwanda-North-Burera-Butaro DH,50"
-		lines[3] == "Rwanda-North-Burera-Kivuye HC,30"
+		lines[0] == "Location,Locations,Target"
+		lines[1] == "Burera,Rwanda-North,N/A"
+		lines[2] == "Butaro DH,Rwanda-North-Burera,50"
+		lines[3] == "Kivuye HC,Rwanda-North-Burera,30"
 	}
 	
 	def "test for get fct zip file"(){
@@ -103,11 +103,11 @@ class ReportExportServiceSpec extends ReportIntegrationTests {
 		def lines = IntegrationTests.readLines(csvFile)
 		  
 		then:
-		lines[0] == "Location,Option"
-		lines[1] == "Rwanda-North,2"
-		lines[2] == "Rwanda-North-Burera,2"
-		lines[3] == "Rwanda-North-Burera-Butaro DH,1"
-		lines[4] == "Rwanda-North-Burera-Kivuye HC,1"
+		lines[0] == "Location,Locations,Option"
+		lines[1] == "North,Rwanda,2"
+		lines[2] == "Burera,Rwanda-North,2"
+		lines[3] == "Butaro DH,Rwanda-North-Burera,1"
+		lines[4] == "Kivuye HC,Rwanda-North-Burera,1"
 		
 	}
 	

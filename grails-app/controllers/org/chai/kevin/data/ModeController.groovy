@@ -19,39 +19,57 @@ class ModeController extends AbstractCalculationController {
 		return mode
 	}
 	
+	def bindParams(def entity) {
+		params['oldType'] = entity.type
+		bindData(entity, params, [exclude:'typeBuilderString'])
+		try {
+			// returns null if params['typeBuilderString'] is null
+			def newType  = Utils.buildType(params['typeBuilderString'])
+			// we assign the newType to pass to the custom validation Type.isValid()
+			if(entity.id == null){
+				entity.type = newType
+			}
+		} catch (Exception e) {
+			// we get here if params['typeBuilderString'] is garbage (syntax error)
+			params['typeBuilderError'] = e.getMessage()
+		}
+	}
+
 	def validateEntity(def entity) {
 		boolean valid = entity.validate()
-		//invalid if entity exists, and old type != new type, and # of values > 0
-		if (entity.id != null && !params['oldType'].equals(entity.type) && valueService.getNumberOfValues(entity)) {
-			// error if types are different
-			entity.errors.rejectValue('type', 'calculation.type.cannotChange', 'Could not change type because the calculation has associated values.')
-			valid = false
+
+		if (log.isDebugEnabled()){
+			 log.debug ('validating entity with old type:'+params['oldType']+', typeBuilderString:'+params['typeBuilderString']+', entityType:'+entity.type)
 		}
-		if (params['typeBuilderError'] != null) {
-			// if there has been an error binding type, typeBuilderError will hold the error message
+
+		try {
+			// returns null if params['typeBuilderString'] is null
+			def newType  = Utils.buildType(params['typeBuilderString'])
+
+			if (log.isDebugEnabled()) log.debug ('entity id:'+entity.id)
+			if (log.isDebugEnabled()) log.debug ('old type:'+params['oldType']+', new type:'+newType+', entityType:'+entity.type)
+
+			if(entity.id != null){
+				if (log.isDebugEnabled()) log.debug ('# of values:'+valueService.getNumberOfValues(entity))
+
+				if (!newType.equals(params['oldType']) && valueService.getNumberOfValues(entity) > 0) {
+					log.debug ('cannot change old type:'+params['oldType']+', typeBuilderString:'+params['typeBuilderString']+', entityType:'+entity.type)
+					entity.errors.rejectValue('type', 'calculation.type.cannotChange', 'Could not change type because the calculation has associated values.')
+					valid = false
+				} 
+				else {
+					entity.type = newType
+				}
+			}
+			if (log.isDebugEnabled()) log.debug ('old type:'+params['oldType']+', new type:'+newType+', entityType:'+entity.type)
+
+		} catch (Exception e) {
+			log.debug ('syntax error old type:'+params['oldType']+', typeBuilderString:'+params['typeBuilderString']+', entityType:'+entity.type)
 			entity.errors.rejectValue('type', 'data.type.invalid', [params['typeBuilderError']] as Object[], 'Syntax error: [{0}]')
 			valid = false
 		}
-		
+
 		return valid;
-	}
-	
-	def bindParams(def entity) {
-		params['oldType'] = entity.type
-		
-		bindData(entity, params, [exclude:'typeBuilderString'])
-		
-		// we assign the new type only if there are no associated values and type = list
-		if (entity.id == null || !valueService.getNumberOfValues(entity)) {
-			try {
-				// returns null if params['typeBuilderString'] is null	
-				def type = Utils.buildType(params['typeBuilderString'])
-				entity.type = type
-			} catch (Exception e) {
-				// we get here if params['typeBuilderString'] is garbage (syntax error)
-				params['typeBuilderError'] = e.getMessage()
-			}
-		}
 	}
 	
 	def getLabel() {

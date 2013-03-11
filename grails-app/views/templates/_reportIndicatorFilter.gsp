@@ -21,11 +21,11 @@
 	<div class="hidden">
 		<g:each in="${indicators}" var="indicator">
 			<%
-				newLinkParams = [:]
-				newLinkParams.putAll linkParams
-				newLinkParams[indicatorParam] = indicator.id
+				reportIndicatorLinkParams = [:]
+				reportIndicatorLinkParams.putAll linkParams
+				reportIndicatorLinkParams[indicatorParam] = indicator.id
 			%>				
-			<a id="js_indicator-${indicator.id}" href="${createLink(controller:controllerName, action:actionName, params:newLinkParams)}"></a>
+			<a id="js_indicator-${indicator.id}" href="${createLink(controller:controllerName, action:actionName, params:reportIndicatorLinkParams)}"></a>
 		</g:each>
 	</div>
 </g:if>
