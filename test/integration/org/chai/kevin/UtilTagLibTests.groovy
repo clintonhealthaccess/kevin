@@ -1,5 +1,6 @@
 package org.chai.kevin
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.chai.kevin.security.UserController;
 
 import grails.test.GroovyPagesTestCase;
@@ -23,7 +24,7 @@ def testLinkWithTargetURI() {
 			'<g:createLinkWithTargetURI controller="test" action="test" params="[test: 123]"/>'
 		)
 
-		assertEquals "/test/test?targetURI=%2Ftest%2Ftest%3Ftest%3D123&test=123", url
+		assertEquals "/kevin/test/test?targetURI=%2Ftest%2Ftest%3Ftest%3D123&test=123", url
 	}
 
 	def testLinkWithTargetURIWhenNullQuery() {
@@ -40,7 +41,7 @@ def testLinkWithTargetURI() {
 			'<g:createLinkWithTargetURI controller="test" action="test" params="[test: 123]"/>'
 		)
 
-		assertEquals "/test/test?targetURI=%2Ftest%2Ftest&test=123", url
+		assertEquals "/kevin/test/test?targetURI=%2Ftest%2Ftest&test=123", url
 	}
 	
 	def testLinkExcludeParams(){
@@ -51,7 +52,7 @@ def testLinkWithTargetURI() {
 		def url = applyTemplate(
 			'<g:createLinkExcludeParams controller="controller" action="action" params="[test: 123, more: 456]" exclude="[\'more\']"/>'
 		)
-		assertEquals "/controller/action?test=123", url
+		assertEquals "/kevin/controller/action?test=123", url
 	}
 	
 	def testLinkExcludeParamsWhenNull(){
@@ -62,7 +63,7 @@ def testLinkWithTargetURI() {
 		def url = applyTemplate(
 			'<g:createLinkExcludeParams controller="controller" action="action" params="[test: 123, more: 456]"/>'
 		)
-		assertEquals "/controller/action?more=456&test=123", url
+		assertEquals "/kevin/controller/action?more=456&test=123", url
 	}
 	
 	def testLinkExcludeParamsWhenEmptyList(){
@@ -73,7 +74,7 @@ def testLinkWithTargetURI() {
 		def url = applyTemplate(
 			'<g:createLinkExcludeParams controller="controller" action="action" params="[test: 123, more: 456]" exclude="[]"/>'
 		)
-		assertEquals "/controller/action?more=456&test=123", url
+		assertEquals "/kevin/controller/action?more=456&test=123", url
 	}
 	
 	def testStripHtml() {
@@ -128,5 +129,14 @@ def testLinkWithTargetURI() {
 		)
 
 		assertEquals "", html
+	}
+
+	def testi18nWithInnerDoubleQuotes() {
+		def html = applyTemplate('<p original-title="${i18n(field: descriptions)}"></p>',
+			[
+				descriptions: 'Descriptions with "double quotes" inside the description'
+			]
+		)
+		assertEquals '<p original-title="'+StringEscapeUtils.escapeHtml('Descriptions with "double quotes" inside the description')+'"></p>', html
 	}
 }

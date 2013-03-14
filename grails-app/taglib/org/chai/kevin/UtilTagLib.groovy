@@ -98,6 +98,7 @@ class UtilTagLib {
 		def text
 		if (attrs['field'] instanceof Map) text = attrs['field'].get(languageService.currentLanguage)
 		else text = attrs['field']
+		text = StringEscapeUtils.escapeHtml(text);
 		out << text 
 	}
 	
