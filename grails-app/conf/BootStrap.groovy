@@ -127,6 +127,7 @@ class BootStrap {
 			
 			break;
 		case "demo":
+		// TODO case "lab"
 			// we delete some stuff
 			User.executeUpdate('delete User')
 			Role.executeUpdate('delete Role')

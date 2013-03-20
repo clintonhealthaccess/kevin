@@ -996,91 +996,79 @@ textarea.login-field { width: 400px; height: 50px; text-align: left; }
 
 /* line 4, ../../src/stylesheets/partials/_maps.sass */
 .map-wrap { border: 1px solid #e9f4fc; margin-top: 5px; position: relative; width: 968px; }
-/* line 13, ../../src/stylesheets/partials/_maps.sass */
-.map-wrap .indicator-quartile-na { background: #bdbdbd; }
-/* line 15, ../../src/stylesheets/partials/_maps.sass */
-.map-wrap .indicator-quartile-0 { background: #edf8fb; }
-/* line 17, ../../src/stylesheets/partials/_maps.sass */
-.map-wrap .indicator-quartile-1 { background: #b2e2e2; }
-/* line 19, ../../src/stylesheets/partials/_maps.sass */
-.map-wrap .indicator-quartile-2 { background: #66c2a4; }
-/* line 21, ../../src/stylesheets/partials/_maps.sass */
-.map-wrap .indicator-quartile-3 { background: #238b45; }
-/* line 23, ../../src/stylesheets/partials/_maps.sass */
-.map-wrap .indicator-quartile-4 { background: #006d2c; }
 
-/* line 27, ../../src/stylesheets/partials/_maps.sass */
+/* line 14, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li { font-size: 11px; margin: 15px 15px 10px 0px !important; }
-/* line 30, ../../src/stylesheets/partials/_maps.sass */
+/* line 17, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li span { display: block; float: left; height: 10px; margin-right: 5px; width: 10px; }
-/* line 38, ../../src/stylesheets/partials/_maps.sass */
+/* line 25, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-best { background: #27ba00; }
-/* line 40, ../../src/stylesheets/partials/_maps.sass */
+/* line 27, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-middle { background: #ffd800; }
-/* line 42, ../../src/stylesheets/partials/_maps.sass */
+/* line 29, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-worst { background: #e93100; }
-/* line 45, ../../src/stylesheets/partials/_maps.sass */
+/* line 32, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-best-dark { background: #1eb100; display: none; }
-/* line 48, ../../src/stylesheets/partials/_maps.sass */
+/* line 35, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-middle-dark { background: #f6cf00; display: none; }
-/* line 51, ../../src/stylesheets/partials/_maps.sass */
+/* line 38, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-worst-dark { background: #e02800; display: none; }
-/* line 57, ../../src/stylesheets/partials/_maps.sass */
+/* line 44, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-quartile-na { background: #bdbdbd; }
-/* line 59, ../../src/stylesheets/partials/_maps.sass */
+/* line 46, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-quartile-0 { background: #edf8fb; }
-/* line 61, ../../src/stylesheets/partials/_maps.sass */
+/* line 48, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-quartile-1 { background: #b2e2e2; }
-/* line 63, ../../src/stylesheets/partials/_maps.sass */
+/* line 50, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-quartile-2 { background: #66c2a4; }
-/* line 65, ../../src/stylesheets/partials/_maps.sass */
+/* line 52, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-quartile-3 { background: #238b45; }
-/* line 67, ../../src/stylesheets/partials/_maps.sass */
+/* line 54, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-quartile-4 { background: #006d2c; }
-/* line 70, ../../src/stylesheets/partials/_maps.sass */
+/* line 57, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-quartile-dark-na { background: gray; display: none; }
-/* line 73, ../../src/stylesheets/partials/_maps.sass */
+/* line 60, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-quartile-dark-0 { background: #b2e2e2; display: none; }
-/* line 76, ../../src/stylesheets/partials/_maps.sass */
+/* line 63, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-quartile-dark-1 { background: #66c2a4; display: none; }
-/* line 79, ../../src/stylesheets/partials/_maps.sass */
+/* line 66, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-quartile-dark-2 { background: #238b45; display: none; }
-/* line 82, ../../src/stylesheets/partials/_maps.sass */
+/* line 69, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-quartile-dark-3 { background: #006d2c; display: none; }
-/* line 85, ../../src/stylesheets/partials/_maps.sass */
+/* line 72, ../../src/stylesheets/partials/_maps.sass */
 .map_legend li .indicator-quartile-dark-4 { background: #00441b; display: none; }
 
-/* line 91, ../../src/stylesheets/partials/_maps.sass */
+/* line 78, ../../src/stylesheets/partials/_maps.sass */
 .map { font-weight: bold; height: 500px; margin: 10px auto 0px; width: 948px; }
-/* line 97, ../../src/stylesheets/partials/_maps.sass */
+/* line 84, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-true { color: #258cd5; font-size: 25px; opacity: 1; }
-/* line 101, ../../src/stylesheets/partials/_maps.sass */
+/* line 88, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-true:hover { font-size: 27px !important; }
-/* line 103, ../../src/stylesheets/partials/_maps.sass */
+/* line 90, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-false { color: #e93100; font-size: 20px; font-weight: normal; opacity: 0.5; }
-/* line 108, ../../src/stylesheets/partials/_maps.sass */
+/* line 95, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-false:hover { font-size: 22px !important; }
-/* line 110, ../../src/stylesheets/partials/_maps.sass */
+/* line 97, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-number { opacity: 0.75; }
-/* line 115, ../../src/stylesheets/partials/_maps.sass */
+/* line 102, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-enum, .map .report-value-marker-string, .map .report-value-marker-text { font-size: 15px; opacity: 0.75; }
-/* line 120, ../../src/stylesheets/partials/_maps.sass */
+/* line 107, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-enum:hover, .map .report-value-marker-string:hover, .map .report-value-marker-text:hover { font-size: 16px !important; }
-/* line 122, ../../src/stylesheets/partials/_maps.sass */
+/* line 109, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-label { font-size: 20px; opacity: 0.75; }
-/* line 125, ../../src/stylesheets/partials/_maps.sass */
+/* line 112, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-label:hover { font-size: 21px !important; }
-/* line 127, ../../src/stylesheets/partials/_maps.sass */
+/* line 114, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-polygon-label, .map .report-value-marker-point-label { font-size: 12px; color: black; opacity: 0.75; }
-/* line 132, ../../src/stylesheets/partials/_maps.sass */
+/* line 119, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-polygon-label:hover, .map .report-value-marker-point-label:hover { font-size: 13px !important; }
-/* line 134, ../../src/stylesheets/partials/_maps.sass */
+/* line 121, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-na { font-size: 14px; color: gray; opacity: 0.75; }
-/* line 138, ../../src/stylesheets/partials/_maps.sass */
+/* line 125, ../../src/stylesheets/partials/_maps.sass */
 .map .report-value-marker-na:hover { font-size: 15px !important; }
-/* line 141, ../../src/stylesheets/partials/_maps.sass */
+/* line 128, ../../src/stylesheets/partials/_maps.sass */
 .map .leaflet-popup { bottom: 0px !important; }
-/* line 143, ../../src/stylesheets/partials/_maps.sass */
+/* line 130, ../../src/stylesheets/partials/_maps.sass */
 .map .leaflet-control-attribution a { font-size: 11px; }
 
 /* line 1, ../../src/stylesheets/partials/_tipsy.sass */

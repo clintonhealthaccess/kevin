@@ -26,6 +26,9 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+// jobs config
+// http://quartz-scheduler.org/
+// http://grails.org/plugin/quartz
 quartz {
     autoStartup = true
     jdbcStore = false

@@ -4,8 +4,10 @@
 			<th/>
 			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />  		    
   			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q]" title="${message(code: 'entity.name.label')}" />
-  			<g:sortableColumn property="${i18nField(field: 'level.names')}" params="[q:params.q]" title="${message(code: 'location.level.label')}" />  		    
+  			<g:sortableColumn property="${i18nField(field: 'level.names')}" params="[q:params.q]" title="${message(code: 'location.level.label')}" />
+  			<g:sortableColumn property="coordinates" params="[q:params.q]" title="${message(code: 'location.coordinates.label')}" />  		    
   			<g:sortableColumn property="${i18nField(field: 'parent.names')}" params="[q:params.q]" title="${message(code: 'location.parent.label')}" />
+  			<g:sortableColumn property="${i18nField(field: 'parent.level.names')}" params="[q:params.q]" title="${message(code: 'location.parent.level.label')}" />
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
 	</thead>
@@ -33,7 +35,13 @@
 					<g:i18n field="${location.level.names}"/>
 				</td>
 				<td>
+					<g:i18n field="${location.coordinates ?'\u2713':''}"/>
+				</td>
+				<td>
 					<g:i18n field="${location.parent?.names}"/>
+				</td>
+				<td>
+					<g:i18n field="${location.parent?.level?.names}"/>
 				</td>
 				<td>
 					<div class="js_dropdown dropdown"> 

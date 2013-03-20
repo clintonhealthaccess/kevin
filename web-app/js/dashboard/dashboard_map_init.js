@@ -12,7 +12,7 @@ var locationValueLayer = null;
 var locationLayers = [];
 var overlays = [];
 
-function dashboardMap(childrenCollectData, currentLocationCode, reportLocationCodes){
+function dashboardMap(){
 	
 	var geoJsonValueLayerOptions = null;
 
@@ -46,7 +46,7 @@ function dashboardMap(childrenCollectData, currentLocationCode, reportLocationCo
 	overlays["N/A"] = locationValueNaLayer;
 	locationLayers.push(locationValueNaLayer);
 
-	mapDashboardPolygons(childrenCollectData, currentLocationCode, reportLocationCodes);
+	mapDashboardPolygons();
 
     mapLayers = locationLayers;
     createTheMap(childrenCollectData);
@@ -58,108 +58,116 @@ function dashboardMap(childrenCollectData, currentLocationCode, reportLocationCo
 // polygon -> (color = report value)
 // polygon label -> location name
 
-function mapDashboardPolygons(childrenCollectData, currentLocationCode, reportLocationCodes){
+function mapDashboardPolygons(){
 	
-	var locationUrl = "http://geocommons.com/datasets/265901/features.json?filter[code][][in]=";
+	var locationUrl = getLocationUrl(mapUrl);
 	if(childrenCollectData) locationUrl += currentLocationCode; // map 1 polygon
 	else locationUrl += reportLocationCodes; // map 1+ polygons
 
 	jQuery.getJSON(locationUrl, function(data){
 	
-		// TODO
-		if(data == null){
+		if(data.status == "error"){
+			//alert("error dashboard polygons");
 			return;
 		}
 		
 		jQuery.each(data.features, function(index, dataFeature){
 
-			var fosaid = dataFeature.properties.code;
-			var mapTableLocation = $('.js-map-table-location[data-location-code="'+fosaid+'"]');
-			var locationName = $(mapTableLocation).data('location-names');
+			var fosaid = dataFeature.id;
 
-			var mapTableValue = $('.js-map-table-value[data-location-code="'+fosaid+'"]');
-			var mapReportValue = $(mapTableValue).children('div.report-value');
-			var rawValue = $(mapReportValue).data('report-value-raw');
-			var reportValue = $(mapReportValue).data('report-value');
-
-			var polygonStyle = {}
-
-			if(childrenCollectData){
-				// orange
-				polygonStyle = {
-					color: '#e6550d',
-					weight: 1.5,
-					fillColor: '#fdae6b',
-				    fillOpacity: 0.75
-				};
+			if(!dataFeature.value){
+					// fosa coordinates missing
+					missingFosaCoordinates(fosaid);
 			}
 			else{
-				var polygonFillColor = null;
-				var polygonColor = null;
-				if(rawValue != null){
-					var quartile = rawValue < 0.26 ? 0 : (rawValue < 0.51 ? 1 : (rawValue < 0.76 ? 2 : (rawValue < 1.01 ? 3 : 4)));
-					quartile = 'indicator-quartile-'+quartile
-					polygonFillColor = mapPolygonColors[quartile]
-					polygonColor = mapPolygonColorsDark[quartile]
-				
+
+				var mapTableLocation = $('.js-map-table-location[data-location-code="'+fosaid+'"]');
+				var locationName = $(mapTableLocation).data('location-names');
+
+				var mapTableValue = $('.js-map-table-value[data-location-code="'+fosaid+'"]');
+				var mapReportValue = $(mapTableValue).children('div.report-value');
+				var rawValue = $(mapReportValue).data('report-value-raw');
+				var reportValue = $(mapReportValue).data('report-value');
+
+				var polygonStyle = {}
+
+				if(childrenCollectData){
+					// orange
+					polygonStyle = {
+						color: '#e6550d',
+						weight: 1.5,
+						fillColor: '#fdae6b',
+					    fillOpacity: 0.75
+					};
 				}
 				else{
-					quartile = 'indicator-quartile-na'
-					polygonFillColor = mapPolygonColors[quartile]
-					polygonColor = mapPolygonColorsDark[quartile]
+					var polygonFillColor = null;
+					var polygonColor = null;
+					if(rawValue != null){
+						var quartile = rawValue < 0.26 ? 0 : (rawValue < 0.51 ? 1 : (rawValue < 0.76 ? 2 : (rawValue < 1.01 ? 3 : 4)));
+						quartile = 'indicator-quartile-'+quartile
+						polygonFillColor = mapPolygonColors[quartile]
+						polygonColor = mapPolygonColorsDark[quartile]
+					
+					}
+					else{
+						quartile = 'indicator-quartile-na'
+						polygonFillColor = mapPolygonColors[quartile]
+						polygonColor = mapPolygonColorsDark[quartile]
+					}
+
+					// green
+					polygonStyle = {
+						color: polygonColor,
+						weight: 1.5,
+						fillColor: polygonFillColor,
+					    fillOpacity: 0.75
+					};
 				}
 
-				// green
-				polygonStyle = {
-					color: polygonColor,
-					weight: 1.5,
-					fillColor: polygonFillColor,
-				    fillOpacity: 0.75
-				};
-			}
+				var polygonCoordinates = createPolygonCoordinates(dataFeature.value, false);
 
-			var polygonCoordinates = createPolygonCoordinates(dataFeature, false);
-
-			// add polygon
-			var polygonFeature = {
-				"id": fosaid,
-				"geometry": {
-			    	"coordinates": polygonCoordinates
-				},
-				"properties":{
-					"locationCode": fosaid,
-					"locationName": locationName,
-					"style": polygonStyle
-				}
-			};
-			var geojsonPolygonFeature = createGeoJsonPolygonFeature(polygonFeature);
-			basePolygonLayer.addData(geojsonPolygonFeature);
-			
-			// add polygon label if children are not facilities
-			if(!childrenCollectData){
-				var center = L.multiPolygon(polygonCoordinates).getBounds().getCenter();
-				var multiPolygonCenter = [center.lat, center.lng];
-
-				var polygonLabelFeature = {
+				// add polygon
+				var polygonFeature = {
 					"id": fosaid,
-					"type": "Feature",
-				    "geometry": {
-				    	"coordinates": multiPolygonCenter
+					"geometry": {
+				    	"coordinates": polygonCoordinates
 					},
 					"properties":{
 						"locationCode": fosaid,
 						"locationName": locationName,
-						"reportValueIcon": reportValueLabelIcon
+						"style": polygonStyle
 					}
 				};
-				var geojsonPointFeature = createGeoJsonPointFeature(polygonLabelFeature);
-				basePolygonLayer.addData(geojsonPointFeature);
+				var geojsonPolygonFeature = createGeoJsonPolygonFeature(polygonFeature);
+				basePolygonLayer.addData(geojsonPolygonFeature);
+				
+				// add polygon label if children are not facilities
+				if(!childrenCollectData){
+					var center = L.multiPolygon(polygonCoordinates).getBounds().getCenter();
+					var multiPolygonCenter = [center.lat, center.lng];
+
+					var polygonLabelFeature = {
+						"id": fosaid,
+						"type": "Feature",
+					    "geometry": {
+					    	"coordinates": multiPolygonCenter
+						},
+						"properties":{
+							"locationCode": fosaid,
+							"locationName": locationName,
+							"reportValueIcon": reportValueLabelIcon
+						}
+					};
+					var geojsonPointFeature = createGeoJsonPointFeature(polygonLabelFeature);
+					basePolygonLayer.addData(geojsonPointFeature);
+				}
 			}
 							
 		});
 
 		if(childrenCollectData) 
-			mapPointValues(reportLocationCodes);
+			mapPointValues();
 		else mapPolygonValues(data);
 
 		mapTheMap(!childrenCollectData);
@@ -199,44 +207,49 @@ function dashboardPolygonFeatureToLayer(feature, latlng) {
 function mapPolygonValues(data){
 	jQuery.each(data.features, function(i,dataFeature){
 		
-		var fosaid = dataFeature.properties.code;
+		var fosaid = dataFeature.id;
 
-		// map 1 value for the indicator for the polygon
-		var mapTableValue = $('.js-map-table-value[data-location-code="'+fosaid+'"]');
-		var mapReportValue = $(mapTableValue).children('div.report-value');
-		var rawValue = $(mapReportValue).data('report-value-raw');
-		var reportValue = $(mapReportValue).data('report-value');
-		var reportValueType = $(mapReportValue).data('report-value-type');
+		if(!dataFeature.value){
+			// fosa coordinates missing
+		}
+		else {
+			// map 1 value for the indicator for the polygon
+			var mapTableValue = $('.js-map-table-value[data-location-code="'+fosaid+'"]');
+			var mapReportValue = $(mapTableValue).children('div.report-value');
+			var rawValue = $(mapReportValue).data('report-value-raw');
+			var reportValue = $(mapReportValue).data('report-value');
+			var reportValueType = $(mapReportValue).data('report-value-type');
 
-		var polygonCoordinates = createPolygonCoordinates(dataFeature, false);
-		var bounds = L.multiPolygon(polygonCoordinates).getBounds();
-		var center = bounds.getCenter();
+			var polygonCoordinates = createPolygonCoordinates(dataFeature.value, false);
+			var bounds = L.multiPolygon(polygonCoordinates).getBounds();
+			var center = bounds.getCenter();
 
-		// position each point label per indicator
-		var latLng = null;
-		//TODO figure out why this returns NorthWest bounds
-		var northWest = bounds.getSouthEast();
-		latLng = createNorthSouthOffset(northWest.lng, center);
+			// position each point label per indicator
+			var latLng = null;
+			//TODO figure out why this returns NorthWest bounds
+			var northWest = bounds.getSouthEast();
+			latLng = createNorthSouthOffset(northWest.lng, center);
 
-		var feature = {
-			"id": fosaid,
-		    "geometry": {
-		        "coordinates": latLng
-			},
-			"properties":{
-				"locationCode": $(mapTableValue).attr('data-location-code'),
-				"locationName": $(mapTableValue).data('location-names'),
-				"indicatorCode": $(mapTableValue).data('indicator-code'),
-				"indicatorName": $(mapTableValue).data('indicator-names'),
-				"rawValue": rawValue,
-				"reportValue": reportValue,
-				"reportValueType": reportValueType,
-				"reportValueIcon": reportValueLabelIcon
-			}
-		};
+			var feature = {
+				"id": fosaid,
+			    "geometry": {
+			        "coordinates": latLng
+				},
+				"properties":{
+					"locationCode": $(mapTableValue).attr('data-location-code'),
+					"locationName": $(mapTableValue).data('location-names'),
+					"indicatorCode": $(mapTableValue).data('indicator-code'),
+					"indicatorName": $(mapTableValue).data('indicator-names'),
+					"rawValue": rawValue,
+					"reportValue": reportValue,
+					"reportValueType": reportValueType,
+					"reportValueIcon": reportValueLabelIcon
+				}
+			};
 
-		var geojsonPointFeature = createGeoJsonPointFeature(feature);
-		locationValueLayer.addData(geojsonPointFeature);
+			var geojsonPointFeature = createGeoJsonPointFeature(feature);
+			locationValueLayer.addData(geojsonPointFeature);
+		}
 							
 	});
 }
@@ -343,40 +356,42 @@ function resetPolygonValueFeature(e) {
 // point value -> font size = report value)
 // point value label -> location name
 
-function mapPointValues(reportLocationCodes){
+function mapPointValues(){
 	var fosaLocations = [];
-    var dataLocationUrl = "http://geocommons.com/datasets/262585/features.json?filter[fosaid][][in]="+reportLocationCodes;
+    var dataLocationUrl = getDataLocationUrl(mapUrl) + reportLocationCodes;
 	jQuery.getJSON(dataLocationUrl, function(data){
 	
-		// TODO
-		if(data == null){
+		if(data.status == "error"){
+			//alert("error dashboard points");
 			return;
 		}
 		
 		jQuery.each(data.features, function(i,f){
 
-			var fosaid = f.properties.fosaid;
+			var fosaid = f.id;
 			fosaLocations.push(fosaid+"");
 
-			// map 1 point & point label per location
-			var mapTableValues = $('.js-map-table-value[data-location-code="'+fosaid+'"]');
+			if(!f.value){
+				// fosa coordinates missing
+				missingFosaCoordinates(fosaid);
+			}
+			else{
+				// map 1 point & point label per location
+				var mapTableValues = $('.js-map-table-value[data-location-code="'+fosaid+'"]');
 
-			$(mapTableValues).each(function(index, mapTableValue){
+				$(mapTableValues).each(function(index, mapTableValue){
 
-				var mapValue = $(mapTableValue).children('div.report-value');
-				var rawValue = $(mapValue).data('report-value-raw');
-				var reportValue = $(mapValue).data('report-value');
-				var reportValueType = $(mapValue).data('report-value-type');
+					var mapValue = $(mapTableValue).children('div.report-value');
+					var rawValue = $(mapValue).data('report-value-raw');
+					var reportValue = $(mapValue).data('report-value');
+					var reportValueType = $(mapValue).data('report-value-type');
 
-				if(!f.geometry){
-					// fosa coordinates missing
-					missingFosaCoordinates(f.properties.fosaid);
-				}
-				else{
+					var pointCoordinates = createCoordinate(f.value, false)
+
 					var feature = {
 						"id": fosaid,
 					    "geometry": {
-					        "coordinates": f.geometry.coordinates
+					        "coordinates": pointCoordinates
 						},
 						"properties":{
 							"locationCode": $(mapTableValue).attr('data-location-code'),
@@ -399,11 +414,11 @@ function mapPointValues(reportLocationCodes){
 					// add value label
 					var geojsonPointFeature = createGeoJsonPointFeature(feature);
 					locationNameLayer.addData(geojsonPointFeature);
-				}
-			});								
+				});	
+			}							
 		});						
 		// fosa locations missing
-		var dhsstLocations = (reportLocationCodes).split('|');
+		var dhsstLocations = (reportLocationCodes).split(',');
 		missingFosaLocations(fosaLocations, dhsstLocations);									
 	});
 	// })

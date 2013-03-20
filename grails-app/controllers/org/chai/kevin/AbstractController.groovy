@@ -193,4 +193,44 @@ public abstract class AbstractController {
 			return newParams;
 		}
 	}
+
+	protected def getFosaLocations() {
+		if (log.isDebugEnabled()) log.debug("abstract.map, params:"+params)
+
+		def location = params['location'];
+		def fosaIds = params['fosaIds'];
+		
+		if (fosaIds != null && !fosaIds.empty) {
+			def fosaLocations = new ArrayList<CalculationLocation>();
+			fosaIds.split(',').each { fosaId -> 
+			 	CalculationLocation fosaLocation = null
+			 	if(location) 
+			 		fosaLocation = (CalculationLocation) Location.findByCode(fosaId)
+			 	else 
+			 		fosaLocation = (CalculationLocation) DataLocation.findByCode(fosaId)
+			 	if(fosaLocation != null) 
+					fosaLocations.add(fosaLocation) 
+			}
+
+			if (log.isDebugEnabled()) log.debug("abstract.map, fosaLocations:"+fosaLocations)
+
+			render(contentType:"text/json") {
+				status = 'success'
+				features = array {
+					fosaLocations.each{ fosaLocation ->
+						if (log.isDebugEnabled()) log.debug("abstract.map, fosaLocation id:"+fosaLocation.id)
+						obj (
+							id: fosaLocation.code,
+							value: fosaLocation.coordinates
+						)
+					}
+				}
+			}
+		}
+		else {
+			render(contentType:"text/json") {
+				status = 'error'
+			}
+		}
+	}
 }

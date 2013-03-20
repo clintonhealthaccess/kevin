@@ -122,7 +122,7 @@ class DashboardController extends AbstractController {
 	}
 	
 	def compare = {
-		if (log.isDebugEnabled()) log.debug("dashboard.compare, params:"+params)							
+		if (log.isDebugEnabled()) log.debug("dashboard.compare, params:"+params)
 		
 		// entities from params
 		Period period = getPeriod()	
@@ -168,6 +168,11 @@ class DashboardController extends AbstractController {
 				status = 'error'
 			}
 		}
+	}
+
+	def map = {
+		if (log.isDebugEnabled()) log.debug("dashboard.map, params:"+params)
+		return getFosaLocations();
 	}
 	
 }

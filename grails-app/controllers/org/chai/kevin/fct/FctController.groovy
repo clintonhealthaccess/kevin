@@ -132,6 +132,11 @@ class FctController extends AbstractController {
 		}
 	}
 	
+	def map = {
+		if (log.isDebugEnabled()) log.debug("fct.map, params:"+params)
+		return getFosaLocations();
+	}
+
 	def export = {
 		if (log.isDebugEnabled()) log.debug("fct.export, params:"+params)
 

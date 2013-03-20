@@ -5,8 +5,9 @@
 			<g:sortableColumn property="code" params="[q:params.q]" title="${message(code: 'entity.code.label')}" />			
 			<g:sortableColumn property="${i18nField(field: 'names')}" params="[q:params.q]" title="${message(code: 'entity.name.label')}" />
 			<g:sortableColumn property="${i18nField(field: 'type.names')}" params="[q:params.q]" title="${message(code: 'datalocation.type.label')}" />
-			<g:sortableColumn property="${i18nField(field: 'location.names')}" params="[q:params.q]" title="${message(code: 'datalocation.location.label')}" />				
-			<g:sortableColumn property="${i18nField(field: 'location.level.names')}" params="[q:params.q]" title="${message(code: 'locationlevel.label')}" />			
+			<g:sortableColumn property="coordinates" params="[q:params.q]" title="${message(code: 'location.coordinates.label')}" />
+			<g:sortableColumn property="${i18nField(field: 'location.names')}" params="[q:params.q]" title="${message(code: 'location.parent.label')}" />
+			<g:sortableColumn property="${i18nField(field: 'location.level.names')}" params="[q:params.q]" title="${message(code: 'location.parent.level.label')}" />
 			<g:sortableColumn property="needsReview" params="[q:params.q]" title="${message(code: 'datalocation.needsreview.label')}" />			
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
@@ -37,6 +38,9 @@
 				</td>
 				<td>
 					<g:i18n field="${location.type?.names}"/>
+				</td>
+				<td>
+					<g:i18n field="${location.coordinates}"/>
 				</td>
 				<td>
 					<g:i18n field="${location.location?.names}"/>

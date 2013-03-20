@@ -13,8 +13,9 @@
 		var childrenCollectData = ${childrenCollectData};
 		var currentIndicatorIsCalculation = ${currentIndicatorIsCalculation};
 		var currentLocationCode = "${currentLocation.code}";
-		var reportLocationCodes = "${reportLocations.collect{it.code}.join('|')}";
+		var reportLocationCodes = "${reportLocations.collect{it.code}.join(',')}";
 		var reportValueLabelIcon = "${resource(dir:'images',file:'/maps/report-value-null.png')}";
-		dsrMap(childrenCollectData, currentIndicatorIsCalculation, currentLocationCode, reportLocationCodes);
+		var mapUrl = "${createLink(controller:controllerName, action:'map')}";
+		dsrMap();
 	</r:script>
 </div>
