@@ -24,7 +24,7 @@ def testLinkWithTargetURI() {
 			'<g:createLinkWithTargetURI controller="test" action="test" params="[test: 123]"/>'
 		)
 
-		assertEquals "/kevin/test/test?targetURI=%2Ftest%2Ftest%3Ftest%3D123&test=123", url
+		assertEquals "/test/test?targetURI=%2Ftest%2Ftest%3Ftest%3D123&test=123", url
 	}
 
 	def testLinkWithTargetURIWhenNullQuery() {
@@ -41,7 +41,7 @@ def testLinkWithTargetURI() {
 			'<g:createLinkWithTargetURI controller="test" action="test" params="[test: 123]"/>'
 		)
 
-		assertEquals "/kevin/test/test?targetURI=%2Ftest%2Ftest&test=123", url
+		assertEquals "/test/test?targetURI=%2Ftest%2Ftest&test=123", url
 	}
 	
 	def testLinkExcludeParams(){
@@ -52,7 +52,7 @@ def testLinkWithTargetURI() {
 		def url = applyTemplate(
 			'<g:createLinkExcludeParams controller="controller" action="action" params="[test: 123, more: 456]" exclude="[\'more\']"/>'
 		)
-		assertEquals "/kevin/controller/action?test=123", url
+		assertEquals "/controller/action?test=123", url
 	}
 	
 	def testLinkExcludeParamsWhenNull(){
@@ -63,7 +63,7 @@ def testLinkWithTargetURI() {
 		def url = applyTemplate(
 			'<g:createLinkExcludeParams controller="controller" action="action" params="[test: 123, more: 456]"/>'
 		)
-		assertEquals "/kevin/controller/action?more=456&test=123", url
+		assertEquals "/controller/action?more=456&test=123", url
 	}
 	
 	def testLinkExcludeParamsWhenEmptyList(){
@@ -74,7 +74,7 @@ def testLinkWithTargetURI() {
 		def url = applyTemplate(
 			'<g:createLinkExcludeParams controller="controller" action="action" params="[test: 123, more: 456]" exclude="[]"/>'
 		)
-		assertEquals "/kevin/controller/action?more=456&test=123", url
+		assertEquals "/controller/action?more=456&test=123", url
 	}
 	
 	def testStripHtml() {
