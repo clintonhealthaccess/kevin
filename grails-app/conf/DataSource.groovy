@@ -26,6 +26,7 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+// pooled connection config
 dataSource {
 	pooled = true
 
@@ -45,7 +46,7 @@ dataSource {
 	}
 }
 hibernate {
-	cache.use_second_level_cache = true
+	cache.use_second_level_cache = true //specified in ehcache.xml
 	cache.use_query_cache = true
 	cache.provider_class = 'net.sf.ehcache.hibernate.SingletonEhCacheProvider'
 	

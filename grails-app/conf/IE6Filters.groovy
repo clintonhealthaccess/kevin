@@ -1,6 +1,5 @@
 import org.springframework.web.context.request.RequestContextHolder;
 
-
 class IE6Filters {
 
 	def filters = {

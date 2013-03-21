@@ -12,7 +12,7 @@ var locationValueLayer = null
 var locationLayers = []
 var overlays = []
 
-function dsrMap(childrenCollectData, currentIndicatorIsCalculation, currentLocationCode, reportLocationCodes){
+function dsrMap(){
 	
 	if(childrenCollectData || currentIndicatorIsCalculation){
 		var geoJsonValueLayerOptions = null;
@@ -47,7 +47,7 @@ function dsrMap(childrenCollectData, currentIndicatorIsCalculation, currentLocat
 		overlays["N/A"] = locationValueNaLayer;
 		locationLayers.push(locationValueNaLayer);
 
-		mapPolygons(childrenCollectData, currentLocationCode, reportLocationCodes);
+		mapPolygons();
 	}
 
     mapLayers = locationLayers;
@@ -62,54 +62,58 @@ function dsrMap(childrenCollectData, currentIndicatorIsCalculation, currentLocat
 function mapPolygonValues(data){
 	jQuery.each(data.features, function(i,dataFeature){
 		
-		var fosaid = dataFeature.properties.code;
+		var fosaid = dataFeature.id;
 
-		// map 1 value for the indicator for the polygon
-		var mapTableValue = $('.js-map-table-value.js-selected-value[data-location-code="'+fosaid+'"]');
-
-		if(mapTableValue.size() == 1){
-			
-			var indicatorCode = $(mapTableValue).data('indicator-code');
-			var indicatorName = $(mapTableValue).data('indicator-names');
-
-			var polygonCoordinates = createPolygonCoordinates(dataFeature, false);
-			var bounds = L.multiPolygon(polygonCoordinates).getBounds();
-			var center = bounds.getCenter();
-
-			var mapReportValue = $(mapTableValue).children('div.report-value');
-			var rawValue = $(mapReportValue).data('report-value-raw');
-			var reportValue = $(mapReportValue).data('report-value');
-			var reportValueType = $(mapReportValue).data('report-value-type');
-
-			// position each point label per indicator
-			var latLng = null;
-			//TODO figure out why this returns NorthWest bounds
-			var northWest = bounds.getSouthEast();
-			latLng = createNorthSouthOffset(northWest.lng, center);
-
-			var feature = {
-				"id": fosaid,
-			    "geometry": {
-			        "coordinates": latLng
-				},
-				"properties":{
-					"locationCode": $(mapTableValue).attr('data-location-code'),
-					"locationName": $(mapTableValue).data('location-names'),
-					"indicatorCode": indicatorCode,
-					"indicatorName": indicatorName,
-					"rawValue": rawValue,
-					"reportValue": reportValue,
-					"reportValueType": reportValueType,
-					"reportValueIcon": reportValueLabelIcon
-				}
-			};
-
-			// add value
-			feature.properties.reportValueSize = getReportValueSize(reportValueType, rawValue);
-			var geojsonPointFeature = createGeoJsonPointFeature(feature);
-			locationValueLayer.addData(geojsonPointFeature);
+		if(!dataFeature.value){
+			// fosa coordinates missing
 		}
-							
+		else{
+			// map 1 value for the indicator for the polygon
+			var mapTableValue = $('.js-map-table-value.js-selected-value[data-location-code="'+fosaid+'"]');
+
+			if(mapTableValue.size() == 1){
+				
+				var indicatorCode = $(mapTableValue).data('indicator-code');
+				var indicatorName = $(mapTableValue).data('indicator-names');
+
+				var polygonCoordinates = createPolygonCoordinates(dataFeature.value, false);
+				var bounds = L.multiPolygon(polygonCoordinates).getBounds();
+				var center = bounds.getCenter();
+
+				var mapReportValue = $(mapTableValue).children('div.report-value');
+				var rawValue = $(mapReportValue).data('report-value-raw');
+				var reportValue = $(mapReportValue).data('report-value');
+				var reportValueType = $(mapReportValue).data('report-value-type');
+
+				// position each point label per indicator
+				var latLng = null;
+				//TODO figure out why this returns NorthWest bounds
+				var northWest = bounds.getSouthEast();
+				latLng = createNorthSouthOffset(northWest.lng, center);
+
+				var feature = {
+					"id": fosaid,
+				    "geometry": {
+				        "coordinates": latLng
+					},
+					"properties":{
+						"locationCode": $(mapTableValue).attr('data-location-code'),
+						"locationName": $(mapTableValue).data('location-names'),
+						"indicatorCode": indicatorCode,
+						"indicatorName": indicatorName,
+						"rawValue": rawValue,
+						"reportValue": reportValue,
+						"reportValueType": reportValueType,
+						"reportValueIcon": reportValueLabelIcon
+					}
+				};
+
+				// add value
+				feature.properties.reportValueSize = getReportValueSize(reportValueType, rawValue);
+				var geojsonPointFeature = createGeoJsonPointFeature(feature);
+				locationValueLayer.addData(geojsonPointFeature);
+			}
+		}					
 	});
 }
 
@@ -231,40 +235,43 @@ function resetPolygonValueFeature(e) {
 // point value -> (symbol = report value type) x (font size = report value)
 // point value label -> location name
 
-function mapPointValues(reportLocationCodes){
+function mapPointValues(){
 	var fosaLocations = [];
-    var dataLocationUrl = "http://geocommons.com/datasets/262585/features.json?filter[fosaid][][in]="+reportLocationCodes;
+    var dataLocationUrl = getDataLocationUrl(mapUrl) + reportLocationCodes;
 	jQuery.getJSON(dataLocationUrl, function(data){
 	
 		// TODO
 		if(data == null){
+			//alert("error dsr points");
 			return;
 		}
 		
 		jQuery.each(data.features, function(i,f){
 
-			var fosaid = f.properties.fosaid;
+			var fosaid = f.id;
 			fosaLocations.push(fosaid+"");
 
-			// map 1 point & point label per location
-			var mapTableValues = $('.js-map-table-value.js-selected-value[data-location-code="'+fosaid+'"]');
+			if(!f.value){
+				// fosa coordinates missing
+				missingFosaCoordinates(fosaid);
+			}
+			else{
+				// map 1 point & point label per location
+				var mapTableValues = $('.js-map-table-value.js-selected-value[data-location-code="'+fosaid+'"]');
 
-			$(mapTableValues).each(function(index, mapTableValue){
+				$(mapTableValues).each(function(index, mapTableValue){
 
-				var mapValue = $(mapTableValue).children('div.report-value');
-				var rawValue = $(mapValue).data('report-value-raw');
-				var reportValue = $(mapValue).data('report-value')
-				var reportValueType = $(mapValue).data('report-value-type');
+					var mapValue = $(mapTableValue).children('div.report-value');
+					var rawValue = $(mapValue).data('report-value-raw');
+					var reportValue = $(mapValue).data('report-value')
+					var reportValueType = $(mapValue).data('report-value-type');
 
-				if(!f.geometry){
-					// fosa coordinates missing
-					missingFosaCoordinates(f.properties.fosaid);
-				}
-				else{
+					var pointCoordinates = createCoordinate(f.value, false)
+
 					var feature = {
 						"id": fosaid,
 					    "geometry": {
-					        "coordinates": f.geometry.coordinates
+					        "coordinates": pointCoordinates
 						},
 						"properties":{
 							"locationCode": $(mapTableValue).attr('data-location-code'),
@@ -287,8 +294,8 @@ function mapPointValues(reportLocationCodes){
 
 					// add value label
 					locationNameLayer.addData(geojsonPointFeature);
-				}
-			});								
+				});
+			}								
 		});						
 		// fosa locations missing
 		var dhsstLocations = (reportLocationCodes).split('|');

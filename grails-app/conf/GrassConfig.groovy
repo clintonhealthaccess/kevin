@@ -1,3 +1,4 @@
+// compass config (sass -> css)
 grass {
     sass_dir = "./src/stylesheets"
 

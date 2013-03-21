@@ -215,7 +215,7 @@ class DsrController extends AbstractController {
 			]
 		}
 	}
-	
+
 	def export = {
 		if (log.isDebugEnabled()) log.debug("dsr.export, params:"+params)
 		
@@ -255,5 +255,10 @@ class DsrController extends AbstractController {
 				response.outputStream << zipFile.newInputStream()
 			}
 		}
+	}
+
+	def map = {
+		if (log.isDebugEnabled()) log.debug("dsr.map, params:"+params)
+		return getFosaLocations();
 	}
 }

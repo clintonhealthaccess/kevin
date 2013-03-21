@@ -5,6 +5,10 @@
 				<td>
 					<div class="left"><g:reportLocationParent linkParams="${params}"/></div>
 					<g:i18n field="${currentLocation.names}" />
+					%{-- TODO get rid of this --}%
+					<g:if test="${!currentLocation.collectsData() && currentLocation.parent}">
+						${currentLocation.coordinates ?'':'&#185;'}
+					</g:if>
 				</td>
 				<g:if test="${reportIndicators != null && !reportIndicators.empty}">
 					<g:each in="${reportIndicators}" var="indicator" status="i">

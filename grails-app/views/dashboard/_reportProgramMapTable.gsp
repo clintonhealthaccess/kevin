@@ -7,6 +7,10 @@
 					<!-- location -->
 					<div class="left"><g:reportLocationParent linkParams="${params}"/></div>
 					<g:i18n field="${currentLocation.names}" />
+					%{-- TODO get rid of this --}%
+					<g:if test="${!currentLocation.collectsData() && currentLocation.parent}">
+						${currentLocation.coordinates ?'':'&#185;'}
+					</g:if>			
 				</td>
 				<td>
 					<!-- map report value -->
