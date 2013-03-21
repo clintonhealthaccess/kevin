@@ -1,5 +1,24 @@
+// create fosa location url
+function getDataLocationUrl(mapUrl){
+	return mapUrl+"?fosaIds=";
+}
+function getLocationUrl(mapUrl){
+	return mapUrl+"?location=true&fosaIds=";
+}
+
+// create polygon coordinate
+function createCoordinate(coordinate, createLatLngCoordinates){
+	var latLng = null;
+	coordinate = coordinate.replace(/(\[|\])/g,"");
+	var lat = parseFloat(coordinate.split(',')[0]);
+	var lng = parseFloat(coordinate.split(',')[1]);
+	if(createLatLngCoordinates) latLng = L.latLng(lat, lng);
+	else latLng = [lat, lng];
+	return latLng;
+}
+
 // create polygon coordinates
-function createPolygonCoordinates(feature, createLatLngCoordinates){
+function createPolygonCoordinates(featureCoordinates, createLatLngCoordinates){
 
 	// TODO coordsToLatlng( <Array> coords) or coordsToLatlngs( <Array> coords, <Number> levelsDeep?) 
 	// 0 = array of points, 1 = arrays of array of points
@@ -8,16 +27,10 @@ function createPolygonCoordinates(feature, createLatLngCoordinates){
 	var polygonCoordinates = []
 	var coordinates = []
 	var latlonRegex = /\[(\-|\d|\.)*,(\-|\d|\.)*\]/g;
-	if(feature.properties && feature.properties.coordinates){
-		$(feature.properties.coordinates.match(latlonRegex)).each(function(){
-			var coordinate = this;
-			coordinate = this.replace(/(\[|\])/g,"");
-			var lat = parseFloat(coordinate.split(',')[0]);
-			var lng = parseFloat(coordinate.split(',')[1]);
-			
-			var latLng = null;
-			if(createLatLngCoordinates) latLng = L.latLng(lat, lng);
-			else latLng = [lat, lng];
+
+	if(featureCoordinates){
+		$(featureCoordinates.match(latlonRegex)).each(function(){
+			var latLng = createCoordinate(this, createLatLngCoordinates);
 			coordinates.push(latLng);					
 		});
 		polygonCoordinates.push(coordinates);	
@@ -46,11 +59,11 @@ function createGeoJsonPolygonFeature(feature){
 function createGeoJsonPointFeature(feature){
 	// create geojson point feature
 	var geoJsonPointFeature = {
-			"id": feature.id,
+			"id": feature.id, //TODO
 		    "type": "Feature",    
 		    "geometry": {
 		        "type": "Point",
-		        "coordinates": feature.geometry.coordinates
+		        "coordinates": feature.geometry.coordinates //TODO
 		    },
 		    "properties": {
 		    	"locationCode": feature.properties.locationCode,

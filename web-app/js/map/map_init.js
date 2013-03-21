@@ -29,27 +29,33 @@ function createTheMap(childrenCollectData){
 
 function mapTheMap(mapLocationValueLayer){
 	
-	var width = basePolygonLayer.getBounds().getNorthEast().lat-basePolygonLayer.getBounds().getSouthWest().lat;
-	var height = basePolygonLayer.getBounds().getNorthEast().lng-basePolygonLayer.getBounds().getSouthWest().lng;
-	var area = width*height;
+	var basePolygonLayerBounds = basePolygonLayer.getBounds();
+	var northEast = basePolygonLayerBounds.getNorthEast();
+	var southWest = basePolygonLayerBounds.getSouthWest();
 
-	//alert('width '+width+', height '+height+', area '+area);
-	//alert('mapBoundsZoom '+map.getBoundsZoom(basePolygonLayer.getBounds(),false));
+	if(northEast != null & southWest != null){
+		var width = northEast.lat-southWest.lat;
+		var height = northEast.lng-southWest.lng;
+		var area = width*height;
 
-	// if the map can zoom in to at least 11, use the default fit bounds
-	if(map.getBoundsZoom(basePolygonLayer.getBounds(),false) > 10){
-		map.fitBounds(basePolygonLayer.getBounds());
-	}
-	// else check the width, height, and area, to find possible regions to zoom in further
-	else{
-		if(width >= 1.10 && height >= 0.75 && area >= 0.83){
-			map.setView(basePolygonLayer.getBounds().getCenter(), 9);
-		}
-		// else if(width >= 0.36 && height >= 0.27 && area >= 0.10){
-		// 	map.setView(basePolygonLayer.getBounds().getCenter(), 11);
-		// }
-		else {
+		//alert('width '+width+', height '+height+', area '+area);
+		//alert('mapBoundsZoom '+map.getBoundsZoom(basePolygonLayer.getBounds(),false));
+
+		// if the map can zoom in to at least 11, use the default fit bounds
+		if(map.getBoundsZoom(basePolygonLayer.getBounds(),false) > 10){
 			map.fitBounds(basePolygonLayer.getBounds());
+		}
+		// else check the width, height, and area, to find possible regions to zoom in further
+		else{
+			if(width >= 1.10 && height >= 0.75 && area >= 0.83){
+				map.setView(basePolygonLayer.getBounds().getCenter(), 9);
+			}
+			// else if(width >= 0.36 && height >= 0.27 && area >= 0.10){
+			// 	map.setView(basePolygonLayer.getBounds().getCenter(), 11);
+			// }
+			else {
+				map.fitBounds(basePolygonLayer.getBounds());
+			}
 		}
 	}
 
@@ -60,75 +66,82 @@ function mapTheMap(mapLocationValueLayer){
 // polygon -> color = blue/green #99d8c9/#2ca25f, orange #fdae6b/#e6550d
 // polygon label -> location name
 
-function mapPolygons(childrenCollectData, currentLocationCode, reportLocationCodes){
+function mapPolygons(){
 	
-	var locationUrl = "http://geocommons.com/datasets/265901/features.json?filter[code][][in]=";
+	var locationUrl = getLocationUrl(mapUrl);
 	if(childrenCollectData) locationUrl += currentLocationCode; // map 1 polygon
 	else locationUrl += reportLocationCodes; // map 1+ polygons
 
 	jQuery.getJSON(locationUrl, function(data){
 	
-		// TODO
-		if(data == null){
+		if(data.status == "error"){
+			//alert("error map polygons");
 			return;
 		}
 		
 		jQuery.each(data.features, function(index, dataFeature){
 
-			var fosaid = dataFeature.properties.code;
-			var mapTableLocation = $('.js-map-table-location[data-location-code="'+fosaid+'"]');
-			var locationName = $(mapTableLocation).data('location-names');
+			var fosaid = dataFeature.id;
 
-			var polygonCoordinates = createPolygonCoordinates(dataFeature, false);
+			if(!dataFeature.value){
+				// fosa coordinates missing
+				missingFosaCoordinates(fosaid);
+			}
+			else{
+				var mapTableLocation = $('.js-map-table-location[data-location-code="'+fosaid+'"]');
+				var locationName = $(mapTableLocation).data('location-names');
 
-			// orange
-			var polygonStyle = {
-				color: "#e6550d",
-				weight: 1.5,
-				fillColor: "#fdae6b",
-			    fillOpacity: 0.75
-			};
+				var polygonCoordinates = createPolygonCoordinates(dataFeature.value, false);
 
-			// add polygon
-			var polygonFeature = {
-				"id": fosaid,
-				"geometry": {
-			    	"coordinates": polygonCoordinates
-				},
-				"properties":{
-					"locationCode": fosaid,
-					"locationName": locationName,
-					"style": polygonStyle
-				}
-			};
-			var geojsonPolygonFeature = createGeoJsonPolygonFeature(polygonFeature);
-			basePolygonLayer.addData(geojsonPolygonFeature);
-			
-			// add polygon label if children are not facilities
-			if(!childrenCollectData){
-				var center = L.multiPolygon(polygonCoordinates).getBounds().getCenter();
-				var multiPolygonCenter = [center.lat, center.lng];
+				// orange
+				var polygonStyle = {
+					color: "#e6550d",
+					weight: 1.5,
+					fillColor: "#fdae6b",
+				    fillOpacity: 0.75
+				};
 
-				var polygonLabelFeature = {
+				// add polygon
+				var polygonFeature = {
 					"id": fosaid,
-					"type": "Feature",
-				    "geometry": {
-				    	"coordinates": multiPolygonCenter
+					"geometry": {
+				    	"coordinates": polygonCoordinates
 					},
 					"properties":{
 						"locationCode": fosaid,
 						"locationName": locationName,
-						"reportValueIcon": reportValueLabelIcon
+						"style": polygonStyle
 					}
 				};
-				var geojsonPointFeature = createGeoJsonPointFeature(polygonLabelFeature);
-				basePolygonLayer.addData(geojsonPointFeature);
+				var geojsonPolygonFeature = createGeoJsonPolygonFeature(polygonFeature);
+				basePolygonLayer.addData(geojsonPolygonFeature);
+				
+				// add polygon label if children are not facilities
+				if(!childrenCollectData){
+					var center = L.multiPolygon(polygonCoordinates).getBounds().getCenter();
+					var multiPolygonCenter = [center.lat, center.lng];
+
+					var polygonLabelFeature = {
+						"id": fosaid,
+						"type": "Feature",
+					    "geometry": {
+					    	"coordinates": multiPolygonCenter
+						},
+						"properties":{
+							"locationCode": fosaid,
+							"locationName": locationName,
+							"reportValueIcon": reportValueLabelIcon
+						}
+					};
+					var geojsonPointFeature = createGeoJsonPointFeature(polygonLabelFeature);
+					basePolygonLayer.addData(geojsonPointFeature);
+				}
 			}
 							
 		});
 
 		if(childrenCollectData) 
-			mapPointValues(reportLocationCodes);
+			mapPointValues();
 		else mapPolygonValues(data);
 
 		mapTheMap(!childrenCollectData);
