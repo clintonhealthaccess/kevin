@@ -20,17 +20,17 @@ Development
 -----------
 The DHSST is developed by the CHAI Rwanda team. The members are:
 
-- Jean Kahigiso ([jkahigiso@clintonhealthaccess.org](mailto:jkahigiso@clintonhealthaccess.org))
+- Jean Kahigiso M. ([jkahigiso@clintonhealthaccess.org](mailto:jkahigiso@clintonhealthaccess.org))
 - Eugene Munyaneza ([emunyaneza@clintonhealthaccess.org](mailto:emunyaneza@clintonhealthaccess.org))
 - Sue Lister ([slister@clintonhealthaccess.org](mailto:slister@clintonhealthaccess.org))
 - François Terrier ([fterrier@clintonhealthaccess.org](mailto:fterrier@clintonhealthaccess.org))
 
 Download
 --------
-You can download this project in either [zip](http://github.com/fterrier/kevin/zipball/master) or [tar](http://github.com/fterrier/kevin/tarball/master) formats.
+You can download this project in either [zip](http://github.com/clintonhealthaccess/kevin/zipball/master) or [tar](http://github.com/clintonhealthaccess/kevin/tarball/master) formats.
 
 You can also clone the project with [Git](http://git-scm.com) by running:
-<pre>$ git clone git://github.com/fterrier/kevin</pre>
+<pre>$ git clone git://github.com/clintonhealthaccess/kevin</pre>
 
 License
 -------
