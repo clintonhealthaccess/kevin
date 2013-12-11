@@ -1,77 +1,63 @@
-<!DOCTYPE html>
-<html>
+---
+layout: default
+title: Home
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="DHSST : District Health System Strengthening Tool" />
+---
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+* In this section
+{:toc}
 
-    <title>DHSST</title>
-  </head>
+What is the DHSST?
+==================
 
-  <body>
+The DHSST is an integrated web-based system whose main goal is to help administrations such as governments **collect** and **analyze** information as well as **plan**.
+- It contains a [survey tool](#survey) that helps collect data
+- It contains a [reporting tool](#reporting) that clearly displays data in order to identify infrastructure and service gaps
+- It contains a [planning tool](#planning) that integrates information coming from either the survey or other sources with user entered information
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/clintonhealthaccess/kevin">View on GitHub</a>
+For more information, refer to the [user documentation](TODO).
+![DHSST](images/screenshots/cycle.png){: .margin style="background-color: white;" height=150px}
 
-          <h1 id="project_title">DHSST</h1>
-          <h2 id="project_tagline">District Health System Strengthening Tool</h2>
+The system is flexible and can be customized by an administrator without requiring any technical expertise.
+- The survey questions, the reports and planning budget and output can be entered and edited by the administrator
+- The reports can be based either on survey data and on other sources through an import/export mechanism
+- The data can be manipulated and aggregated using a calculation/aggregation engine
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/clintonhealthaccess/kevin/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/clintonhealthaccess/kevin/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+You can find out more about this in the [administrator documentation](TODO).
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <p>````### Welcome to GitHub Pages.
-This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+It is currently used by the [Rwanda Ministry of Health](http://www.moh.gov.rw) (implementation accessible [here](http://www.districthealth.moh.gov.rw)) and the software is available for free under the BSD license for anyone to use and [modify](TODO).
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+Survey
+------
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+![Survey](images/screenshots/survey.png){: .margin width=190px}
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+The survey tool is here to help you collect data. The survey tool features :
+- the ability to collect data of different types (text, values, option from a dropdown menu), including lists (if you want to collect - say - the list of all the medical equipment in a health facility)
+- validation based on rules defined by the administrator that can refer to other fields
+- skip patterns based on rules defined by the administrator
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+Reporting
+---------
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+![Reports](images/screenshots/reports.png){: .margin width=190px}
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+The reports help analyze the information for evidence-based decision. Currently there are 3 different reports available:
+- A Dashboard that gives an overview of the performance for different indicators
+- A District Summary Report that displays various indicator
+- A Facility Count Table that helps identify gaps
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+Planning
+--------
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+![Planning](images/screenshots/planning.png){: .margin width=190px}
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+The planning tool integrates information coming from various sources to offer a detailed budget and different administrator-defined output for the facilities.
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-    </div>
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">DHSST maintained by <a href="https://github.com/clintonhealthaccess">clintonhealthaccess</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
 
-    
+Who uses the DHSST ?
+====================
 
-  </body>
-</html>
+The DHSST is used in the Health Sector by the Rwanda Ministry of Health as the demand for information.
