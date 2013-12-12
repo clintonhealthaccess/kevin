@@ -1,3 +1,4 @@
 markdown: maruku
 source:   .
 include:  user
+baseurl: /kevin
